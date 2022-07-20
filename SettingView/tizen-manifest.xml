@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest package="org.tizen.SettingView" version="1.0.0" api-version="6.5" xmlns="http://tizen.org/ns/packages">
+    <profile name="common" />
+    <ui-application appid="org.tizen.SettingView" exec="SettingView.dll" multiple="false" nodisplay="false"
+                                                taskmanage="true" api-version="9" type="dotnet" launch_mode="single">
+        <label>SettingView</label>
+        <icon>SettingView.png</icon>
+        <metadata key="http://tizen.org/metadata/prefer_dotnet_aot" value="true" />
+        <splash-screens />
+    </ui-application>
+    <shortcut-list />
+    <privileges>
+        <privilege>http://tizen.org/privilege/appmanager.launch</privilege>
+        <privilege>http://tizen.org/privilege/datasharing</privilege>
+        <privilege>http://tizen.org/privilege/widget.viewer</privilege>
+    </privileges>
+    <dependencies />
+    <provides-appdefined-privileges />
+</manifest>

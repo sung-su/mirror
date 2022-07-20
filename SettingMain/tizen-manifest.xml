@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://tizen.org/ns/packages" api-version="5" package="org.tizen.SettingMain" version="1.0.0">
+  <profile name="common" />
+  <widget-application appid="org.tizen.SettingMain"
+					exec="SettingMain.dll"
+					type="dotnet"
+					multiple="false"
+					taskmanage="true"
+					nodisplay="false"
+					launch_mode="single">
+    <label>SettingMain</label>
+    <icon>SettingMain.png</icon>
+    <widget-class classid="main" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="aboutdevice" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <metadata key="http://tizen.org/metadata/prefer_dotnet_aot" value="true" />
+  </widget-application>
+</manifest>
