@@ -13,7 +13,7 @@ namespace SettingView
     {
         private static readonly string ResourcePath = Tizen.Applications.Application.Current.DirectoryInfo.Resource;
 
-        private static readonly string MinimalizeIcon = ResourcePath + "/images/minimalize.png";
+//         private static readonly string MinimalizeIcon = ResourcePath + "/images/minimalize.png";
         private static readonly string MaximalizeIcon = ResourcePath + "/images/maximalize.png";
         private static readonly string RestoreIcon = ResourcePath + "/images/smallwindow.png";
         private static readonly string CloseIcon = ResourcePath + "/images/close.png";
@@ -23,9 +23,8 @@ namespace SettingView
         private int width = 500;
         private bool hide = false;
         private View borderView;
-        private TextLabel title;
 
-        private ImageView minimalizeIcon;
+//        private ImageView minimalizeIcon;
         private ImageView maximalizeIcon;
         private ImageView closeIcon;
         private ImageView leftCornerIcon;
@@ -37,13 +36,14 @@ namespace SettingView
         {
             //BorderHeight = 50;
             BorderLineThickness = 0;
-            //ResizePolicy = Window.BorderResizePolicyType.Fixed;
+            ResizePolicy = Window.BorderResizePolicyType.Fixed;
         }
 
 
 
         public override bool CreateTopBorderView(View topView)
         {
+#if false
             if (topView == null)
             {
                 return false;
@@ -75,8 +75,10 @@ namespace SettingView
             };
 
             topView.Add(title);
-
             return true;
+#else
+            return false;
+#endif
         }
 
         public override bool CreateBottomBorderView(View bottomView)
@@ -86,13 +88,13 @@ namespace SettingView
                 return false;
             }
             bottomView.Layout = new RelativeLayout();
-
+#if false
             minimalizeIcon = new ImageView()
             {
                 ResourceUrl = MinimalizeIcon,
                 AccessibilityHighlightable = true,
             };
-
+#endif
             maximalizeIcon = new ImageView()
             {
                 ResourceUrl = MaximalizeIcon,
@@ -117,9 +119,11 @@ namespace SettingView
                 AccessibilityHighlightable = true,
             };
 
+#if false
             RelativeLayout.SetRightTarget(minimalizeIcon, maximalizeIcon);
             RelativeLayout.SetRightRelativeOffset(minimalizeIcon, 0.0f);
             RelativeLayout.SetHorizontalAlignment(minimalizeIcon, RelativeLayout.Alignment.End);
+#endif
             RelativeLayout.SetRightTarget(maximalizeIcon, closeIcon);
             RelativeLayout.SetRightRelativeOffset(maximalizeIcon, 0.0f);
             RelativeLayout.SetHorizontalAlignment(maximalizeIcon, RelativeLayout.Alignment.End);
@@ -129,22 +133,26 @@ namespace SettingView
             RelativeLayout.SetRightRelativeOffset(rightCornerIcon, 1.0f);
             RelativeLayout.SetHorizontalAlignment(rightCornerIcon, RelativeLayout.Alignment.End);
             bottomView.Add(leftCornerIcon);
-            bottomView.Add(minimalizeIcon);
+
+//            bottomView.Add(minimalizeIcon);
+
             bottomView.Add(maximalizeIcon);
             bottomView.Add(closeIcon);
             bottomView.Add(rightCornerIcon);
 
 
-            minimalizeIcon.TouchEvent += OnMinimizeIconTouched;
+//            minimalizeIcon.TouchEvent += OnMinimizeIconTouched;
             maximalizeIcon.TouchEvent += OnMaximizeIconTouched;
             closeIcon.TouchEvent += OnCloseIconTouched;
             leftCornerIcon.TouchEvent += OnLeftBottomCornerIconTouched;
             rightCornerIcon.TouchEvent += OnRightBottomCornerIconTouched;
 
+#if false
             minimalizeIcon.AccessibilityActivated += (s, e) =>
             {
                 MinimizeBorderWindow();
             };
+#endif
             maximalizeIcon.AccessibilityActivated += (s, e) =>
             {
                 MaximizeBorderWindow();
@@ -153,11 +161,12 @@ namespace SettingView
             {
                 CloseBorderWindow();
             };
-
+#if false
             minimalizeIcon.AccessibilityNameRequested += (s, e) =>
             {
                 e.Name = "Minimize";
             };
+#endif
             maximalizeIcon.AccessibilityNameRequested += (s, e) =>
             {
                 e.Name = "Maximize";
@@ -175,7 +184,8 @@ namespace SettingView
                 e.Name = "Resize";
             };
 
-            minimalizeIcon.SetAccessibilityReadingInfoTypes(Tizen.NUI.BaseComponents.AccessibilityReadingInfoTypes.Name);
+//            minimalizeIcon.SetAccessibilityReadingInfoTypes(Tizen.NUI.BaseComponents.AccessibilityReadingInfoTypes.Name);
+
             maximalizeIcon.SetAccessibilityReadingInfoTypes(Tizen.NUI.BaseComponents.AccessibilityReadingInfoTypes.Name);
             closeIcon.SetAccessibilityReadingInfoTypes(Tizen.NUI.BaseComponents.AccessibilityReadingInfoTypes.Name);
             leftCornerIcon.SetAccessibilityReadingInfoTypes(Tizen.NUI.BaseComponents.AccessibilityReadingInfoTypes.Name);
@@ -211,7 +221,7 @@ namespace SettingView
         }
 
 
-
+#if false
         public override bool OnMinimizeIconTouched(object sender, View.TouchEventArgs e)
         {
             if (e.Touch.GetState(0) == PointStateType.Up)
@@ -225,6 +235,7 @@ namespace SettingView
             }
             return true;
         }
+#endif
 
         public override void OnRequestResize()
         {
@@ -240,12 +251,10 @@ namespace SettingView
             {
                 if (this.width > width && hide == false)
                 {
-                    title.Hide();
                     hide = true;
                 }
                 else if (this.width < width && hide == true)
                 {
-                    title.Show();
                     hide = false;
                 }
                 borderView.BackgroundColor = new Color(1, 1, 1, 0.3f); //  리사이즈가 끝나면 보더의 색깔은 원래대로 돌려놓습니다.

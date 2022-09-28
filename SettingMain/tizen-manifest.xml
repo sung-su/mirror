@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns="http://tizen.org/ns/packages" api-version="5" package="org.tizen.SettingMain" version="1.0.0">
+<manifest xmlns="http://tizen.org/ns/packages" api-version="5" package="org.tizen.cssettings" version="1.0.0">
   <profile name="common" />
-  <widget-application appid="org.tizen.SettingMain"
+  <widget-application appid="org.tizen.cssettings"
 					exec="SettingMain.dll"
 					type="dotnet"
 					multiple="false"
@@ -10,12 +10,47 @@
 					launch_mode="single">
     <label>SettingMain</label>
     <icon>SettingMain.png</icon>
-    <widget-class classid="main" update-period="0">
+    <widget-class classid="sound" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="display" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="apps" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="storage" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="languageinput" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="displaylanguage" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="datetime" update-period="0">
       <support-size preview="SettingMain.png">4x4</support-size>
     </widget-class>
     <widget-class classid="aboutdevice" update-period="0">
       <support-size preview="SettingMain.png">4x4</support-size>
     </widget-class>
+    <widget-class classid="content_legalinfo" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="dlg_rename" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="content_devicestatus" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
     <metadata key="http://tizen.org/metadata/prefer_dotnet_aot" value="true" />
+      <privileges>
+        <privilege>http://tizen.org/privilege/telephony</privilege>
+        <privilege>http://tizen.org/privilege/bluetooth</privilege>
+        <privilege>http://tizen.org/privilege/network.set</privilege>
+        <privilege>http://tizen.org/privilege/systemmonitor</privilege>
+      </privileges>
   </widget-application>
+
 </manifest>
+
