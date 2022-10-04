@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Tizen.NET.Sdk/1.1.7">
 
   <PropertyGroup>
-    <TargetFramework>tizen10.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>

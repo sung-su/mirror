@@ -2,9 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>tizen10.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
       <AssemblyName>SettingMain</AssemblyName>
-      <disableimplicitframeworkreferences>True</disableimplicitframeworkreferences>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -13,15 +12,15 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>None</DebugType>
   </PropertyGroup>
- 
+
   <ItemGroup>
     <Folder Include="lib\" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="Tizen.NET" Version="10.0.0.*" />
+    <PackageReference Include="Tizen.NET" Version="10.0.0.17467" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\SettingAppTextResopurces\SettingAppTextResopurces.csproj" />
   </ItemGroup>

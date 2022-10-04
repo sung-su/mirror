@@ -2,9 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>tizen10.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
       <AssemblyName>SettingView</AssemblyName>
-      <disableimplicitframeworkreferences>True</disableimplicitframeworkreferences>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -19,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Tizen.NET" Version="10.0.0.*" />
+    <PackageReference Include="Tizen.NET" Version="10.0.0.17467" />
   </ItemGroup>
 
   <ItemGroup>
