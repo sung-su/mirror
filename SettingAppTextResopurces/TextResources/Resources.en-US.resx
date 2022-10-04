@@ -1557,6 +1557,9 @@
   <data name="IDS_ST_BODY_SET_DATE" xml:space="preserve">
     <value>Set date</value>
   </data>
+  <data name="IDS_ST_BODY_DO_YOU_WANT_CHANGE_THE_DATE" xml:space="preserve">
+    <value>Do you want change the date?</value>
+  </data>
   <data name="IDS_ST_BODY_SET_DATE_AND_TIME" xml:space="preserve">
     <value>Set date and time</value>
   </data>
@@ -1568,6 +1571,9 @@
   </data>
   <data name="IDS_ST_BODY_SET_TIME" xml:space="preserve">
     <value>Set time</value>
+  </data>
+  <data name="IDS_ST_BODY_DO_YOU_WANT_CHANGE_THE_TIME" xml:space="preserve">
+    <value>Do you want change the time?</value>
   </data>
   <data name="IDS_ST_BODY_SHOWS_BATTERY_PERCENTAGE_ON_INDICATOR" xml:space="preserve">
     <value>Shows battery percentage on indicator.</value>

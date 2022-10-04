@@ -13,7 +13,22 @@
     <widget-class classid="sound" update-period="0">
       <support-size preview="SettingMain.png">4x4</support-size>
     </widget-class>
+    <widget-class classid="soundmode" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="notificationsound" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
     <widget-class classid="display" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="font" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="timeout" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="theme" update-period="0">
       <support-size preview="SettingMain.png">4x4</support-size>
     </widget-class>
     <widget-class classid="apps" update-period="0">
@@ -31,26 +46,36 @@
     <widget-class classid="datetime" update-period="0">
       <support-size preview="SettingMain.png">4x4</support-size>
     </widget-class>
+    <widget-class classid="setdate" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="settime" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="settimezone" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
     <widget-class classid="aboutdevice" update-period="0">
       <support-size preview="SettingMain.png">4x4</support-size>
     </widget-class>
-    <widget-class classid="content_legalinfo" update-period="0">
+    <widget-class classid="legalinfo" update-period="0">
       <support-size preview="SettingMain.png">4x4</support-size>
     </widget-class>
     <widget-class classid="dlg_rename" update-period="0">
       <support-size preview="SettingMain.png">4x4</support-size>
     </widget-class>
-    <widget-class classid="content_devicestatus" update-period="0">
+    <widget-class classid="devicestatus" update-period="0">
       <support-size preview="SettingMain.png">4x4</support-size>
     </widget-class>
     <metadata key="http://tizen.org/metadata/prefer_dotnet_aot" value="true" />
-      <privileges>
-        <privilege>http://tizen.org/privilege/telephony</privilege>
-        <privilege>http://tizen.org/privilege/bluetooth</privilege>
-        <privilege>http://tizen.org/privilege/network.set</privilege>
-        <privilege>http://tizen.org/privilege/systemmonitor</privilege>
-      </privileges>
   </widget-application>
+  <privileges>
+    <privilege>http://tizen.org/privilege/systemsettings.admin</privilege>
+    <privilege>http://tizen.org/privilege/telephony</privilege>
+    <privilege>http://tizen.org/privilege/bluetooth</privilege>
+    <privilege>http://tizen.org/privilege/network.set</privilege>
+    <privilege>http://tizen.org/privilege/systemmonitor</privilege>
+  </privileges>
 
 </manifest>
 

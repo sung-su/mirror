@@ -1569,6 +1569,9 @@
   <data name="IDS_ST_BODY_SET_DATE" xml:space="preserve">
     <value>Set date</value>
   </data>
+  <data name="IDS_ST_BODY_DO_YOU_WANT_CHANGE_THE_DATE" xml:space="preserve">
+    <value>Do you want change the date?</value>
+  </data>
   <data name="IDS_ST_BODY_SET_FONT_AS_PS_Q" xml:space="preserve">
     <value>Set font as %s?</value>
   </data>
@@ -1577,6 +1580,9 @@
   </data>
   <data name="IDS_ST_BODY_SET_TIME" xml:space="preserve">
     <value>Set time</value>
+  </data>
+  <data name="IDS_ST_BODY_DO_YOU_WANT_CHANGE_THE_TIME" xml:space="preserve">
+    <value>Do you want change the time?</value>
   </data>
   <data name="IDS_ST_BODY_SHOWS_BATTERY_PERCENTAGE_ON_INDICATOR" xml:space="preserve">
     <value>Shows battery percentage on indicator.</value>
@@ -2130,6 +2136,9 @@
   <data name="IDS_ST_HEADER_MOTION_UNLOCK" xml:space="preserve">
     <value>Motion unlock</value>
   </data>
+  <data name="IDS_ST_HEADER_MUTE" xml:space="preserve">
+    <value>Mute</value>
+  </data>
   <data name="IDS_ST_HEADER_NETWORK_RESTRICTION_MODE_ABB_JPN" xml:space="preserve">
     <value>Network restriction mode</value>
   </data>
@@ -2264,6 +2273,9 @@
   </data>
   <data name="IDS_ST_HEADER_USER_SETTINGS_ABB" xml:space="preserve">
     <value>User settings</value>
+  </data>
+  <data name="IDS_ST_HEADER_VIBRATE" xml:space="preserve">
+    <value>Vibrate</value>
   </data>
   <data name="IDS_ST_HEADER_VISION" xml:space="preserve">
     <value>Vision</value>

@@ -27,7 +27,7 @@ namespace SettingView
         {
 
             Window window = GetDefaultWindow();
-            window.BackgroundColor = Color.Blue;
+
             window.KeyEvent += OnKeyEvent;
             window.TouchEvent += OnTouchEvent;
 
@@ -36,34 +36,6 @@ namespace SettingView
             String encodedBundle = bundle.Encode();
 
             Tizen.Log.Error("SettingWidget", "REQUEST \n");
-#if false
-            // Add Widget in advance to avoid loading pending.
-            mWidgetView = WidgetViewManager.Instance.AddWidget("main@org.tizen.cssettings", encodedBundle, window.Size.Width, window.Size.Height, 0.0f);
-            mWidgetView.Position = new Position(0, 0);
-            mWidgetView.WidgetContentUpdated += OnWidgetContentUpdatedCB;
-
-            //window.GetDefaultLayer().Add(mWidgetView);
-
-
-
-
-
-            var button = new Button()
-            {
-                Text = "Click to Second Page",
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                HeightSpecification = LayoutParamPolicies.MatchParent,
-            };
-            button.Clicked += (o, e) =>
-            {
-                //  var page = new ContentPage();
-                //  page.Content = secondPageWidgetView;
-                //navigator.Push(page);
-            };
-
-            // Push the first page.
-            //PushContentPage("First Page", button);
-#endif
 
             CreateSettingsMainMenu();
 
@@ -226,103 +198,92 @@ namespace SettingView
 
         // Create an list item with checkbox.
         private DefaultLinearItem CreateItemWithCheck(string text, string subText = null, bool icon = false, bool extra = false)
-    {
-        var item = new DefaultLinearItem()
         {
-            WidthSpecification = LayoutParamPolicies.MatchParent,
-            Text = text,
-            IsSelectable = false, // Item should not be remained as selected state.
-        };
-
-        if (subText != null)
-        {
-            item.SubText = subText;
-        }
-
-        CheckBox check = null;
-        if (icon)
-        {
-            check = new CheckBox();
-            check.SelectedChanged += (o, e) =>
+            var item = new DefaultLinearItem()
             {
-                if (e.IsSelected)
-                {
-                    Tizen.Log.Debug("NUI", "check is selected!\n");
-                }
-                else
-                {
-                    Tizen.Log.Debug("NUI", "check is unselected!\n");
-                }
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                Text = text,
+                IsSelectable = false, // Item should not be remained as selected state.
             };
-            // Icon is placed at the beginning(left end) of the item.
-            item.Icon = check;
 
-            // Do not propagate Pressed/Selected states from item to item.Icon.
-            // When item is pressed/clicked/selected, item.Icon is not pressed/clicked/selected.
-            item.Icon.PropagatableControlStates = ControlState.Disabled;
-        }
-
-        Switch toggle = null;
-        if (extra)
-        {
-            toggle = new Switch();
-            toggle.SelectedChanged += (o, e) =>
+            if (subText != null)
             {
-                if (e.IsSelected)
-                {
-                    Tizen.Log.Debug("NUI", "toggle is selected!\n");
-                }
-                else
-                {
-                    Tizen.Log.Debug("NUI", "toggle is unselected!\n");
-                }
-            };
-            // Extra is placed at the end(right end) of the item.
-            item.Extra = toggle;
-
-            // Do not propagate Pressed/Selected states from item to item.Extra.
-            // When item is pressed/clicked/selected, item.Extra is not pressed/clicked/selected.
-            item.Extra.PropagatableControlStates = ControlState.Disabled;
-        }
-
-        item.Clicked += (o, e) =>
-        {
-            if (check != null)
-            {
-                check.IsSelected = !check.IsSelected;
+                item.SubText = subText;
             }
 
-            if (toggle != null)
+            CheckBox check = null;
+            if (icon)
             {
-                toggle.IsSelected = !toggle.IsSelected;
+                check = new CheckBox();
+                check.SelectedChanged += (o, e) =>
+                {
+                    if (e.IsSelected)
+                    {
+                        Tizen.Log.Debug("NUI", "check is selected!\n");
+                    }
+                    else
+                    {
+                        Tizen.Log.Debug("NUI", "check is unselected!\n");
+                    }
+                };
+                // Icon is placed at the beginning(left end) of the item.
+                item.Icon = check;
+
+                // Do not propagate Pressed/Selected states from item to item.Icon.
+                // When item is pressed/clicked/selected, item.Icon is not pressed/clicked/selected.
+                item.Icon.PropagatableControlStates = ControlState.Disabled;
             }
 
-            Tizen.Log.Debug("NUI", "item is clicked!\n");
-        };
+            Switch toggle = null;
+            if (extra)
+            {
+                toggle = new Switch();
+                // Extra is placed at the end(right end) of the item.
+                item.Extra = toggle;
+
+                // Do not propagate Pressed/Selected states from item to item.Extra.
+                // When item is pressed/clicked/selected, item.Extra is not pressed/clicked/selected.
+                item.Extra.PropagatableControlStates = ControlState.Disabled;
+            }
+
+            item.Clicked += (o, e) =>
+            {
+                if (check != null)
+                {
+                    check.IsSelected = !check.IsSelected;
+                }
+
+                if (toggle != null)
+                {
+                    toggle.IsSelected = !toggle.IsSelected;
+                }
+
+                Tizen.Log.Debug("NUI", "item is clicked!\n");
+            };
 
 
 
-        return item;
-    }
-
-    // Create an list item  with icon
-    private DefaultLinearItem CreateItemWithIcon(string text, string iconpath, string subText = null, bool extra = false)
-    {
-        var item = new DefaultLinearItem()
-        {
-            WidthSpecification = LayoutParamPolicies.MatchParent,
-            Text = text,
-            IsSelectable = false, // Item should not be remained as selected state.
-        };
-
-        if (subText != null)
-        {
-            item.SubText = subText;
+            return item;
         }
 
-        ImageView icon = null;
+        // Create an list item  with icon
+        private DefaultLinearItem CreateItemWithIcon(string text, string iconpath, string subText = null, bool extra = false)
+        {
+            var item = new DefaultLinearItem()
+            {
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                Text = text,
+                IsSelectable = false, // Item should not be remained as selected state.
+            };
 
-        if (iconpath.Length > 0)
+            if (subText != null)
+            {
+                item.SubText = subText;
+            }
+
+            ImageView icon = null;
+
+            if (iconpath.Length > 0)
         {
             icon = new ImageView(iconpath)
             {
@@ -394,8 +355,12 @@ namespace SettingView
             {
                 item.Clicked += (o, e) =>
                 {
+#if false
                     Window window = GetDefaultWindow();
                     LaunchWidget(window, "wifi@org.tizen.cssetting-wifi");
+#else
+                    LaunchApplication("wifi-efl-ug");
+#endif
                 };
                 content.Add(item);
             }
@@ -404,8 +369,12 @@ namespace SettingView
             {
                 item.Clicked += (o, e) =>
                 {
+#if false
                     Window window = GetDefaultWindow();
                     LaunchWidget(window, "bluetooth@org.tizen.cssetting-bluetooth");
+#else
+                    LaunchApplication("ug-bluetooth-efl");
+#endif
                 };
                 content.Add(item);
             }
@@ -593,6 +562,16 @@ namespace SettingView
             page.Content = widgetview;
             navigator.Push(page);
         }
+    }
+
+    void LaunchApplication(string appid)
+    {
+        AppControl appcontrol = new AppControl() {
+            Operation = AppControlOperations.Default,
+            ApplicationId = appid,
+            LaunchMode = AppControlLaunchMode.Group,
+        };
+        AppControl.SendLaunchRequest(appcontrol);
     }
 
     static void Main(string[] args)

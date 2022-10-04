@@ -36,7 +36,7 @@ namespace SettingView
         {
             //BorderHeight = 50;
             BorderLineThickness = 0;
-            ResizePolicy = Window.BorderResizePolicyType.Fixed;
+            ResizePolicy = Window.BorderResizePolicyType.Free;
         }
 
 
@@ -199,7 +199,7 @@ namespace SettingView
             this.borderView = borderView;
             borderView.CornerRadius = new Vector4(0.03f, 0.03f, 0.03f, 0.03f);
             borderView.CornerRadiusPolicy = VisualTransformPolicyType.Relative;
-            borderView.BackgroundColor = new Color(1, 1, 1, 0.3f);
+            borderView.BackgroundColor = new Color(1, 1, 1, 0.2f);
         }
 
         public override void OnCreated(View borderView)

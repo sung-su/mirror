@@ -1575,6 +1575,9 @@
   <data name="IDS_ST_BODY_SET_DATE" xml:space="preserve">
     <value>날짜 설정</value>
   </data>
+  <data name="IDS_ST_BODY_DO_YOU_WANT_CHANGE_THE_DATE" xml:space="preserve">
+    <value>날짜를 변경할까요?</value>
+  </data>
   <data name="IDS_ST_BODY_SET_DATE_AND_TIME" xml:space="preserve">
     <value>날짜 및 시간 설정</value>
   </data>
@@ -1586,6 +1589,9 @@
   </data>
   <data name="IDS_ST_BODY_SET_TIME" xml:space="preserve">
     <value>시간 설정</value>
+  </data>
+  <data name="IDS_ST_BODY_DO_YOU_WANT_CHANGE_THE_TIME" xml:space="preserve">
+    <value>시간을 변경할까요?</value>
   </data>
   <data name="IDS_ST_BODY_SHOWS_BATTERY_PERCENTAGE_ON_INDICATOR" xml:space="preserve">
     <value>상태표시줄에 사용 가능한 배터리 용량을 표시합니다.</value>

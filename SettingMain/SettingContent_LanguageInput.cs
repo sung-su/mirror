@@ -36,7 +36,7 @@ namespace SettingMain
 
             DefaultLinearItem item = null;
 
-            item = CreateItemWithCheck(Resources.IDS_ST_HEADER_DISPLAY_LANGUAGE, Resources.IDS_ST_HEADER_UNAVAILABLE);
+            item = CreateItemWithCheck(Resources.IDS_ST_HEADER_DISPLAY_LANGUAGE, SettingContent_DisplayLanguage.GetDisplayLanguageName());
             if (item != null)
             {
                 item.Clicked += (o, e) =>

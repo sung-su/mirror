@@ -11,9 +11,29 @@ namespace SettingMain
 {
     abstract class SettingContent_Base : Widget
     {
+
+
         protected static readonly string resPath = Tizen.Applications.Application.Current.DirectoryInfo.Resource;
         protected const string SETTING_ICON_PATH_CFG = "/icons/";
         protected const string SETTING_LIST_ICON_PATH_CFG = "/icons/list_icon/";
+
+        // Create an Static Text
+        protected DefaultLinearItem CreateItemStatic(string text)
+        {
+            var item = new DefaultLinearItem()
+            {
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                Text = text,
+                IsSelectable = false, // Item should not be remained as selected state.
+            };
+            
+            PropertyMap titleStyle = new PropertyMap();
+            titleStyle.Add("weight", new PropertyValue(600));
+            item.Label.FontStyle = titleStyle;
+
+            return item;
+        }
+
 
         // Create an list item with checkbox.
         protected DefaultLinearItem CreateItemWithCheck(string text, string subText = null, bool icon = false, bool extra = false)
@@ -57,18 +77,6 @@ namespace SettingMain
             if (extra)
             {
                 toggle = new Switch();
-                toggle.SelectedChanged += (o, e) =>
-                {
-                    if (e.IsSelected)
-                    {
-                        Tizen.Log.Debug("NUI", "toggle is selected!\n");
-                    }
-                    else
-                    {
-                        Tizen.Log.Debug("NUI", "toggle is unselected!\n");
-                    }
-                };
-                // Extra is placed at the end(right end) of the item.
                 item.Extra = toggle;
 
                 // Do not propagate Pressed/Selected states from item to item.Extra.
@@ -188,7 +196,7 @@ namespace SettingMain
             return item;
         }
 
-        protected View CreateSliderItem(string name, string iconpath)
+        protected View CreateSliderItem(string name, string iconpath, int levelcout)
         {
             //Create Linear Layout
             LinearLayout linearLayout = new LinearLayout
@@ -202,92 +210,62 @@ namespace SettingMain
             item.Name = name;
             item.Layout = linearLayout;
             {
-                var icon = new ImageView(iconpath);
-                icon.Size2D = new Size2D(32, 32);
-                //icon.CellVerticalAlignment = VerticalAlignmentType.Center;
+                var leftpadding = new View()
+                {
+                    Size2D = new Size2D(10, 5),
+                };
+                item.Add(leftpadding);
+
+                if (iconpath != null)
+                {
+                    var icon = new ImageView(iconpath);
+                    icon.Size2D = new Size2D(32, 32);
+                    item.Add(icon);
+                }
 
                 var slider = new Slider()
                 {
-                    //Size2D = new Size2D(500, 50),
+                    //WidthResizePolicy = ResizePolicyType.FillToParent,
+                    //Size2D = new Size2D(100, 32),
                     //Name = Program.ItemContentNameDescription,
 
-                    TrackThickness = 4,
+                    TrackThickness = 5,
                     BgTrackColor = new Color(0, 0, 0, 0.1f),
                     SlidedTrackColor = new Color(0.05f, 0.63f, 0.9f, 1),
                     ThumbSize = new Size(20, 20),
 
                     Direction = Slider.DirectionType.Horizontal,
                     MinValue = 0,
-                    MaxValue = 100,
+                    MaxValue = levelcout-1,
                     CurrentValue = 10,
 
                 };
-                //slider.CellVerticalAlignment = VerticalAlignmentType.Center;
-                //slider.LowIndicatorImageURL = resPath + SETTING_ICON_PATH_CFG + "settings_about_device.png.png";
-
                 slider.ValueChanged += OnValueChanged;
                 slider.SlidingStarted += OnSlidingStarted;
                 slider.SlidingFinished += OnSlidingFinished;
-
-
-                item.Add(icon);
                 item.Add(slider);
+
+                var rightpadding = new View()
+                {
+                    Size2D = new Size2D(10, 5),
+                };
+                item.Add(rightpadding);
+
+
             }
             return item;
         }
 
         private void OnValueChanged(object sender, SliderValueChangedEventArgs args)
         {
-#if false
-            Slider source = sender as Slider;
-            if (source != null)
-            {
-                if (source == slider_style[0] || source == slider_style[1] || source == slider_style[2] || source == slider_style[3])
-                {
-                    inforText[1].Text = "currentValue = " + args.CurrentValue;
-                }
-                else
-                {
-                    inforText[0].Text = "currentValue = " + args.CurrentValue;
-                }
-            }
-#endif
         }
 
         private void OnSlidingStarted(object sender, SliderSlidingStartedEventArgs args)
         {
-#if false
-            Slider source = sender as Slider;
-            if (source != null)
-            {
-                if (source == slider_style[0] || source == slider_style[1] || source == slider_style[2] || source == slider_style[3])
-                {
-                    inforText[1].Text = "Started currentValue = " + args.CurrentValue;
-                }
-                else
-                {
-                    inforText[0].Text = "Started currentValue = " + args.CurrentValue;
-                }
-            }
-#endif
         }
 
         private void OnSlidingFinished(object sender, SliderSlidingFinishedEventArgs args)
         {
-#if false
-            Slider source = sender as Slider;
-            if (source != null)
-            {
-                if (source == slider_style[0] || source == slider_style[1] || source == slider_style[2] || source == slider_style[3])
-                {
-                    inforText[1].Text = "Finished currentValue = " + args.CurrentValue;
-                }
-                else
-                {
-                    inforText[0].Text = "Finished currentValue = " + args.CurrentValue;
-                }
-            }
-#endif
         }
 
         protected string mTitle;

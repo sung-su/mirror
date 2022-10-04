@@ -36,19 +36,122 @@ namespace SettingMain
 
             DefaultLinearItem item = null;
 
-            item = base.CreateItemWithCheck(Resources.IDS_ST_MBODY_AUTO_UPDATE, Resources.IDS_ST_HEADER_UNAVAILABLE, false, true);
-            content.Add(item);
+            bool bAutoupdate = Vconf.GetBool("db/setting/automatic_time_update");
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_SET_DATE, Resources.IDS_ST_HEADER_UNAVAILABLE);
-            content.Add(item);
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_SET_TIME, Resources.IDS_ST_HEADER_UNAVAILABLE);
-            content.Add(item);
+            item = base.CreateItemWithCheck(Resources.IDS_ST_MBODY_AUTO_UPDATE, null, false, true);
+            if (item)
+            {
+                var toggle = item.Extra as Switch;
+                toggle.IsSelected = bAutoupdate;
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_TIME_ZONE, Resources.IDS_ST_HEADER_UNAVAILABLE);
-            content.Add(item);
 
+                toggle.SelectedChanged += (o, e) =>
+                {
+                    if (e.IsSelected)
+                    {
+                        Vconf.SetBool("db/setting/automatic_time_update", true);
+                        Tizen.Log.Debug("NUI", "Auto Update is ON!\n");
+                    }
+                    else
+                    {
+                        Vconf.SetBool("db/setting/automatic_time_update", false);
+                        Tizen.Log.Debug("NUI", "Auto Update is OFF!\n");
+                    }
+                };
+
+                content.Add(item);
+            }
+
+
+            item = CreateItemWithCheck(Resources.IDS_ST_BODY_SET_DATE, DateTime.Now.ToShortDateString());
+            if (item)
+            {
+                item.Clicked += (o, e) =>
+                {
+                    // Update Widget Content by sending message to add the third page in advance.
+                    Bundle nextBundle = new Bundle();
+                    nextBundle.AddItem("WIDGET_ID", "setdate@org.tizen.cssettings");
+                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
+                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
+                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
+                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
+                    String encodedBundle = nextBundle.Encode();
+                    SetContentInfo(encodedBundle);
+
+                };
+                content.Add(item);
+            }
+                    
+
+
+
+
+
+            item = CreateItemWithCheck(Resources.IDS_ST_BODY_SET_TIME, DateTime.Now.ToShortTimeString());
+            if (item)
+            {
+                item.Clicked += (o, e) =>
+                {
+                    // Update Widget Content by sending message to add the third page in advance.
+                    Bundle nextBundle = new Bundle();
+                    nextBundle.AddItem("WIDGET_ID", "settime@org.tizen.cssettings");
+                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
+                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
+                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
+                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
+                    String encodedBundle = nextBundle.Encode();
+                    SetContentInfo(encodedBundle);
+
+                };
+                content.Add(item);
+            }
+
+            string strTimezone = SystemSettings.LocaleTimeZone;
+            item = CreateItemWithCheck(Resources.IDS_ST_BODY_TIME_ZONE, strTimezone);
+            if (item)
+            {
+#if false
+                item.Clicked += (o, e) =>
+                {
+                    // Update Widget Content by sending message to add the third page in advance.
+                    Bundle nextBundle = new Bundle();
+                    nextBundle.AddItem("WIDGET_ID", "settimezone@org.tizen.cssettings");
+                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
+                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
+                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
+                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
+                    String encodedBundle = nextBundle.Encode();
+                    SetContentInfo(encodedBundle);
+                };
+#endif
+                content.Add(item);
+            }
+
+            bool bTime24 = (Vconf.GetInt("db/menu_widget/regionformat_time1224") == 2)? true : false;
             item = CreateItemWithCheck(Resources.IDS_ST_MBODY_24_HOUR_CLOCK, Resources.IDS_ST_SBODY_SHOW_THE_TIME_IN_24_HOUR_FORMAT_INSTEAD_OF_12_HOUR_HAM_PM_FORMAT, false, true);
-            content.Add(item);
+            if (item)
+            {
+                var toggle = item.Extra as Switch;
+                toggle.IsSelected = bTime24;
+
+
+                toggle.SelectedChanged += (o, e) =>
+                {
+                    if (e.IsSelected)
+                    {
+                        Vconf.SetInt("db/menu_widget/regionformat_time1224", 2);
+                        Tizen.Log.Debug("NUI", "Auto Update is ON!\n");
+                    }
+                    else
+                    {
+                        Vconf.SetInt("db/menu_widget/regionformat_time1224", 1);
+                        Tizen.Log.Debug("NUI", "Auto Update is OFF!\n");
+                    }
+                };
+
+                content.Add(item);
+            }
+
 
             return content;
         }

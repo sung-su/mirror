@@ -77,18 +77,70 @@ namespace SettingMain
 
             item = CreateItemWithCheck(Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING);
             content.Add(item);
-            var slideritem = CreateSliderItem("BRIGHTNESS", iconpath);
+            var slideritem = CreateSliderItem("BRIGHTNESS", iconpath, 100);
             content.Add(slideritem);
 
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_FONT, Resources.IDS_ST_HEADER_UNAVAILABLE);
-            content.Add(item);
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2, Resources.IDS_ST_HEADER_UNAVAILABLE);
-            content.Add(item);
+            SystemSettingsFontSize fontSize = SystemSettings.FontSize;
+            string fontType = SystemSettings.FontType;
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_THEME, Resources.IDS_ST_HEADER_UNAVAILABLE);
-            content.Add(item);
+            item = CreateItemWithCheck(Resources.IDS_ST_BODY_FONT, fontSize.ToString() + ", " + fontType);
+            if (item)
+            {
+                item.Clicked += (o, e) =>
+                {
+                    // Update Widget Content by sending message to add the third page in advance.
+                    Bundle nextBundle = new Bundle();
+                    nextBundle.AddItem("WIDGET_ID", "font@org.tizen.cssettings");
+                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
+                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
+                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
+                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
+                    String encodedBundle = nextBundle.Encode();
+                    SetContentInfo(encodedBundle);
+
+                };
+                content.Add(item);
+            }
+
+
+            item = CreateItemWithCheck(Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2, SettingContent_ScreenTimeout.GetScreenTimeoutName());
+            if (item != null)
+            {
+                item.Clicked += (o, e) =>
+                {
+                    // Update Widget Content by sending message to add the third page in advance.
+                    Bundle nextBundle = new Bundle();
+                    nextBundle.AddItem("WIDGET_ID", "timeout@org.tizen.cssettings");
+                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
+                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
+                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
+                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
+                    String encodedBundle = nextBundle.Encode();
+                    SetContentInfo(encodedBundle);
+                };
+                content.Add(item);
+            }
+
+
+            item = CreateItemWithCheck(Resources.IDS_ST_BODY_THEME, SettingContent_Theme.GetThemeName());
+            if (item != null)
+            {
+                item.Clicked += (o, e) =>
+                {
+                    // Update Widget Content by sending message to add the third page in advance.
+                    Bundle nextBundle = new Bundle();
+                    nextBundle.AddItem("WIDGET_ID", "theme@org.tizen.cssettings");
+                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
+                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
+                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
+                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
+                    String encodedBundle = nextBundle.Encode();
+                    SetContentInfo(encodedBundle);
+                };
+                content.Add(item);
+            }
 
             return content;
         }

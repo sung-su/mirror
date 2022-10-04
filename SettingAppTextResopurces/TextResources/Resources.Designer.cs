@@ -2382,6 +2382,24 @@ namespace SettingAppTextResopurces.TextResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want change the date?.
+        /// </summary>
+        public static string IDS_ST_BODY_DO_YOU_WANT_CHANGE_THE_DATE {
+            get {
+                return ResourceManager.GetString("IDS_ST_BODY_DO_YOU_WANT_CHANGE_THE_DATE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want change the time?.
+        /// </summary>
+        public static string IDS_ST_BODY_DO_YOU_WANT_CHANGE_THE_TIME {
+            get {
+                return ResourceManager.GetString("IDS_ST_BODY_DO_YOU_WANT_CHANGE_THE_TIME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Don&apos;t ask again.
         /// </summary>
         public static string IDS_ST_BODY_DONT_ASK_AGAIN {
@@ -6132,6 +6150,15 @@ namespace SettingAppTextResopurces.TextResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mute.
+        /// </summary>
+        public static string IDS_ST_HEADER_MUTE {
+            get {
+                return ResourceManager.GetString("IDS_ST_HEADER_MUTE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Network restriction mode.
         /// </summary>
         public static string IDS_ST_HEADER_NETWORK_RESTRICTION_MODE_ABB_JPN {
@@ -6533,6 +6560,15 @@ namespace SettingAppTextResopurces.TextResources {
         public static string IDS_ST_HEADER_USER_SETTINGS_ABB {
             get {
                 return ResourceManager.GetString("IDS_ST_HEADER_USER_SETTINGS_ABB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vibrate.
+        /// </summary>
+        public static string IDS_ST_HEADER_VIBRATE {
+            get {
+                return ResourceManager.GetString("IDS_ST_HEADER_VIBRATE", resourceCulture);
             }
         }
         

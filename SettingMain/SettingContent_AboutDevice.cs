@@ -46,7 +46,7 @@ namespace SettingMain
                 {
                     // Update Widget Content by sending message to add the third page in advance.
                     Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "main@org.tizen.cssettings");
+                    nextBundle.AddItem("WIDGET_ID", "certificates@org.tizen.setting-certificates");
                     nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
                     nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
                     nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
@@ -64,7 +64,7 @@ namespace SettingMain
                 {
                     // Update Widget Content by sending message to push the third page.
                     Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "content_legalinfo@org.tizen.cssettings");
+                    nextBundle.AddItem("WIDGET_ID", "legalinfo@org.tizen.cssettings");
                     nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
                     nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
                     nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
@@ -140,11 +140,12 @@ namespace SettingMain
             item = CreateItemWithCheck(Resources.IDS_ST_BODY_STATUS, Resources.IDS_ST_BODY_SHOW_NETWORK_STATUS_AND_OTHER_INFORMATION);
             if (item != null)
             {
+
                 item.Clicked += (o, e) =>
                 {
                     // Update Widget Content by sending message to add the third page in advance.
                     Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "content_devicestatus@org.tizen.cssettings");
+                    nextBundle.AddItem("WIDGET_ID", "devicestatus@org.tizen.cssettings");
                     nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
                     nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
                     nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
@@ -157,8 +158,9 @@ namespace SettingMain
 
             return content;
         }
-
     }
+
+
 
     class SettingDialog_Rename : Widget
     {

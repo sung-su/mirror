@@ -39,30 +39,62 @@ namespace SettingMain
 
 
 
-            item = CreateItemWithCheck(Resources.IDS_ST_HEADER_SOUND_MODE, Resources.IDS_ST_HEADER_UNAVAILABLE);
-            content.Add(item);
+            item = CreateItemWithCheck(Resources.IDS_ST_HEADER_SOUND_MODE, SettingContent_Soundmode.GetSoundmodeName());
+            if (item != null)
+            {
+                item.Clicked += (o, e) =>
+                {
+                    // Update Widget Content by sending message to add the third page in advance.
+                    Bundle nextBundle = new Bundle();
+                    nextBundle.AddItem("WIDGET_ID", "soundmode@org.tizen.cssettings");
+                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
+                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
+                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
+                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
+                    String encodedBundle = nextBundle.Encode();
+                    SetContentInfo(encodedBundle);
+                };
+                content.Add(item);
+            }
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_NOTIFICATIONS, Resources.IDS_ST_HEADER_UNAVAILABLE);
-            content.Add(item);
 
-            item = CreateItemWithCheck(Resources.IDS_ST_MBODY_OTHER_SOUNDS);
-            content.Add(item);
+            item = CreateItemWithCheck(Resources.IDS_ST_BODY_NOTIFICATIONS, SettingContent_NotificationSound.GetNotificationSoundName());
+            if (item != null)
+            {
+                item.Clicked += (o, e) =>
+                {
+                    // Update Widget Content by sending message to add the third page in advance.
+                    Bundle nextBundle = new Bundle();
+                    nextBundle.AddItem("WIDGET_ID", "notificationsound@org.tizen.cssettings");
+                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
+                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
+                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
+                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
+                    String encodedBundle = nextBundle.Encode();
+                    SetContentInfo(encodedBundle);
+                };
+                content.Add(item);
+            }
 
-            
-            
+
+            //item = CreateItemWithCheck(Resources.IDS_ST_MBODY_OTHER_SOUNDS);
+            //content.Add(item);
+
+
+
             item = CreateItemWithCheck(Resources.IDS_ST_BODY_MEDIA);
             content.Add(item);
-            var slideritem = CreateSliderItem("MEDIA", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png");
+            var slideritem = CreateSliderItem("MEDIA", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png", 100);
             content.Add(slideritem);
 
             item = CreateItemWithCheck(Resources.IDS_ST_BODY_NOTIFICATIONS);
             content.Add(item);
-            slideritem = CreateSliderItem("MEDIA", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png");
+            slideritem = CreateSliderItem("MEDIA", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png", 100);
             content.Add(slideritem);
 
             item = CreateItemWithCheck(Resources.IDS_ST_BODY_SYSTEM);
             content.Add(item);
-            slideritem = CreateSliderItem("MEDIA", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png");
+            slideritem = CreateSliderItem("MEDIA", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png", 100);
             content.Add(slideritem);
 
             return content;
