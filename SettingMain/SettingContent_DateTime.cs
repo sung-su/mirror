@@ -13,6 +13,8 @@ namespace SettingMain
 {
     class SettingContent_DateTime : SettingContent_Base
     {
+        DefaultLinearItem mDateItem = null;
+        DefaultLinearItem mTimeItem = null;
         public SettingContent_DateTime()
             : base()
         {
@@ -64,6 +66,7 @@ namespace SettingMain
 
 
             item = CreateItemWithCheck(Resources.IDS_ST_BODY_SET_DATE, DateTime.Now.ToShortDateString());
+            mDateItem = item;
             if (item)
             {
                 item.Clicked += (o, e) =>
@@ -81,13 +84,14 @@ namespace SettingMain
                 };
                 content.Add(item);
             }
-                    
+
 
 
 
 
 
             item = CreateItemWithCheck(Resources.IDS_ST_BODY_SET_TIME, DateTime.Now.ToShortTimeString());
+            mTimeItem = item;
             if (item)
             {
                 item.Clicked += (o, e) =>
@@ -155,5 +159,28 @@ namespace SettingMain
 
             return content;
         }
+
+
+        private void SystemSettings_TimeChanged(object sender, Tizen.System.TimeChangedEventArgs e)
+        {
+            Tizen.Log.Debug("NUI", "SystemSettings_TimeChanged is called\n");
+
+            mDateItem.SubText = DateTime.Now.ToShortDateString();
+            mTimeItem.SubText = DateTime.Now.ToShortTimeString();
+
+        }
+
+        protected override void OnCreate(string contentInfo, Window window)
+        {
+            base.OnCreate(contentInfo, window);
+            Tizen.System.SystemSettings.TimeChanged += SystemSettings_TimeChanged;
+        }
+        protected override void OnTerminate(string contentInfo, TerminationType type)
+        {
+            Tizen.System.SystemSettings.TimeChanged -= SystemSettings_TimeChanged;
+
+            base.OnTerminate(contentInfo, type);
+        }
+
     }
 }

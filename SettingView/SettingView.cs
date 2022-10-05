@@ -13,33 +13,69 @@ namespace SettingView
         private static readonly string resPath = Tizen.Applications.Application.Current.DirectoryInfo.Resource;
         protected const string SETTING_LIST_ICON_PATH_CFG = "/icons/list_icon/";
 
+        private ContentPage mMainPage;
+
         public Program(string styleSheet, Size2D windowSize, Position2D windowPosition, IBorderInterface borderInterface)
             : base(styleSheet, windowSize, windowPosition, borderInterface)
         {
+            mMainPage = null;
         }
         protected override void OnCreate()
         {
             base.OnCreate();
-            Initialize();
-        }
-
-        void Initialize()
-        {
 
             Window window = GetDefaultWindow();
-
             window.KeyEvent += OnKeyEvent;
             window.TouchEvent += OnTouchEvent;
 
-            Bundle bundle = new Bundle();
-            bundle.AddItem(" ", " ");
-            String encodedBundle = bundle.Encode();
+            // Page with AppBar and Content.
+            var appBar = new AppBar()
+            {
+                Title = Resources.IDS_ST_OPT_SETTINGS,
+            };
+            var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar");
+            var navigationContent = new Button(((AppBarStyle)appBarStyle).BackButton);
+            navigationContent.Clicked += (o, e) =>
+            {
+                Exit();
+            };
+            appBar.NavigationContent = navigationContent;
+            //appBarStyle.Dispose();
 
-            Tizen.Log.Error("SettingWidget", "REQUEST \n");
+            mMainPage = new ContentPage()
+            {
+                AppBar = appBar,
 
-            CreateSettingsMainMenu();
+                Content = CreateMainMenuContent(),
+            };
 
 
+            // Push the page to the default navigator.
+            window.GetDefaultNavigator().Push(mMainPage);
+
+
+            Tizen.System.SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
+        }
+
+        protected override void OnTerminate()
+        {
+            Window window = GetDefaultWindow();
+
+            window.KeyEvent -= OnKeyEvent;
+            window.TouchEvent -= OnTouchEvent;
+
+
+            Tizen.System.SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
+
+            base.OnTerminate();
+        }
+
+        private void SystemSettings_LocaleLanguageChanged(object sender, Tizen.System.LocaleLanguageChangedEventArgs e)
+        {
+            if (mMainPage != null) {
+                mMainPage.AppBar.Title = Resources.IDS_ST_OPT_SETTINGS;
+                mMainPage.Content = CreateMainMenuContent();
+            }
         }
 
 
@@ -334,26 +370,26 @@ namespace SettingView
 
         return item;
     }
-    // Create a page with scrollable content
-    private void CreateSettingsMainMenu()
-    {
-
-        // Content of the page which scrolls items vertically.
-        var content = new ScrollableBase()
+        // Create a page with scrollable content
+        private View CreateMainMenuContent()
         {
-            WidthSpecification = LayoutParamPolicies.MatchParent,
-            HeightSpecification = LayoutParamPolicies.MatchParent,
-            ScrollingDirection = ScrollableBase.Direction.Vertical,
-            HideScrollbar = false,
-            Layout = new LinearLayout()
-            {
-                LinearOrientation = LinearLayout.Orientation.Vertical,
-            },
-        };
 
-        // Create items and add them to the content of the page.
-        DefaultLinearItem item = null;
-        item = CreateItemWithIcon(Resources.IDS_ST_BODY_WI_FI, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_wifi.png");
+            // Content of the page which scrolls items vertically.
+            var content = new ScrollableBase()
+            {
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                HeightSpecification = LayoutParamPolicies.MatchParent,
+                ScrollingDirection = ScrollableBase.Direction.Vertical,
+                HideScrollbar = false,
+                Layout = new LinearLayout()
+                {
+                    LinearOrientation = LinearLayout.Orientation.Vertical,
+                },
+            };
+
+            // Create items and add them to the content of the page.
+            DefaultLinearItem item = null;
+            item = CreateItemWithIcon(Resources.IDS_ST_BODY_WI_FI, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_wifi.png");
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -367,7 +403,7 @@ namespace SettingView
                 };
                 content.Add(item);
             }
-        item = CreateItemWithIcon(Resources.IDS_TPLATFORM_OPT_BLUETOOTH, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_bluetooth.png");
+            item = CreateItemWithIcon(Resources.IDS_TPLATFORM_OPT_BLUETOOTH, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_bluetooth.png");
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -382,16 +418,16 @@ namespace SettingView
                 content.Add(item);
             }
 
-        item = CreateItemWithIcon(Resources.IDS_ST_HEADER_SOUND, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_sound_and_notifications.png");
-        if (item != null)
-        {
-            item.Clicked += (o, e) =>
+            item = CreateItemWithIcon(Resources.IDS_ST_HEADER_SOUND, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_sound_and_notifications.png");
+            if (item != null)
             {
-                Window window = GetDefaultWindow();
-                LaunchWidget(window, "sound@org.tizen.cssettings");
-            };
-            content.Add(item);
-        }
+                item.Clicked += (o, e) =>
+                {
+                    Window window = GetDefaultWindow();
+                    LaunchWidget(window, "sound@org.tizen.cssettings");
+                };
+                content.Add(item);
+            }
 
 #if false
         item = CreateItemWithIcon(Resources.IDS_ST_BODY_NOTIFICATIONS, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_notifications.png");
@@ -402,27 +438,27 @@ namespace SettingView
 #endif
 
 
-        item = CreateItemWithIcon(Resources.IDS_ST_HEADER_DISPLAY, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_display.png");
-        if (item != null)
-        {
-            item.Clicked += (o, e) =>
+            item = CreateItemWithIcon(Resources.IDS_ST_HEADER_DISPLAY, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_display.png");
+            if (item != null)
             {
-                Window window = GetDefaultWindow();
-                LaunchWidget(window, "display@org.tizen.cssettings");
-            };
-            content.Add(item);
-        }
+                item.Clicked += (o, e) =>
+                {
+                    Window window = GetDefaultWindow();
+                    LaunchWidget(window, "display@org.tizen.cssettings");
+                };
+                content.Add(item);
+            }
 
-        item = CreateItemWithIcon(Resources.IDS_LCKSCN_BODY_WALLPAPERS, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_wallpapers.png");
-        if (item != null)
-        {
-            item.Clicked += (o, e) =>
+            item = CreateItemWithIcon(Resources.IDS_LCKSCN_BODY_WALLPAPERS, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_wallpapers.png");
+            if (item != null)
             {
-                Window window = GetDefaultWindow();
-                LaunchWidget(window, "wallpaper@org.tizen.cssetting-wallpaper");
-            };
-            content.Add(item);
-        }
+                item.Clicked += (o, e) =>
+                {
+                    Window window = GetDefaultWindow();
+                    LaunchWidget(window, "wallpaper@org.tizen.cssetting-wallpaper");
+                };
+                content.Add(item);
+            }
 
 #if false
         item = CreateItemWithIcon("Tray", resPath + SETTING_LIST_ICON_PATH_CFG + "settings_softkey.png");
@@ -431,119 +467,96 @@ namespace SettingView
         content.Add(item);
 #endif
             item = CreateItemWithIcon(Resources.IDS_ST_BODY_ACCOUNTS, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_account.png");
-        if (item != null)
-        {
-            item.Clicked += (o, e) =>
+            if (item != null)
             {
-                Window window = GetDefaultWindow();
-                LaunchWidget(window, "account@org.tizen.cssetting-account");
-            };
-            content.Add(item);
-        }
+                item.Clicked += (o, e) =>
+                {
+                    Window window = GetDefaultWindow();
+                    LaunchWidget(window, "account@org.tizen.cssetting-account");
+                };
+                content.Add(item);
+            }
 
-        item = CreateItemWithIcon(Resources.IDS_ST_HEADER_PRIVACY, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_privacy_and_safety.png");
-        if (item != null)
-        {
-            item.Clicked += (o, e) =>
+            item = CreateItemWithIcon(Resources.IDS_ST_HEADER_PRIVACY, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_privacy_and_safety.png");
+            if (item != null)
             {
-                Window window = GetDefaultWindow();
-                LaunchWidget(window, "privacy@org.tizen.cssetting-privacy");
-            };
-            content.Add(item);
-        }
+                item.Clicked += (o, e) =>
+                {
+                    Window window = GetDefaultWindow();
+                    LaunchWidget(window, "privacy@org.tizen.cssetting-privacy");
+                };
+                content.Add(item);
+            }
 
-        item = CreateItemWithIcon(Resources.IDS_ST_BODY_APPLICATIONS, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_applications.png");
-        if (item != null)
-        {
-            item.Clicked += (o, e) =>
+            item = CreateItemWithIcon(Resources.IDS_ST_BODY_APPLICATIONS, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_applications.png");
+            if (item != null)
             {
-                Window window = GetDefaultWindow();
-                LaunchWidget(window, "apps@org.tizen.cssettings");
-            };
-            content.Add(item);
-        }
+                item.Clicked += (o, e) =>
+                {
+                    Window window = GetDefaultWindow();
+                    LaunchWidget(window, "apps@org.tizen.cssettings");
+                };
+                content.Add(item);
+            }
 
-        item = CreateItemWithIcon(Resources.IDS_ST_BODY_STORAGE, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_storage.png");
-        if (item != null)
-        {
-            item.Clicked += (o, e) =>
+            item = CreateItemWithIcon(Resources.IDS_ST_BODY_STORAGE, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_storage.png");
+            if (item != null)
             {
-                Window window = GetDefaultWindow();
-                LaunchWidget(window, "storage@org.tizen.cssettings");
-            };
-            content.Add(item);
-        }
+                item.Clicked += (o, e) =>
+                {
+                    Window window = GetDefaultWindow();
+                    LaunchWidget(window, "storage@org.tizen.cssettings");
+                };
+                content.Add(item);
+            }
 
-        item = CreateItemWithIcon(Resources.IDS_ST_HEADER_LANGUAGE_AND_INPUT, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_language_and_input.png");
-        if (item != null)
-        {
-            item.Clicked += (o, e) =>
+            item = CreateItemWithIcon(Resources.IDS_ST_HEADER_LANGUAGE_AND_INPUT, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_language_and_input.png");
+            if (item != null)
             {
-                Window window = GetDefaultWindow();
-                LaunchWidget(window, "languageinput@org.tizen.cssettings");
-            };
-            content.Add(item);
-        }
+                item.Clicked += (o, e) =>
+                {
+                    Window window = GetDefaultWindow();
+                    LaunchWidget(window, "languageinput@org.tizen.cssettings");
+                };
+                content.Add(item);
+            }
 
-        item = CreateItemWithIcon(Resources.IDS_ST_BODY_DATE_AND_TIME, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_date_and_time.png");
-        if (item != null)
-        {
-            item.Clicked += (o, e) =>
+            item = CreateItemWithIcon(Resources.IDS_ST_BODY_DATE_AND_TIME, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_date_and_time.png");
+            if (item != null)
             {
-                Window window = GetDefaultWindow();
-                LaunchWidget(window, "datetime@org.tizen.cssettings");
-            };
-            content.Add(item);
-        }
+                item.Clicked += (o, e) =>
+                {
+                    Window window = GetDefaultWindow();
+                    LaunchWidget(window, "datetime@org.tizen.cssettings");
+                };
+                content.Add(item);
+            }
 
-        item = CreateItemWithIcon(Resources.IDS_ST_BODY_ACCESSIBILITY, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_accessibility.png");
-        if (item != null)
-        {
-            item.Clicked += (o, e) =>
+            item = CreateItemWithIcon(Resources.IDS_ST_BODY_ACCESSIBILITY, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_accessibility.png");
+            if (item != null)
             {
-                Window window = GetDefaultWindow();
-                LaunchWidget(window, "accessibility@org.tizen.cssetting-accessibility");
-            };
-            content.Add(item);
-        }
+                item.Clicked += (o, e) =>
+                {
+                    Window window = GetDefaultWindow();
+                    LaunchWidget(window, "accessibility@org.tizen.cssetting-accessibility");
+                };
+                content.Add(item);
+            }
 
-        item = CreateItemWithIcon(Resources.IDS_ST_BODY_ABOUT_DEVICE, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_about_device.png");
-        if (item != null)
-        {
-            item.Clicked += (o, e) =>
+            item = CreateItemWithIcon(Resources.IDS_ST_BODY_ABOUT_DEVICE, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_about_device.png");
+            if (item != null)
             {
-                Window window = GetDefaultWindow();
-                LaunchWidget(window, "aboutdevice@org.tizen.cssettings");
-            };
-            content.Add(item);
+                item.Clicked += (o, e) =>
+                {
+                    Window window = GetDefaultWindow();
+                    LaunchWidget(window, "aboutdevice@org.tizen.cssettings");
+                };
+                content.Add(item);
+            }
+
+            return content;
+
         }
-
-
-        // Page with AppBar and Content.
-        var appBar = new AppBar()
-        {
-            Title = Resources.IDS_ST_OPT_SETTINGS,
-        };
-        var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar");
-        var navigationContent = new Button(((AppBarStyle)appBarStyle).BackButton);
-        navigationContent.Clicked += (o, e) =>
-        {
-            Exit();
-        };
-        appBar.NavigationContent = navigationContent;
-        //appBarStyle.Dispose();
-
-        var contentPage = new ContentPage()
-        {
-            AppBar = appBar,
-
-            Content = content,
-        };
-
-        // Push the page to the default navigator.
-        NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(contentPage);
-
-    }
 
     void LaunchWidget(Window window, string widgetid)
     {

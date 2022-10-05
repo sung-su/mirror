@@ -268,11 +268,16 @@ namespace SettingMain
         {
         }
 
+        protected Window mWindow;
+
         protected string mTitle;
+        protected ContentPage mPage;
 
         public SettingContent_Base()
             : base()
         {
+            mWindow = null;
+            mPage = null;
         }
 
         protected override void OnCreate(string contentInfo, Window window)
@@ -281,14 +286,16 @@ namespace SettingMain
 
             window.BackgroundColor = Color.Transparent;
 
+            mWindow = window;
 
-            var page = new ContentPage()
+            mPage = new ContentPage()
             {
                 Content = CreateContent(window),
                 AppBar = CreateAppBar(mTitle),
             };
 
-            window.Add(page);
+            window.Add(mPage);
+
         }
 
         protected virtual AppBar CreateAppBar(string title)
@@ -336,6 +343,7 @@ namespace SettingMain
 
         protected override void OnTerminate(string contentInfo, TerminationType type)
         {
+
             base.OnTerminate(contentInfo, type);
         }
 
