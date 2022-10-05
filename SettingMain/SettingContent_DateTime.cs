@@ -13,8 +13,9 @@ namespace SettingMain
 {
     class SettingContent_DateTime : SettingContent_Base
     {
-        DefaultLinearItem mDateItem = null;
-        DefaultLinearItem mTimeItem = null;
+        private DefaultLinearItem mDateItem = null;
+        private DefaultLinearItem mTimeItem = null;
+
         public SettingContent_DateTime()
             : base()
         {

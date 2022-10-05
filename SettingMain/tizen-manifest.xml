@@ -19,10 +19,19 @@
     <widget-class classid="notificationsound" update-period="0">
       <support-size preview="SettingMain.png">4x4</support-size>
     </widget-class>
+    <widget-class classid="othersounds" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
     <widget-class classid="display" update-period="0">
       <support-size preview="SettingMain.png">4x4</support-size>
     </widget-class>
     <widget-class classid="font" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="fontsize" update-period="0">
+      <support-size preview="SettingMain.png">4x4</support-size>
+    </widget-class>
+    <widget-class classid="fonttype" update-period="0">
       <support-size preview="SettingMain.png">4x4</support-size>
     </widget-class>
     <widget-class classid="timeout" update-period="0">
@@ -61,7 +70,7 @@
     <widget-class classid="legalinfo" update-period="0">
       <support-size preview="SettingMain.png">4x4</support-size>
     </widget-class>
-    <widget-class classid="dlg_rename" update-period="0">
+    <widget-class classid="renamedevice" update-period="0">
       <support-size preview="SettingMain.png">4x4</support-size>
     </widget-class>
     <widget-class classid="devicestatus" update-period="0">

@@ -15,7 +15,7 @@ namespace SettingMain
 
     
 
-    class SettingContent_NotificationSound : SettingContent_Base
+    class SettingContent_Fonttype : SettingContent_Base
     {
 
         static public string GetFileName(string value)
@@ -27,21 +27,24 @@ namespace SettingMain
         }
 
 
-        private static ArrayList SoundList = null;
+        private static ArrayList FonttypeList = null;
 
 
 
-        private static void MakeSoundList() 
+        private static void MakeFonttypeList() 
         {
-            SoundList = new ArrayList();
+            FonttypeList = new ArrayList();
 
 
+            FonttypeList.Add(SystemSettings.FontType);
+
+#if false
             string sharedData = "/opt/usr/data";
-            string path = sharedData + "/settings/Alerts";
+            string type = sharedData + "/settings/Alerts";
 
-            Tizen.Log.Debug("NUI", String.Format("sound path : {0}", path));
+            Tizen.Log.Debug("NUI", String.Format("fonttype type : {0}", type));
 
-            System.IO.DirectoryInfo d = new System.IO.DirectoryInfo(path);
+            System.IO.DirectoryInfo d = new System.IO.DirectoryInfo(type);
 
             int i = 0;
 
@@ -49,7 +52,7 @@ namespace SettingMain
             foreach (FileInfo file in wavFiles)
             {
                 Tizen.Log.Debug("NUI", String.Format("[{0}] {1}", i, file.Name));
-                SoundList.Add(path +"/"+ file.Name);
+                FonttypeList.Add(type +"/"+ file.Name);
                 i++;
             }
 
@@ -57,28 +60,29 @@ namespace SettingMain
             foreach (FileInfo file in mp3Files)
             {
                 Tizen.Log.Debug("NUI", String.Format("[{0}] {1}", i, file.Name));
-                SoundList.Add(path + "/" + file.Name);
+                FonttypeList.Add(type + "/" + file.Name);
                 i++;
             }
+#endif
 
-            
         }
 
 
         private string[] PickerItems;
-        public SettingContent_NotificationSound()
+        public SettingContent_Fonttype()
             : base()
         {
             mTitle = Resources.IDS_ST_BUTTON_BACK;
 
             // Init data list
-            MakeSoundList();
+            MakeFonttypeList();
+
             // Make menu list
-            PickerItems = new string[SoundList.Count];
-            for (int i = 0; i < SoundList.Count; i++)
+            PickerItems = new string[FonttypeList.Count];
+            for (int i = 0; i < FonttypeList.Count; i++)
             {
-                string path = SoundList[i] as string;
-                PickerItems[i] = GetFileName(path);
+                string type = FonttypeList[i] as string;
+                PickerItems[i] = GetFileName(type);
             }
         }
 
@@ -95,7 +99,7 @@ namespace SettingMain
             picker.DisplayedValues = rc;
             picker.MinValue = 0;
             picker.MaxValue = PickerItems.Length - 1;
-            picker.CurrentValue = GetNotificationSoundIndex();
+            picker.CurrentValue = GetFonttypeIndex();
             Tizen.Log.Debug("NUI", "DisplayedValues : " + picker.DisplayedValues);
 
             var button = new Button()
@@ -109,7 +113,7 @@ namespace SettingMain
 
                 Tizen.Log.Debug("NUI", String.Format("current : {0}", PickerItems[picker.CurrentValue]));
 
-                SetNotificationSoundIndex(picker.CurrentValue);
+                SetFonttypeIndex(picker.CurrentValue);
 
                 RequestWidgetPop();
             };
@@ -126,7 +130,7 @@ namespace SettingMain
                     LinearOrientation = LinearLayout.Orientation.Vertical,
                 },
             };
-            content.Add(new TextLabel(Resources.IDS_ST_BODY_NOTIFICATION));
+            content.Add(new TextLabel(Resources.IDS_ST_BODY_FONT_TYPE));
             content.Add(picker);
             content.Add(button);
 
@@ -134,13 +138,13 @@ namespace SettingMain
         }
 
 
-        public static int GetNotificationSoundIndex()
+        public static int GetFonttypeIndex()
         {
-            string sound = GetNotificationSound();
+            string fonttype = GetFonttype();
 
 
-            for(int i = 0; i < SoundList.Count; i++) {
-                if (sound.Equals(SoundList[i])) {
+            for(int i = 0; i < FonttypeList.Count; i++) {
+                if (fonttype.Equals(FonttypeList[i])) {
                     return i;
                 }
 
@@ -149,29 +153,25 @@ namespace SettingMain
             return -1;
         }
 
-        private static void SetNotificationSoundIndex(int index)
+        private static void SetFonttypeIndex(int index)
         {
-            string path = SoundList[index] as string;
-            SetNotificationSound(path);
+            string type = FonttypeList[index] as string;
+            SetFonttype(type);
         }
 
 
-        private static void SetNotificationSound(string notificationsound)
+        private static void SetFonttype(string fonttype)
         {
-            Vconf.SetString("db/setting/sound/noti/msg_ringtone_path", notificationsound);
+            SystemSettings.FontType = fonttype;
         }
 
-        public static string GetNotificationSound()
+        public static string GetFonttype()
         {
-            return Vconf.GetString("db/setting/sound/noti/msg_ringtone_path");
+            return SystemSettings.FontType;
         }
-        public static string GetNotificationSoundName()
+        public static string GetFonttypeName()
         {
-            string path = GetNotificationSound();
-            String[] folders = path.Split('/');
-            int foldercount = folders.Length;
-            if (foldercount > 0) return folders[foldercount - 1];
-            return path;
+            return GetFonttype();
         }
     }
 }

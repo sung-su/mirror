@@ -78,11 +78,7 @@ namespace SettingMain
                 };
                 buttonCancel.Clicked += (abo, abe) =>
                 {
-                    // Update Widget Content by sending message to pop the fourth page.
-                    Bundle nextBundle2 = new Bundle();
-                    nextBundle2.AddItem("WIDGET_ACTION", "POP");
-                    String encodedBundle2 = nextBundle2.Encode();
-                    SetContentInfo(encodedBundle2);
+                    RequestWidgetPop();
                 };
                 var buttonOK = new Button()
                 {
@@ -104,11 +100,7 @@ namespace SettingMain
 
                     Interop.Alarm.Alarmmgr_SetSystime(timetick);
 
-                    // Update Widget Content by sending message to pop the fourth page.
-                    Bundle nextBundle2 = new Bundle();
-                    nextBundle2.AddItem("WIDGET_ACTION", "POP");
-                    String encodedBundle2 = nextBundle2.Encode();
-                    SetContentInfo(encodedBundle2);
+                    RequestWidgetPop();
                 };
 
                 dialog.Actions = new View[] { buttonCancel, buttonOK };

@@ -13,10 +13,16 @@ namespace SettingMain
 {
     class SettingContent_Font : SettingContent_Base
     {
+
+        private DefaultLinearItem mFontsizeItem;
+        private DefaultLinearItem mFonttypeItem;
         public SettingContent_Font()
             : base()
         {
             mTitle = Resources.IDS_ST_BODY_FONT;
+
+            mFontsizeItem = null;
+            mFonttypeItem = null;
         }
 
         protected override View CreateContent(Window window)
@@ -35,43 +41,59 @@ namespace SettingMain
                 },
             };
 
-
-            SystemSettingsFontSize fontSize = SystemSettings.FontSize;
-            Tizen.Log.Debug("NUI", "font size : " + fontSize.ToString());
-                
-            string fontType = SystemSettings.FontType;
-            Tizen.Log.Debug("NUI", "font type : " + fontType);
-
-
             DefaultLinearItem item = null;
 
-            item = CreateItemStatic(Resources.IDS_ST_BODY_SIZE);
-            content.Add(item);
-            var slideritem = CreateSliderItem("BRIGHTNESS", null, 5);
-
-            content.Add(slideritem);
-
-
-            item = CreateItemStatic(Resources.IDS_ST_BODY_TYPE);
-            content.Add(item);
-
-
-            RadioButtonGroup radiogroup = new RadioButtonGroup();
-            RadioButtonGroup.SetIsGroupHolder(content, true);
-
-            RadioButton radioButton = null;
-            
-            radioButton = new RadioButton()
+            //SystemSettingsFontSize fontSize = SystemSettings.FontSize;
+            item = CreateItemWithCheck(Resources.IDS_ST_MBODY_FONT_SIZE, SettingContent_Fontsize.GetFontsizeName());
+            mFontsizeItem = item;
+            if (item != null)
             {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                Text = fontType,
-                IsSelected = true,
-            };
-            radiogroup.Add(radioButton);
-            content.Add(radioButton);
+                item.Clicked += (o, e) =>
+                {
+                    RequestWidgetPush("fontsize@org.tizen.cssettings");
+                };
+                content.Add(item);
+            }
 
+            //string fontType = SystemSettings.FontType;
+            item = CreateItemWithCheck(Resources.IDS_ST_BODY_FONT_TYPE, SettingContent_Fonttype.GetFonttypeName());
+            mFonttypeItem = item;
+            if (item != null)
+            {
+                item.Clicked += (o, e) =>
+                {
+                    RequestWidgetPush("fonttype@org.tizen.cssettings");
+                };
+                content.Add(item);
+            }
 
             return content;
+        }
+
+        protected override void OnCreate(string contentInfo, Window window)
+        {
+            base.OnCreate(contentInfo, window);
+
+            Tizen.System.SystemSettings.FontSizeChanged += SystemSettings_FontSizeChanged;
+            Tizen.System.SystemSettings.FontTypeChanged += SystemSettings_FontTypeChanged;
+        }
+
+        protected override void OnTerminate(string contentInfo, TerminationType type)
+        {
+            Tizen.System.SystemSettings.FontSizeChanged -= SystemSettings_FontSizeChanged;
+            Tizen.System.SystemSettings.FontTypeChanged -= SystemSettings_FontTypeChanged;
+
+            base.OnTerminate(contentInfo, type);
+        }
+
+        private void SystemSettings_FontSizeChanged(object sender, FontSizeChangedEventArgs e)
+        {
+            mFontsizeItem.SubText = SettingContent_Fontsize.GetFontsizeName();
+        }
+
+        private void SystemSettings_FontTypeChanged(object sender, FontTypeChangedEventArgs e)
+        {
+            mFonttypeItem.SubText = SettingContent_Fonttype.GetFonttypeName();
         }
 
 

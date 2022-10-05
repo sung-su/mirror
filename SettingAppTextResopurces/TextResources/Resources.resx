@@ -1617,6 +1617,9 @@
   <data name="IDS_ST_BODY_SOFTWARE" xml:space="preserve">
     <value>Software</value>
   </data>
+  <data name="IDS_ST_BODY_SOUND_FEEDBACK_FOR_SYSTEM_KEYBOARD" xml:space="preserve">
+    <value>Sound feedback for system keyboard</value>
+  </data>
   <data name="IDS_ST_BODY_SOUND_DEVICE" xml:space="preserve">
     <value>Sound device</value>
   </data>
@@ -2063,6 +2066,9 @@
   </data>
   <data name="IDS_ST_HEADER_DEVICE_NAME" xml:space="preserve">
     <value>Device name</value>
+  </data>
+  <data name="IDS_ST_HEADER_RENAME_DEVICE" xml:space="preserve">
+    <value>Rename device</value>
   </data>
   <data name="IDS_ST_HEADER_DISABLE_EMERGENCY_MODE_ABB" xml:space="preserve">
     <value>Disable Emergency mode</value>

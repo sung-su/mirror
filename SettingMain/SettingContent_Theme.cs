@@ -87,11 +87,7 @@ namespace SettingMain
 
                 SetTheme(picker.CurrentValue);
 
-                // Update Widget Content by sending message to pop the fourth page.
-                Bundle nextBundle2 = new Bundle();
-                nextBundle2.AddItem("WIDGET_ACTION", "POP");
-                String encodedBundle2 = nextBundle2.Encode();
-                SetContentInfo(encodedBundle2);
+                RequestWidgetPop();
             };
 
 

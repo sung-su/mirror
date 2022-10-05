@@ -13,10 +13,17 @@ namespace SettingMain
 {
     class SettingContent_Sound : SettingContent_Base
     {
+
+        private DefaultLinearItem mSoundModeItem;
+        private DefaultLinearItem mNotificationSoundItem;
+
         public SettingContent_Sound()
             : base()
         {
             mTitle = Resources.IDS_ST_HEADER_SOUND;
+
+            mSoundModeItem = null;
+            mNotificationSoundItem = null;
         }
 
         protected override View CreateContent(Window window)
@@ -37,48 +44,40 @@ namespace SettingMain
             DefaultLinearItem item = null;
 
 
-
-
             item = CreateItemWithCheck(Resources.IDS_ST_HEADER_SOUND_MODE, SettingContent_Soundmode.GetSoundmodeName());
+            mSoundModeItem = item;
             if (item != null)
             {
                 item.Clicked += (o, e) =>
                 {
-                    // Update Widget Content by sending message to add the third page in advance.
-                    Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "soundmode@org.tizen.cssettings");
-                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
-                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
-                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
-                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
-                    String encodedBundle = nextBundle.Encode();
-                    SetContentInfo(encodedBundle);
+                    RequestWidgetPush("soundmode@org.tizen.cssettings");
                 };
                 content.Add(item);
             }
 
 
             item = CreateItemWithCheck(Resources.IDS_ST_BODY_NOTIFICATIONS, SettingContent_NotificationSound.GetNotificationSoundName());
+            mNotificationSoundItem = item;
             if (item != null)
             {
                 item.Clicked += (o, e) =>
                 {
-                    // Update Widget Content by sending message to add the third page in advance.
-                    Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "notificationsound@org.tizen.cssettings");
-                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
-                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
-                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
-                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
-                    String encodedBundle = nextBundle.Encode();
-                    SetContentInfo(encodedBundle);
+                    RequestWidgetPush("notificationsound@org.tizen.cssettings");
                 };
                 content.Add(item);
             }
 
 
-            //item = CreateItemWithCheck(Resources.IDS_ST_MBODY_OTHER_SOUNDS);
-            //content.Add(item);
+            item = CreateItemWithCheck(Resources.IDS_ST_MBODY_OTHER_SOUNDS);
+            if (item != null)
+            {
+                item.Clicked += (o, e) =>
+                {
+                    RequestWidgetPush("othersounds@org.tizen.cssettings");
+                };
+                content.Add(item);
+            }
+
 
 
 
@@ -98,6 +97,41 @@ namespace SettingMain
             content.Add(slideritem);
 
             return content;
+        }
+
+
+        protected override void OnCreate(string contentInfo, Window window)
+        {
+            base.OnCreate(contentInfo, window);
+
+            Tizen.System.SystemSettings.SoundSilentModeSettingChanged += SystemSettings_SoundSilentModeSettingChanged;
+            Tizen.System.SystemSettings.VibrationChanged += SystemSettings_VibrationChanged;
+
+            Tizen.System.SystemSettings.SoundNotificationChanged += SystemSettings_NotificationSoundChanged;
+        }
+
+        protected override void OnTerminate(string contentInfo, TerminationType type)
+        {
+            Tizen.System.SystemSettings.SoundSilentModeSettingChanged -= SystemSettings_SoundSilentModeSettingChanged;
+            Tizen.System.SystemSettings.VibrationChanged -= SystemSettings_VibrationChanged;
+
+            Tizen.System.SystemSettings.SoundNotificationChanged -= SystemSettings_NotificationSoundChanged;
+
+            base.OnTerminate(contentInfo, type);
+        }
+
+        private void SystemSettings_SoundSilentModeSettingChanged(object sender, SoundSilentModeSettingChangedEventArgs e)
+        {
+            mSoundModeItem.SubText = SettingContent_Soundmode.GetSoundmodeName();
+        }
+        private void SystemSettings_VibrationChanged(object sender, VibrationChangedEventArgs e)
+        {
+            mSoundModeItem.SubText = SettingContent_Soundmode.GetSoundmodeName();
+        }
+
+        private void SystemSettings_NotificationSoundChanged(object sender, SoundNotificationChangedEventArgs e)
+        {
+            mNotificationSoundItem.SubText = SettingContent_NotificationSound.GetNotificationSoundName();
         }
 
     }

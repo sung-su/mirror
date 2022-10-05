@@ -46,10 +46,17 @@ namespace SettingMain
             iconpath = resPath + SETTING_ICON_PATH_CFG + mIconPath[mapped_level];
         }
 
+
+        private DefaultLinearItem mFontItem;
+        private DefaultLinearItem mScreenTimeoutItem;
+
         public SettingContent_Display()
             : base()
         {
             mTitle = Resources.IDS_ST_HEADER_DISPLAY;
+
+            mFontItem = null;
+            mScreenTimeoutItem = null;
         }
 
         protected override View CreateContent(Window window)
@@ -86,39 +93,24 @@ namespace SettingMain
             string fontType = SystemSettings.FontType;
 
             item = CreateItemWithCheck(Resources.IDS_ST_BODY_FONT, fontSize.ToString() + ", " + fontType);
+            mFontItem = item;
             if (item)
             {
                 item.Clicked += (o, e) =>
                 {
-                    // Update Widget Content by sending message to add the third page in advance.
-                    Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "font@org.tizen.cssettings");
-                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
-                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
-                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
-                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
-                    String encodedBundle = nextBundle.Encode();
-                    SetContentInfo(encodedBundle);
-
+                    RequestWidgetPush("font@org.tizen.cssettings");
                 };
                 content.Add(item);
             }
 
 
             item = CreateItemWithCheck(Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2, SettingContent_ScreenTimeout.GetScreenTimeoutName());
+            mScreenTimeoutItem = item;
             if (item != null)
             {
                 item.Clicked += (o, e) =>
                 {
-                    // Update Widget Content by sending message to add the third page in advance.
-                    Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "timeout@org.tizen.cssettings");
-                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
-                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
-                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
-                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
-                    String encodedBundle = nextBundle.Encode();
-                    SetContentInfo(encodedBundle);
+                    RequestWidgetPush("timeout@org.tizen.cssettings");
                 };
                 content.Add(item);
             }
@@ -129,15 +121,7 @@ namespace SettingMain
             {
                 item.Clicked += (o, e) =>
                 {
-                    // Update Widget Content by sending message to add the third page in advance.
-                    Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "theme@org.tizen.cssettings");
-                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
-                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
-                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
-                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
-                    String encodedBundle = nextBundle.Encode();
-                    SetContentInfo(encodedBundle);
+                    RequestWidgetPush("theme@org.tizen.cssettings");
                 };
                 content.Add(item);
             }
@@ -145,5 +129,45 @@ namespace SettingMain
             return content;
         }
 
+        protected override void OnCreate(string contentInfo, Window window)
+        {
+            base.OnCreate(contentInfo, window);
+
+            Tizen.System.SystemSettings.FontSizeChanged += SystemSettings_FontSizeChanged;
+            Tizen.System.SystemSettings.FontTypeChanged += SystemSettings_FontTypeChanged;
+
+            Tizen.System.SystemSettings.ScreenBacklightTimeChanged += SystemSettings_ScreenBacklightTimeChanged;
+        }
+
+        protected override void OnTerminate(string contentInfo, TerminationType type)
+        {
+            Tizen.System.SystemSettings.FontSizeChanged -= SystemSettings_FontSizeChanged;
+            Tizen.System.SystemSettings.FontTypeChanged -= SystemSettings_FontTypeChanged;
+
+            Tizen.System.SystemSettings.ScreenBacklightTimeChanged -= SystemSettings_ScreenBacklightTimeChanged;
+
+            base.OnTerminate(contentInfo, type);
+        }
+
+        private void SystemSettings_FontSizeChanged(object sender, FontSizeChangedEventArgs e)
+        {
+            SystemSettingsFontSize fontSize = SystemSettings.FontSize;
+            string fontType = SystemSettings.FontType;
+
+            mFontItem.SubText = fontSize.ToString() + ", " + fontType;
+        }
+
+        private void SystemSettings_FontTypeChanged(object sender, FontTypeChangedEventArgs e)
+        {
+            SystemSettingsFontSize fontSize = SystemSettings.FontSize;
+            string fontType = SystemSettings.FontType;
+
+            mFontItem.SubText = fontSize.ToString() + ", " + fontType;
+        }
+        private void SystemSettings_ScreenBacklightTimeChanged(object sender, ScreenBacklightTimeChangedEventArgs e)
+        {
+            mScreenTimeoutItem.SubText = SettingContent_ScreenTimeout.GetScreenTimeoutName();
+            
+        }
     }
 }

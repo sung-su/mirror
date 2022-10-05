@@ -4589,6 +4589,15 @@ namespace SettingAppTextResopurces.TextResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sound feedback for system keyboard.
+        /// </summary>
+        public static string IDS_ST_BODY_SOUND_FEEDBACK_FOR_SYSTEM_KEYBOARD {
+            get {
+                return ResourceManager.GetString("IDS_ST_BODY_SOUND_FEEDBACK_FOR_SYSTEM_KEYBOARD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sound and display.
         /// </summary>
         public static string IDS_ST_BODY_SOUND_N_DISPLAY {
@@ -6290,6 +6299,15 @@ namespace SettingAppTextResopurces.TextResources {
         public static string IDS_ST_HEADER_PRIVILEGES {
             get {
                 return ResourceManager.GetString("IDS_ST_HEADER_PRIVILEGES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename device.
+        /// </summary>
+        public static string IDS_ST_HEADER_RENAME_DEVICE {
+            get {
+                return ResourceManager.GetString("IDS_ST_HEADER_RENAME_DEVICE", resourceCulture);
             }
         }
         

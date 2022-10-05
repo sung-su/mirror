@@ -64,15 +64,7 @@ namespace SettingMain
             {
                 item.Clicked += (o, e) =>
                 {
-                    // Update Widget Content by sending message to add the third page in advance.
-                    Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "displaylanguage@org.tizen.cssettings");
-                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
-                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
-                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
-                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
-                    String encodedBundle = nextBundle.Encode();
-                    SetContentInfo(encodedBundle);
+                    RequestWidgetPush("displaylanguage@org.tizen.cssettings");
                 };
                 content.Add(item);
             }
@@ -83,15 +75,7 @@ namespace SettingMain
             {
                 item.Clicked += (o, e) =>
                 {
-                    // Update Widget Content by sending message to add the third page in advance.
-                    Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "inputmethod@org.tizen.cssetting-inputmethod");
-                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
-                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
-                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
-                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
-                    String encodedBundle = nextBundle.Encode();
-                    SetContentInfo(encodedBundle);
+                    RequestWidgetPush("inputmethod@org.tizen.cssetting-inputmethod");
                 };
                 content.Add(item);
             }
@@ -102,15 +86,7 @@ namespace SettingMain
             {
                 item.Clicked += (o, e) =>
                 {
-                    // Update Widget Content by sending message to add the third page in advance.
-                    Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "autofill@org.tizen.cssetting-autofill");
-                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
-                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
-                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
-                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
-                    String encodedBundle = nextBundle.Encode();
-                    SetContentInfo(encodedBundle);
+                    RequestWidgetPush("autofill@org.tizen.cssetting-autofill");
                 };
                 content.Add(item);
             }
@@ -122,15 +98,7 @@ namespace SettingMain
             {
                 item.Clicked += (o, e) =>
                 {
-                    // Update Widget Content by sending message to add the third page in advance.
-                    Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "voicecontrol@org.tizen.cssetting-voicecontrol");
-                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
-                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
-                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
-                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
-                    String encodedBundle = nextBundle.Encode();
-                    SetContentInfo(encodedBundle);
+                    RequestWidgetPush("voicecontrol@org.tizen.cssetting-voicecontrol");
                 };
                 content.Add(item);
             }
@@ -140,15 +108,7 @@ namespace SettingMain
             {
                 item.Clicked += (o, e) =>
                 {
-                    // Update Widget Content by sending message to add the third page in advance.
-                    Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "tts@org.tizen.cssetting-tts");
-                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
-                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
-                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
-                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
-                    String encodedBundle = nextBundle.Encode();
-                    SetContentInfo(encodedBundle);
+                    RequestWidgetPush("tts@org.tizen.cssetting-tts");
                 };
                 content.Add(item);
             }
@@ -158,15 +118,7 @@ namespace SettingMain
             {
                 item.Clicked += (o, e) =>
                 {
-                    // Update Widget Content by sending message to add the third page in advance.
-                    Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "stt@org.tizen.cssetting-stt");
-                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
-                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
-                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
-                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
-                    String encodedBundle = nextBundle.Encode();
-                    SetContentInfo(encodedBundle);
+                    RequestWidgetPush("stt@org.tizen.cssetting-stt");
                 };
                 content.Add(item);
             }

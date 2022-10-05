@@ -18,20 +18,56 @@ namespace SettingMain
         protected const string SETTING_LIST_ICON_PATH_CFG = "/icons/list_icon/";
 
         // Create an Static Text
-        protected DefaultLinearItem CreateItemStatic(string text)
+        protected View CreateItemStatic(string text)
         {
-            var item = new DefaultLinearItem()
+            var item = new View()
             {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                Text = text,
-                IsSelectable = false, // Item should not be remained as selected state.
+                Layout = new LinearLayout
+                {
+                    LinearOrientation = LinearLayout.Orientation.Horizontal,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    CellPadding = new Size2D(10, 10)
+                },
             };
-            
-            PropertyMap titleStyle = new PropertyMap();
-            titleStyle.Add("weight", new PropertyValue(600));
-            item.Label.FontStyle = titleStyle;
 
+            var leftpadding = new View()
+            {
+                Size2D = new Size2D(8, 5),
+            };
+            item.Add(leftpadding);
+
+            TextLabel label = new TextLabel(text);
+            label.TextColor = Color.Black;
+
+            PropertyMap titleStyle = new PropertyMap();
+            //            titleStyle.Add("weight", new PropertyValue(600));
+            //titleStyle.Add("width", new PropertyValue("expanded"));
+            titleStyle.Add("weight", new PropertyValue("bold"));
+
+            label.FontStyle = titleStyle;
+            label.FontFamily = "FreeSerif";
+            label.PointSize = 14.0f;
+
+            item.Add(label);
+            
             return item;
+        }
+
+        protected View CreateItemTitle(string text)
+        {
+            TextLabel label = new TextLabel(text);
+            label.TextColor = Color.Black;
+
+            PropertyMap titleStyle = new PropertyMap();
+            //            titleStyle.Add("weight", new PropertyValue(600));
+            //titleStyle.Add("width", new PropertyValue("expanded"));
+            titleStyle.Add("weight", new PropertyValue("bold"));
+
+            label.FontStyle = titleStyle;
+            label.FontFamily = "FreeSerif";
+            label.PointSize = 18.0f;
+
+            return label;
         }
 
 
@@ -267,6 +303,39 @@ namespace SettingMain
         private void OnSlidingFinished(object sender, SliderSlidingFinishedEventArgs args)
         {
         }
+
+
+
+
+        /// ///////////////////////////////////////////////////////////////////////////
+        /// 
+
+        protected void RequestWidgetPush(string widgetid)
+        {
+            if (mWindow == null) return;
+
+            // Update Widget Content by sending message to add the third page in advance.
+            Bundle nextBundle = new Bundle();
+            nextBundle.AddItem("WIDGET_ID", widgetid);
+            nextBundle.AddItem("WIDGET_WIDTH", mWindow.Size.Width.ToString());
+            nextBundle.AddItem("WIDGET_HEIGHT", mWindow.Size.Height.ToString());
+            nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
+            nextBundle.AddItem("WIDGET_ACTION", "PUSH");
+            String encodedBundle = nextBundle.Encode();
+            SetContentInfo(encodedBundle);
+        }
+
+        protected void RequestWidgetPop()
+        {
+            // Update Widget Content by sending message to pop the fourth page.
+            Bundle nextBundle2 = new Bundle();
+            nextBundle2.AddItem("WIDGET_ACTION", "POP");
+            String encodedBundle2 = nextBundle2.Encode();
+            SetContentInfo(encodedBundle2);
+        }
+
+        ///////////////////////////////////////////////////////////
+        ///
 
         protected Window mWindow;
 

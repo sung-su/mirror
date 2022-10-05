@@ -2076,6 +2076,9 @@
   <data name="IDS_ST_HEADER_DEVICE_NAME" xml:space="preserve">
     <value>디바이스 이름</value>
   </data>
+  <data name="IDS_ST_HEADER_RENAME_DEVICE" xml:space="preserve">
+    <value>디바이스 이름 변경</value>
+  </data>
   <data name="IDS_ST_HEADER_DISABLE_EMERGENCY_MODE_ABB" xml:space="preserve">
     <value>긴급 모드 해제</value>
   </data>

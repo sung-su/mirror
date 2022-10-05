@@ -37,26 +37,35 @@ namespace SettingMain
         static void Main(string[] args)
         {
             Dictionary<System.Type, string> widgetSet = new Dictionary<Type, string>();
+            
             widgetSet.Add(typeof(SettingContent_Sound), "sound@org.tizen.cssettings");
                 widgetSet.Add(typeof(SettingContent_Soundmode), "soundmode@org.tizen.cssettings");
                 widgetSet.Add(typeof(SettingContent_NotificationSound), "notificationsound@org.tizen.cssettings");
+                widgetSet.Add(typeof(SettingContent_OtherSounds), "othersounds@org.tizen.cssettings");
+            
             widgetSet.Add(typeof(SettingContent_Display), "display@org.tizen.cssettings");
                 widgetSet.Add(typeof(SettingContent_Font), "font@org.tizen.cssettings");
-                widgetSet.Add(typeof(SettingContent_ScreenTimeout), "timeout@org.tizen.cssettings");
+                    widgetSet.Add(typeof(SettingContent_Fontsize), "fontsize@org.tizen.cssettings");
+                    widgetSet.Add(typeof(SettingContent_Fonttype), "fonttype@org.tizen.cssettings");
+            widgetSet.Add(typeof(SettingContent_ScreenTimeout), "timeout@org.tizen.cssettings");
                 widgetSet.Add(typeof(SettingContent_Theme), "theme@org.tizen.cssettings");
+            
             widgetSet.Add(typeof(SettingContent_Applications), "apps@org.tizen.cssettings");
+            
             widgetSet.Add(typeof(SettingContent_Storage), "storage@org.tizen.cssettings");
+            
             widgetSet.Add(typeof(SettingContent_LanguageInput), "languageinput@org.tizen.cssettings");
-            widgetSet.Add(typeof(SettingContent_DisplayLanguage), "displaylanguage@org.tizen.cssettings");
+                widgetSet.Add(typeof(SettingContent_DisplayLanguage), "displaylanguage@org.tizen.cssettings");
+            
             widgetSet.Add(typeof(SettingContent_DateTime), "datetime@org.tizen.cssettings");
                 widgetSet.Add(typeof(SettingContent_SetDate), "setdate@org.tizen.cssettings");
                 widgetSet.Add(typeof(SettingContent_SetTime), "settime@org.tizen.cssettings");
                 widgetSet.Add(typeof(SettingContent_SetTimezone), "settimezone@org.tizen.cssettings");
-            widgetSet.Add(typeof(SettingContent_AboutDevice), "aboutdevice@org.tizen.cssettings");
             
-            widgetSet.Add(typeof(SettingContent_LegalInfo), "legalinfo@org.tizen.cssettings");
-            widgetSet.Add(typeof(SettingDialog_Rename), "dlg_rename@org.tizen.cssettings");
-            widgetSet.Add(typeof(SettingContent_DeviceStatus), "devicestatus@org.tizen.cssettings");
+            widgetSet.Add(typeof(SettingContent_AboutDevice), "aboutdevice@org.tizen.cssettings");
+                widgetSet.Add(typeof(SettingContent_LegalInfo), "legalinfo@org.tizen.cssettings");
+                widgetSet.Add(typeof(SettingContent_RenameDevice), "renamedevice@org.tizen.cssettings");
+                widgetSet.Add(typeof(SettingContent_DeviceStatus), "devicestatus@org.tizen.cssettings");
 
 
             var app = new Program(widgetSet);

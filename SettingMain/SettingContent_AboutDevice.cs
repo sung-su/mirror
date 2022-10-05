@@ -14,10 +14,14 @@ namespace SettingMain
 {
     class SettingContent_AboutDevice : SettingContent_Base
     {
+        private DefaultLinearItem mDevicenameItem;
+
         public SettingContent_AboutDevice()
             : base()
         {
             mTitle = Resources.IDS_ST_BODY_ABOUT_DEVICE;
+
+            mDevicenameItem = null;
         }
 
         protected override View CreateContent(Window window)
@@ -44,15 +48,7 @@ namespace SettingMain
             {
                 item.Clicked += (o, e) =>
                 {
-                    // Update Widget Content by sending message to add the third page in advance.
-                    Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "certificates@org.tizen.setting-certificates");
-                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
-                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
-                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
-                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
-                    String encodedBundle = nextBundle.Encode();
-                    SetContentInfo(encodedBundle);
+                    RequestWidgetPush("certificates@org.tizen.setting-certificates");
                 };
             }
 
@@ -62,41 +58,25 @@ namespace SettingMain
             {
                 item.Clicked += (o, e) =>
                 {
-                    // Update Widget Content by sending message to push the third page.
-                    Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "legalinfo@org.tizen.cssettings");
-                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
-                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
-                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
-                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
-                    String encodedBundle = nextBundle.Encode();
-                    SetContentInfo(encodedBundle);
+                    RequestWidgetPush("legalinfo@org.tizen.cssettings");
                 };
             }
 
 
             /////////////////////////////////////////////////////
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_DEVICE_INFO);
-            content.Add(item);
+            content.Add(CreateItemStatic(Resources.IDS_ST_BODY_DEVICE_INFO));
 
             String name = Vconf.GetString("db/setting/device_name");
             item = CreateItemWithCheck(Resources.IDS_ST_BODY_NAME, name);
-            content.Add(item);
+            mDevicenameItem = item;
             if (item != null)
             {
                 item.Clicked += (o, e) =>
                 {
-                    // Update Widget Content by sending message to push the third page.
-                    Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "dlg_rename@org.tizen.cssettings");
-                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
-                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
-                    nextBundle.AddItem("WIDGET_PAGE", "DIALOG_PAGE");
-                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
-                    String encodedBundle = nextBundle.Encode();
-                    SetContentInfo(encodedBundle);
+                    RequestWidgetPush("renamedevice@org.tizen.cssettings");
                 };
+                content.Add(item);
             }
 
             string valuestring;
@@ -143,79 +123,31 @@ namespace SettingMain
 
                 item.Clicked += (o, e) =>
                 {
-                    // Update Widget Content by sending message to add the third page in advance.
-                    Bundle nextBundle = new Bundle();
-                    nextBundle.AddItem("WIDGET_ID", "devicestatus@org.tizen.cssettings");
-                    nextBundle.AddItem("WIDGET_WIDTH", window.Size.Width.ToString());
-                    nextBundle.AddItem("WIDGET_HEIGHT", window.Size.Height.ToString());
-                    nextBundle.AddItem("WIDGET_PAGE", "CONTENT_PAGE");
-                    nextBundle.AddItem("WIDGET_ACTION", "PUSH");
-                    String encodedBundle = nextBundle.Encode();
-                    SetContentInfo(encodedBundle);
+                    RequestWidgetPush("devicestatus@org.tizen.cssettings");
                 };
                 content.Add(item);
             }
 
             return content;
         }
-    }
+        private void SystemSettings_DeviceNameChanged(object sender, Tizen.System.DeviceNameChangedEventArgs e)
+        {
+            Tizen.Log.Debug("NUI", "SystemSettings_TimeChanged is called\n");
 
+            String name = Vconf.GetString("db/setting/device_name");
+            mDevicenameItem.SubText = name;
+        }
 
-
-    class SettingDialog_Rename : Widget
-    {
         protected override void OnCreate(string contentInfo, Window window)
         {
-            Bundle bundle = Bundle.Decode(contentInfo);
-
-            window.BackgroundColor = Color.Transparent;
-
-            var button = new Button()
-            {
-                Text = "OK",
-            };
-            button.Clicked += (o, e) =>
-            {
-                // Update Widget Content by sending message to pop the fourth page.
-                Bundle nextBundle2 = new Bundle();
-                nextBundle2.AddItem("WIDGET_ACTION", "POP");
-                String encodedBundle2 = nextBundle2.Encode();
-                SetContentInfo(encodedBundle2);
-            };
-
-            var dialog = new AlertDialog()
-            {
-                Title = "Legal Infomation",
-                Message = "Message",
-                Actions = new View[] { button },
-            };
-
-            window.Add(dialog);
+            base.OnCreate(contentInfo, window);
+            Tizen.System.SystemSettings.DeviceNameChanged += SystemSettings_DeviceNameChanged;
         }
-
-        protected override void OnPause()
-        {
-            base.OnPause();
-        }
-
-        protected override void OnResume()
-        {
-            base.OnResume();
-        }
-
-        protected override void OnResize(Window window)
-        {
-            base.OnResize(window);
-        }
-
         protected override void OnTerminate(string contentInfo, TerminationType type)
         {
-            base.OnTerminate(contentInfo, type);
-        }
+            Tizen.System.SystemSettings.DeviceNameChanged -= SystemSettings_DeviceNameChanged;
 
-        protected override void OnUpdate(string contentInfo, int force)
-        {
-            base.OnUpdate(contentInfo, force);
+            base.OnTerminate(contentInfo, type);
         }
     }
 }
