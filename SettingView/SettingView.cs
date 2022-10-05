@@ -146,9 +146,12 @@ namespace SettingView
                         String encodedBundle2 = bundle2.Encode();
 
                         WidgetView widgetview = WidgetViewManager.Instance.AddWidget(widgetID, encodedBundle2, width, height, 0.0f);
-                        widgetview.WidgetContentUpdated += OnWidgetContentUpdatedCB;
-                        widgetview.Preview = false;
-                        NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(new ContentPage() { Content = widgetview });
+                        if (widgetview != null)
+                        {
+                            widgetview.WidgetContentUpdated += OnWidgetContentUpdatedCB;
+                            widgetview.Preview = false;
+                            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(new ContentPage() { Content = widgetview });
+                        }
                     }
 #if false
                     if (widgetPage.Equals("CONTENT_PAGE"))
@@ -528,6 +531,7 @@ namespace SettingView
             Exit();
         };
         appBar.NavigationContent = navigationContent;
+        //appBarStyle.Dispose();
 
         var contentPage = new ContentPage()
         {
@@ -538,8 +542,8 @@ namespace SettingView
 
         // Push the page to the default navigator.
         NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(contentPage);
-    }
 
+    }
 
     void LaunchWidget(Window window, string widgetid)
     {

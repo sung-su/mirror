@@ -284,8 +284,8 @@ namespace SettingMain
 
             var page = new ContentPage()
             {
-                AppBar = CreateAppBar(mTitle),
                 Content = CreateContent(window),
+                AppBar = CreateAppBar(mTitle),
             };
 
             window.Add(page);
@@ -305,13 +305,13 @@ namespace SettingMain
             navigationContent.Clicked += (o, e) =>
             {
                 // Update Widget Content by sending message to pop the third page.
-                Bundle nextBundle2 = new Bundle();
-                nextBundle2.AddItem("WIDGET_ACTION", "POP");
-                String encodedBundle2 = nextBundle2.Encode();
-                SetContentInfo(encodedBundle2);
+                Bundle nextBundle = new Bundle();
+                nextBundle.AddItem("WIDGET_ACTION", "POP");
+                String encodedBundle = nextBundle.Encode();
+                SetContentInfo(encodedBundle);
             };
-
             appBar.NavigationContent = navigationContent;
+            //appBarStyle.Dispose();
 
             return appBar;
         }
