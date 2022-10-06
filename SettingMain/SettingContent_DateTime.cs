@@ -41,7 +41,7 @@ namespace SettingMain
 
             bool bAutoupdate = Vconf.GetBool("db/setting/automatic_time_update");
 
-            item = base.CreateItemWithCheck(Resources.IDS_ST_MBODY_AUTO_UPDATE, null, false, true);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_MBODY_AUTO_UPDATE, null, false, true);
             if (item)
             {
                 var toggle = item.Extra as Switch;
@@ -66,7 +66,7 @@ namespace SettingMain
             }
 
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_SET_DATE, DateTime.Now.ToShortDateString());
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_SET_DATE, DateTime.Now.ToShortDateString());
             mDateItem = item;
             if (item)
             {
@@ -91,7 +91,7 @@ namespace SettingMain
 
 
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_SET_TIME, DateTime.Now.ToShortTimeString());
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_SET_TIME, DateTime.Now.ToShortTimeString());
             mTimeItem = item;
             if (item)
             {
@@ -112,7 +112,7 @@ namespace SettingMain
             }
 
             string strTimezone = SystemSettings.LocaleTimeZone;
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_TIME_ZONE, strTimezone);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_TIME_ZONE, strTimezone);
             if (item)
             {
 #if false
@@ -132,8 +132,8 @@ namespace SettingMain
                 content.Add(item);
             }
 
-            bool bTime24 = (Vconf.GetInt("db/menu_widget/regionformat_time1224") == 2)? true : false;
-            item = CreateItemWithCheck(Resources.IDS_ST_MBODY_24_HOUR_CLOCK, Resources.IDS_ST_SBODY_SHOW_THE_TIME_IN_24_HOUR_FORMAT_INSTEAD_OF_12_HOUR_HAM_PM_FORMAT, false, true);
+            bool bTime24 = (Vconf.GetInt("db/menu_widget/regionformat_time1224") == 2);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_MBODY_24_HOUR_CLOCK, Resources.IDS_ST_SBODY_SHOW_THE_TIME_IN_24_HOUR_FORMAT_INSTEAD_OF_12_HOUR_HAM_PM_FORMAT, false, true);
             if (item)
             {
                 var toggle = item.Extra as Switch;

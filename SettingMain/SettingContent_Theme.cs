@@ -111,12 +111,10 @@ namespace SettingMain
 
         void SetTheme(int index)
         {
-            SystemSettings.ScreenBacklightTime = ThemeList[index].GetValue();
         }
 
         public static int GetThemeIndex()
         {
-
 //            Tizen.Log.Debug("NUI", "Theme : " + value.ToString());
 
             int index = 0;
@@ -260,9 +258,6 @@ static void __theme_cb(void *data, Evas_Object *obj, void *event_info)
 
         private static void GetThemeList()
         {
-
-            //ThemeManager 1;
-            
 
 #if false
             Evas_Object* menu_glist = NULL;

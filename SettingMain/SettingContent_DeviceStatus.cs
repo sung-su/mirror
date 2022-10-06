@@ -42,26 +42,33 @@ namespace SettingMain
             if (handlelist != null)
             {
                 IEnumerator<SlotHandle> enumerator = handlelist.GetEnumerator();
+
                 Sim sim = new Sim(enumerator.Current);
-                item = CreateItemWithCheck(Resources.IDS_ST_BODY_PHONE_NUMBER, sim.SubscriberNumber);
-                content.Add(item);
+                if (sim != null)
+                {
+                    item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_PHONE_NUMBER, sim.SubscriberNumber);
+                    content.Add(item);
+                }
 
                 Modem modem = new Modem(enumerator.Current);
-                item = CreateItemWithCheck(Resources.IDS_ST_BODY_IMEI, modem.Imei);
-                content.Add(item);
+                if (modem != null)
+                {
+                    item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_IMEI, modem.Imei);
+                    content.Add(item);
+                }
 
                 Tizen.Telephony.Manager.Deinit();
             }
 #endif
 
 
-#if false
-            item = CreateItemWithCheck(Resources.IDS_ST_MBODY_BLUETOOTH_ADDRESS, Tizen.Network.Bluetooth.BluetoothAdapter.Address);
+#if true
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_MBODY_BLUETOOTH_ADDRESS, Tizen.Network.Bluetooth.BluetoothAdapter.Address);
             content.Add(item);
 #endif
 
-#if false
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_WI_FI_MAC_ADDRESS, Tizen.Network.WiFi.WiFiManager.MacAddress);
+#if true
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_WI_FI_MAC_ADDRESS, Tizen.Network.WiFi.WiFiManager.MacAddress);
             content.Add(item);
 #endif
             IEnumerator<Storage> storages = StorageManager.Storages.GetEnumerator();
@@ -72,7 +79,7 @@ namespace SettingMain
                 total += storage.TotalSpace;
                 available += storage.AvailableSpace;
             }
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_STORAGE,
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_STORAGE,
             String.Format("{0:0.0}GB available (Total {1:0.0}GB)", (double)(available / 1000000000.0), (double)(total / 1000000000.0)));
             content.Add(item);
 
@@ -80,7 +87,7 @@ namespace SettingMain
 
             // To do : Caluacate CPU Usage
             // Tizen.System.ProcessCpuUsage
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_CPU_USAGE, Resources.IDS_ST_HEADER_UNAVAILABLE);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_CPU_USAGE, Resources.IDS_ST_HEADER_UNAVAILABLE);
             content.Add(item);
 
             return content;

@@ -233,143 +233,6 @@ namespace SettingView
 
 
 
-
-
-        // Create an list item with checkbox.
-        private DefaultLinearItem CreateItemWithCheck(string text, string subText = null, bool icon = false, bool extra = false)
-        {
-            var item = new DefaultLinearItem()
-            {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                Text = text,
-                IsSelectable = false, // Item should not be remained as selected state.
-            };
-
-            if (subText != null)
-            {
-                item.SubText = subText;
-            }
-
-            CheckBox check = null;
-            if (icon)
-            {
-                check = new CheckBox();
-                check.SelectedChanged += (o, e) =>
-                {
-                    if (e.IsSelected)
-                    {
-                        Tizen.Log.Debug("NUI", "check is selected!\n");
-                    }
-                    else
-                    {
-                        Tizen.Log.Debug("NUI", "check is unselected!\n");
-                    }
-                };
-                // Icon is placed at the beginning(left end) of the item.
-                item.Icon = check;
-
-                // Do not propagate Pressed/Selected states from item to item.Icon.
-                // When item is pressed/clicked/selected, item.Icon is not pressed/clicked/selected.
-                item.Icon.PropagatableControlStates = ControlState.Disabled;
-            }
-
-            Switch toggle = null;
-            if (extra)
-            {
-                toggle = new Switch();
-                // Extra is placed at the end(right end) of the item.
-                item.Extra = toggle;
-
-                // Do not propagate Pressed/Selected states from item to item.Extra.
-                // When item is pressed/clicked/selected, item.Extra is not pressed/clicked/selected.
-                item.Extra.PropagatableControlStates = ControlState.Disabled;
-            }
-
-            item.Clicked += (o, e) =>
-            {
-                if (check != null)
-                {
-                    check.IsSelected = !check.IsSelected;
-                }
-
-                if (toggle != null)
-                {
-                    toggle.IsSelected = !toggle.IsSelected;
-                }
-
-                Tizen.Log.Debug("NUI", "item is clicked!\n");
-            };
-
-
-
-            return item;
-        }
-
-        // Create an list item  with icon
-        private DefaultLinearItem CreateItemWithIcon(string text, string iconpath, string subText = null, bool extra = false)
-        {
-            var item = new DefaultLinearItem()
-            {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                Text = text,
-                IsSelectable = false, // Item should not be remained as selected state.
-            };
-
-            if (subText != null)
-            {
-                item.SubText = subText;
-            }
-
-            ImageView icon = null;
-
-            if (iconpath.Length > 0)
-        {
-            icon = new ImageView(iconpath)
-            {
-                Size2D = new Size2D(32, 32),
-                //Name = Program.ItemContentNameIcon,
-            };
-            // Icon is placed at the beginning(left end) of the item.
-            item.Icon = icon;
-        }
-
-        Switch toggle = null;
-        if (extra)
-        {
-            toggle = new Switch();
-            toggle.SelectedChanged += (o, e) =>
-            {
-                if (e.IsSelected)
-                {
-                    Tizen.Log.Debug("NUI", "toggle is selected!\n");
-                }
-                else
-                {
-                    Tizen.Log.Debug("NUI", "toggle is unselected!\n");
-                }
-            };
-            // Extra is placed at the end(right end) of the item.
-            item.Extra = toggle;
-
-            // Do not propagate Pressed/Selected states from item to item.Extra.
-            // When item is pressed/clicked/selected, item.Extra is not pressed/clicked/selected.
-            item.Extra.PropagatableControlStates = ControlState.Disabled;
-        }
-
-        item.Clicked += (o, e) =>
-        {
-            if (toggle != null)
-            {
-                toggle.IsSelected = !toggle.IsSelected;
-            }
-
-            Tizen.Log.Debug("NUI", "item is clicked!\n");
-        };
-
-
-
-        return item;
-    }
         // Create a page with scrollable content
         private View CreateMainMenuContent()
         {
@@ -389,28 +252,28 @@ namespace SettingView
 
             // Create items and add them to the content of the page.
             DefaultLinearItem item = null;
-            item = CreateItemWithIcon(Resources.IDS_ST_BODY_WI_FI, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_wifi.png");
+            item = SettingItemCreator.CreateItemWithIcon(Resources.IDS_ST_BODY_WI_FI, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_wifi.png");
             if (item != null)
             {
                 item.Clicked += (o, e) =>
                 {
 #if false
-                    Window window = GetDefaultWindow();
-                    LaunchWidget(window, "wifi@org.tizen.cssetting-wifi");
+                Window window = GetDefaultWindow();
+                LaunchWidget(window, "wifi@org.tizen.cssetting-wifi");
 #else
                     LaunchApplication("wifi-efl-ug");
 #endif
                 };
                 content.Add(item);
             }
-            item = CreateItemWithIcon(Resources.IDS_TPLATFORM_OPT_BLUETOOTH, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_bluetooth.png");
+            item = SettingItemCreator.CreateItemWithIcon(Resources.IDS_TPLATFORM_OPT_BLUETOOTH, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_bluetooth.png");
             if (item != null)
             {
                 item.Clicked += (o, e) =>
                 {
 #if false
-                    Window window = GetDefaultWindow();
-                    LaunchWidget(window, "bluetooth@org.tizen.cssetting-bluetooth");
+                Window window = GetDefaultWindow();
+                LaunchWidget(window, "bluetooth@org.tizen.cssetting-bluetooth");
 #else
                     LaunchApplication("ug-bluetooth-efl");
 #endif
@@ -418,7 +281,7 @@ namespace SettingView
                 content.Add(item);
             }
 
-            item = CreateItemWithIcon(Resources.IDS_ST_HEADER_SOUND, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_sound_and_notifications.png");
+            item = SettingItemCreator.CreateItemWithIcon(Resources.IDS_ST_HEADER_SOUND, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_sound_and_notifications.png");
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -430,7 +293,7 @@ namespace SettingView
             }
 
 #if false
-        item = CreateItemWithIcon(Resources.IDS_ST_BODY_NOTIFICATIONS, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_notifications.png");
+        item = SettingItemCreator.CreateItemWithIcon(Resources.IDS_ST_BODY_NOTIFICATIONS, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_notifications.png");
         if (item != null)
         {
             content.Add(item);
@@ -438,7 +301,7 @@ namespace SettingView
 #endif
 
 
-            item = CreateItemWithIcon(Resources.IDS_ST_HEADER_DISPLAY, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_display.png");
+            item = SettingItemCreator.CreateItemWithIcon(Resources.IDS_ST_HEADER_DISPLAY, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_display.png");
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -449,7 +312,7 @@ namespace SettingView
                 content.Add(item);
             }
 
-            item = CreateItemWithIcon(Resources.IDS_LCKSCN_BODY_WALLPAPERS, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_wallpapers.png");
+            item = SettingItemCreator.CreateItemWithIcon(Resources.IDS_LCKSCN_BODY_WALLPAPERS, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_wallpapers.png");
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -461,12 +324,12 @@ namespace SettingView
             }
 
 #if false
-        item = CreateItemWithIcon("Tray", resPath + SETTING_LIST_ICON_PATH_CFG + "settings_softkey.png");
+        item = SettingItemCreator.CreateItemWithIcon("Tray", resPath + SETTING_LIST_ICON_PATH_CFG + "settings_softkey.png");
         content.Add(item);
-        item = CreateItemWithIcon("Screen Mirroring", resPath + SETTING_LIST_ICON_PATH_CFG + "settings_softkey.png");
+        item = SettingItemCreator.CreateItemWithIcon("Screen Mirroring", resPath + SETTING_LIST_ICON_PATH_CFG + "settings_softkey.png");
         content.Add(item);
 #endif
-            item = CreateItemWithIcon(Resources.IDS_ST_BODY_ACCOUNTS, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_account.png");
+            item = SettingItemCreator.CreateItemWithIcon(Resources.IDS_ST_BODY_ACCOUNTS, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_account.png");
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -477,7 +340,7 @@ namespace SettingView
                 content.Add(item);
             }
 
-            item = CreateItemWithIcon(Resources.IDS_ST_HEADER_PRIVACY, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_privacy_and_safety.png");
+            item = SettingItemCreator.CreateItemWithIcon(Resources.IDS_ST_HEADER_PRIVACY, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_privacy_and_safety.png");
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -488,7 +351,7 @@ namespace SettingView
                 content.Add(item);
             }
 
-            item = CreateItemWithIcon(Resources.IDS_ST_BODY_APPLICATIONS, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_applications.png");
+            item = SettingItemCreator.CreateItemWithIcon(Resources.IDS_ST_BODY_APPLICATIONS, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_applications.png");
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -499,7 +362,7 @@ namespace SettingView
                 content.Add(item);
             }
 
-            item = CreateItemWithIcon(Resources.IDS_ST_BODY_STORAGE, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_storage.png");
+            item = SettingItemCreator.CreateItemWithIcon(Resources.IDS_ST_BODY_STORAGE, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_storage.png");
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -510,7 +373,7 @@ namespace SettingView
                 content.Add(item);
             }
 
-            item = CreateItemWithIcon(Resources.IDS_ST_HEADER_LANGUAGE_AND_INPUT, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_language_and_input.png");
+            item = SettingItemCreator.CreateItemWithIcon(Resources.IDS_ST_HEADER_LANGUAGE_AND_INPUT, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_language_and_input.png");
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -521,7 +384,7 @@ namespace SettingView
                 content.Add(item);
             }
 
-            item = CreateItemWithIcon(Resources.IDS_ST_BODY_DATE_AND_TIME, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_date_and_time.png");
+            item = SettingItemCreator.CreateItemWithIcon(Resources.IDS_ST_BODY_DATE_AND_TIME, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_date_and_time.png");
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -532,7 +395,7 @@ namespace SettingView
                 content.Add(item);
             }
 
-            item = CreateItemWithIcon(Resources.IDS_ST_BODY_ACCESSIBILITY, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_accessibility.png");
+            item = SettingItemCreator.CreateItemWithIcon(Resources.IDS_ST_BODY_ACCESSIBILITY, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_accessibility.png");
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -543,7 +406,7 @@ namespace SettingView
                 content.Add(item);
             }
 
-            item = CreateItemWithIcon(Resources.IDS_ST_BODY_ABOUT_DEVICE, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_about_device.png");
+            item = SettingItemCreator.CreateItemWithIcon(Resources.IDS_ST_BODY_ABOUT_DEVICE, resPath + SETTING_LIST_ICON_PATH_CFG + "settings_about_device.png");
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -569,21 +432,31 @@ namespace SettingView
         WidgetView widgetview = WidgetViewManager.Instance.AddWidget(widgetid, encodedBundle, window.Size.Width, window.Size.Height, 0.0f);
         if (widgetview != null)
         {
-            Tizen.Log.Debug("NUI", String.Format($"widget launch : {0}\n", widgetid));
+                if (string.IsNullOrEmpty(widgetview.InstanceID))
+                {
+                    Tizen.Log.Debug("NUI", widgetid+" is not installed!!");
+                }
+                else
+                {
+                    Tizen.Log.Debug("NUI", String.Format($"widget launch : {0}\n", widgetid));
 
-            widgetview.Position = new Position(0, 0);
-            widgetview.WidgetContentUpdated += OnWidgetContentUpdatedCB;
-            widgetview.Preview = false;
+                    widgetview.Position = new Position(0, 0);
+                    widgetview.WidgetContentUpdated += OnWidgetContentUpdatedCB;
+                    widgetview.Preview = false;
 
-            var page = new ContentPage();
-            page.Content = widgetview;
-            navigator.Push(page);
+                    var page = new ContentPage
+                    {
+                        Content = widgetview
+                    };
+                    navigator.Push(page);
+                }
         }
     }
 
     void LaunchApplication(string appid)
     {
-        AppControl appcontrol = new AppControl() {
+        AppControl appcontrol = new AppControl()
+        {
             Operation = AppControlOperations.Default,
             ApplicationId = appid,
             LaunchMode = AppControlLaunchMode.Group,
@@ -598,7 +471,5 @@ namespace SettingView
 
             app.Run(args);
         }
-
-        WidgetView mWidgetView;
     }
 }

@@ -44,7 +44,7 @@ namespace SettingMain
             DefaultLinearItem item = null;
 
 
-            item = CreateItemWithCheck(Resources.IDS_ST_HEADER_SOUND_MODE, SettingContent_Soundmode.GetSoundmodeName());
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_HEADER_SOUND_MODE, SettingContent_Soundmode.GetSoundmodeName());
             mSoundModeItem = item;
             if (item != null)
             {
@@ -56,7 +56,7 @@ namespace SettingMain
             }
 
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_NOTIFICATIONS, SettingContent_NotificationSound.GetNotificationSoundName());
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_NOTIFICATIONS, SettingContent_NotificationSound.GetNotificationSoundName());
             mNotificationSoundItem = item;
             if (item != null)
             {
@@ -68,7 +68,7 @@ namespace SettingMain
             }
 
 
-            item = CreateItemWithCheck(Resources.IDS_ST_MBODY_OTHER_SOUNDS);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_MBODY_OTHER_SOUNDS);
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -81,19 +81,19 @@ namespace SettingMain
 
 
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_MEDIA);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_MEDIA);
             content.Add(item);
-            var slideritem = CreateSliderItem("MEDIA", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png", 100);
+            var slideritem = SettingItemCreator.CreateSliderItem("MEDIA", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png", 100);
             content.Add(slideritem);
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_NOTIFICATIONS);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_NOTIFICATIONS);
             content.Add(item);
-            slideritem = CreateSliderItem("MEDIA", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png", 100);
+            slideritem = SettingItemCreator.CreateSliderItem("MEDIA", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png", 100);
             content.Add(slideritem);
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_SYSTEM);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_SYSTEM);
             content.Add(item);
-            slideritem = CreateSliderItem("MEDIA", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png", 100);
+            slideritem = SettingItemCreator.CreateSliderItem("MEDIA", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png", 100);
             content.Add(slideritem);
 
             return content;

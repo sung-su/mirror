@@ -16,7 +16,7 @@ namespace SettingMain
 
     class SettingContent_Soundmode : SettingContent_Base
     {
-        public enum enumSoundmode
+        public enum EnumSoundmode
         {
             SOUND_MODE_SOUND,
             SOUND_MODE_VIBRATE,
@@ -26,10 +26,10 @@ namespace SettingMain
         public class SoundmodeInfo
         {
             private readonly string Name = null;
-            private readonly enumSoundmode Value;
+            private readonly EnumSoundmode Value;
 
 
-            public SoundmodeInfo(string name, enumSoundmode value)
+            public SoundmodeInfo(string name, EnumSoundmode value)
             {
                 Name = name;
                 Value = value;
@@ -41,7 +41,7 @@ namespace SettingMain
                 return Name;
             }
 
-            public enumSoundmode GetValue()
+            public EnumSoundmode GetValue()
             {
                 return Value;
             }
@@ -50,8 +50,8 @@ namespace SettingMain
 
         private static readonly SoundmodeInfo[] SoundmodeList =
         {
-            new SoundmodeInfo(SoundmodeToString(enumSoundmode.SOUND_MODE_SOUND), enumSoundmode.SOUND_MODE_SOUND),
-            new SoundmodeInfo(SoundmodeToString(enumSoundmode.SOUND_MODE_MUTE), enumSoundmode.SOUND_MODE_MUTE),
+            new SoundmodeInfo(SoundmodeToString(EnumSoundmode.SOUND_MODE_SOUND), EnumSoundmode.SOUND_MODE_SOUND),
+            new SoundmodeInfo(SoundmodeToString(EnumSoundmode.SOUND_MODE_MUTE), EnumSoundmode.SOUND_MODE_MUTE),
         };
 
 
@@ -125,9 +125,9 @@ namespace SettingMain
 
         public static int GetSoundmodeIndex()
         {
-            enumSoundmode mode = GetSoundmode();
+            EnumSoundmode mode = GetSoundmode();
 
-            if (mode == enumSoundmode.SOUND_MODE_SOUND) 
+            if (mode == EnumSoundmode.SOUND_MODE_SOUND) 
                 return 0;
             return 1;
         }
@@ -138,21 +138,21 @@ namespace SettingMain
         }
 
 
-        private static void SetSoundmode(enumSoundmode soundmode)
+        private static void SetSoundmode(EnumSoundmode soundmode)
         {
             bool have_sound = false, have_vibrations = false;
 
             switch (soundmode)
             {
-                case enumSoundmode.SOUND_MODE_SOUND:
+                case EnumSoundmode.SOUND_MODE_SOUND:
                     have_sound = true;
                     have_vibrations = false;
                     break;
-                case enumSoundmode.SOUND_MODE_VIBRATE:
+                case EnumSoundmode.SOUND_MODE_VIBRATE:
                     have_sound = false;
                     have_vibrations = true;
                     break;
-                case enumSoundmode.SOUND_MODE_MUTE:
+                case EnumSoundmode.SOUND_MODE_MUTE:
                     have_sound = false;
                     have_vibrations = false;
                     break;
@@ -162,7 +162,7 @@ namespace SettingMain
             Vconf.SetBool("db/setting/sound/vibration_on", have_vibrations);
         }
 
-        public static enumSoundmode GetSoundmode()
+        public static EnumSoundmode GetSoundmode()
         {
             bool have_sound = Vconf.GetBool("db/setting/sound/sound_on");
                 
@@ -170,11 +170,11 @@ namespace SettingMain
             bool have_vibrations = Vconf.GetBool("db/setting/sound/vibration_on");
 
             if (have_sound)
-                return enumSoundmode.SOUND_MODE_SOUND;
+                return EnumSoundmode.SOUND_MODE_SOUND;
             else if (have_vibrations)
-                return enumSoundmode.SOUND_MODE_VIBRATE;
+                return EnumSoundmode.SOUND_MODE_VIBRATE;
             
-            return enumSoundmode.SOUND_MODE_MUTE;
+            return EnumSoundmode.SOUND_MODE_MUTE;
         }
         public static string GetSoundmodeName()
         {
@@ -183,19 +183,15 @@ namespace SettingMain
         }
 
 
-        public static string SoundmodeToString(enumSoundmode mode)
+        public static string SoundmodeToString(EnumSoundmode mode)
         {
-	        switch (mode)
-	        {
-		        case enumSoundmode.SOUND_MODE_SOUND:
-			        return Resources.IDS_ST_HEADER_SOUND;
-		        case enumSoundmode.SOUND_MODE_VIBRATE:
-			        return Resources.IDS_ST_HEADER_VIBRATE;
-		        case enumSoundmode.SOUND_MODE_MUTE:
-			        return Resources.IDS_ST_HEADER_MUTE;
-		        default:
-			        return null;
-	        }
+            return mode switch
+            {
+                EnumSoundmode.SOUND_MODE_SOUND => Resources.IDS_ST_HEADER_SOUND,
+                EnumSoundmode.SOUND_MODE_VIBRATE => Resources.IDS_ST_HEADER_VIBRATE,
+                EnumSoundmode.SOUND_MODE_MUTE => Resources.IDS_ST_HEADER_MUTE,
+                _ => null,
+            };
         }
 
     }

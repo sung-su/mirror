@@ -34,11 +34,11 @@ namespace SettingMain
                 },
             };
 
-            DefaultLinearItem item = null;
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_APPLICATION_MANAGER);
+            DefaultLinearItem item;
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_APPLICATION_MANAGER);
             content.Add(item);
 
-            item = CreateItemWithCheck(Resources.IDS_ST_HEADER_DEFAULT_APPLICATIONS_ABB);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_HEADER_DEFAULT_APPLICATIONS_ABB);
             content.Add(item);
  
             return content;

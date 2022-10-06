@@ -59,7 +59,7 @@ namespace SettingMain
 
             DefaultLinearItem item = null;
 
-            item = CreateItemWithCheck(Resources.IDS_ST_HEADER_DISPLAY_LANGUAGE, SettingContent_DisplayLanguage.GetDisplayLanguageName());
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_HEADER_DISPLAY_LANGUAGE, SettingContent_DisplayLanguage.GetDisplayLanguageName());
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -70,7 +70,7 @@ namespace SettingMain
             }
 
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_KEYBOARD);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_KEYBOARD);
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -81,7 +81,7 @@ namespace SettingMain
             }
 
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_AUTOFILL_SERVICE);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_AUTOFILL_SERVICE);
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -93,7 +93,7 @@ namespace SettingMain
 
 
 
-            item = CreateItemWithCheck(Resources.IDS_VOICE_BODY_VOICE_CONTROL_ABB2);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_VOICE_BODY_VOICE_CONTROL_ABB2);
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -103,7 +103,7 @@ namespace SettingMain
                 content.Add(item);
             }
 
-            item = CreateItemWithCheck(Resources.IDS_VOICE_HEADER_TEXT_TO_SPEECH_HTTS);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_VOICE_HEADER_TEXT_TO_SPEECH_HTTS);
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -113,7 +113,7 @@ namespace SettingMain
                 content.Add(item);
             }
 
-            item = CreateItemWithCheck(Resources.IDS_VOICE_HEADER_SPEECH_TO_TEXT_HSTT);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_VOICE_HEADER_SPEECH_TO_TEXT_HSTT);
             if (item != null)
             {
                 item.Clicked += (o, e) =>

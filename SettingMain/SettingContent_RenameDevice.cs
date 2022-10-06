@@ -34,7 +34,7 @@ namespace SettingMain
                 },
             };
 
-            var textTitle = CreateItemTitle(Resources.IDS_ST_HEADER_RENAME_DEVICE);
+            var textTitle = SettingItemCreator.CreateItemTitle(Resources.IDS_ST_HEADER_RENAME_DEVICE);
             content.Add(textTitle);
 
             var textSubTitle = new TextLabel(Resources.IDS_ST_BODY_DEVICE_NAMES_ARE_DISPLAYED)
@@ -47,8 +47,10 @@ namespace SettingMain
 
             String name = Vconf.GetString("db/setting/device_name");
 
-            mTextField = new TextField();
-            mTextField.BackgroundColor = Color.White;
+            mTextField = new TextField
+            {
+                BackgroundColor = Color.White
+            };
             PropertyMap placeholder = new PropertyMap();
             placeholder.Add("color", new PropertyValue(Color.CadetBlue));
             placeholder.Add("fontFamily", new PropertyValue("Serif"));

@@ -34,19 +34,16 @@ namespace SettingMain
                 },
             };
 
-            DefaultLinearItem item = null;
+            DefaultLinearItem item;
 
-
-
-
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_DEVICE_STORAGE);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_DEVICE_STORAGE);
             content.Add(item);
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_USED, Resources.IDS_ST_HEADER_UNAVAILABLE);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_USED, Resources.IDS_ST_HEADER_UNAVAILABLE);
             content.Add(item);
-            item = CreateItemWithCheck(Resources.IDS_ST_HEADER_TOTAL_SPACE, Resources.IDS_ST_HEADER_UNAVAILABLE);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_HEADER_TOTAL_SPACE, Resources.IDS_ST_HEADER_UNAVAILABLE);
             content.Add(item);
-            item = CreateItemWithCheck(Resources.IDS_SM_BODY_FREE_M_MEMORY_ABB, Resources.IDS_ST_HEADER_UNAVAILABLE);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_SM_BODY_FREE_M_MEMORY_ABB, Resources.IDS_ST_HEADER_UNAVAILABLE);
             content.Add(item);
 
             return content;

@@ -13,7 +13,7 @@ namespace SettingMain
 {
     class SettingContent_Display : SettingContent_Base
     {
-        private static string[] mIconPath  = {
+        private static readonly string[] mIconPath  = {
             "brightness_icon/settings_ic_brightness_00.png",
             "brightness_icon/settings_ic_brightness_01.png",
             "brightness_icon/settings_ic_brightness_02.png",
@@ -27,12 +27,11 @@ namespace SettingMain
             "brightness_icon/settings_ic_brightness_10.png",
             "brightness_icon/settings_ic_brightness_11.png"
         };
-        static void getBrightnessSliderIcon(int level, out string iconpath) 
+        static void GetBrightnessSliderIcon(int level, out string iconpath) 
         {
 
-            int mapped_level = 0;
-
-	        if (level <= 1)
+            int mapped_level;
+            if (level <= 1)
 		        mapped_level = 0;
 	        else if (level >= 100)
 		        mapped_level = 11;
@@ -79,12 +78,11 @@ namespace SettingMain
 
             int level = 50;
 
-            string iconpath;
-            getBrightnessSliderIcon(level, out iconpath);
+            GetBrightnessSliderIcon(level, out string iconpath);
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING);
             content.Add(item);
-            var slideritem = CreateSliderItem("BRIGHTNESS", iconpath, 100);
+            var slideritem = SettingItemCreator.CreateSliderItem("BRIGHTNESS", iconpath, 100);
             content.Add(slideritem);
 
 
@@ -92,7 +90,7 @@ namespace SettingMain
             SystemSettingsFontSize fontSize = SystemSettings.FontSize;
             string fontType = SystemSettings.FontType;
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_FONT, fontSize.ToString() + ", " + fontType);
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_FONT, fontSize.ToString() + ", " + fontType);
             mFontItem = item;
             if (item)
             {
@@ -104,7 +102,7 @@ namespace SettingMain
             }
 
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2, SettingContent_ScreenTimeout.GetScreenTimeoutName());
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2, SettingContent_ScreenTimeout.GetScreenTimeoutName());
             mScreenTimeoutItem = item;
             if (item != null)
             {
@@ -116,7 +114,7 @@ namespace SettingMain
             }
 
 
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_THEME, SettingContent_Theme.GetThemeName());
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_THEME, SettingContent_Theme.GetThemeName());
             if (item != null)
             {
                 item.Clicked += (o, e) =>

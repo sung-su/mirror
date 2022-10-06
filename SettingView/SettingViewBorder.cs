@@ -30,8 +30,6 @@ namespace SettingView
         private ImageView leftCornerIcon;
         private ImageView rightCornerIcon;
 
-        private Rectangle preWinPositonSize;
-
         public SettingViewBorder() : base()
         {
             //BorderHeight = 50;

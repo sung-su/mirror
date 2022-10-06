@@ -44,7 +44,7 @@ namespace SettingMain
             DefaultLinearItem item = null;
 
             //SystemSettingsFontSize fontSize = SystemSettings.FontSize;
-            item = CreateItemWithCheck(Resources.IDS_ST_MBODY_FONT_SIZE, SettingContent_Fontsize.GetFontsizeName());
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_MBODY_FONT_SIZE, SettingContent_Fontsize.GetFontsizeName());
             mFontsizeItem = item;
             if (item != null)
             {
@@ -56,7 +56,7 @@ namespace SettingMain
             }
 
             //string fontType = SystemSettings.FontType;
-            item = CreateItemWithCheck(Resources.IDS_ST_BODY_FONT_TYPE, SettingContent_Fonttype.GetFonttypeName());
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_FONT_TYPE, SettingContent_Fonttype.GetFonttypeName());
             mFonttypeItem = item;
             if (item != null)
             {

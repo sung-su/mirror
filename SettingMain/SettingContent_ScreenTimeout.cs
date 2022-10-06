@@ -130,45 +130,35 @@ namespace SettingMain
 
             Tizen.Log.Debug("NUI", "ScreenTimeout : " + value.ToString());
 
-            int index = 0;
+            int index;
             if (value < 15)
             {
-                value = 0;
                 index = 0;
             }
             else if (value >= 15 && value < 30)
             {
-                value = 15;
                 index = 1;
             }
             else if (value >= 30 && value < 60)
             {
-                value = 30;
                 index = 2;
             }
             else if (value >= 60 && value < 120)
             {
-                value = 60;
                 index = 3;
             }
             else if (value >= 120 && value < 300)
             {
-                value = 120;
                 index = 4;
             }
             else if (value >= 300 && value < 600)
             {
-                value = 300;
                 index = 5;
             }
             else
             {
-                value = 600;
                 index = 6;
             }
-
-            //SystemSettings.ScreenBacklightTime = value;
-            Vconf.SetInt("db/setting/lcd_backlight_normal", value);
 
             return index;
         }
