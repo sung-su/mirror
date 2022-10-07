@@ -27,11 +27,11 @@ namespace SettingMain
         }
 
 
-        private static ArrayList SoundList = null;
+        private ArrayList SoundList = null;
 
 
 
-        private static void MakeSoundList() 
+        private void MakeSoundList() 
         {
             SoundList = new ArrayList();
 
@@ -86,9 +86,8 @@ namespace SettingMain
         {
             var picker = new Picker()
             {
-                // WidthSpecification = LayoutParamPolicies.MatchParent,
+                WidthSpecification = LayoutParamPolicies.MatchParent,
                 // HeightSpecification = LayoutParamPolicies.MatchParent,
-                // Size = new Size(100, 200),
             };
 
             ReadOnlyCollection<string> rc = new ReadOnlyCollection<string>(PickerItems);
@@ -96,7 +95,7 @@ namespace SettingMain
             picker.MinValue = 0;
             picker.MaxValue = PickerItems.Length - 1;
             picker.CurrentValue = GetNotificationSoundIndex();
-            Tizen.Log.Debug("NUI", "DisplayedValues : " + picker.DisplayedValues);
+            Tizen.Log.Debug("NUI", "CurrentValue : " + picker.CurrentValue.ToString());
 
             var button = new Button()
             {
@@ -107,7 +106,7 @@ namespace SettingMain
             button.Clicked += (bo, be) =>
             {
 
-                Tizen.Log.Debug("NUI", String.Format("current : {0}", PickerItems[picker.CurrentValue]));
+                Tizen.Log.Debug("NUI", String.Format("current : {0}", picker.CurrentValue));
 
                 SetNotificationSoundIndex(picker.CurrentValue);
 
@@ -134,7 +133,7 @@ namespace SettingMain
         }
 
 
-        public static int GetNotificationSoundIndex()
+        public int GetNotificationSoundIndex()
         {
             string sound = GetNotificationSound();
 
@@ -149,7 +148,7 @@ namespace SettingMain
             return -1;
         }
 
-        private static void SetNotificationSoundIndex(int index)
+        private void SetNotificationSoundIndex(int index)
         {
             string path = SoundList[index] as string;
             SetNotificationSound(path);

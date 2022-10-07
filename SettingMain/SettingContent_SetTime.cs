@@ -11,32 +11,10 @@ using SettingAppTextResopurces.TextResources;
 
 
 
-using System.Runtime.InteropServices;
-
 namespace SettingMain
 {
     class SettingContent_SetTime : SettingContent_Base
     {
-        [StructLayout(LayoutKind.Sequential)]
-        public struct SYSTEMTIME
-        {
-            public short wYear;
-            public short wMonth;
-            public short wDayOfWeek;
-            public short wDay;
-            public short wHour;
-            public short wMinute;
-            public short wSecond;
-            public short wMilliseconds;
-        }
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool SetSystemTime(ref SYSTEMTIME st);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool SetLocalTime(ref SYSTEMTIME st);
-
-
         public SettingContent_SetTime()
             : base()
         {

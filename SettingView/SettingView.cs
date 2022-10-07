@@ -79,27 +79,6 @@ namespace SettingView
         }
 
 
-        void PushContentPage(string title, View content)
-        {
-            Window window = GetDefaultWindow();
-            Navigator navigator = window.GetDefaultNavigator();
-
-            window.KeyEvent += OnKeyEvent;
-            window.TouchEvent += OnTouchEvent;
-
-            var page = new ContentPage()
-            {
-                AppBar = new AppBar()
-                {
-                    Title = title,
-                },
-            };
-
-            page.Content = content;
-            navigator.Push(page);
-        }
-
-
         public void OnKeyEvent(object sender, Window.KeyEventArgs e)
         {
             if (e.Key.State == Key.StateType.Down && (e.Key.KeyPressedName == "XF86Back" || e.Key.KeyPressedName == "Escape"))
@@ -116,32 +95,27 @@ namespace SettingView
             String encodedBundle = e.WidgetView.ContentInfo;
             Bundle bundle = Bundle.Decode(encodedBundle);
 
-            string widgetID;
-            if (bundle.TryGetItem("WIDGET_ID", out widgetID))
+            if (bundle.TryGetItem("WIDGET_ID", out string widgetID))
             {
                 Tizen.Log.Debug("NUI", "WIDGET_ID!\n");
             }
 
-            string widgetWidth;
-            if (bundle.TryGetItem("WIDGET_WIDTH", out widgetWidth))
+            if (bundle.TryGetItem("WIDGET_WIDTH", out string widgetWidth))
             {
                 Tizen.Log.Debug("NUI", "WIDGET_WIDTH!\n");
             }
 
-            string widgetHeight;
-            if (bundle.TryGetItem("WIDGET_HEIGHT", out widgetHeight))
+            if (bundle.TryGetItem("WIDGET_HEIGHT", out string widgetHeight))
             {
                 Tizen.Log.Debug("NUI", "WIDGET_HEIGHT!\n");
             }
 
-            string widgetPage;
-            if (bundle.TryGetItem("WIDGET_PAGE", out widgetPage))
+            if (bundle.TryGetItem("WIDGET_PAGE", out string widgetPage))
             {
                 Tizen.Log.Debug("NUI", "WIDGET_PAGE!\n");
             }
 
-            string widgetAction;
-            if (bundle.TryGetItem("WIDGET_ACTION", out widgetAction))
+            if (bundle.TryGetItem("WIDGET_ACTION", out string widgetAction))
             {
                 if (widgetAction.Equals("ADD"))
                 {
@@ -467,7 +441,7 @@ namespace SettingView
     static void Main(string[] args)
         {
             var appCustomBorder = new SettingViewBorder();
-            var app = new Program("", new Size2D(800, 400), new Position2D(300, 100), appCustomBorder);
+            var app = new Program("", new Size2D(800, 500), new Position2D(300, 50), appCustomBorder);
 
             app.Run(args);
         }

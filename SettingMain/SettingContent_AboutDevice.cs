@@ -81,7 +81,7 @@ namespace SettingMain
 
             string valuestring;
             bool result  = Tizen.System.Information.TryGetValue<string>("http://tizen.org/system/model_name", out valuestring);
-            if(result)
+            if (result)
                 item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_MODEL_NUMBER, valuestring);
             else
                 item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_MODEL_NUMBER, Resources.IDS_ST_HEADER_UNAVAILABLE);

@@ -107,7 +107,9 @@ namespace SettingMain
             Tizen.System.SystemSettings.SoundSilentModeSettingChanged += SystemSettings_SoundSilentModeSettingChanged;
             Tizen.System.SystemSettings.VibrationChanged += SystemSettings_VibrationChanged;
 
+#if false
             Tizen.System.SystemSettings.SoundNotificationChanged += SystemSettings_NotificationSoundChanged;
+#endif
         }
 
         protected override void OnTerminate(string contentInfo, TerminationType type)
@@ -115,23 +117,27 @@ namespace SettingMain
             Tizen.System.SystemSettings.SoundSilentModeSettingChanged -= SystemSettings_SoundSilentModeSettingChanged;
             Tizen.System.SystemSettings.VibrationChanged -= SystemSettings_VibrationChanged;
 
+#if false
             Tizen.System.SystemSettings.SoundNotificationChanged -= SystemSettings_NotificationSoundChanged;
-
+#endif
             base.OnTerminate(contentInfo, type);
         }
 
         private void SystemSettings_SoundSilentModeSettingChanged(object sender, SoundSilentModeSettingChangedEventArgs e)
         {
-            mSoundModeItem.SubText = SettingContent_Soundmode.GetSoundmodeName();
+            if (mSoundModeItem != null)
+                mSoundModeItem.SubText = SettingContent_Soundmode.GetSoundmodeName();
         }
         private void SystemSettings_VibrationChanged(object sender, VibrationChangedEventArgs e)
         {
-            mSoundModeItem.SubText = SettingContent_Soundmode.GetSoundmodeName();
+            if (mSoundModeItem != null)
+                mSoundModeItem.SubText = SettingContent_Soundmode.GetSoundmodeName();
         }
 
         private void SystemSettings_NotificationSoundChanged(object sender, SoundNotificationChangedEventArgs e)
         {
-            mNotificationSoundItem.SubText = SettingContent_NotificationSound.GetNotificationSoundName();
+            if (mNotificationSoundItem != null)
+                mNotificationSoundItem.SubText = SettingContent_NotificationSound.GetNotificationSoundName();
         }
 
     }

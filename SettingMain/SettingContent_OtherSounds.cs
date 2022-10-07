@@ -41,7 +41,7 @@ namespace SettingMain
             string keyTouchSound = "db/setting/sound/touch_sounds";
             bool bTouchSound = Vconf.GetBool(keyTouchSound);
             item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_MBODY_TOUCH_SOUND, Resources.IDS_ST_BODY_PLAY_SOUNDS_WHEN_LOCKING_AND_UNLOCKING_SCREEN, false, true);
-            if (item)
+            if (item != null)
             {
                 var toggle = item.Extra as Switch;
                 toggle.IsSelected = bTouchSound;
@@ -68,7 +68,7 @@ namespace SettingMain
             string keyKeyboardSound = "db/setting/sound/button_sounds";
             bool bKeyboardSound = Vconf.GetBool(keyKeyboardSound);
             item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_MBODY_KEYBOARD_SOUND, Resources.IDS_ST_BODY_SOUND_FEEDBACK_FOR_SYSTEM_KEYBOARD, false, true);
-            if (item)
+            if (item != null)
             {
                 var toggle = item.Extra as Switch;
                 toggle.IsSelected = bKeyboardSound;

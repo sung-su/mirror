@@ -75,9 +75,8 @@ namespace SettingMain
         {
             var picker = new Picker()
             {
-                // WidthSpecification = LayoutParamPolicies.MatchParent,
+                WidthSpecification = LayoutParamPolicies.MatchParent,
                 // HeightSpecification = LayoutParamPolicies.MatchParent,
-                // Size = new Size(100, 200),
             };
 
             ReadOnlyCollection<string> rc = new ReadOnlyCollection<string>(PickerItems);
@@ -85,7 +84,7 @@ namespace SettingMain
             picker.MinValue = 0;
             picker.MaxValue = PickerItems.Length - 1;
             picker.CurrentValue = GetSoundmodeIndex();
-            Tizen.Log.Debug("NUI", "DisplayedValues : " + picker.DisplayedValues);
+            Tizen.Log.Debug("NUI", "CurrentValue : " + picker.CurrentValue.ToString());
 
             var button = new Button()
             {
@@ -96,7 +95,7 @@ namespace SettingMain
             button.Clicked += (bo, be) =>
             {
 
-                Tizen.Log.Debug("NUI", String.Format("current : {0}", PickerItems[picker.CurrentValue]));
+                Tizen.Log.Debug("NUI", String.Format("current : {0}", picker.CurrentValue));
 
                 SetSoundmodeIndex(picker.CurrentValue);
 

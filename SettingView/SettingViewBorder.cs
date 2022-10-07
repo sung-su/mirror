@@ -9,6 +9,8 @@ using System.Text;
 
 namespace SettingView
 {
+
+
     class SettingViewBorder : Tizen.NUI.DefaultBorder
     {
         private static readonly string ResourcePath = Tizen.Applications.Application.Current.DirectoryInfo.Resource;

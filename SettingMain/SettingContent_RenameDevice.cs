@@ -51,19 +51,19 @@ namespace SettingMain
             {
                 BackgroundColor = Color.White
             };
-            PropertyMap placeholder = new PropertyMap();
-            placeholder.Add("color", new PropertyValue(Color.CadetBlue));
-            placeholder.Add("fontFamily", new PropertyValue("Serif"));
-            placeholder.Add("pointSize", new PropertyValue(25.0f));
-            mTextField.Placeholder = placeholder;
-            mTextField.MaxLength = MAX_DEVICE_NAME_LEN;
-            mTextField.EnableCursorBlink = true;
+            /*
+             * PropertyMap placeholder = new PropertyMap();
+                        placeholder.Add("color", new PropertyValue(Color.CadetBlue));
+                        placeholder.Add("fontFamily", new PropertyValue("Serif"));
+                        placeholder.Add("pointSize", new PropertyValue(25.0f));
+                        mTextField.Placeholder = placeholder;
+                        mTextField.MaxLength = MAX_DEVICE_NAME_LEN;
+                        mTextField.EnableCursorBlink = true;
 
-            mTextField.Text = name;
+                        mTextField.Text = name;
+            */
+            mTextField.Text = "0123456789123456789";
             content.Add(mTextField);
-
-
-
 
 
             var button = new Button()

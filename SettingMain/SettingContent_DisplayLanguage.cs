@@ -75,9 +75,8 @@ namespace SettingMain
         {
             var picker = new Picker()
             {
-                //WidthSpecification = LayoutParamPolicies.MatchParent,
+                WidthSpecification = LayoutParamPolicies.MatchParent,
                 //HeightSpecification = LayoutParamPolicies.MatchParent,
-                //                Size = new Size(100, 200),
             };
 
             ReadOnlyCollection<string> rc = new ReadOnlyCollection<string>(PickerItems);
@@ -95,7 +94,7 @@ namespace SettingMain
             button.Clicked += (bo, be) =>
             {
 
-                Tizen.Log.Debug("NUI", String.Format("current : {0}", PickerItems[picker.CurrentValue]));
+                Tizen.Log.Debug("NUI", String.Format("current : {0}", picker.CurrentValue));
 
                 SetDisplayLanguage(picker.CurrentValue);
 

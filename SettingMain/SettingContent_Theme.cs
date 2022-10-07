@@ -62,9 +62,8 @@ namespace SettingMain
         {
             var picker = new Picker()
             {
-                // WidthSpecification = LayoutParamPolicies.MatchParent,
+                WidthSpecification = LayoutParamPolicies.MatchParent,
                 // HeightSpecification = LayoutParamPolicies.MatchParent,
-                // Size = new Size(100, 200),
             };
 
             ReadOnlyCollection<string> rc = new ReadOnlyCollection<string>(PickerItems);
@@ -72,7 +71,7 @@ namespace SettingMain
             picker.MinValue = 0;
             picker.MaxValue = PickerItems.Length - 1;
             picker.CurrentValue = GetThemeIndex();
-            Tizen.Log.Debug("NUI", "DisplayedValues : " + picker.DisplayedValues);
+            Tizen.Log.Debug("NUI", "CurrentValue : " + picker.CurrentValue.ToString());
 
             var button = new Button()
             {
@@ -83,7 +82,7 @@ namespace SettingMain
             button.Clicked += (bo, be) =>
             {
 
-                Tizen.Log.Debug("NUI", String.Format("current : {0}", PickerItems[picker.CurrentValue]));
+                Tizen.Log.Debug("NUI", String.Format("current : {0}", picker.CurrentValue));
 
                 SetTheme(picker.CurrentValue);
 
@@ -234,11 +233,11 @@ static void __theme_cb(void *data, Evas_Object *obj, void *event_info)
 
 	theme_loader_h tl_handle;
 	int result = theme_loader_create(&tl_handle);
-	if(result == THEME_MANAGER_ERROR_NONE) {
+	if (result == THEME_MANAGER_ERROR_NONE) {
 
 		SETTING_TRACE_DEBUG("call theme_loader_set_current(): %s", list_item->sub_desc);
 		result = theme_loader_set_current(tl_handle, list_item->sub_desc);
-		if(result != THEME_MANAGER_ERROR_NONE) {
+		if (result != THEME_MANAGER_ERROR_NONE) {
 			SETTING_TRACE_ERROR("error : theme_loader_set_current()");
 		}
 		theme_loader_destroy(tl_handle);

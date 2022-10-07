@@ -18,30 +18,6 @@ namespace SettingMain
         {
             mTitle = Resources.IDS_ST_HEADER_LANGUAGE_AND_INPUT;
         }
-        protected override void OnCreate(string contentInfo, Window window)
-        {
-            base.OnCreate(contentInfo, window);
-
-            Tizen.System.SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
-        }
-        
-        protected override void OnTerminate(string contentInfo, TerminationType type)
-        {
-            Tizen.System.SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
-
-            base.OnTerminate(contentInfo, type);
-        }
-
-        private void SystemSettings_LocaleLanguageChanged(object sender, Tizen.System.LocaleLanguageChangedEventArgs e)
-        {
-            if (mPage != null)
-            {
-                mPage.AppBar.Title = Resources.IDS_ST_HEADER_LANGUAGE_AND_INPUT;
-                mPage.Content = CreateContent(mWindow);
-            }
-        }
-
-
         protected override View CreateContent(Window window)
         {
             // Content of the page which scrolls items vertically.
@@ -127,5 +103,27 @@ namespace SettingMain
             return content;
         }
 
+        protected override void OnCreate(string contentInfo, Window window)
+        {
+            base.OnCreate(contentInfo, window);
+
+            Tizen.System.SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
+        }
+
+        protected override void OnTerminate(string contentInfo, TerminationType type)
+        {
+            Tizen.System.SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
+
+            base.OnTerminate(contentInfo, type);
+        }
+
+        private void SystemSettings_LocaleLanguageChanged(object sender, Tizen.System.LocaleLanguageChangedEventArgs e)
+        {
+            if (mPage != null)
+            {
+                mPage.AppBar.Title = Resources.IDS_ST_HEADER_LANGUAGE_AND_INPUT;
+                mPage.Content = CreateContent(mWindow);
+            }
+        }
     }
 }

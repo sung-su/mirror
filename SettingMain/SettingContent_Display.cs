@@ -92,7 +92,7 @@ namespace SettingMain
 
             item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_FONT, fontSize.ToString() + ", " + fontType);
             mFontItem = item;
-            if (item)
+            if (item != null)
             {
                 item.Clicked += (o, e) =>
                 {

@@ -22,7 +22,8 @@ namespace SettingMain
         {
             String[] folders = value.Split('/');
             int foldercount = folders.Length;
-            if (foldercount > 0) return folders[foldercount - 1];
+            if (foldercount > 0) 
+                return folders[foldercount - 1];
             return value;
         }
 
@@ -90,9 +91,8 @@ namespace SettingMain
         {
             var picker = new Picker()
             {
-                // WidthSpecification = LayoutParamPolicies.MatchParent,
+                WidthSpecification = LayoutParamPolicies.MatchParent,
                 // HeightSpecification = LayoutParamPolicies.MatchParent,
-                // Size = new Size(100, 200),
             };
 
             ReadOnlyCollection<string> rc = new ReadOnlyCollection<string>(PickerItems);
@@ -100,7 +100,7 @@ namespace SettingMain
             picker.MinValue = 0;
             picker.MaxValue = PickerItems.Length - 1;
             picker.CurrentValue = GetFonttypeIndex();
-            Tizen.Log.Debug("NUI", "DisplayedValues : " + picker.DisplayedValues);
+            Tizen.Log.Debug("NUI", "CurrentValue : " + picker.CurrentValue.ToString());
 
             var button = new Button()
             {
@@ -111,7 +111,7 @@ namespace SettingMain
             button.Clicked += (bo, be) =>
             {
 
-                Tizen.Log.Debug("NUI", String.Format("current : {0}", PickerItems[picker.CurrentValue]));
+                Tizen.Log.Debug("NUI", String.Format("current : {0}", picker.CurrentValue));
 
                 SetFonttypeIndex(picker.CurrentValue);
 

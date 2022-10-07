@@ -70,7 +70,6 @@ namespace SettingMain
             return label;
         }
 
-
         // Create an list item with checkbox.
         public static DefaultLinearItem CreateItemWithCheck(string text, string subText = null, bool icon = false, bool extra = false)
         {
@@ -82,7 +81,7 @@ namespace SettingMain
             };
 
             if (subText != null)
-            {
+            { 
                 item.SubText = subText;
             }
 
@@ -237,19 +236,16 @@ namespace SettingMain
             {
                 LinearOrientation = LinearLayout.Orientation.Horizontal,
                 VerticalAlignment = VerticalAlignment.Center,
-                CellPadding = new Size2D(10, 10)
+                Padding = new Extents(20,20, 5, 5),
             };
 
-            var item = new View();
-            item.Name = name;
-            item.Layout = linearLayout;
+            var item = new View
             {
-                var leftpadding = new View()
-                {
-                    Size2D = new Size2D(10, 5),
-                };
-                item.Add(leftpadding);
-
+                //WidthResizePolicy = ResizePolicyType.FillToParent,
+                Name = name,
+                Layout = linearLayout
+            };
+            {
                 if (iconpath != null)
                 {
                     var icon = new ImageView(iconpath)
@@ -261,9 +257,7 @@ namespace SettingMain
 
                 var slider = new Slider()
                 {
-                    //WidthResizePolicy = ResizePolicyType.FillToParent,
-                    //Size2D = new Size2D(100, 32),
-                    //Name = Program.ItemContentNameDescription,
+                    Margin = new Extents(10, 10, 5,5),
 
                     TrackThickness = 5,
                     BgTrackColor = new Color(0, 0, 0, 0.1f),
