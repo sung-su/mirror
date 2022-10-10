@@ -132,17 +132,20 @@ namespace SettingMain
                 item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_RESOLUTION, Resources.IDS_ST_HEADER_UNAVAILABLE);
             content.Add(item);
 
-            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_STATUS, Resources.IDS_ST_BODY_SHOW_NETWORK_STATUS_AND_OTHER_INFORMATION);
-            if (item != null)
+
+            if (IsEmulBin() == false)
             {
-
-                item.Clicked += (o, e) =>
+                item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_STATUS, Resources.IDS_ST_BODY_SHOW_NETWORK_STATUS_AND_OTHER_INFORMATION);
+                if (item != null)
                 {
-                    RequestWidgetPush("devicestatus@org.tizen.cssettings");
-                };
-                content.Add(item);
-            }
 
+                    item.Clicked += (o, e) =>
+                    {
+                        RequestWidgetPush("devicestatus@org.tizen.cssettings");
+                    };
+                    content.Add(item);
+                }
+            }
             return content;
         }
         private void SystemSettings_DeviceNameChanged(object sender, Tizen.System.DeviceNameChangedEventArgs e)

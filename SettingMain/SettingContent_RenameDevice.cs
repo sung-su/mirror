@@ -63,22 +63,21 @@ namespace SettingMain
 
             String name = Vconf.GetString("db/setting/device_name");
 
+            PropertyMap placeholder = new PropertyMap();
+            placeholder.Add("color", new PropertyValue(Color.CadetBlue));
+            placeholder.Add("fontFamily", new PropertyValue("Serif"));
+            placeholder.Add("pointSize", new PropertyValue(25.0f));
+
             mTextField = new TextField
             {
-                BackgroundColor = Color.White
-            };
-            /*
-             * PropertyMap placeholder = new PropertyMap();
-                        placeholder.Add("color", new PropertyValue(Color.CadetBlue));
-                        placeholder.Add("fontFamily", new PropertyValue("Serif"));
-                        placeholder.Add("pointSize", new PropertyValue(25.0f));
-                        mTextField.Placeholder = placeholder;
-                        mTextField.MaxLength = MAX_DEVICE_NAME_LEN;
-                        mTextField.EnableCursorBlink = true;
+                BackgroundColor = Color.White,
 
-                        mTextField.Text = name;
-            */
-            mTextField.Text = "0123456789123456789";
+                Placeholder = placeholder,
+
+                MaxLength = MAX_DEVICE_NAME_LEN,
+                EnableCursorBlink = true,
+                Text = name,
+            };
             content.Add(mTextField);
 
 

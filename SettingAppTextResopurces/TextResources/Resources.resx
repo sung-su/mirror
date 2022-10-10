@@ -615,6 +615,9 @@
   <data name="IDS_ST_BODY_APP_OPENING_IMAGE" xml:space="preserve">
     <value>App opening image</value>
   </data>
+  <data name="IDS_ST_BODY_AUDIO" xml:space="preserve">
+    <value>Audio</value>
+  </data>
   <data name="IDS_ST_BODY_AUTH_TYPE" xml:space="preserve">
     <value>Auth type</value>
   </data>

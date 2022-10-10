@@ -1579,6 +1579,15 @@ namespace SettingAppTextResopurces.TextResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Audio.
+        /// </summary>
+        public static string IDS_ST_BODY_AUDIO {
+            get {
+                return ResourceManager.GetString("IDS_ST_BODY_AUDIO", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Auth type.
         /// </summary>
         public static string IDS_ST_BODY_AUTH_TYPE {
@@ -6398,6 +6407,15 @@ namespace SettingAppTextResopurces.TextResources {
         public static string IDS_ST_HEADER_SIM_CARD_MANAGER {
             get {
                 return ResourceManager.GetString("IDS_ST_HEADER_SIM_CARD_MANAGER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Smart Manager.
+        /// </summary>
+        public static string IDS_ST_HEADER_SMART_MANAGER {
+            get {
+                return ResourceManager.GetString("IDS_ST_HEADER_SMART_MANAGER", resourceCulture);
             }
         }
         

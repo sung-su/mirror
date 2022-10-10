@@ -27,12 +27,22 @@ using SettingAppTextResopurces.TextResources;
 
 namespace SettingMain
 {
-    class SettingContent_Applications : SettingContent_Base
+    class SettingContent_DefApplication : SettingContent_Base
     {
-        public SettingContent_Applications()
+
+        private DefaultLinearItem mFontsizeItem;
+        private DefaultLinearItem mFonttypeItem;
+
+
+
+
+        public SettingContent_DefApplication()
             : base()
         {
-            mTitle = Resources.IDS_ST_BODY_APPLICATIONS;
+            mTitle = Resources.IDS_ST_HEADER_DEFAULT_APPLICATIONS_ABB;
+
+            mFontsizeItem = null;
+            mFonttypeItem = null;
         }
 
         protected override View CreateContent(Window window)
@@ -43,6 +53,7 @@ namespace SettingMain
                 WidthSpecification = LayoutParamPolicies.MatchParent,
                 HeightSpecification = LayoutParamPolicies.MatchParent,
                 ScrollingDirection = ScrollableBase.Direction.Vertical,
+
                 HideScrollbar = false,
                 Layout = new LinearLayout()
                 {
@@ -50,31 +61,42 @@ namespace SettingMain
                 },
             };
 
-            DefaultLinearItem item;
-            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_APPLICATION_MANAGER);
+            DefaultLinearItem item = null;
+
+
+            //VCONFKEY_SETAPPL_SELECTED_PACKAGE_NAME
+            string appID = Vconf.GetString("db/setting/menuscreen/package_name");
+            ApplicationInfo appinfo = new ApplicationInfo(appID);
+
+            content.Add(SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_LAUNCH_BY_DEFAULT));
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_HOME, appinfo.Label);
+            mFontsizeItem = item;
             if (item != null)
             {
                 item.Clicked += (o, e) =>
                 {
-                    RequestAppLaunch("org.tizen.setting-appmgr");
+                    RequestAppLaunch("org.tizen.setting-homescreen");
                 };
                 content.Add(item);
             }
 
 
-            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_HEADER_DEFAULT_APPLICATIONS_ABB);
+            content.Add(SettingItemCreator.CreateItemStatic(""));
+            content.Add(SettingItemCreator.CreateItemStatic(""));
+
+            content.Add(SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_CLEAR_DEFAULTS));
+            item = SettingItemCreator.CreateItemWithCheck("", Resources.IDS_ST_BODY_THERE_ARE_NO_APPS_SET_AS_DEFAULTS);
+            mFonttypeItem = item;
             if (item != null)
             {
                 item.Clicked += (o, e) =>
                 {
-                    RequestWidgetPush("defapplication@org.tizen.cssettings");
+
                 };
                 content.Add(item);
             }
-
 
             return content;
         }
-
     }
 }

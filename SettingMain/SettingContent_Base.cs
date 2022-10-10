@@ -40,7 +40,7 @@ namespace SettingMain
         {
             if (mWindow == null) return;
 
-            // Update Widget Content by sending message to add the third page in advance.
+            // Push Widget Content by sending message
             Bundle nextBundle = new Bundle();
             nextBundle.AddItem("WIDGET_ID", widgetid);
             nextBundle.AddItem("WIDGET_WIDTH", mWindow.Size.Width.ToString());
@@ -53,12 +53,33 @@ namespace SettingMain
 
         protected void RequestWidgetPop()
         {
-            // Update Widget Content by sending message to pop the fourth page.
+            // Pop Widget Content by sending message
             Bundle nextBundle = new Bundle();
             nextBundle.AddItem("WIDGET_ACTION", "POP");
             String encodedBundle = nextBundle.Encode();
             SetContentInfo(encodedBundle);
         }
+
+
+        protected void RequestAppLaunch(string appid)
+        {
+            if (mWindow == null) return;
+
+            // Launch Application by sending message
+            Bundle nextBundle = new Bundle();
+            nextBundle.AddItem("APP_ID", appid);
+            nextBundle.AddItem("WIDGET_ACTION", "LAUNCH");
+            String encodedBundle = nextBundle.Encode();
+            SetContentInfo(encodedBundle);
+        }
+
+
+        protected bool IsEmulBin()
+        {
+            Tizen.System.Information.TryGetValue<string>("tizen.org/system/model_name", out string model);
+            return (model.Equals("Emulator") || model.Equals("EMULATOR"));
+        }
+
 
         ///////////////////////////////////////////////////////////
         ///

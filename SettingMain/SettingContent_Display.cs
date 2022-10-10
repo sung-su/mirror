@@ -96,11 +96,21 @@ namespace SettingMain
 
             GetBrightnessSliderIcon(level, out string iconpath);
 
-            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING);
-            content.Add(item);
-            var slideritem = SettingItemCreator.CreateSliderItem("BRIGHTNESS", iconpath, 100);
-            content.Add(slideritem);
 
+            //VCONFKEY_SETAPPL_LCD_BRIGHTNESS
+            int brightness = Vconf.GetInt("db/setting/Brightness");
+
+            Tizen.Log.Debug("NUI", "GET brightness : " + brightness.ToString());
+
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING);
+            var slideritem = SettingItemCreator.CreateSliderItem("BRIGHTNESS", iconpath, brightness / 100.0f);
+            if (slideritem != null) {
+                slideritem.mSlider.ValueChanged += OnValueChanged;
+                slideritem.mSlider.SlidingStarted += OnSlidingStarted;
+                slideritem.mSlider.SlidingFinished += OnSlidingFinished;
+
+                content.Add(slideritem);
+            }
 
 
             SystemSettingsFontSize fontSize = SystemSettings.FontSize;
@@ -183,5 +193,31 @@ namespace SettingMain
             mScreenTimeoutItem.SubText = SettingContent_ScreenTimeout.GetScreenTimeoutName();
             
         }
+
+
+        private static void OnValueChanged(object sender, SliderValueChangedEventArgs args)
+        {
+        }
+
+        private static void OnSlidingStarted(object sender, SliderSlidingStartedEventArgs args)
+        {
+        }
+
+        private static void OnSlidingFinished(object sender, SliderSlidingFinishedEventArgs args)
+        {
+            var slider = sender as Slider;
+
+
+            int BRIGHTNESS_MIN = 1;
+            int BRIGHTNESS_MAX = 100;
+
+            int brightness = (int)(slider.CurrentValue * (BRIGHTNESS_MAX - BRIGHTNESS_MIN)) + BRIGHTNESS_MIN;
+            Tizen.Log.Debug("NUI", "SET brightness : " + brightness.ToString());
+            //VCONFKEY_SETAPPL_LCD_BRIGHTNESS
+            Vconf.SetInt("db/setting/Brightness", brightness);
+
+            
+        }
+
     }
 }

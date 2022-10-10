@@ -27,6 +27,19 @@ using SettingAppTextResopurces.TextResources;
 
 namespace SettingMain
 {
+
+    class SliderItem : View
+    {
+        public ImageView mIcon = null;
+        public Slider mSlider = null;
+        public SliderItem()
+            : base()
+        {
+            
+        }
+
+    }
+
     class SettingItemCreator
     {
         // Create an Static Text
@@ -39,18 +52,14 @@ namespace SettingMain
                     LinearOrientation = LinearLayout.Orientation.Horizontal,
                     VerticalAlignment = VerticalAlignment.Center,
                     CellPadding = new Size2D(10, 10)
-                },
-            };
 
-            var leftpadding = new View()
-            {
-                Size2D = new Size2D(8, 5),
+                },
+                Padding = new Extents(8, 0, 5, 5),
             };
-            item.Add(leftpadding);
 
             TextLabel label = new TextLabel(text)
             {
-                TextColor = new Color(0.1f, 0.1f, 0.1f, 0.0f)
+                TextColor = Color.DarkGray
             };
 
             PropertyMap titleStyle = new PropertyMap();
@@ -60,7 +69,7 @@ namespace SettingMain
 
             label.FontStyle = titleStyle;
             label.FontFamily = "FreeSerif";
-            label.PointSize = 14.0f;
+            label.PointSize = 18.0f;
 
             item.Add(label);
 
@@ -245,7 +254,7 @@ namespace SettingMain
             return item;
         }
 
-        public static View CreateSliderItem(string name, string iconpath, int levelcout)
+        public static SliderItem CreateSliderItem(string name, string iconpath, float curvalue)
         {
             //Create Linear Layout
             LinearLayout linearLayout = new LinearLayout
@@ -255,7 +264,7 @@ namespace SettingMain
                 Padding = new Extents(20,20, 5, 5),
             };
 
-            var item = new View
+            var item = new SliderItem
             {
                 //WidthResizePolicy = ResizePolicyType.FillToParent,
                 Name = name,
@@ -264,14 +273,14 @@ namespace SettingMain
             {
                 if (iconpath != null)
                 {
-                    var icon = new ImageView(iconpath)
+                    item.mIcon = new ImageView(iconpath)
                     {
                         Size2D = new Size2D(32, 32)
                     };
-                    item.Add(icon);
+                    item.Add(item.mIcon);
                 }
 
-                var slider = new Slider()
+                item.mSlider = new Slider()
                 {
                     Margin = new Extents(10, 10, 5,5),
 
@@ -282,38 +291,22 @@ namespace SettingMain
 
                     Direction = Slider.DirectionType.Horizontal,
                     MinValue = 0,
-                    MaxValue = levelcout - 1,
-                    CurrentValue = 10,
+                    MaxValue = 1.0f,
+                    CurrentValue = curvalue,
 
                 };
-                slider.ValueChanged += OnValueChanged;
-                slider.SlidingStarted += OnSlidingStarted;
-                slider.SlidingFinished += OnSlidingFinished;
-                item.Add(slider);
+                item.Add(item.mSlider);
 
+#if true
                 var rightpadding = new View()
                 {
                     Size2D = new Size2D(10, 5),
                 };
                 item.Add(rightpadding);
-
+#endif
 
             }
             return item;
         }
-
-        private static void OnValueChanged(object sender, SliderValueChangedEventArgs args)
-        {
-        }
-
-        private static void OnSlidingStarted(object sender, SliderSlidingStartedEventArgs args)
-        {
-        }
-
-        private static void OnSlidingFinished(object sender, SliderSlidingFinishedEventArgs args)
-        {
-        }
-
-
     }
 }

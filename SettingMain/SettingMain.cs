@@ -67,8 +67,10 @@ namespace SettingMain
                 widgetSet.Add(typeof(SettingContent_Theme), "theme@org.tizen.cssettings");
             
             widgetSet.Add(typeof(SettingContent_Applications), "apps@org.tizen.cssettings");
-            
+                widgetSet.Add(typeof(SettingContent_DefApplication), "defapplication@org.tizen.cssettings");
+
             widgetSet.Add(typeof(SettingContent_Storage), "storage@org.tizen.cssettings");
+                widgetSet.Add(typeof(SettingContent_DefaultStorage), "defaultstorage@org.tizen.cssettings");
             
             widgetSet.Add(typeof(SettingContent_LanguageInput), "languageinput@org.tizen.cssettings");
                 widgetSet.Add(typeof(SettingContent_DisplayLanguage), "displaylanguage@org.tizen.cssettings");

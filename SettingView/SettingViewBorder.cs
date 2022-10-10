@@ -29,6 +29,9 @@ namespace SettingView
 
     class SettingViewBorder : Tizen.NUI.DefaultBorder
     {
+
+        private static readonly Color mBackgroundColor = new Color(0, 0, 1, 0.3f);
+
         private static readonly string ResourcePath = Tizen.Applications.Application.Current.DirectoryInfo.Resource;
 
 //         private static readonly string MinimalizeIcon = ResourcePath + "/images/minimalize.png";
@@ -215,7 +218,7 @@ namespace SettingView
             this.borderView = borderView;
             borderView.CornerRadius = new Vector4(0.03f, 0.03f, 0.03f, 0.03f);
             borderView.CornerRadiusPolicy = VisualTransformPolicyType.Relative;
-            borderView.BackgroundColor = new Color(1, 1, 1, 0.2f);
+            borderView.BackgroundColor = mBackgroundColor;
         }
 
         public override void OnCreated(View borderView)
@@ -257,7 +260,7 @@ namespace SettingView
         {
             if (borderView != null)
             {
-                borderView.BackgroundColor = new Color(0, 1, 0, 0.3f); // 보더의 배경을 변경할 수 있습니다.
+                borderView.BackgroundColor = new Color(0, 1, 0, 0.3f);
             }
         }
 
@@ -273,7 +276,7 @@ namespace SettingView
                 {
                     hide = false;
                 }
-                borderView.BackgroundColor = new Color(1, 1, 1, 0.3f); //  리사이즈가 끝나면 보더의 색깔은 원래대로 돌려놓습니다.
+                borderView.BackgroundColor = mBackgroundColor;
                 base.OnResized(width, height);
                 UpdateIcons();
             }

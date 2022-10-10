@@ -33,18 +33,6 @@ namespace SettingMain
     class SettingContent_Fontsize : SettingContent_Base
     {
 
-#if false
-        public enum SystemSettingsFontSize
-        {
-            Small = 0,
-            Normal = 1,
-            Large = 2,
-            Huge = 3,
-            Giant = 4
-        }
-#endif
-
-
         public class FontsizeInfo
         {
             private readonly SystemSettingsFontSize Value;

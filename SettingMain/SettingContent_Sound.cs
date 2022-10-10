@@ -22,6 +22,7 @@ using Tizen.NUI.Components;
 using Tizen.Applications;
 
 using Tizen.System;
+using Tizen.Multimedia;
 
 using SettingAppTextResopurces.TextResources;
 
@@ -95,22 +96,51 @@ namespace SettingMain
             }
 
 
+            AudioVolume audioVolume = AudioManager.VolumeController;
+            var volumelevel = audioVolume.Level;
+            var maxvolumelevel = audioVolume.MaxLevel;
 
-
+            int volume = volumelevel[AudioVolumeType.Media];
+            Tizen.Log.Debug("NUI", "GET Media Volume : " + volume.ToString());
+            float curvolume = volume;
+            
             item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_MEDIA);
             content.Add(item);
-            var slideritem = SettingItemCreator.CreateSliderItem("MEDIA", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png", 100);
-            content.Add(slideritem);
+            var slideritem = SettingItemCreator.CreateSliderItem("MEDIA", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png", curvolume / maxvolumelevel[AudioVolumeType.Media]);
+            if (slideritem != null)
+            {
+                slideritem.mSlider.SlidingFinished += OnMediaSlidingFinished;
+
+                content.Add(slideritem);
+            }
+
+            volume = volumelevel[AudioVolumeType.Notification];
+            Tizen.Log.Debug("NUI", "GET Notification Volume : " + volume.ToString());
+            curvolume = volume;
 
             item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_NOTIFICATIONS);
             content.Add(item);
-            slideritem = SettingItemCreator.CreateSliderItem("MEDIA", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png", 100);
-            content.Add(slideritem);
+            slideritem = SettingItemCreator.CreateSliderItem("NOTI", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png", curvolume / maxvolumelevel[AudioVolumeType.Notification]);
+            if (slideritem != null)
+            {
+                slideritem.mSlider.SlidingFinished += OnNotiSlidingFinished;
+
+                content.Add(slideritem);
+            }
+
+            volume = volumelevel[AudioVolumeType.System];
+            Tizen.Log.Debug("NUI", "GET System Volume : " + volume.ToString());
+            curvolume = volume;
 
             item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_SYSTEM);
             content.Add(item);
-            slideritem = SettingItemCreator.CreateSliderItem("MEDIA", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png", 100);
-            content.Add(slideritem);
+            slideritem = SettingItemCreator.CreateSliderItem("SYSTEM", resPath + SETTING_ICON_PATH_CFG + "sound_slider_icon_default.png", curvolume / maxvolumelevel[AudioVolumeType.System]);
+            if (slideritem != null)
+            {
+                slideritem.mSlider.SlidingFinished += OnSystemSlidingFinished;
+
+                content.Add(slideritem);
+            }
 
             return content;
         }
@@ -156,5 +186,45 @@ namespace SettingMain
                 mNotificationSoundItem.SubText = SettingContent_NotificationSound.GetNotificationSoundName();
         }
 
+
+
+        /// ///////////////////////////
+
+        private static void OnMediaSlidingFinished(object sender, SliderSlidingFinishedEventArgs args)
+        {
+            var slider = sender as Slider;
+
+            AudioVolume audioVolume = AudioManager.VolumeController;
+            var volumelevel = audioVolume.Level;
+            var maxvolumelevel = audioVolume.MaxLevel;
+
+            int volume = (int)(slider.CurrentValue * maxvolumelevel[AudioVolumeType.Media]);
+            Tizen.Log.Debug("NUI", "SET Media Volume : " + volume.ToString());
+            volumelevel[AudioVolumeType.Media] = volume;
+        }
+        private static void OnNotiSlidingFinished(object sender, SliderSlidingFinishedEventArgs args)
+        {
+            var slider = sender as Slider;
+
+            AudioVolume audioVolume = AudioManager.VolumeController;
+            var volumelevel = audioVolume.Level;
+            var maxvolumelevel = audioVolume.MaxLevel;
+
+            int volume = (int)(slider.CurrentValue * maxvolumelevel[AudioVolumeType.Notification]);
+            Tizen.Log.Debug("NUI", "SET Notification Volume : " + volume.ToString());
+            volumelevel[AudioVolumeType.Notification] = volume;
+        }
+        private static void OnSystemSlidingFinished(object sender, SliderSlidingFinishedEventArgs args)
+        {
+            var slider = sender as Slider;
+
+            AudioVolume audioVolume = AudioManager.VolumeController;
+            var volumelevel = audioVolume.Level;
+            var maxvolumelevel = audioVolume.MaxLevel;
+
+            int volume = (int)(slider.CurrentValue * maxvolumelevel[AudioVolumeType.System]);
+            Tizen.Log.Debug("NUI", "SET System Volume : " + volume.ToString());
+            volumelevel[AudioVolumeType.System] = volume;
+        }
     }
 }
