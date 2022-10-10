@@ -32,3 +32,4 @@ install packaging/%{widgets_name}-%{version}.tpk %{buildroot}/%{preload_tpk_path
 %files
 %defattr(-,root,root,-)
 %{preload_tpk_path}/*
+%license LICENSE
