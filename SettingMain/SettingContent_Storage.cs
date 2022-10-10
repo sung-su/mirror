@@ -246,7 +246,7 @@ namespace SettingMain
                 }
                 if (mCacheItem) {
                     mCacheItem.SubText = GetMediaSizeString((double)sizeCache);
-                    mAppsItem.Hide();
+                    mCacheItem.Hide();
                     mCacheItem.Show();
                 }
             });
