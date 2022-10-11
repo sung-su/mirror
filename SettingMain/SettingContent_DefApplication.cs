@@ -30,19 +30,11 @@ namespace SettingMain
     class SettingContent_DefApplication : SettingContent_Base
     {
 
-        private DefaultLinearItem mFontsizeItem;
-        private DefaultLinearItem mFonttypeItem;
-
-
-
-
         public SettingContent_DefApplication()
             : base()
         {
             mTitle = Resources.IDS_ST_HEADER_DEFAULT_APPLICATIONS_ABB;
 
-            mFontsizeItem = null;
-            mFonttypeItem = null;
         }
 
         protected override View CreateContent(Window window)
@@ -70,7 +62,6 @@ namespace SettingMain
 
             content.Add(SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_LAUNCH_BY_DEFAULT));
             item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_HOME, appinfo.Label);
-            mFontsizeItem = item;
             if (item != null)
             {
                 item.Clicked += (o, e) =>
@@ -86,7 +77,6 @@ namespace SettingMain
 
             content.Add(SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_CLEAR_DEFAULTS));
             item = SettingItemCreator.CreateItemWithCheck("", Resources.IDS_ST_BODY_THERE_ARE_NO_APPS_SET_AS_DEFAULTS);
-            mFonttypeItem = item;
             if (item != null)
             {
                 item.Clicked += (o, e) =>

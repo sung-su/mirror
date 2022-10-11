@@ -241,13 +241,13 @@ namespace SettingMain
                 if (mAppsItem)
                 {
                     mAppsItem.SubText = GetMediaSizeString((double)sizeApp);
-                    mAppsItem.Hide();
-                    mAppsItem.Show();
+                    //mAppsItem.Hide();
+                    //mAppsItem.Show();
                 }
                 if (mCacheItem) {
                     mCacheItem.SubText = GetMediaSizeString((double)sizeCache);
-                    mCacheItem.Hide();
-                    mCacheItem.Show();
+                    //mCacheItem.Hide();
+                    //mCacheItem.Show();
                 }
             });
         }
@@ -435,15 +435,15 @@ namespace SettingMain
 
         private static string GetMediaSizeString(double size)
         {
-            size = size / 1024;
+            size /= 1024;
             if (size < 1024.0)
                 return string.Format("{0:0.0}", size) + " KB";
 
-            size = size / 1024;
+            size /= 1024;
             if (size < 1024.0)
                 return string.Format("{0:0.0}", size) + " MB";
 
-            size = size / 1024;
+            size /= 1024;
             return string.Format("{0:0.0}", size) + " GB";
         }
 

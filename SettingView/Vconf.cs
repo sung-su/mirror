@@ -20,9 +20,9 @@ using System.Collections.Generic;
 using System.Text;
 
 using System.Runtime.InteropServices;
-using static SettingMain.Interop.Vconf;
+using static SettingView.Interop.Vconf;
 
-namespace SettingMain
+namespace SettingView
 {
     /// <summary>
     /// This class provides the API to translate Tizen Error Codes to .NET exceptions.

@@ -99,7 +99,8 @@ namespace SettingMain
             picker.DisplayedValues = rc;
             picker.MinValue = 0;
             picker.MaxValue = PickerItems.Length - 1;
-            Tizen.Log.Debug("NUI", "DisplayedValues : " + picker.DisplayedValues);
+            picker.CurrentValue = GetDisplayLanguageIndex();
+            Tizen.Log.Debug("NUI", "DisplayedValues : " + picker.CurrentValue);
 
             var button = new Button()
             {
@@ -112,7 +113,7 @@ namespace SettingMain
 
                 Tizen.Log.Debug("NUI", String.Format("current : {0}", picker.CurrentValue));
 
-                SetDisplayLanguage(picker.CurrentValue);
+                SetDisplayLanguageIndex(picker.CurrentValue);
 
                 RequestWidgetPop();
             };
@@ -136,13 +137,32 @@ namespace SettingMain
             return content;
         }
 
-        void SetDisplayLanguage(int index)
+
+        public static int GetDisplayLanguageIndex()
+        {
+            string curlanguage = GetDisplayLanguage();
+
+            int i = 0;
+            foreach (DisplayLanguageInfo languageinfo in LanguageList)
+            {
+                if (languageinfo.GetLocale() == curlanguage)
+                    return i;
+                i++;
+            }
+
+            return -1;
+        }
+
+        private void SetDisplayLanguageIndex(int index)
+        {
+            SetDisplayLanguage(LanguageList[index].GetLocale());
+        }
+
+
+        void SetDisplayLanguage(string locale)
         {
             /* [control] set automatic - TRUE */
             Vconf.SetBool("db/setting/lang_automatic", false);
-
-            string locale = LanguageList[index].GetLocale();
-            
 
             /* [control] set vconf language */
             // system_settings_set_value_string(SYSTEM_SETTINGS_KEY_LOCALE_LANGUAGE, pnode->locale);
@@ -260,6 +280,14 @@ namespace SettingMain
 #endif
         }
 
+        public static string GetDisplayLanguage()
+        {
+            string locale = Vconf.GetString("db/menu_widget/language");
+            String[] qStrings = locale.Split('.');
+            locale = qStrings[0];
+
+            return locale;
+        }
         public static string GetDisplayLanguageName()
         {
             string title = "N/A";
@@ -271,9 +299,7 @@ namespace SettingMain
                 return Resources.IDS_ST_BODY_ANSWERINGMODE_AUTOMATIC;
             }
 
-            string locale = Vconf.GetString("db/menu_widget/language");
-            String[] qStrings = locale.Split('.');
-            locale = qStrings[0];
+            string locale = GetDisplayLanguage();
 
             foreach (DisplayLanguageInfo item in LanguageList)
             {

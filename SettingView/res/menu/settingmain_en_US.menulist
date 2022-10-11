@@ -1,0 +1,80 @@
+[
+  {
+    "Name": "Wi-Fi",
+    "LaunchType": 1,
+    "Id": "wifi-efl-ug",
+    "IconPath": "/opt/usr/globalapps/org.tizen.SettingView/res//icons/list_icon/settings_wifi.png"
+  },
+  {
+    "Name": "Bluetooth",
+    "LaunchType": 1,
+    "Id": "ug-bluetooth-efl",
+    "IconPath": "/opt/usr/globalapps/org.tizen.SettingView/res//icons/list_icon/settings_bluetooth.png"
+  },
+  {
+    "Name": "Sound",
+    "LaunchType": 0,
+    "Id": "sound@org.tizen.cssettings",
+    "IconPath": "/opt/usr/globalapps/org.tizen.SettingView/res//icons/list_icon/settings_sound_and_notifications.png"
+  },
+  {
+    "Name": "Display",
+    "LaunchType": 0,
+    "Id": "display@org.tizen.cssettings",
+    "IconPath": "/opt/usr/globalapps/org.tizen.SettingView/res//icons/list_icon/settings_display.png"
+  },
+  {
+    "Name": "Wallpapers",
+    "LaunchType": 0,
+    "Id": "wallpaper@org.tizen.cssetting-wallpaper",
+    "IconPath": "/opt/usr/globalapps/org.tizen.SettingView/res//icons/list_icon/settings_wallpapers.png"
+  },
+  {
+    "Name": "Accounts",
+    "LaunchType": 0,
+    "Id": "account@org.tizen.cssetting-account",
+    "IconPath": "/opt/usr/globalapps/org.tizen.SettingView/res//icons/list_icon/settings_account.png"
+  },
+  {
+    "Name": "Privacy",
+    "LaunchType": 0,
+    "Id": "privacy@org.tizen.cssetting-privacy",
+    "IconPath": "/opt/usr/globalapps/org.tizen.SettingView/res//icons/list_icon/settings_privacy_and_safety.png"
+  },
+  {
+    "Name": "Apps",
+    "LaunchType": 0,
+    "Id": "apps@org.tizen.cssettings",
+    "IconPath": "/opt/usr/globalapps/org.tizen.SettingView/res//icons/list_icon/settings_applications.png"
+  },
+  {
+    "Name": "Storage",
+    "LaunchType": 0,
+    "Id": "storage@org.tizen.cssettings",
+    "IconPath": "/opt/usr/globalapps/org.tizen.SettingView/res//icons/list_icon/settings_storage.png"
+  },
+  {
+    "Name": "Language and input",
+    "LaunchType": 0,
+    "Id": "languageinput@org.tizen.cssettings",
+    "IconPath": "/opt/usr/globalapps/org.tizen.SettingView/res//icons/list_icon/settings_language_and_input.png"
+  },
+  {
+    "Name": "Date and time",
+    "LaunchType": 0,
+    "Id": "datetime@org.tizen.cssettings",
+    "IconPath": "/opt/usr/globalapps/org.tizen.SettingView/res//icons/list_icon/settings_date_and_time.png"
+  },
+  {
+    "Name": "Accessibility",
+    "LaunchType": 0,
+    "Id": "accessibility@org.tizen.cssetting-accessibility",
+    "IconPath": "/opt/usr/globalapps/org.tizen.SettingView/res//icons/list_icon/settings_accessibility.png"
+  },
+  {
+    "Name": "About device",
+    "LaunchType": 0,
+    "Id": "aboutdevice@org.tizen.cssettings",
+    "IconPath": "/opt/usr/globalapps/org.tizen.SettingView/res//icons/list_icon/settings_about_device.png"
+  }
+]

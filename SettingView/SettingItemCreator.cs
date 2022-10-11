@@ -151,8 +151,6 @@ namespace SettingView
                 Tizen.Log.Debug("NUI", "item is clicked!\n");
             };
 
-
-
             return item;
         }
 
@@ -216,8 +214,6 @@ namespace SettingView
 
                 Tizen.Log.Debug("NUI", "item is clicked!\n");
             };
-
-
 
             return item;
         }
