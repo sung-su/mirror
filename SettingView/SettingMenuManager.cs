@@ -26,6 +26,7 @@ using System.IO;
 
 using static SettingView.Vconf;
 
+using System.Text;
 using System.Text.Json;
 
 namespace SettingView
@@ -339,7 +340,7 @@ namespace SettingView
                 string jsonString = JsonSerializer.Serialize(menulist, options);
                 Tizen.Log.Debug("NUI", "JSON : " + jsonString);
 
-                File.WriteAllText(pathString, jsonString);
+                File.WriteAllText(pathString, jsonString, Encoding.UTF8);
 
             }
             catch (System.IO.IOException e)
