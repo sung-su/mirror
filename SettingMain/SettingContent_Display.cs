@@ -23,6 +23,8 @@ using Tizen.Applications;
 
 using Tizen.System;
 
+using System.Runtime.InteropServices;
+
 using SettingAppTextResopurces.TextResources;
 
 namespace SettingMain
@@ -214,9 +216,8 @@ namespace SettingMain
             int brightness = (int)(slider.CurrentValue * (BRIGHTNESS_MAX - BRIGHTNESS_MIN)) + BRIGHTNESS_MIN;
             Tizen.Log.Debug("NUI", "SET brightness : " + brightness.ToString());
             //VCONFKEY_SETAPPL_LCD_BRIGHTNESS
-            Vconf.SetInt("db/setting/Brightness", brightness);
-
-            
+            //Vconf.SetInt("db/setting/Brightness", brightness);
+            Interop.Deviced.Display_SetBrightnessWithSetting(brightness);
         }
 
     }

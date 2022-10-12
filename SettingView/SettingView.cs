@@ -15,6 +15,7 @@
  */
 
 using System;
+using Tizen.System;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
@@ -169,10 +170,21 @@ namespace SettingView
             return content;
         }
 
+        // Presets for Window Size (unit : percent)
+        private const int screenBottomMargin = 10;
+        private const int winWidthRatio = 70;
+        private const int winHeightRatio = 80;
         static void Main(string[] args)
         {
             var appCustomBorder = new SettingViewBorder();
-            var app = new Program("", new Size2D(800, 500), new Position2D(300, 50), appCustomBorder);
+
+            Information.TryGetValue<int>("http://tizen.org/feature/screen.width", out int screenWidth);
+            Information.TryGetValue<int>("http://tizen.org/feature/screen.height", out int screenHeight);
+
+            int availHeight = screenHeight * (100- screenBottomMargin) / 100;
+            Size2D winSize = new Size2D(screenWidth * winHeightRatio / 100, availHeight * winWidthRatio / 100);
+            Position2D winPos = new Position2D((screenWidth - winSize.Width)/2, (availHeight - winSize.Height) / 2);
+            var app = new Program("", winSize, winPos, appCustomBorder);
 
             app.Run(args);
         }
