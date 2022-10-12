@@ -28,8 +28,7 @@ using SettingAppTextResopurces.TextResources;
 namespace SettingMain
 {
 
-
-    class SettingContent_DisplayLanguage : SettingContent_Base
+    class SettingContent_DisplayLanguage_Temp : SettingContent_Base
     {
         public class DisplayLanguageInfo
         {
@@ -74,67 +73,66 @@ namespace SettingMain
             new DisplayLanguageInfo("ko_KR", "한국어", "Korean", "450")
         };
 
-        private string[] PickerItems;
-        public SettingContent_DisplayLanguage()
+        public SettingContent_DisplayLanguage_Temp()
             : base()
         {
 
+            mTitle = Resources.IDS_ST_HEADER_DISPLAY_LANGUAGE;
 
-            mTitle = Resources.IDS_ST_BUTTON_BACK;
-
-            PickerItems = new string[LanguageList.Length];
-            for (int i = 0; i < LanguageList.Length; i++)
-            {
-                PickerItems[i] = LanguageList[i].GetName();
-            }
         }
 
         protected override View CreateContent(Window window)
         {
-            var picker = new Picker()
+            // Content of the page which scrolls items vertically.
+            var content = new ScrollableBase()
             {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                //HeightSpecification = LayoutParamPolicies.MatchParent,
-            };
-
-            ReadOnlyCollection<string> rc = new ReadOnlyCollection<string>(PickerItems);
-            picker.DisplayedValues = rc;
-            picker.MinValue = 0;
-            picker.MaxValue = PickerItems.Length - 1;
-            picker.CurrentValue = GetDisplayLanguageIndex();
-            Tizen.Log.Debug("NUI", "DisplayedValues : " + picker.CurrentValue);
-
-            var button = new Button()
-            {
-                // WidthSpecification = LayoutParamPolicies.MatchParent,
-                // HeightSpecification = LayoutParamPolicies.MatchParent,
-                Text = Resources.IDS_ST_BUTTON_OK
-            };
-            button.Clicked += (bo, be) =>
-            {
-
-                Tizen.Log.Debug("NUI", String.Format("current : {0}", picker.CurrentValue));
-
-                SetDisplayLanguageIndex(picker.CurrentValue);
-
-                RequestWidgetPop();
-            };
-
-
-            var content = new View()
-            {
-
                 WidthSpecification = LayoutParamPolicies.MatchParent,
                 HeightSpecification = LayoutParamPolicies.MatchParent,
+                ScrollingDirection = ScrollableBase.Direction.Vertical,
+                HideScrollbar = false,
                 Layout = new LinearLayout()
                 {
-                    HorizontalAlignment = HorizontalAlignment.Center,
                     LinearOrientation = LinearLayout.Orientation.Vertical,
                 },
             };
-            content.Add(new TextLabel(Resources.IDS_ST_HEADER_DISPLAY_LANGUAGE));
-            content.Add(picker);
-            content.Add(button);
+
+            DefaultLinearItem item = null;
+            
+            int indexCurrent = GetDisplayLanguageIndex();
+
+            item = SettingItemCreator.CreateItemWithCheck(LanguageList[0].GetName());
+            if (item != null)
+            {
+                if (indexCurrent == 0)
+                {
+                    item.Label.TextColor = Color.DarkRed;
+                }
+                item.Clicked += (o, e) =>
+                {
+                    SetDisplayLanguageIndex(0);
+
+                    RequestWidgetPop();
+                };
+
+                content.Add(item);
+            }
+
+            item = SettingItemCreator.CreateItemWithCheck(LanguageList[1].GetName());
+            if (item != null)
+            {
+                if (indexCurrent == 1)
+                {
+                    item.Label.TextColor = Color.DarkRed;
+                }
+                item.Clicked += (o, e) =>
+                {
+                    SetDisplayLanguageIndex(1);
+
+                    RequestWidgetPop();
+                };
+
+                content.Add(item);
+            }
 
             return content;
         }
