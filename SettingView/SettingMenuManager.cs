@@ -250,53 +250,7 @@ namespace SettingView
                 if (widgetAction.Equals("PUSH"))
                 {
                     Tizen.Log.Debug("NUI", "WIDGET_ACTION : PUSH!\n");
-
-                    if (Int32.TryParse(widgetWidth, out int width) && Int32.TryParse(widgetHeight, out int height))
-                    {
-                        Bundle bundle2 = new Bundle();
-                        bundle2.AddItem(" ", " ");
-                        String encodedBundle2 = bundle2.Encode();
-
-                        WidgetView widgetview = WidgetViewManager.Instance.AddWidget(widgetID, encodedBundle2, width, height, 0.0f);
-                        if (widgetview != null)
-                        {
-                            widgetview.WidgetContentUpdated += OnWidgetContentUpdatedCB;
-                            widgetview.Preview = false;
-                            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(new ContentPage() { Content = widgetview });
-                        }
-                    }
-#if false
-                    if (widgetPage.Equals("CONTENT_PAGE"))
-                    {
-                        if (widgetID.Equals("secondPage@NUISettingsReset"))
-                        {
-                            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(new ContentPage() { Content = secondPageWidgetView });
-                        }
-                        else if (widgetID.Equals("thirdPage@NUISettingsReset"))
-                        {
-                            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(new ContentPage() { Content = thirdPageWidgetView });
-                        }
-                        else if (widgetID.Equals("fourthPage@NUISettingsReset"))
-                        {
-                            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(new ContentPage() { Content = fourthPageWidgetView });
-                        }
-                    }
-                    else if (widgetPage.Equals("DIALOG_PAGE"))
-                    {
-                        if (widgetID.Equals("secondPage@NUISettingsReset"))
-                        {
-                            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(new DialogPage() { Content = secondPageWidgetView });
-                        }
-                        else if (widgetID.Equals("thirdPage@NUISettingsReset"))
-                        {
-                            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(new DialogPage() { Content = thirdPageWidgetView });
-                        }
-                        else if (widgetID.Equals("fourthPage@NUISettingsReset"))
-                        {
-                            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(new DialogPage() { Content = fourthPageWidgetView });
-                        }
-                    }
-#endif
+                    PushWidget(NUIApplication.GetDefaultWindow(), widgetID);
                 }
                 else if (widgetAction.Equals("POP"))
                 {
