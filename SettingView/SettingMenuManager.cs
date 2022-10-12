@@ -94,7 +94,7 @@ namespace SettingView
         /////////////////////////////////////////////////////////////
         /// Build MenuList with Table
 
-        public static void BuildMenuList(View content, SettingMenuInfo[] menulist, Window window)
+        public static void BuildMenuList(View content, SettingMenuInfo[] menulist, Window window, string respath)
         {
 #if false
             mWidgetViewPool = new Collection<WidgetViewInfo>();
@@ -105,7 +105,7 @@ namespace SettingView
 
             foreach (var menu in menulist)
             {
-                item = SettingItemCreator.CreateItemWithIcon(menu.Name, menu.IconPath);
+                item = SettingItemCreator.CreateItemWithIcon(menu.Name, respath + menu.IconPath);
                 if (item != null)
                 {
                     item.Clicked += (o, e) =>
