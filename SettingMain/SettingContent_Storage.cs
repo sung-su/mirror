@@ -447,9 +447,6 @@ namespace SettingMain
             return string.Format("{0:0.0}", size) + " GB";
         }
 
-
-
-
         protected override void OnCreate(string contentInfo, Window window)
         {
             base.OnCreate(contentInfo, window);

@@ -20,10 +20,7 @@ using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 using Tizen.Applications;
-
 using Tizen.System;
-
-using System.Runtime.InteropServices;
 
 using SettingAppTextResopurces.TextResources;
 
@@ -34,36 +31,30 @@ namespace SettingMain
         private static readonly string[] mIconPath  = {
             "brightness_icon/settings_ic_brightness_00.png",
             "brightness_icon/settings_ic_brightness_01.png",
-            "brightness_icon/settings_ic_brightness_02.png",
-            "brightness_icon/settings_ic_brightness_03.png",
-            "brightness_icon/settings_ic_brightness_04.png",
-            "brightness_icon/settings_ic_brightness_05.png",
-            "brightness_icon/settings_ic_brightness_06.png",
-            "brightness_icon/settings_ic_brightness_07.png",
-            "brightness_icon/settings_ic_brightness_08.png",
-            "brightness_icon/settings_ic_brightness_09.png",
-            "brightness_icon/settings_ic_brightness_10.png",
-            "brightness_icon/settings_ic_brightness_11.png"
         };
-        static void GetBrightnessSliderIcon(int level, out string iconpath) 
+        static void GetBrightnessSliderIcon(int brightness, out string iconpath) 
         {
+            int iconlevel = mIconPath.Length;
 
-            int mapped_level;
-            if (level <= 1)
-		        mapped_level = 0;
-	        else if (level >= 100)
-		        mapped_level = 11;
-	        else if (level > 1 && level <= 9)
-		        mapped_level = 1;
-	        else
-		        mapped_level = (level / 10);
-
-	        Tizen.Log.Debug("NUI", "mapped_level:"+mapped_level.ToString());
+            int mapped_level = 0;
+            if (iconlevel > 1)
+            {
+                int minbrightness = 1;
+                int maxbrightness = Display.Displays[0].MaxBrightness;
+                if (brightness > minbrightness)
+                {
+                    int levelcount = maxbrightness - minbrightness;
+                    int level = brightness - (minbrightness + 1);
+                    mapped_level = (level * (iconlevel - 1) / levelcount) + 1;
+                }
+            }
+            Tizen.Log.Debug("NUI", "mapped_level:" + mapped_level.ToString());
 
             iconpath = resPath + SETTING_ICON_PATH_CFG + mIconPath[mapped_level];
         }
 
 
+        private SliderItem mBrightnessItem;
         private DefaultLinearItem mFontItem;
         private DefaultLinearItem mScreenTimeoutItem;
 
@@ -72,6 +63,7 @@ namespace SettingMain
         {
             mTitle = Resources.IDS_ST_HEADER_DISPLAY;
 
+            mBrightnessItem = null;
             mFontItem = null;
             mScreenTimeoutItem = null;
         }
@@ -94,27 +86,29 @@ namespace SettingMain
 
             DefaultLinearItem item = null;
 
-            int level = 50;
+            if (Display.NumberOfDisplays > 0)
+            {
 
-            GetBrightnessSliderIcon(level, out string iconpath);
+                int brightness = Display.Displays[0].Brightness;
+                int maxbrightness = Display.Displays[0].MaxBrightness;
 
+                GetBrightnessSliderIcon(brightness, out string iconpath);
 
-            //VCONFKEY_SETAPPL_LCD_BRIGHTNESS
-            int brightness = Vconf.GetInt("db/setting/Brightness");
+                Tizen.Log.Debug("NUI", "GET brightness : " + brightness.ToString());
 
-            Tizen.Log.Debug("NUI", "GET brightness : " + brightness.ToString());
+                item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING);
+                var slideritem = SettingItemCreator.CreateSliderItem("BRIGHTNESS", iconpath, (brightness*1.0f)/ maxbrightness);
+                mBrightnessItem = slideritem;
+                if (slideritem != null)
+                {
+                    slideritem.mSlider.ValueChanged += OnValueChanged;
+                    slideritem.mSlider.SlidingStarted += OnSlidingStarted;
+                    slideritem.mSlider.SlidingFinished += OnSlidingFinished;
 
-            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING);
-            var slideritem = SettingItemCreator.CreateSliderItem("BRIGHTNESS", iconpath, brightness / 100.0f);
-            if (slideritem != null) {
-                slideritem.mSlider.ValueChanged += OnValueChanged;
-                slideritem.mSlider.SlidingStarted += OnSlidingStarted;
-                slideritem.mSlider.SlidingFinished += OnSlidingFinished;
-
-                content.Add(slideritem);
+                    content.Add(slideritem);
+                }
             }
-
-
+            
             SystemSettingsFontSize fontSize = SystemSettings.FontSize;
             string fontType = SystemSettings.FontType;
 
@@ -197,27 +191,33 @@ namespace SettingMain
         }
 
 
-        private static void OnValueChanged(object sender, SliderValueChangedEventArgs args)
+        private void OnValueChanged(object sender, SliderValueChangedEventArgs args)
         {
         }
 
-        private static void OnSlidingStarted(object sender, SliderSlidingStartedEventArgs args)
+        private void OnSlidingStarted(object sender, SliderSlidingStartedEventArgs args)
         {
         }
 
-        private static void OnSlidingFinished(object sender, SliderSlidingFinishedEventArgs args)
+        private void OnSlidingFinished(object sender, SliderSlidingFinishedEventArgs args)
         {
             var slider = sender as Slider;
 
+            int minbrightness = 1;
+            int maxbrightness = Display.Displays[0].MaxBrightness;
+                        
+            int brightness = (int)(slider.CurrentValue * (maxbrightness- minbrightness)) + minbrightness;
+            if (brightness >= maxbrightness) brightness = maxbrightness;
 
-            int BRIGHTNESS_MIN = 1;
-            int BRIGHTNESS_MAX = 100;
+            Tizen.Log.Debug("NUI", string.Format("maxbrightness : {0}, brightness : {1}", maxbrightness, brightness));
 
-            int brightness = (int)(slider.CurrentValue * (BRIGHTNESS_MAX - BRIGHTNESS_MIN)) + BRIGHTNESS_MIN;
-            Tizen.Log.Debug("NUI", "SET brightness : " + brightness.ToString());
-            //VCONFKEY_SETAPPL_LCD_BRIGHTNESS
-            //Vconf.SetInt("db/setting/Brightness", brightness);
-            Interop.Deviced.Display_SetBrightnessWithSetting(brightness);
+            if (mBrightnessItem != null)
+            {
+                GetBrightnessSliderIcon(brightness, out string iconpath);
+                mBrightnessItem.mIcon.SetImage(iconpath);
+           }
+
+            Display.Displays[0].Brightness = brightness;
         }
 
     }
