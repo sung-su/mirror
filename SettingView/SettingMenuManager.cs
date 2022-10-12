@@ -160,9 +160,9 @@ namespace SettingView
             if (widgetview == null)
                 widgetview = WidgetViewManager.Instance.AddWidget(widgetid, encodedBundle, window.Size.Width, window.Size.Height, 0.0f);
 #else
+            Tizen.Log.Debug("NUI", string.Format("[SettingView]  window.Size.Width : {0}, window.Size.Height : {1}", window.Size.Width, window.Size.Height));
             WidgetView widgetview = WidgetViewManager.Instance.AddWidget(widgetid, encodedBundle, window.Size.Width, window.Size.Height, 0.0f);
 #endif
-
             if (widgetview != null)
             {
                 if (string.IsNullOrEmpty(widgetview.InstanceID))

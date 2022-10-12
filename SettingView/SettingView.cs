@@ -104,7 +104,12 @@ namespace SettingView
         {
             if (e.Key.State == Key.StateType.Down && (e.Key.KeyPressedName == "XF86Back" || e.Key.KeyPressedName == "Escape"))
             {
-                Exit();
+                var window = sender as Window;
+                Navigator navigator = window.GetDefaultNavigator();
+                if (navigator.PageCount > 1)
+                    SettingMenuManager.PopWidget(window);
+                else
+                    Exit();
             }
         }
         private void OnTouchEvent(object source, Window.TouchEventArgs e)

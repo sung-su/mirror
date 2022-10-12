@@ -238,18 +238,14 @@ namespace SettingMain
                 long sizeCache = sizeinfo.CacheSize;
                 Tizen.Log.Debug("NUI", "GetAppCacheSize() Task complete!!,  " + sizeApp.ToString() + ", " + sizeCache.ToString());
 
-                if (mAppsItem)
+                if (mAppsItem != null)
                 {
                     mAppsItem.SubText = GetMediaSizeString((double)sizeApp);
-                    //mAppsItem.Hide();
-                    //mAppsItem.Show();
                 }
-                if (mCacheItem) {
+                if (mCacheItem != null) {
                     mCacheItem.SubText = GetMediaSizeString((double)sizeCache);
-                    //mCacheItem.Hide();
-                    //mCacheItem.Show();
                 }
-            });
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         public void VconfChanged_SDCardStatus(IntPtr node, IntPtr userData)

@@ -35,7 +35,7 @@ namespace SettingMain
         public SliderItem()
             : base()
         {
-            
+            WidthSpecification = LayoutParamPolicies.MatchParent;
         }
 
     }
@@ -266,7 +266,6 @@ namespace SettingMain
 
             var item = new SliderItem
             {
-                //WidthResizePolicy = ResizePolicyType.FillToParent,
                 Name = name,
                 Layout = linearLayout
             };
@@ -282,6 +281,8 @@ namespace SettingMain
 
                 item.mSlider = new Slider()
                 {
+                    WidthResizePolicy = ResizePolicyType.FillToParent,
+
                     Margin = new Extents(10, 10, 5,5),
 
                     TrackThickness = 5,
@@ -296,15 +297,6 @@ namespace SettingMain
 
                 };
                 item.Add(item.mSlider);
-
-#if true
-                var rightpadding = new View()
-                {
-                    Size2D = new Size2D(10, 5),
-                };
-                item.Add(rightpadding);
-#endif
-
             }
             return item;
         }
