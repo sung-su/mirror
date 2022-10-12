@@ -165,6 +165,9 @@ namespace SettingView
 #endif
             if (widgetview != null)
             {
+                widgetview.WidthSpecification = LayoutParamPolicies.MatchParent;
+                widgetview.HeightSpecification = LayoutParamPolicies.MatchParent;
+
                 if (string.IsNullOrEmpty(widgetview.InstanceID))
                 {
                     Tizen.Log.Debug("NUI", widgetid + " is not installed!!");
