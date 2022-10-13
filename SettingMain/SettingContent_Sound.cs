@@ -31,8 +31,8 @@ namespace SettingMain
     class SettingContent_Sound : SettingContent_Base
     {
 
-        private DefaultLinearItem mSoundModeItem;
-        private DefaultLinearItem mNotificationSoundItem;
+        private static DefaultLinearItem mSoundModeItem;
+        private static DefaultLinearItem mNotificationSoundItem;
 
         public SettingContent_Sound()
             : base()
@@ -155,6 +155,8 @@ namespace SettingMain
 
 #if false
             Tizen.System.SystemSettings.SoundNotificationChanged += SystemSettings_NotificationSoundChanged;
+#else
+            Vconf.NotifyKeyChanged(SettingContent_NotificationSound.keyNotificationSound, VconfChanged_NotificationSound);
 #endif
         }
 
@@ -165,28 +167,36 @@ namespace SettingMain
 
 #if false
             Tizen.System.SystemSettings.SoundNotificationChanged -= SystemSettings_NotificationSoundChanged;
+#else
+            Vconf.IgnoreKeyChanged(SettingContent_NotificationSound.keyNotificationSound, VconfChanged_NotificationSound);
 #endif
             base.OnTerminate(contentInfo, type);
         }
 
-        private void SystemSettings_SoundSilentModeSettingChanged(object sender, SoundSilentModeSettingChangedEventArgs e)
+        private static void SystemSettings_SoundSilentModeSettingChanged(object sender, SoundSilentModeSettingChangedEventArgs e)
         {
             if (mSoundModeItem != null)
                 mSoundModeItem.SubText = SettingContent_Soundmode.GetSoundmodeName();
         }
-        private void SystemSettings_VibrationChanged(object sender, VibrationChangedEventArgs e)
+        private static void SystemSettings_VibrationChanged(object sender, VibrationChangedEventArgs e)
         {
             if (mSoundModeItem != null)
                 mSoundModeItem.SubText = SettingContent_Soundmode.GetSoundmodeName();
         }
 
-        private void SystemSettings_NotificationSoundChanged(object sender, SoundNotificationChangedEventArgs e)
+#if false
+        private static void SystemSettings_NotificationSoundChanged(object sender, SoundNotificationChangedEventArgs e)
         {
             if (mNotificationSoundItem != null)
                 mNotificationSoundItem.SubText = SettingContent_NotificationSound.GetNotificationSoundName();
         }
-
-
+#else
+        public static void VconfChanged_NotificationSound(IntPtr node, IntPtr userData)
+        {
+            if (mNotificationSoundItem != null)
+                mNotificationSoundItem.SubText = SettingContent_NotificationSound.GetNotificationSoundName();
+        }
+#endif
 
         /// ///////////////////////////
 

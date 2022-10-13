@@ -79,12 +79,29 @@ namespace SettingMain
 
 
 #if true
-            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_MBODY_BLUETOOTH_ADDRESS, Tizen.Network.Bluetooth.BluetoothAdapter.Address);
+            string addressBT = Resources.IDS_ST_HEADER_UNAVAILABLE;
+            try
+            {
+                if (Tizen.Network.Bluetooth.BluetoothAdapter.IsBluetoothEnabled)
+                    addressBT = Tizen.Network.Bluetooth.BluetoothAdapter.Address;
+                else
+                    addressBT = Resources.IDS_ST_SBODY_DISABLED;
+            }
+            catch (Exception e) {
+            }
+
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_MBODY_BLUETOOTH_ADDRESS, addressBT);
             content.Add(item);
 #endif
 
 #if true
-            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_WI_FI_MAC_ADDRESS, Tizen.Network.WiFi.WiFiManager.MacAddress);
+            string addressMac = Resources.IDS_ST_HEADER_UNAVAILABLE;
+            if (Tizen.Network.WiFi.WiFiManager.IsActive)
+                addressMac = Tizen.Network.WiFi.WiFiManager.MacAddress;
+            else
+                addressMac = Resources.IDS_ST_SBODY_DISABLED;
+
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_WI_FI_MAC_ADDRESS, addressMac);
             content.Add(item);
 #endif
             IEnumerator<Storage> storages = StorageManager.Storages.GetEnumerator();
@@ -100,12 +117,12 @@ namespace SettingMain
             content.Add(item);
 
 
-
+#if false
             // To do : Caluacate CPU Usage
             // Tizen.System.ProcessCpuUsage
             item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_CPU_USAGE, Resources.IDS_ST_HEADER_UNAVAILABLE);
             content.Add(item);
-
+#endif
             return content;
         }
     }

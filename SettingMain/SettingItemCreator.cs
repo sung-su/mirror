@@ -51,11 +51,11 @@ namespace SettingMain
                 {
                     LinearOrientation = LinearLayout.Orientation.Horizontal,
                     VerticalAlignment = VerticalAlignment.Center,
-                    CellPadding = new Size2D(10, 10)
-
                 },
+                WidthSpecification = LayoutParamPolicies.MatchParent,
                 Padding = new Extents(8, 0, 5, 5),
             };
+
 
             TextLabel label = new TextLabel(text)
             {

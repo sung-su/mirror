@@ -88,8 +88,16 @@ namespace SettingMain
 
             if (Display.NumberOfDisplays > 0)
             {
+                int brightness = 0;
+                try
+                {
+                    brightness = Display.Displays[0].Brightness;
+                }
+                catch (Exception e)
+                {
+                    Tizen.Log.Debug("NUI", string.Format("error :({0}) {1} ", e.GetType().ToString(), e.Message));
+                }
 
-                int brightness = Display.Displays[0].Brightness;
                 int maxbrightness = Display.Displays[0].MaxBrightness;
 
                 GetBrightnessSliderIcon(brightness, out string iconpath);
@@ -217,7 +225,14 @@ namespace SettingMain
                 mBrightnessItem.mIcon.SetImage(iconpath);
            }
 
-            Display.Displays[0].Brightness = brightness;
+            try
+            {
+                Display.Displays[0].Brightness = brightness;
+            }
+            catch (Exception e)
+            {
+                Tizen.Log.Debug("NUI", string.Format("error :({0}) {1} ", e.GetType().ToString(), e.Message));
+            }
         }
 
     }

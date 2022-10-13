@@ -61,6 +61,8 @@ namespace SettingMain
                 content.Add(item);
             }
 
+            content.Add(SettingItemCreator.CreateItemStatic(""));
+            content.Add(SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_KEYBOARD));
 
             item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_KEYBOARD);
             if (item != null)
@@ -72,6 +74,8 @@ namespace SettingMain
                 content.Add(item);
             }
 
+            content.Add(SettingItemCreator.CreateItemStatic(""));
+            content.Add(SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_INPUT_ASSISTANCE));
 
             item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_AUTOFILL_SERVICE);
             if (item != null)
@@ -83,8 +87,9 @@ namespace SettingMain
                 content.Add(item);
             }
 
-
-
+            content.Add(SettingItemCreator.CreateItemStatic(""));
+            content.Add(SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_SPEECH));
+            
             item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_VOICE_BODY_VOICE_CONTROL_ABB2);
             if (item != null)
             {

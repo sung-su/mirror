@@ -23,23 +23,46 @@ using Tizen.NUI.Components;
 using Tizen.Applications;
 using System.Collections.ObjectModel;
 using Tizen.System;
+using Tizen.Multimedia;
 
 using SettingAppTextResopurces.TextResources;
 
 namespace SettingMain
 {
 
-    
-
     class SettingContent_NotificationSound : SettingContent_Base
     {
+        public const string keyNotificationSound = "db/setting/sound/noti/msg_ringtone_path";
 
-        static public string GetFileName(string value)
+        public static string SettingMediaBasename(string path)
         {
-            String[] folders = value.Split('/');
+            if (string.IsNullOrEmpty(path))
+                return Resources.IDS_ST_BODY_PHONEPROFILES_SILENT;
+
+            string title = "";
+            try
+            {
+                var extractor = new Tizen.Multimedia.MetadataExtractor(path);
+                Metadata metadata = extractor.GetMetadata();
+                title = metadata.Title;
+            }
+            catch (Exception e){
+                Tizen.Log.Debug("NUI", string.Format("error :({0}) {1} ", e.GetType().ToString(), e.Message));
+            }
+
+            if (!string.IsNullOrEmpty(title))
+                return title;
+
+            return GetFileName(path);
+        }
+
+
+        private static string GetFileName(string path)
+        {
+            String[] folders = path.Split('/');
             int foldercount = folders.Length;
             if (foldercount > 0) return folders[foldercount - 1];
-            return value;
+            return path;
         }
 
 
@@ -51,6 +74,7 @@ namespace SettingMain
         {
             SoundList = new ArrayList();
 
+            SoundList.Add("");  // Silent
 
             string sharedData = "/opt/usr/data";
             string path = sharedData + "/settings/Alerts";
@@ -94,7 +118,7 @@ namespace SettingMain
             for (int i = 0; i < SoundList.Count; i++)
             {
                 string path = SoundList[i] as string;
-                PickerItems[i] = GetFileName(path);
+                PickerItems[i] = SettingMediaBasename(path);
             }
         }
 
@@ -138,7 +162,9 @@ namespace SettingMain
                 Layout = new LinearLayout()
                 {
                     HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
                     LinearOrientation = LinearLayout.Orientation.Vertical,
+                    
                 },
             };
             content.Add(new TextLabel(Resources.IDS_ST_BODY_NOTIFICATION));
@@ -173,20 +199,17 @@ namespace SettingMain
 
         private static void SetNotificationSound(string notificationsound)
         {
-            Vconf.SetString("db/setting/sound/noti/msg_ringtone_path", notificationsound);
+            Vconf.SetString(keyNotificationSound, notificationsound);
         }
 
         public static string GetNotificationSound()
         {
-            return Vconf.GetString("db/setting/sound/noti/msg_ringtone_path");
+            return Vconf.GetString(keyNotificationSound);
         }
         public static string GetNotificationSoundName()
         {
             string path = GetNotificationSound();
-            String[] folders = path.Split('/');
-            int foldercount = folders.Length;
-            if (foldercount > 0) return folders[foldercount - 1];
-            return path;
+            return SettingMediaBasename(path);
         }
     }
 }

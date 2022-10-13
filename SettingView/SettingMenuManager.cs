@@ -198,7 +198,32 @@ namespace SettingView
 
         public static void PopWidget(Window window)
         {
-            window.GetDefaultNavigator().Pop();
+            var page = window.GetDefaultNavigator().Pop();
+
+            ContentPage contentpage = page as ContentPage;
+            if (contentpage != null) {
+                var view = contentpage.Content;
+                WidgetView widgetview = view as WidgetView;
+                if (widgetview != null)
+                    WidgetViewManager.Instance.RemoveWidget(widgetview);
+                else
+                    Tizen.Log.Debug("NUI", "This View is Not a WidgetView");
+            }
+            else
+            {
+                DialogPage dialogpage = page as DialogPage;
+                if (dialogpage != null)
+                {
+                    var view = dialogpage.Content;
+                    WidgetView widgetview = view as WidgetView;
+                    if (widgetview != null)
+                        WidgetViewManager.Instance.RemoveWidget(widgetview);
+                    else
+                        Tizen.Log.Debug("NUI", "This View is Not a WidgetView");
+                }
+                else
+                    Tizen.Log.Debug("NUI", "This Page is Not a ContentPage or a DialogPage");
+            }
 
             LastestPushWidgetId = "";
         }
@@ -249,8 +274,16 @@ namespace SettingView
             {
                 if (widgetAction.Equals("PUSH"))
                 {
-                    Tizen.Log.Debug("NUI", "WIDGET_ACTION : PUSH!\n");
-                    PushWidget(NUIApplication.GetDefaultWindow(), widgetID);
+                    if (widgetID.Equals("renamedevice@org.tizen.cssettings"))
+                    {
+                        Tizen.Log.Debug("NUI", "WIDGET_ACTION : RENAMEDEVICE!\n");
+                        PushRenameContents(NUIApplication.GetDefaultWindow());
+                    }
+                    else
+                    {
+                        Tizen.Log.Debug("NUI", "WIDGET_ACTION : PUSH!\n");
+                        PushWidget(NUIApplication.GetDefaultWindow(), widgetID);
+                    }
                 }
                 else if (widgetAction.Equals("POP"))
                 {
@@ -309,8 +342,6 @@ namespace SettingView
         }
 
 
-#if true
-
         public static SettingMenuInfo[] ReadMenuList(string folderpath, string name)
         {
             string locale = Vconf.GetString("db/menu_widget/language");
@@ -344,7 +375,24 @@ namespace SettingView
 
             return menulist;
         }
-#endif
+
+        private static void PushRenameContents(Window window)
+        {
+            Navigator navigator = window.GetDefaultNavigator();
+
+            ContentPage renamepage = new SettingRenameDevicePage(window) {
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                HeightSpecification = LayoutParamPolicies.MatchParent,
+
+                Position = new Position(0, 0),
+            };
+
+            Tizen.Log.Debug("NUI", String.Format($"RenameContent Push"));
+
+
+            navigator.Push(renamepage);
+
+        }
 
     }
 }

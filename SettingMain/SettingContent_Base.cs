@@ -88,21 +88,22 @@ namespace SettingMain
 
         protected string mTitle;
         protected ContentPage mPage;
+        Bundle mBundle;
 
         public SettingContent_Base()
             : base()
         {
             mWindow = null;
             mPage = null;
+            mBundle = null;
         }
 
         protected override void OnCreate(string contentInfo, Window window)
         {
-            Bundle bundle = Bundle.Decode(contentInfo);
-
-            window.BackgroundColor = Color.Transparent;
+            mBundle = Bundle.Decode(contentInfo);
 
             mWindow = window;
+            mWindow.BackgroundColor = Color.Transparent;
 
             mPage = new ContentPage()
             {
