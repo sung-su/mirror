@@ -34,6 +34,9 @@ namespace SettingMain
         private static DefaultLinearItem mSoundModeItem;
         private static DefaultLinearItem mNotificationSoundItem;
 
+
+        Vconf.NotificationCallback mNotiSoundCallback;
+
         public SettingContent_Sound()
             : base()
         {
@@ -41,6 +44,7 @@ namespace SettingMain
 
             mSoundModeItem = null;
             mNotificationSoundItem = null;
+            mNotiSoundCallback = VconfChanged_NotificationSound;
         }
 
         protected override View CreateContent(Window window)
@@ -156,7 +160,7 @@ namespace SettingMain
 #if false
             Tizen.System.SystemSettings.SoundNotificationChanged += SystemSettings_NotificationSoundChanged;
 #else
-            Vconf.NotifyKeyChanged(SettingContent_NotificationSound.keyNotificationSound, VconfChanged_NotificationSound);
+            Vconf.NotifyKeyChanged("db/setting/sound/noti/msg_ringtone_path", mNotiSoundCallback);
 #endif
         }
 
@@ -168,7 +172,7 @@ namespace SettingMain
 #if false
             Tizen.System.SystemSettings.SoundNotificationChanged -= SystemSettings_NotificationSoundChanged;
 #else
-            Vconf.IgnoreKeyChanged(SettingContent_NotificationSound.keyNotificationSound, VconfChanged_NotificationSound);
+            Vconf.IgnoreKeyChanged("db/setting/sound/noti/msg_ringtone_path", mNotiSoundCallback);
 #endif
             base.OnTerminate(contentInfo, type);
         }

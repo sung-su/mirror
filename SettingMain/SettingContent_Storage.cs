@@ -38,6 +38,8 @@ namespace SettingMain
         DefaultLinearItem mAppsItem;
         DefaultLinearItem mCacheItem;
 
+        Vconf.NotificationCallback mSDCardStatusCallback;
+
         private const string LogTag = "NUI";
 
         public SettingContent_Storage()
@@ -48,6 +50,8 @@ namespace SettingMain
 
             mAppsItem = null;
             mCacheItem = null;
+
+            mSDCardStatusCallback = VconfChanged_SDCardStatus;
         }
 
         protected override View CreateContent(Window window)

@@ -27,28 +27,28 @@ namespace SettingView
             private const string LibraryVconf = "libvconf.so.0";
 
             [DllImport(LibraryVconf, EntryPoint = "vconf_get_bool")]
-            internal static extern int VconfGetBool(string key, out bool val);
+            internal static extern int VconfGetBool(IntPtr key, out bool val);
 
             [DllImport(LibraryVconf, EntryPoint = "vconf_set_bool")]
-            internal static extern int VconfSetBool(string key, bool intval);
+            internal static extern int VconfSetBool(IntPtr key, bool intval);
 
             [DllImport(LibraryVconf, EntryPoint = "vconf_get_int")]
-            internal static extern int VconfGetInt(string key, out int val);
+            internal static extern int VconfGetInt(IntPtr key, out int val);
 
             [DllImport(LibraryVconf, EntryPoint = "vconf_set_int")]
-            internal static extern int VconfSetInt(string key, int intval);
+            internal static extern int VconfSetInt(IntPtr key, int intval);
 
             [DllImport(LibraryVconf, EntryPoint = "vconf_get_str")]
-            internal static extern string VconfGetStr(string key);
+            internal static extern string VconfGetStr(IntPtr key);
 
             [DllImport(LibraryVconf, EntryPoint = "vconf_set_str")]
-            internal static extern int VconfSetStr(string key, string value);
+            internal static extern int VconfSetStr(IntPtr key, IntPtr value);
 
             [DllImport(LibraryVconf, EntryPoint = "vconf_notify_key_changed")]
-            internal static extern void VconfNotifyKeyChanged(string key, NotificationCallback callback, IntPtr userData);
+            internal static extern void VconfNotifyKeyChanged(IntPtr key, NotificationCallback callback, IntPtr userData);
 
             [DllImport(LibraryVconf, EntryPoint = "vconf_ignore_key_changed")]
-            internal static extern void VconfIgnoreKeyChanged(string key, NotificationCallback callback);
+            internal static extern void VconfIgnoreKeyChanged(IntPtr key, NotificationCallback callback);
         }
     }
 }

@@ -84,9 +84,11 @@ namespace SettingMain
         /// <returns>A value assigned to the specified key.</returns>
         public static bool GetBool(string key)
         {
-            int errorCode = VconfGetBool(key, out bool value);
+            IntPtr keyptr = Marshal.StringToHGlobalAnsi(key);
+            int errorCode = VconfGetBool(keyptr, out bool value);
             if (errorCode != 0)
             {
+                Tizen.Log.Debug("NUI", "VconfGetBool error");
                 throw ExceptionFactory.GetException(errorCode);
             }
 
@@ -100,9 +102,11 @@ namespace SettingMain
         /// <param name="value">The value to be set.</param>
         public static void SetBool(string key, bool value)
         {
-            int errorCode = VconfSetBool(key, value);
+            IntPtr keyptr = Marshal.StringToHGlobalAnsi(key);
+            int errorCode = VconfSetBool(keyptr, value);
             if (errorCode != 0)
             {
+                Tizen.Log.Debug("NUI", "VconfSetBool error");
                 throw ExceptionFactory.GetException(errorCode);
             }
         }
@@ -114,9 +118,11 @@ namespace SettingMain
         /// <returns>A value assigned to the specified key.</returns>
         public static int GetInt(string key)
         {
-            int errorCode = VconfGetInt(key, out int value);
+            IntPtr keyptr = Marshal.StringToHGlobalAnsi(key);
+            int errorCode = VconfGetInt(keyptr, out int value);
             if (errorCode != 0)
             {
+                Tizen.Log.Debug("NUI", "VconfGetInt error");
                 throw ExceptionFactory.GetException(errorCode);
             }
 
@@ -130,9 +136,11 @@ namespace SettingMain
         /// <param name="value">The value to be set.</param>
         public static void SetInt(string key, int value)
         {
-            int errorCode = VconfSetInt(key, value);
+            IntPtr keyptr = Marshal.StringToHGlobalAnsi(key);
+            int errorCode = VconfSetInt(keyptr, value);
             if (errorCode != 0)
             {
+                Tizen.Log.Debug("NUI", "VconfSetInt error");
                 throw ExceptionFactory.GetException(errorCode);
             }
         }
@@ -144,7 +152,8 @@ namespace SettingMain
         /// <returns>A value assigned to the specified key.</returns>
         public static string GetString(string key)
         {
-            return VconfGetStr(key);
+            IntPtr keyptr = Marshal.StringToHGlobalAnsi(key);
+            return VconfGetStr(keyptr);
         }
 
         /// <summary>
@@ -154,9 +163,14 @@ namespace SettingMain
         /// <param name="value">The value to be set.</param>
         public static void SetString(string key, string value)
         {
-            int errorCode = VconfSetStr(key, value);
+            IntPtr keyptr = Marshal.StringToHGlobalAnsi(key);
+            IntPtr valueptr = Marshal.StringToHGlobalAnsi(value);
+            int errorCode = VconfSetStr(keyptr, valueptr);
             if (errorCode != 0)
             {
+
+
+                Tizen.Log.Debug("NUI", "VconfSetStr error");
                 throw ExceptionFactory.GetException(errorCode);
             }
         }
@@ -167,11 +181,18 @@ namespace SettingMain
         /// <param name="key">The key to be observed for changes.</param>
         /// <param name="callback">The callback to be registered.</param>
         /// <param name="userData">Additional data.</param>
+#if false
         public static void NotifyKeyChanged(string key, NotificationCallback callback, IntPtr? userData = null)
         {
             VconfNotifyKeyChanged(key, callback, userData ?? IntPtr.Zero);
         }
-
+#else
+        public static void NotifyKeyChanged(string key, NotificationCallback callback)
+        {
+            IntPtr keyptr = Marshal.StringToHGlobalAnsi(key);
+            VconfNotifyKeyChanged(keyptr, callback, IntPtr.Zero);
+        }
+#endif
         /// <summary>
         /// Unregisters a callback from a KeyChanged event.
         /// </summary>
@@ -179,7 +200,8 @@ namespace SettingMain
         /// <param name="callback">The callback to be unregistered.</param>
         public static void IgnoreKeyChanged(string key, NotificationCallback callback)
         {
-            VconfIgnoreKeyChanged(key, callback);
+            IntPtr keyptr = Marshal.StringToHGlobalAnsi(key);
+            VconfIgnoreKeyChanged(keyptr, callback);
         }
     }
 }

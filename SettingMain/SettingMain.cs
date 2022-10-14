@@ -55,7 +55,7 @@ namespace SettingMain
             Dictionary<System.Type, string> widgetSet = new Dictionary<Type, string>();
             
             widgetSet.Add(typeof(SettingContent_Sound), "sound@org.tizen.cssettings");
-                widgetSet.Add(typeof(SettingContent_Soundmode_Temp), "soundmode@org.tizen.cssettings");
+                widgetSet.Add(typeof(SettingContent_Soundmode), "soundmode@org.tizen.cssettings");
                 widgetSet.Add(typeof(SettingContent_NotificationSound), "notificationsound@org.tizen.cssettings");
                 widgetSet.Add(typeof(SettingContent_OtherSounds), "othersounds@org.tizen.cssettings");
             
@@ -73,7 +73,7 @@ namespace SettingMain
                 widgetSet.Add(typeof(SettingContent_DefaultStorage), "defaultstorage@org.tizen.cssettings");
             
             widgetSet.Add(typeof(SettingContent_LanguageInput), "languageinput@org.tizen.cssettings");
-                widgetSet.Add(typeof(SettingContent_DisplayLanguage_Temp), "displaylanguage@org.tizen.cssettings");
+                widgetSet.Add(typeof(SettingContent_DisplayLanguage), "displaylanguage@org.tizen.cssettings");
             
             widgetSet.Add(typeof(SettingContent_DateTime), "datetime@org.tizen.cssettings");
                 widgetSet.Add(typeof(SettingContent_SetDate), "setdate@org.tizen.cssettings");

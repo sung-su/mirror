@@ -24,7 +24,7 @@ using Tizen.Applications;
 using System.Collections.ObjectModel;
 using System.IO;
 
-using static SettingView.Vconf;
+using static SettingView.Interop;
 
 using System.Text;
 using System.Text.Json;
