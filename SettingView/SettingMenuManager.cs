@@ -198,16 +198,22 @@ namespace SettingView
 
         public static void PopWidget(Window window)
         {
-            var page = window.GetDefaultNavigator().Pop();
+            window.GetDefaultNavigator().Pop();
+            LastestPushWidgetId = "";
+        }
 
+        public static void DisposePoppedPage(Page page)
+        {
             ContentPage contentpage = page as ContentPage;
-            if (contentpage != null) {
+            if (contentpage != null)
+            {
                 var view = contentpage.Content;
                 WidgetView widgetview = view as WidgetView;
                 if (widgetview != null)
                     WidgetViewManager.Instance.RemoveWidget(widgetview);
                 else
                     Tizen.Log.Debug("NUI", "This View is Not a WidgetView");
+                contentpage.Dispose();
             }
             else
             {
@@ -220,14 +226,14 @@ namespace SettingView
                         WidgetViewManager.Instance.RemoveWidget(widgetview);
                     else
                         Tizen.Log.Debug("NUI", "This View is Not a WidgetView");
+                    dialogpage.Dispose();
                 }
                 else
                     Tizen.Log.Debug("NUI", "This Page is Not a ContentPage or a DialogPage");
+                
             }
-
-            LastestPushWidgetId = "";
+            
         }
-
         public static void LaunchApplication(string appid)
         {
             AppControl appcontrol = new AppControl()

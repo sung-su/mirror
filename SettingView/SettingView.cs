@@ -69,26 +69,34 @@ namespace SettingView
 
             // Push the page to the default navigator.
             window.GetDefaultNavigator().Push(mMainPage);
+            window.GetDefaultNavigator().Popped += Program_Popped;
+
 
 
             Tizen.System.SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
+
         }
 
         protected override void OnTerminate()
         {
+            Tizen.System.SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
 
             Window window = GetDefaultWindow();
+            Tizen.System.SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
 
             window.KeyEvent -= OnKeyEvent;
             window.TouchEvent -= OnTouchEvent;
 
 
-            Tizen.System.SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
-
-
             // Create items and add them to the content of the page.
             SettingMenuManager.ClearMenuList();
+
             base.OnTerminate();
+        }
+
+        private void Program_Popped(object sender, PoppedEventArgs e)
+        {
+            SettingMenuManager.DisposePoppedPage(e.Page);
         }
 
         private void SystemSettings_LocaleLanguageChanged(object sender, Tizen.System.LocaleLanguageChangedEventArgs e)
@@ -98,7 +106,6 @@ namespace SettingView
                 mMainPage.Content = CreateMainMenuContent();
             }
         }
-
 
         public void OnKeyEvent(object sender, Window.KeyEventArgs e)
         {
