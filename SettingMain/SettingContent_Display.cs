@@ -144,7 +144,8 @@ namespace SettingMain
             }
 
 
-            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_THEME, SettingContent_Theme.GetThemeName());
+            //item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_THEME, SettingContent_Theme.GetThemeName());
+            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_THEME);
             if (item != null)
             {
                 item.Clicked += (o, e) =>

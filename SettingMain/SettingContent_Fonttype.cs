@@ -52,35 +52,9 @@ namespace SettingMain
         {
             FonttypeList = new ArrayList();
 
-
             FonttypeList.Add(SystemSettings.FontType);
-
-#if false
-            string sharedData = "/opt/usr/data";
-            string type = sharedData + "/settings/Alerts";
-
-            Tizen.Log.Debug("NUI", String.Format("fonttype type : {0}", type));
-
-            System.IO.DirectoryInfo d = new System.IO.DirectoryInfo(type);
-
-            int i = 0;
-
-            FileInfo[] wavFiles = d.GetFiles("*.wav");
-            foreach (FileInfo file in wavFiles)
-            {
-                Tizen.Log.Debug("NUI", String.Format("[{0}] {1}", i, file.Name));
-                FonttypeList.Add(type +"/"+ file.Name);
-                i++;
-            }
-
-            FileInfo[] mp3Files = d.GetFiles("*.mp3");
-            foreach (FileInfo file in mp3Files)
-            {
-                Tizen.Log.Debug("NUI", String.Format("[{0}] {1}", i, file.Name));
-                FonttypeList.Add(type + "/" + file.Name);
-                i++;
-            }
-#endif
+            Tizen.Log.Debug("NUI", "SystemSettings.DefaultFontType : "+ SystemSettings.DefaultFontType);
+            Tizen.Log.Debug("NUI", "SystemSettings.FontType : " + SystemSettings.FontType);
 
         }
 
@@ -178,7 +152,18 @@ namespace SettingMain
 
         private static void SetFonttype(string fonttype)
         {
-            SystemSettings.FontType = fonttype;
+            try
+            {
+                if (fonttype.Equals("Default")) {
+                    fonttype = SystemSettings.DefaultFontType;
+                }
+                SystemSettings.FontType = fonttype;
+            }
+            catch (Exception e)
+            {
+                Tizen.Log.Debug("NUI", string.Format("error :({0}) {1} ", e.GetType().ToString(), e.Message));
+            }
+
         }
 
         public static string GetFonttype()
