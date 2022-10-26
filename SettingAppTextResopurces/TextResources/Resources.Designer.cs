@@ -2663,6 +2663,15 @@ namespace SettingAppTextResopurces.TextResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to External Storage.
+        /// </summary>
+        public static string IDS_ST_BODY_EXTERNAL_STORAGE {
+            get {
+                return ResourceManager.GetString("IDS_ST_BODY_EXTERNAL_STORAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Face and voice.
         /// </summary>
         public static string IDS_ST_BODY_FACE_AND_VOICE {
@@ -3095,6 +3104,15 @@ namespace SettingAppTextResopurces.TextResources {
         public static string IDS_ST_BODY_INSTALTAB_FINISH {
             get {
                 return ResourceManager.GetString("IDS_ST_BODY_INSTALTAB_FINISH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Internal Storage.
+        /// </summary>
+        public static string IDS_ST_BODY_INTERNAL_STORAGE {
+            get {
+                return ResourceManager.GetString("IDS_ST_BODY_INTERNAL_STORAGE", resourceCulture);
             }
         }
         
@@ -6407,15 +6425,6 @@ namespace SettingAppTextResopurces.TextResources {
         public static string IDS_ST_HEADER_SIM_CARD_MANAGER {
             get {
                 return ResourceManager.GetString("IDS_ST_HEADER_SIM_CARD_MANAGER", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Smart Manager.
-        /// </summary>
-        public static string IDS_ST_HEADER_SMART_MANAGER {
-            get {
-                return ResourceManager.GetString("IDS_ST_HEADER_SMART_MANAGER", resourceCulture);
             }
         }
         

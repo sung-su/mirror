@@ -1626,6 +1626,12 @@
   <data name="IDS_ST_BODY_STORAGE" xml:space="preserve">
     <value>Storage</value>
   </data>
+  <data name="IDS_ST_BODY_INTERNAL_STORAGE" xml:space="preserve">
+    <value>Internal Storage</value>
+  </data>
+  <data name="IDS_ST_BODY_EXTERNAL_STORAGE" xml:space="preserve">
+    <value>External Storage</value>
+  </data>
   <data name="IDS_ST_BODY_STORAGE_USAGE" xml:space="preserve">
     <value>Storage usage</value>
   </data>

@@ -1650,6 +1650,12 @@
   <data name="IDS_ST_BODY_STORAGE" xml:space="preserve">
     <value>저장공간</value>
   </data>
+  <data name="IDS_ST_BODY_INTERNAL_STORAGE" xml:space="preserve">
+    <value>내장 메모리</value>
+  </data>
+  <data name="IDS_ST_BODY_EXTERNAL_STORAGE" xml:space="preserve">
+    <value>외장 메모리</value>
+  </data>
   <data name="IDS_ST_BODY_STORAGE_USAGE" xml:space="preserve">
     <value>저장공간 사용량</value>
   </data>

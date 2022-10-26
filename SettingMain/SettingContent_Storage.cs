@@ -76,7 +76,7 @@ namespace SettingMain
 
             if (InternalCount > 0)
             {
-                string mainText = "Internal Storage";
+                string mainText = Resources.IDS_ST_BODY_INTERNAL_STORAGE;
                 string subText = Resources.IDS_ST_BODY_USED + " : " + GetMediaSizeString(InternalTotal - InternalAvailable) + ", "
                                + Resources.IDS_ST_HEADER_TOTAL_SPACE + " : " + GetMediaSizeString(InternalTotal) + ", "
                                + Resources.IDS_SM_BODY_FREE_M_MEMORY_ABB + " : " + GetMediaSizeString(InternalAvailable);
@@ -86,7 +86,7 @@ namespace SettingMain
             }
             if (ExternalCount > 0)
             {
-                string mainText = "External Storage";
+                string mainText = Resources.IDS_ST_BODY_EXTERNAL_STORAGE;
                 string subText = Resources.IDS_ST_BODY_USED + " : " + GetMediaSizeString(ExternalTotal - ExternalAvailable) + ", "
                                + Resources.IDS_ST_HEADER_TOTAL_SPACE + " : " + GetMediaSizeString(ExternalTotal) + ", "
                                + Resources.IDS_SM_BODY_FREE_M_MEMORY_ABB + " : " + GetMediaSizeString(ExternalAvailable);
