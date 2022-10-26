@@ -182,6 +182,10 @@ namespace SettingView
                     widgetview.WidgetContentUpdated += OnWidgetContentUpdatedCB;
                     widgetview.Preview = false;
 
+                    // support H/W key input (only English)
+                    widgetview.Focusable = true;
+                    widgetview.FocusableInTouch = true;
+
                     var page = new ContentPage
                     {
                         Content = widgetview
