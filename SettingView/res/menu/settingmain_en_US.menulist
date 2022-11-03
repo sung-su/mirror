@@ -1,14 +1,14 @@
 [
   {
     "Name": "Wi-Fi",
-    "LaunchType": 1,
-    "Id": "wifi-efl-ug",
+    "LaunchType": 0,
+    "Id": "wifi@org.tizen.cssetting-wifi",
     "IconPath": "/icons/list_icon/settings_wifi.png"
   },
   {
     "Name": "Bluetooth",
-    "LaunchType": 1,
-    "Id": "ug-bluetooth-efl",
+    "LaunchType": 0,
+    "Id": "bluetooth@org.tizen.cssetting-bluetooth",
     "IconPath": "/icons/list_icon/settings_bluetooth.png"
   },
   {
