@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Tizen.Multimedia;
+using Tizen.NUI;
+using Tizen.System;
 
 namespace SettingMain
 {
@@ -26,21 +26,34 @@ namespace SettingMain
 
         public static void SetVolumeLevel(AudioVolumeType type, int volume)
         {
+            volume = volume < 0 ? 0 : volume;
             volume = volume > audioVolume.MaxLevel[type] ? audioVolume.MaxLevel[type] : volume;
 
-            try
-            {
-                audioVolume.Level[type] = volume;
-                Tizen.Log.Debug("NUI", $"SET {type} Volume : {audioVolume.Level[type]}");
-            }
-            catch (Exception ex)
-            {
-                Tizen.Log.Error("NUI", $"SET {type} Volume Error: {ex.Message}");
-            }          
+            audioVolume.Level[type] = volume;
+            Tizen.Log.Debug("NUI", $"SET {type} Volume : {audioVolume.Level[type]}");        
         }
 
-        public static void PlayAudio(AudioStreamType type, string path)
+        public static void PlayAudio(AudioStreamType type)
         {
+            string path = String.Empty;
+
+            switch (type)
+            {
+                case AudioStreamType.Media:
+                    path = System.IO.Path.Combine(NUIApplication.Current.DirectoryInfo.Resource, "media/settings/Ringtones/ringtone_sdk.mp3");
+                    break;
+                case AudioStreamType.Notification:
+                    path = Vconf.GetString(SettingContent_NotificationSound.keyNotificationSound);
+                    break;
+                case AudioStreamType.System:
+                    Feedback feedback = new Feedback();
+                    if (feedback.IsSupportedPattern(FeedbackType.Sound, "Tap"))
+                    {
+                        feedback.Play(FeedbackType.Sound, "Tap");
+                    }
+                    return;
+            }
+
             try
             {
                 WavPlayer.StartAsync(path, new AudioStreamPolicy(type));

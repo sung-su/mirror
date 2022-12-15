@@ -201,7 +201,7 @@ namespace SettingMain
             if (volume != SettingAudioManager.GetVolumeLevel(AudioVolumeType.Media))
             {
                 SettingAudioManager.SetVolumeLevel(AudioVolumeType.Media, volume);
-                SettingAudioManager.PlayAudio(AudioStreamType.Media, $"/opt/usr/data/settings/Ringtones/ringtone_sdk.mp3");
+                SettingAudioManager.PlayAudio(AudioStreamType.Media);
             }
         }
         private static void OnNofificationSlider_ValueChanged(object sender, SliderValueChangedEventArgs e)
@@ -211,7 +211,7 @@ namespace SettingMain
             if (volume != SettingAudioManager.GetVolumeLevel(AudioVolumeType.Notification))
             {
                 SettingAudioManager.SetVolumeLevel(AudioVolumeType.Notification, volume);
-                SettingAudioManager.PlayAudio(AudioStreamType.Notification, Vconf.GetString(SettingContent_NotificationSound.keyNotificationSound));
+                SettingAudioManager.PlayAudio(AudioStreamType.Notification);
             }
         }
         private static void OnSystemSlider_ValueChanged(object sender, SliderValueChangedEventArgs e)
@@ -221,7 +221,7 @@ namespace SettingMain
             if (volume != SettingAudioManager.GetVolumeLevel(AudioVolumeType.System))
             {
                 SettingAudioManager.SetVolumeLevel(AudioVolumeType.System, volume);
-                SettingAudioManager.PlayAudio(AudioStreamType.System, "/usr/share/feedback/sound/touch/touch.wav");
+                SettingAudioManager.PlayAudio(AudioStreamType.System);
             }
         }
     }
