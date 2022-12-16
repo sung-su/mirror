@@ -7,6 +7,8 @@ namespace SettingMain
 {
     class SettingAudioManager
     {
+        private const string ringtone = "media/settings/Ringtones/ringtone_sdk.mp3";
+
         private static AudioVolume audioVolume = AudioManager.VolumeController;
 
         public static int GetVolumeLevel(AudioVolumeType type)
@@ -40,7 +42,7 @@ namespace SettingMain
             switch (type)
             {
                 case AudioStreamType.Media:
-                    path = System.IO.Path.Combine(NUIApplication.Current.DirectoryInfo.Resource, "media/settings/Ringtones/ringtone_sdk.mp3");
+                    path = System.IO.Path.Combine(NUIApplication.Current.DirectoryInfo.Resource, ringtone);
                     break;
                 case AudioStreamType.Notification:
                     path = Vconf.GetString(SettingContent_NotificationSound.keyNotificationSound);
