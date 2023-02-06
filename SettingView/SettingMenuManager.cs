@@ -15,51 +15,20 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Text.Json;
+
+using Tizen.Applications;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 
-using Tizen.Applications;
-
-using System.Collections.ObjectModel;
-using System.IO;
-
-using static SettingView.Interop;
-
-using System.Text;
-using System.Text.Json;
+using SettingAppTextResopurces.TextResources;
 
 namespace SettingView
 {
-    public class WidgetViewInfo
-    {
-        private string Id;
-        private WidgetView View;
-
-
-        public WidgetViewInfo(string id, WidgetView view)
-        {
-            Id = id;
-            View = view;
-        }
-
-
-        public string GetId()
-        {
-            return Id;
-        }
-
-        public WidgetView GetView()
-        {
-            return View;
-        }
-    };
-
-
-
-
-    /// //////////////////////////////////////////////////////////////////////////
-
     public enum SettingLaunchType
     {
         Widget = 0,
@@ -85,27 +54,14 @@ namespace SettingView
 
     public class SettingMenuManager
     {
-#if false
-        private static Collection<WidgetViewInfo> mWidgetViewPool;
-#endif
-
         private static string LastestPushWidgetId = "";
 
-        /////////////////////////////////////////////////////////////
-        /// Build MenuList with Table
-
-        public static void BuildMenuList(View content, SettingMenuInfo[] menulist, Window window, string respath)
+        public static IEnumerable<DefaultLinearItem> CreateMenuItems(SettingMenuInfo[] menulist, Window window)
         {
-#if false
-            mWidgetViewPool = new Collection<WidgetViewInfo>();
-#endif
-
-
-            DefaultLinearItem item;
-
             foreach (var menu in menulist)
             {
-                item = SettingItemCreator.CreateItemWithIcon(menu.Name, respath + menu.IconPath);
+                string iconPath = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, menu.IconPath.TrimStart('/'));
+                var item = SettingItemCreator.CreateItemWithIcon(menu.Name, iconPath);
                 if (item != null)
                 {
                     item.Clicked += (o, e) =>
@@ -119,16 +75,9 @@ namespace SettingView
                             LaunchApplication(menu.Id);
                         }
                     };
-                    content.Add(item);
-                }
+                };
+                yield return item;
             }
-        }
-
-        public static void ClearMenuList()
-        {
-#if false
-            mWidgetViewPool.Clear();
-#endif
         }
 
         /////////////////////////////////////////////////////////////
@@ -148,21 +97,8 @@ namespace SettingView
             bundle.AddItem(" ", " ");
             String encodedBundle = bundle.Encode();
 
-#if false
-            WidgetView widgetview = null;
-            // find widgetview in mWidgetViewPool
-            foreach (var info in mWidgetViewPool)
-            {
-                if (info.GetId().Equals(widgetid)) {
-                        widgetview = info.GetView();
-                }
-            }
-            if (widgetview == null)
-                widgetview = WidgetViewManager.Instance.AddWidget(widgetid, encodedBundle, window.Size.Width, window.Size.Height, 0.0f);
-#else
             Tizen.Log.Debug("NUI", string.Format("[SettingView]  window.Size.Width : {0}, window.Size.Height : {1}", window.Size.Width, window.Size.Height));
             WidgetView widgetview = WidgetViewManager.Instance.AddWidget(widgetid, encodedBundle, window.Size.Width, window.Size.Height, 0.0f);
-#endif
             if (widgetview != null)
             {
                 widgetview.WidthSpecification = LayoutParamPolicies.MatchParent;
@@ -193,9 +129,6 @@ namespace SettingView
                     navigator.Push(page);
 
                     LastestPushWidgetId = widgetid;
-#if false
-                    mWidgetViewPool.Add(new WidgetViewInfo(widgetid, widgetview));
-#endif
                 }
             }
         }
@@ -308,50 +241,6 @@ namespace SettingView
             }
         }
 
-        public static bool WriteMenuList(SettingMenuInfo[] menulist, string folderpath, string name)
-        {
-            string locale = Vconf.GetString("db/menu_widget/language");
-            String[] qStrings = locale.Split('.');
-            locale = qStrings[0];
-
-            string filename = name + "_" + locale + ".menulist";
-
-
-            
-            try
-            {
-                // Use Combine again to add the file name to the path.
-                string pathString = System.IO.Path.Combine(folderpath, filename);
-
-                Tizen.Log.Debug("NUI", string.Format("Path to menu list file: {0}", pathString));
-
-                // Check that the file doesn't already exist. If it doesn't exist, create
-                // the file and write integers 0 - 99 to it.
-                // DANGER: System.IO.File.Create will overwrite the file if it already exists.
-                // This could happen even with random file names, although it is unlikely.
-                if (System.IO.File.Exists(pathString))
-                {
-                    Tizen.Log.Debug("NUI", string.Format("File {0} already exists.", pathString));
-                    return false;
-                }
-
-
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                string jsonString = JsonSerializer.Serialize(menulist, options);
-                Tizen.Log.Debug("NUI", "JSON : " + jsonString);
-
-                File.WriteAllText(pathString, jsonString, Encoding.UTF8);
-
-            }
-            catch (System.IO.IOException e)
-            {
-                Tizen.Log.Debug("NUI", "IO Error : " + e.Message);
-            }
-
-            return true;
-        }
-
-
         public static SettingMenuInfo[] ReadMenuList(string folderpath, string name)
         {
             string locale = Vconf.GetString("db/menu_widget/language");
@@ -403,6 +292,5 @@ namespace SettingView
             navigator.Push(renamepage);
 
         }
-
     }
 }
