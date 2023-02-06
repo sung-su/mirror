@@ -138,21 +138,25 @@ namespace SettingView
             return content;
         }
 
-        // Presets for Window Size (unit : percent)
-        private const int screenBottomMargin = 10;
-        private const int winWidthRatio = 70;
-        private const int winHeightRatio = 80;
         static void Main(string[] args)
         {
+            // window size adjustments
+            float bottomMargin = 0.1f;
+            float widthRatio = 0.7f;
+            float heightRatio = 0.7f;
+
+            _ = Information.TryGetValue("http://tizen.org/feature/screen.width", out int screenWidth);
+            _ = Information.TryGetValue("http://tizen.org/feature/screen.height", out int screenHeight);
+
+            int width = (int)(screenWidth * widthRatio);
+            int height = (int)(screenHeight * (1 - bottomMargin) * heightRatio);
+
+            // INFO: it looks like size of custom border is not included in total window size
+            Size2D size = new Size2D(width, height);
+            Position2D position = new Position2D((screenWidth - width) / 2, (screenHeight - height) / 2 - (int)(bottomMargin * screenHeight));
             var appCustomBorder = new SettingViewBorder();
 
-            Information.TryGetValue<int>("http://tizen.org/feature/screen.width", out int screenWidth);
-            Information.TryGetValue<int>("http://tizen.org/feature/screen.height", out int screenHeight);
-
-            int availHeight = screenHeight * (100- screenBottomMargin) / 100;
-            Size2D winSize = new Size2D(screenWidth * winHeightRatio / 100, availHeight * winWidthRatio / 100);
-            Position2D winPos = new Position2D((screenWidth - winSize.Width)/2, (availHeight - winSize.Height) / 2);
-            var app = new Program("", winSize, winPos, appCustomBorder);
+            var app = new Program("", size, position, appCustomBorder);
 
             app.Run(args);
         }
