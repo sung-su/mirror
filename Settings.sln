@@ -13,6 +13,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SettingAppTextResopurces", "SettingAppTextResopurces\SettingAppTextResopurces.csproj", "{D0677237-BF6D-465A-AA07-288B1E5F6BEE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SettingCore", "SettingCore\SettingCore.csproj", "{3A1849FF-1220-4F96-803C-3F505E6DFAE3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettingMainGadget", "SettingMainGadget\SettingMainGadget.csproj", "{A8E884F0-1FFE-42EA-9BA6-E40686F763D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +37,10 @@ Global
 		{3A1849FF-1220-4F96-803C-3F505E6DFAE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A1849FF-1220-4F96-803C-3F505E6DFAE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A1849FF-1220-4F96-803C-3F505E6DFAE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8E884F0-1FFE-42EA-9BA6-E40686F763D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8E884F0-1FFE-42EA-9BA6-E40686F763D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8E884F0-1FFE-42EA-9BA6-E40686F763D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8E884F0-1FFE-42EA-9BA6-E40686F763D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
