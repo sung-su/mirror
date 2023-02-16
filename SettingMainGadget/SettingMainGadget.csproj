@@ -1,7 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -18,5 +19,9 @@
   <ItemGroup>
     <ProjectReference Include="..\SettingCore\SettingCore.csproj" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="set PATH=%25PATH%25;C:\tizen-studio\tools\ide\bin\&#xD;&#xA;set PATH=%25PATH%25;C:\tizen-studio\tools\&#xD;&#xA;&#xD;&#xA;:: copy dll&#xD;&#xA;mkdir $(AssemblyName)\res\allowed\&#xD;&#xA;copy $(OutDir)$(AssemblyName).dll $(AssemblyName)\res\allowed\&#xD;&#xA;:: copy manifest file&#xD;&#xA;copy res\tizen-manifest.xml $(AssemblyName)&#xD;&#xA;&#xD;&#xA;:: create rpk&#xD;&#xA;call tizen package -t rpk -- $(AssemblyName)\&#xD;&#xA;&#xD;&#xA;:: store rpk at artifacts dir&#xD;&#xA;mkdir artifacts\&#xD;&#xA;copy $(AssemblyName)\Package\*.rpk artifacts\&#xD;&#xA;&#xD;&#xA;:: cleanup final&#xD;&#xA;rmdir /s /q $(AssemblyName)&#xD;&#xA;&#xD;&#xA;:: install rpk&#xD;&#xA;call sdb install artifacts\*.rpk" />
+  </Target>
 
 </Project>
