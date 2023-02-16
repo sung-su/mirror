@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://tizen.org/ns/packages" api-version="6.5"
+  package="org.tizen.settings.main" version="1.0.0"
+  res-type="org.tizen.appfw.gadget.Settings" res-version="1.5.0">
+  <allowed-package id="org.tizen.*"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/dll" value="SettingMainGadget.dll"/>
+  <metadata key="setting/menu/wifi" value="10"/>
+  <metadata key="setting/menu/bluetooth" value="20"/>
+  <metadata key="setting/menu/display" value="30"/>
+  <metadata key="setting/menu/display/theme" value="31"/>
+  <metadata key="setting/menu/sound" value="40"/>
+</manifest>
+

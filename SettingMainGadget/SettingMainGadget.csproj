@@ -15,4 +15,8 @@
     <PackageReference Include="Tizen.NET" Version="11.0.0.17691" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SettingCore\SettingCore.csproj" />
+  </ItemGroup>
+
 </Project>
