@@ -41,7 +41,7 @@ namespace SettingCore
                 {
                     if (!int.TryParse(metadata.Value, out int orderId))
                     {
-                        Logger.Debug($"metadata value (orderId) is not integer (pkgId: {pkg.PackageId}, resType: {pkg.ResourceType}, key:{metadata.Key}, value:{metadata.Value})");
+                        Logger.Warn($"metadata value (orderId) is not integer (pkgId: {pkg.PackageId}, resType: {pkg.ResourceType}, key:{metadata.Key}, value:{metadata.Value})");
                         continue;
                     }
 

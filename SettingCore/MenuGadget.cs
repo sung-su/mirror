@@ -9,5 +9,8 @@ namespace SettingCore
         }
 
         public abstract string ProvideTitle();
+
+        protected void NavigateBack() => GadgetNavigation.NavigateBack();
+        protected void NavigateTo(string fullClassName) => GadgetNavigation.NavigateTo(fullClassName);
     }
 }
