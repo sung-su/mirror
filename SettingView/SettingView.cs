@@ -14,14 +14,13 @@
  *  limitations under the License
  */
 
-using System.Linq;
-
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 using Tizen.System;
 
 using SettingAppTextResopurces.TextResources;
+using SettingCore;
 
 namespace SettingView
 {
@@ -32,24 +31,18 @@ namespace SettingView
         public Program(string styleSheet, Size2D windowSize, Position2D windowPosition, IBorderInterface borderInterface)
             : base(styleSheet, windowSize, windowPosition, borderInterface)
         {
-            mMainPage = null;
         }
 
         protected override void OnCreate()
         {
             base.OnCreate();
 
-            Window window = GetDefaultWindow();
-            window.KeyEvent += OnKeyEvent;
-
             mMainPage = new ContentPage()
             {
                 AppBar = CreateAppBar(),
-                Content = CreateMainMenuContent(),
+                Content = CreateContent(),
             };
-
-            window.GetDefaultNavigator().Push(mMainPage);
-            window.GetDefaultNavigator().Popped += Program_Popped;
+            GetDefaultWindow().GetDefaultNavigator().Push(mMainPage);
 
             Tizen.System.SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
         }
@@ -57,16 +50,7 @@ namespace SettingView
         protected override void OnTerminate()
         {
             Tizen.System.SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
-
-            Window window = GetDefaultWindow();
-            window.KeyEvent -= OnKeyEvent;
-
             base.OnTerminate();
-        }
-
-        private void Program_Popped(object sender, PoppedEventArgs e)
-        {
-            SettingMenuManager.DisposePoppedPage(e.Page);
         }
 
         private void SystemSettings_LocaleLanguageChanged(object sender, Tizen.System.LocaleLanguageChangedEventArgs e)
@@ -74,43 +58,21 @@ namespace SettingView
             if (mMainPage != null)
             {
                 mMainPage.AppBar.Title = Resources.IDS_ST_OPT_SETTINGS;
-                mMainPage.Content = CreateMainMenuContent();
+                mMainPage.Content = CreateContent();
             }
         }
 
-        public void OnKeyEvent(object sender, Window.KeyEventArgs e)
+        private static AppBar CreateAppBar()
         {
-            if (e.Key.State == Key.StateType.Down && (e.Key.KeyPressedName == "XF86Back" || e.Key.KeyPressedName == "Escape"))
-            {
-                var window = sender as Window;
-                Navigator navigator = window.GetDefaultNavigator();
-                if (navigator.PageCount > 1)
-                    SettingMenuManager.PopWidget(window);
-                else
-                    Exit();
-            }
-        }
-
-        private AppBar CreateAppBar()
-        {
-            var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar");
-
-            var navigationContent = new Button(((AppBarStyle)appBarStyle).BackButton);
-            navigationContent.Clicked += (o, e) =>
-            {
-                Exit();
-            };
-
-            var appBar = new AppBar()
+            return new AppBar()
             {
                 Title = Resources.IDS_ST_OPT_SETTINGS,
-                NavigationContent = navigationContent,
+                AutoNavigationContent = false,
+                NavigationContent = new View(), // FIXME: must be set with empty View to hide default back button
             };
-
-            return appBar;
         }
 
-        private View CreateMainMenuContent()
+        private static View CreateContent()
         {
             var content = new ScrollableBase()
             {
@@ -124,15 +86,21 @@ namespace SettingView
                 },
             };
 
-            string path = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, "menu/");
-            SettingMenuInfo[] menulist = SettingMenuManager.ReadMenuList(path, "settingmain");
-            if (menulist != null)
+            var mainMenuInfos = MainMenuInfo.GetReal();
+            foreach (var info in mainMenuInfos)
             {
-                var items = SettingMenuManager.CreateMenuItems(menulist.ToArray(), GetDefaultWindow());
-                foreach (var item in items)
+                var row = new MainMenuRowView(info.IconPath, info.IconColor, info.Title);
+
+                // TODO: replace TouchEvent with Clicked for Accessibility
+                row.TouchEvent += (object source, Tizen.NUI.BaseComponents.View.TouchEventArgs e) =>
                 {
-                    content.Add(item);
-                }
+                    if (e.Touch.GetState(0) == PointStateType.Down)
+                    {
+                        info.Action?.Invoke();
+                    }
+                    return true;
+                };
+                content.Add(row);
             }
 
             return content;

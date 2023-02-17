@@ -25,6 +25,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SettingAppTextResopurces\SettingAppTextResopurces.csproj" />
+    <ProjectReference Include="..\SettingMainGadget\SettingMainGadget.csproj" />
+    <ProjectReference Include="..\SettingCore\SettingCore.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
