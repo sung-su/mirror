@@ -7,6 +7,7 @@
         <icon>SettingView.png</icon>
         <metadata key="http://tizen.org/metadata/prefer_dotnet_aot" value="true" />
         <splash-screens />
+      <res-control resource-type="org.tizen.appfw.gadget.Settings" min-res-version="1.5.0" max-res-version="2.0.0" auto-close="true"></res-control>
     </ui-application>
     <shortcut-list />
     <privileges>
