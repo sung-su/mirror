@@ -76,7 +76,7 @@ namespace Tizen
 
 
         #region Notify/Ignore
-        public static void Notify(string key, Action<string, dynamic> action)
+        public static void Notify(string key, Action<string, Type, dynamic> action)
         {
             var subscription = subscriptions.SingleOrDefault(s => s.Key == key);
             if (subscription != null)
@@ -92,7 +92,7 @@ namespace Tizen
             }
         }
 
-        public static void Ignore(string key, Action<string, dynamic> action)
+        public static void Ignore(string key, Action<string, Type, dynamic> action)
         {
             var subscription = subscriptions.SingleOrDefault(s => s.Key == key);
             if (subscription == null)
@@ -115,8 +115,8 @@ namespace Tizen
             internal string Key { get; }
             internal int ActionCount => (_actionEvent == null) ? 0 : _actionEvent.GetInvocationList().Count();
 
-            private event Action<string, dynamic> _actionEvent;
-            internal event Action<string, dynamic> ActionEvent
+            private event Action<string, Type, dynamic> _actionEvent;
+            internal event Action<string, Type, dynamic> ActionEvent
             {
                 add
                 {
@@ -136,7 +136,7 @@ namespace Tizen
                 // FailFast: A callback was made on a garbage collected delegate of type 'Tizen.Vconf!Interop+Vconf+VconfCallbackFn::Invoke'.
             }
 
-            private void AddEventHandler(Action<string, dynamic> action)
+            private void AddEventHandler(Action<string, Type, dynamic> action)
             {
                 if (ActionCount == 0)
                 {
@@ -147,7 +147,7 @@ namespace Tizen
                 _actionEvent += action;
             }
 
-            private void RemoveEventHandler(Action<string, dynamic> action)
+            private void RemoveEventHandler(Action<string, Type, dynamic> action)
             {
                 if (ActionCount == 1)
                 {
@@ -173,25 +173,25 @@ namespace Tizen
                         case Interop.Vconf.Type.VCONF_TYPE_INT:
                             int ivalue = keynode.ValueInt;
                             LogChange(ivalue);
-                            _actionEvent?.Invoke(Key, ivalue);
+                            _actionEvent?.Invoke(Key, typeof(int), ivalue);
                             break;
 
                         case Interop.Vconf.Type.VCONF_TYPE_STRING:
                             string svalue = Marshal.PtrToStringAnsi(keynode.ValueString);
                             LogChange(svalue);
-                            _actionEvent?.Invoke(Key, svalue);
+                            _actionEvent?.Invoke(Key, typeof(string), svalue);
                             break;
 
                         case Interop.Vconf.Type.VCONF_TYPE_BOOL:
                             bool bvalue = !(keynode.ValueBool == 0);
                             LogChange(bvalue);
-                            _actionEvent?.Invoke(Key, bvalue);
+                            _actionEvent?.Invoke(Key, typeof(bool), bvalue);
                             break;
 
                         case Interop.Vconf.Type.VCONF_TYPE_DOUBLE:
                             double dvalue = keynode.ValueDouble;
                             LogChange(dvalue);
-                            _actionEvent?.Invoke(Key, dvalue);
+                            _actionEvent?.Invoke(Key, typeof(double), dvalue);
                             break;
                     }
                 }
