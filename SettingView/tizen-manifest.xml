@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <manifest package="org.tizen.SettingView" version="1.0.0" api-version="6.5" xmlns="http://tizen.org/ns/packages">
     <profile name="common" />
     <ui-application appid="org.tizen.SettingView" exec="SettingView.dll" multiple="false" nodisplay="false"
@@ -21,6 +21,8 @@
         <privilege>http://tizen.org/privilege/bluetooth</privilege>
         <privilege>http://tizen.org/privilege/network.set</privilege>
 
+        <!--sound-->
+        <privilege>http://tizen.org/privilege/volume.set</privilege>
     </privileges>
     <dependencies />
     <provides-appdefined-privileges />
