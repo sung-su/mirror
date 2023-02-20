@@ -14,5 +14,6 @@
   <metadata key="setting/menu/display" value="30"/>
   <metadata key="setting/menu/display/theme" value="31"/>
   <metadata key="setting/menu/sound" value="40"/>
+  <metadata key="setting/menu/sound/soundmode" value="41"/>
 </manifest>
 

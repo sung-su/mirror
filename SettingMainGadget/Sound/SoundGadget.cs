@@ -5,6 +5,7 @@ using Tizen.Multimedia;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
+using Tizen.System;
 
 namespace Setting.Menu
 {
@@ -23,6 +24,22 @@ namespace Setting.Menu
         {
             base.OnCreate();
 
+            Tizen.System.SystemSettings.SoundSilentModeSettingChanged += SystemSettings_SoundSilentModeSettingChanged;
+            Tizen.System.SystemSettings.VibrationChanged += SystemSettings_VibrationChanged;
+
+            return CreateView();
+        }
+
+        protected override void OnDestroy()
+        {
+            Tizen.System.SystemSettings.SoundSilentModeSettingChanged -= SystemSettings_SoundSilentModeSettingChanged;
+            Tizen.System.SystemSettings.VibrationChanged -= SystemSettings_VibrationChanged;
+
+            base.OnDestroy();
+        }
+
+        private View CreateView()
+        {
             var content = new ScrollableBase
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
@@ -35,13 +52,14 @@ namespace Setting.Menu
                 },
             };
 
-            string soundModeName = "TBU"; //SettingContent_Soundmode.GetSoundmodeName()
+            string soundModeName = SoundmodeManager.GetSoundmodeName(SoundmodeManager.GetSoundmode());
             soundMode = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_HEADER_SOUND_MODE, soundModeName);
             if (soundMode != null)
             {
                 soundMode.Clicked += (o, e) =>
                 {
-                    //RequestWidgetPush("soundmode@org.tizen.cssettings");
+                    string className = typeof(Setting.Menu.Sound.SoundmodeGadget).FullName;
+                    NavigateTo(className);
                 };
                 content.Add(soundMode);
             }
@@ -104,6 +122,18 @@ namespace Setting.Menu
             }
 
             return content;
+        }
+
+        private void SystemSettings_SoundSilentModeSettingChanged(object sender, SoundSilentModeSettingChangedEventArgs e)
+        {
+            if (soundMode != null)
+                soundMode.SubText = SoundmodeManager.GetSoundmodeName(SoundmodeManager.GetSoundmode());
+        }
+
+        private void SystemSettings_VibrationChanged(object sender, VibrationChangedEventArgs e)
+        {
+            if (soundMode != null)
+                soundMode.SubText = SoundmodeManager.GetSoundmodeName(SoundmodeManager.GetSoundmode());
         }
 
         private static void OnMediaSlidingFinished(object sender, SliderSlidingFinishedEventArgs e)

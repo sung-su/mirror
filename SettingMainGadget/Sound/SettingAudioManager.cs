@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SettingCore;
+using System;
 using Tizen.Multimedia;
 using Tizen.NUI;
 using Tizen.System;
@@ -8,6 +9,7 @@ namespace SettingMainGadget.Sound
     class SettingAudioManager
     {
         private const string ringtone = "media/settings/Ringtones/ringtone_sdk.mp3";
+        private const string VconfRingtonePath = "db/setting/sound/noti/msg_ringtone_path";
 
         private static AudioVolume audioVolume = AudioManager.VolumeController;
 
@@ -45,7 +47,12 @@ namespace SettingMainGadget.Sound
                     path = System.IO.Path.Combine(NUIApplication.Current.DirectoryInfo.Resource, ringtone);
                     break;
                 case AudioStreamType.Notification:
-                    //path = Vconf.GetString(SettingContent_NotificationSound.keyNotificationSound);
+                    if (!Tizen.Vconf.TryGetString(VconfRingtonePath, out string value))
+                    {
+                        Logger.Warn($"could not get vaule for {VconfRingtonePath}");
+                        return;
+                    }
+                    path = value;
                     break;
                 case AudioStreamType.System:
                     Feedback feedback = new Feedback();
