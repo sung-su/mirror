@@ -9,7 +9,7 @@ namespace SettingMainGadget.Sound
     class SettingAudioManager
     {
         private const string ringtone = "media/settings/Ringtones/ringtone_sdk.mp3";
-        private const string VconfRingtonePath = "db/setting/sound/noti/msg_ringtone_path";
+        public const string VconfRingtonePath = "db/setting/sound/noti/msg_ringtone_path";
 
         private static AudioVolume audioVolume = AudioManager.VolumeController;
 

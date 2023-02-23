@@ -26,6 +26,7 @@ namespace Setting.Menu
 
             Tizen.System.SystemSettings.SoundSilentModeSettingChanged += SystemSettings_SoundSilentModeSettingChanged;
             Tizen.System.SystemSettings.VibrationChanged += SystemSettings_VibrationChanged;
+            Tizen.System.SystemSettings.SoundNotificationChanged += SystemSettings_NotificationSoundChanged;
 
             return CreateView();
         }
@@ -34,6 +35,7 @@ namespace Setting.Menu
         {
             Tizen.System.SystemSettings.SoundSilentModeSettingChanged -= SystemSettings_SoundSilentModeSettingChanged;
             Tizen.System.SystemSettings.VibrationChanged -= SystemSettings_VibrationChanged;
+            Tizen.System.SystemSettings.SoundNotificationChanged -= SystemSettings_NotificationSoundChanged;
 
             base.OnDestroy();
         }
@@ -63,13 +65,13 @@ namespace Setting.Menu
                 content.Add(soundMode);
             }
 
-            string notificationSoundName = "TBU"; //SettingContent_NotificationSound.GetNotificationSoundName()
+            string notificationSoundName = SoundNotificationManager.GetNotificationSoundName();
             notificationSound = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_NOTIFICATIONS, notificationSoundName);
             if (notificationSound != null)
             {
                 notificationSound.Clicked += (o, e) =>
                 {
-                    //RequestWidgetPush("notificationsound@org.tizen.cssettings");
+                    NavigateTo("Setting.Menu.Sound.SoundNotification");
                 };
                 content.Add(notificationSound);
             }
@@ -164,6 +166,12 @@ namespace Setting.Menu
                 SettingAudioManager.SetVolumeLevel(AudioVolumeType.System, volume);
                 SettingAudioManager.PlayAudio(AudioStreamType.System);
             }
+        }
+
+        private void SystemSettings_NotificationSoundChanged(object sender, SoundNotificationChangedEventArgs e)
+        {
+            if (notificationSound != null)
+                notificationSound.SubText = SoundNotificationManager.GetNotificationSoundName();
         }
     }
 }
