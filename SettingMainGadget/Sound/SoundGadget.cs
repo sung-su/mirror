@@ -81,7 +81,7 @@ namespace Setting.Menu
             {
                 otherSounds.Clicked += (o, e) =>
                 {
-                    //RequestWidgetPush("othersounds@org.tizen.cssettings");
+                    NavigateTo("Setting.Menu.Sound.SoundOther");
                 };
                 content.Add(otherSounds);
             }
