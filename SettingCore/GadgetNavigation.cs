@@ -35,41 +35,39 @@ namespace SettingCore
             }
         }
 
-        public static void NavigateTo(string fullClassName)
+        public static void NavigateTo(string menuPath)
         {
-            foreach (var info in GadgetManager.GetAll())
+            var info = GadgetManager.GetGadgetInfoFromPath(menuPath);
+            if (info == null)
             {
-                if (info.ClassName == fullClassName)
-                {
-                    Logger.Debug($"found classname {fullClassName}");
-                    try
-                    {
-                        var gadget = NUIGadgetManager.Add(info.Pkg.ResourceType, info.ClassName) as MenuGadget;
-
-                        var title = gadget.ProvideTitle();
-                        var content = gadget.MainView;
-
-                        var page = new ContentPage
-                        {
-                            AppBar = new AppBar
-                            {
-                                Title = title,
-                                // TODO: use ActionContent here to set button, which opens context menu (if required)
-                            },
-                            Content = content,
-                        };
-
-                        NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(page);
-                        gadgetPages.Add(page, gadget);
-                    }
-                    catch (System.Exception e) // TODO: add separate catch blocks for specific exceptions?
-                    {
-                        Logger.Error($"could not create gadget {e}");
-                    }
-                    return;
-                }
+                Logger.Warn($"could not find gadget for menupath: {menuPath}");
+                return;
             }
-            Logger.Warn($"could not find classname {fullClassName}");
+
+            try
+            {
+                var gadget = NUIGadgetManager.Add(info.Pkg.ResourceType, info.ClassName) as MenuGadget;
+
+                var title = gadget.ProvideTitle();
+                var content = gadget.MainView;
+
+                var page = new ContentPage
+                {
+                    AppBar = new AppBar
+                    {
+                        Title = title,
+                        // TODO: use ActionContent here to set button, which opens context menu (if required)
+                    },
+                    Content = content,
+                };
+
+                NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(page);
+                gadgetPages.Add(page, gadget);
+            }
+            catch (System.Exception e) // TODO: add separate catch blocks for specific exceptions?
+            {
+                Logger.Error($"could not create gadget for menu path: {menuPath} => {e}");
+            }
         }
     }
 }

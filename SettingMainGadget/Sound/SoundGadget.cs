@@ -58,8 +58,7 @@ namespace Setting.Menu
             {
                 soundMode.Clicked += (o, e) =>
                 {
-                    string className = typeof(Setting.Menu.Sound.SoundmodeGadget).FullName;
-                    NavigateTo(className);
+                    NavigateTo("Setting.Menu.Sound.SoundMode");
                 };
                 content.Add(soundMode);
             }

@@ -17,6 +17,7 @@ namespace SettingCore
             Order = settingMenu.DefaultOrder;
             ClassName = settingMenu.ClassName;
             IsMainMenu = settingMenu.IsMainMenu;
+            Path = settingMenu.Path;
         }
 
         public override string ToString() => $"{nameof(SettingGadgetInfo)} (PackageId: {Pkg.PackageId}, ClassName: {ClassName}, Order: {Order}, IsMainMenu: {IsMainMenu}, Path: {Path})";

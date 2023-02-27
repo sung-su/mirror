@@ -14,10 +14,7 @@ namespace Setting.Menu
             text.TouchEvent += (sender, e) => {
                 if (e.Touch.GetState(0) == PointStateType.Up)
                 {
-                    //NavigateTo("Setting.Menu.Display.ThemeGadget");
-
-                    string theme = typeof(Setting.Menu.Display.ThemeGadget).FullName;
-                    NavigateTo(theme);
+                    NavigateTo("Setting.Menu.Display.Theme");
                 }
                 return true;
             };

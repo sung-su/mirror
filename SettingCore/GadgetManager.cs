@@ -8,7 +8,7 @@ namespace SettingCore
     public class GadgetManager
     {
         private const string SettingGadgetPackagePrefix = "org.tizen.setting";
-        private const string SettingMenuMetadataPrefix = "setting.menu.";
+        private const string SettingMenuPathPrefix = "setting.menu.";
         private const string GadgetClassSuffix = "gadget";
 
         private static IEnumerable<SettingGadgetInfo> gadgets;
@@ -76,6 +76,18 @@ namespace SettingCore
         }
 
         public static IEnumerable<SettingGadgetInfo> GetAll() => gadgets.ToList();
+
+        public static SettingGadgetInfo GetGadgetInfoFromPath(string menuPath)
+        {
+            var menus = gadgets.Where(x => x.Path == menuPath);
+            if (menus.Count() == 1)
+            {
+                return menus.First();
+            }
+
+            Logger.Warn($"found {menus.Count()} gadgets for menu path: '{menuPath}'");
+            return null;
+        }
 
         public static IEnumerable<SettingGadgetInfo> GetMainWithDefaultOrder()
         {
