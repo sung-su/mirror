@@ -6,7 +6,7 @@ namespace SettingView
 {
     internal class MainMenuRowView : View
     {
-        public MainMenuRowView(string iconPath, Color iconColor, string title)
+        public MainMenuRowView(string iconPath, Color iconColor, string title, Action action)
         {
             Layout = new LinearLayout
             {
@@ -40,6 +40,16 @@ namespace SettingView
 
             Add(iconBackground);
             Add(titleTextLabel);
+
+            // TODO: replace TouchEvent with Clicked for Accessibility
+            TouchEvent += (object source, Tizen.NUI.BaseComponents.View.TouchEventArgs e) =>
+            {
+                if (e.Touch.GetState(0) == PointStateType.Down)
+                {
+                    action?.Invoke();
+                }
+                return true;
+            };
         }
     }
 }

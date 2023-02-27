@@ -96,18 +96,7 @@ namespace SettingView
                 var info = MainMenuInfo.Create(gadgetInfo);
                 if (info != null)
                 {
-                    var row = new MainMenuRowView(info.IconPath, info.IconColor, info.Title);
-
-                    // TODO: replace TouchEvent with Clicked for Accessibility
-                    row.TouchEvent += (object source, Tizen.NUI.BaseComponents.View.TouchEventArgs e) =>
-                    {
-                        if (e.Touch.GetState(0) == PointStateType.Down)
-                        {
-                            info.Action?.Invoke();
-                        }
-                        return true;
-                    };
-
+                    var row = new MainMenuRowView(info.IconPath, info.IconColor, info.Title, info.Action);
                     content.Add(row);
                 }
             }
