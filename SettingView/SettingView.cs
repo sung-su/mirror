@@ -21,6 +21,7 @@ using Tizen.System;
 
 using SettingAppTextResopurces.TextResources;
 using SettingCore;
+using System.Linq;
 
 namespace SettingView
 {
@@ -86,21 +87,29 @@ namespace SettingView
                 },
             };
 
-            var mainMenuInfos = MainMenuInfo.GetReal();
-            foreach (var info in mainMenuInfos)
-            {
-                var row = new MainMenuRowView(info.IconPath, info.IconColor, info.Title);
+            var mainGadgetInfos = GadgetManager.GetMainWithDefaultOrder();
 
-                // TODO: replace TouchEvent with Clicked for Accessibility
-                row.TouchEvent += (object source, Tizen.NUI.BaseComponents.View.TouchEventArgs e) =>
+            foreach (var gadgetInfo in mainGadgetInfos.Where(i => i.Order > 0))
+            {
+                Logger.Debug($"{gadgetInfo}");
+
+                var info = MainMenuInfo.Create(gadgetInfo);
+                if (info != null)
                 {
-                    if (e.Touch.GetState(0) == PointStateType.Down)
+                    var row = new MainMenuRowView(info.IconPath, info.IconColor, info.Title);
+
+                    // TODO: replace TouchEvent with Clicked for Accessibility
+                    row.TouchEvent += (object source, Tizen.NUI.BaseComponents.View.TouchEventArgs e) =>
                     {
-                        info.Action?.Invoke();
-                    }
-                    return true;
-                };
-                content.Add(row);
+                        if (e.Touch.GetState(0) == PointStateType.Down)
+                        {
+                            info.Action?.Invoke();
+                        }
+                        return true;
+                    };
+
+                    content.Add(row);
+                }
             }
 
             return content;

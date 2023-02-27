@@ -1,22 +1,24 @@
-﻿using Tizen.NUI;
+﻿using Tizen.Content.MediaContent;
+using Tizen.NUI;
 
 namespace SettingCore
 {
     public class SettingGadgetInfo
     {
         public NUIGadgetInfo Pkg { get; private set; }
-        public int OrderId { get; private set; }
+        public int Order { get; private set; }
         public string ClassName { get; private set; }
         public bool IsMainMenu { get; private set; }
+        public string Path { get; private set; }
 
-        public SettingGadgetInfo(NUIGadgetInfo pkg, int orderId, string className, bool isMainMenu)
+        public SettingGadgetInfo(NUIGadgetInfo pkg, SettingMenu settingMenu)
         {
             Pkg = pkg;
-            OrderId = orderId;
-            ClassName = className;
-            IsMainMenu = isMainMenu;
+            Order = settingMenu.DefaultOrder;
+            ClassName = settingMenu.ClassName;
+            IsMainMenu = settingMenu.IsMainMenu;
         }
 
-        public override string ToString() => $"pkgId: {Pkg.PackageId}, class: {ClassName}, orderId: {OrderId}, main: {IsMainMenu}";
+        public override string ToString() => $"{nameof(SettingGadgetInfo)} (PackageId: {Pkg.PackageId}, ClassName: {ClassName}, Order: {Order}, IsMainMenu: {IsMainMenu}, Path: {Path})";
     }
 }

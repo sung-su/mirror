@@ -9,11 +9,4 @@
     </required-privileges>
   </allowed-package>
   <metadata key="http://tizen.org/metadata/ui-gadget/dll" value="SettingMainGadget.dll"/>
-  <metadata key="setting/menu/wifi" value="10"/>
-  <metadata key="setting/menu/bluetooth" value="20"/>
-  <metadata key="setting/menu/display" value="30"/>
-  <metadata key="setting/menu/display/theme" value="31"/>
-  <metadata key="setting/menu/sound" value="40"/>
-  <metadata key="setting/menu/sound/soundmode" value="41"/>
 </manifest>
-

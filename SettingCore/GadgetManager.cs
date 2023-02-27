@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Tizen.NUI;
 
 namespace SettingCore
@@ -7,80 +8,84 @@ namespace SettingCore
     public class GadgetManager
     {
         private const string SettingGadgetPackagePrefix = "org.tizen.setting";
-        private const string SettingMenuMetadataPrefix = "setting/menu/";
+        private const string SettingMenuMetadataPrefix = "setting.menu.";
+        private const string GadgetClassSuffix = "gadget";
 
-        // dict key is metadata key from tizen-manifest.xml file (e.g. setting/menu/wifi)
-        private static Dictionary<string, SettingGadgetInfo> gadgets;
+        private static IEnumerable<SettingGadgetInfo> gadgets;
 
         static GadgetManager()
         {
-            gadgets = getSettingGadgets();
+            gadgets = getSettingGadgetInfos();
         }
 
-        private static Dictionary<string, SettingGadgetInfo> getSettingGadgets()
+        private static IEnumerable<SettingGadgetInfo> getSettingGadgetInfos()
         {
-            Dictionary<string, SettingGadgetInfo> dict = new Dictionary<string, SettingGadgetInfo>();
-
             var allGadgetPackages = NUIGadgetManager.GetGadgetInfos();
             var settingGadgetPackages = allGadgetPackages.Where(pkg => pkg.PackageId.StartsWith(SettingGadgetPackagePrefix));
 
             Logger.Debug($"all gadget packages: {allGadgetPackages.Count()}, setting gadget packages: {settingGadgetPackages.Count()}");
             foreach (var pkg in settingGadgetPackages)
-            {
                 Logger.Debug($"setting gadget package (pkgId: {pkg.PackageId}, resType: {pkg.ResourceType})");
-            }
             foreach (var pkg in allGadgetPackages.Where(p => !settingGadgetPackages.Contains(p)))
-            {
                 Logger.Debug($"other gadget package (pkgId: {pkg.PackageId}, resType: {pkg.ResourceType})");
-            }
 
-            foreach (var pkg in settingGadgetPackages)
+            List<SettingGadgetInfo> collection = new List<SettingGadgetInfo>();
+
+            foreach (var gadgetInfo in settingGadgetPackages)
             {
-                var metadatas = pkg.Metadata.Where(pair => pair.Key.StartsWith(SettingMenuMetadataPrefix));
-                foreach (var metadata in metadatas)
-                {
-                    if (!int.TryParse(metadata.Value, out int orderId))
-                    {
-                        Logger.Warn($"metadata value (orderId) is not integer (pkgId: {pkg.PackageId}, resType: {pkg.ResourceType}, key:{metadata.Key}, value:{metadata.Value})");
-                        continue;
-                    }
-
-                    var parts = metadata.Key.Split('/');
-                    var partsCapitalized = parts.Select(s => s[..1].ToUpperInvariant() + s[1..]);
-                    string className = string.Join('.', partsCapitalized) + "Gadget";
-
-                    bool isMainMenu = parts.Length == 3; // depends on SettingMenuMetadataPrefix.Length
-
-                    var settingGadgetInfo = new SettingGadgetInfo(pkg, orderId, className, isMainMenu);
-                    Logger.Debug($"found gadget ({settingGadgetInfo})");
-
-                    dict.Add(metadata.Key, settingGadgetInfo);
-                }
+                var settingGadgetInfos = getSettingGadgetInfos(gadgetInfo);
+                collection.AddRange(settingGadgetInfos);
             }
 
-            return dict;
+            return collection;
         }
 
-        public static IEnumerable<SettingGadgetInfo> GetAll()
+        private static IEnumerable<SettingGadgetInfo> getSettingGadgetInfos(NUIGadgetInfo gadgetInfo)
         {
-            return gadgets
-                .Select(pair => pair.Value);
+            string assemblyPath = System.IO.Path.Combine(gadgetInfo.ResourcePath, gadgetInfo.ExecutableFile);
+            System.Reflection.Assembly assembly = null;
+            try
+            {
+                assembly = Assembly.Load(System.IO.File.ReadAllBytes(assemblyPath));
+            }
+            catch (System.IO.FileLoadException)
+            {
+                Logger.Warn($"could not open assembly {assemblyPath}");
+                yield break;
+            }
+
+            var providerType = assembly.GetExportedTypes()
+                .Where(t => t.IsSubclassOf(typeof(SettingCore.SettingMenuProvider)))
+                .SingleOrDefault();
+            if (providerType == null)
+            {
+                Logger.Warn($"could not find setting menu provider at {assemblyPath}");
+                yield break;
+            }
+
+            Logger.Debug($"provider type: {providerType.FullName}");
+            var settingMenuProvider = assembly.CreateInstance(providerType.FullName) as SettingCore.SettingMenuProvider;
+            var settingMenus = settingMenuProvider.Provide();
+            Logger.Debug($"{providerType} contains {settingMenus.Count()} menus");
+
+            foreach (var settingMenu in settingMenus)
+            {
+                Logger.Verbose($"{settingMenu}");
+                yield return new SettingGadgetInfo(gadgetInfo, settingMenu);
+            }
         }
 
-        public static IEnumerable<SettingGadgetInfo> GetMain()
-        {
-            return gadgets
-                .Select(pair => pair.Value)
-                .Where(info => info.IsMainMenu)
-                .OrderBy(info => info.OrderId);
-        }
+        public static IEnumerable<SettingGadgetInfo> GetAll() => gadgets.ToList();
 
-        public static Dictionary<string, int> GetDefaultCustomization()
+        public static IEnumerable<SettingGadgetInfo> GetMainWithDefaultOrder()
         {
-            var customization = gadgets
-                .Select(pair => new KeyValuePair<string, int>(pair.Key, pair.Value.OrderId));
+            var main = gadgets
+                .Where(info => info.IsMainMenu);
 
-            return new Dictionary<string, int>(customization);
+            Logger.Debug($"number of main gadgets: {main.Count()}");
+
+            return main
+                .OrderBy(info => info.Order);
         }
     }
 }
