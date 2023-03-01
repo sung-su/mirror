@@ -62,6 +62,7 @@ namespace Setting.Menu.Display
             {
                 fontTypeItem.Clicked += (o, e) =>
                 {
+                    NavigateTo("Setting.Menu.Display.FontType");
                 };
                 content.Add(fontTypeItem);
             }

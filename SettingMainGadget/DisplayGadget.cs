@@ -92,10 +92,12 @@ namespace Setting.Menu
             }
 
             var fontItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_FONT, $"{SystemSettings.FontSize}, {SystemSettings.FontType}");
+            fontItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_FONT, $"{SystemSettings.FontSize}, {SystemSettings.FontType}");
             if (fontItem != null)
             {
                 fontItem.Clicked += (o, e) =>
                 {
+                    NavigateTo("Setting.Menu.Display.Font");
                 };
                 content.Add(fontItem);
             }
@@ -172,6 +174,12 @@ namespace Setting.Menu
         }
 
         private void SystemSettings_FontSizeChanged(object sender, FontSizeChangedEventArgs e)
+        {
+            if (fontItem != null)
+                fontItem.SubText = $"{SystemSettings.FontSize}, {SystemSettings.FontType}";
+        }
+
+        private void SystemSettings_FontTypeChanged(object sender, FontTypeChangedEventArgs e)
         {
             if (fontItem != null)
                 fontItem.SubText = $"{SystemSettings.FontSize}, {SystemSettings.FontType}";
