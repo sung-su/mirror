@@ -23,6 +23,7 @@ using SettingAppTextResopurces.TextResources;
 using SettingCore;
 using System.Linq;
 using Tizen.Applications;
+using SettingCore.Customization;
 
 namespace SettingView
 {
@@ -47,12 +48,22 @@ namespace SettingView
             GetDefaultWindow().GetDefaultNavigator().Push(mMainPage);
 
             Tizen.System.SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
+            GadgetManager.CustomizationChanged += CustomizationChanged;
         }
 
         protected override void OnTerminate()
         {
             Tizen.System.SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
+            GadgetManager.CustomizationChanged -= CustomizationChanged;
             base.OnTerminate();
+        }
+
+        private void CustomizationChanged(object sender, CustomizationChangedEventArgs e)
+        {
+            if (mMainPage != null && GadgetManager.IsMainMenuPath(e.MenuPath))
+            {
+                mMainPage.Content = CreateContent();
+            }
         }
 
         protected override void OnAppControlReceived(AppControlReceivedEventArgs e)
@@ -125,9 +136,9 @@ namespace SettingView
                 },
             };
 
-            var mainGadgetInfos = GadgetManager.GetMainWithDefaultOrder();
+            var mainGadgetInfos = GadgetManager.GetMainWithCurrentOrder();
 
-            foreach (var gadgetInfo in mainGadgetInfos.Where(i => i.Order > 0))
+            foreach (var gadgetInfo in mainGadgetInfos.Where(i => i.IsVisible))
             {
                 Logger.Debug($"{gadgetInfo}");
 

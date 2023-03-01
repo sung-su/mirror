@@ -13,6 +13,7 @@ namespace SettingCore
         private const string GadgetClassSuffix = "gadget";
 
         private static ICustomizationStore customizationStore = new PreferenceStore();
+        public static event EventHandler<CustomizationChangedEventArgs> CustomizationChanged;
 
         private static IEnumerable<SettingGadgetInfo> gadgets;
 
@@ -28,6 +29,27 @@ namespace SettingCore
             {
                 customizationStore.SetOrder(gadget.Path, gadget.Order);
             }
+
+            customizationStore.Changed += CustomizationStoreChanged;
+        }
+
+        private static void CustomizationStoreChanged(object sender, CustomizationChangedEventArgs e)
+        {
+            static bool equalsIgnoreCase(string a, string b) => a.ToLowerInvariant().Equals(b.ToLowerInvariant());
+
+            // update order in gadgets collection
+            var infos = gadgets.Where(g => equalsIgnoreCase(g.Path, e.MenuPath));
+            if (infos.Count() != 1)
+            {
+                Logger.Warn($"cannot find gadget with menupath {e.MenuPath}");
+                return;
+            }
+            Logger.Debug($"updating gadget order {e.Order} for menupath {e.MenuPath}");
+            infos.First().Order = e.Order;
+
+            // notifiy listeners
+            var handler = CustomizationChanged;
+            handler?.Invoke(sender, e);
         }
 
         private static IEnumerable<SettingGadgetInfo> getSettingGadgetInfos()
@@ -101,7 +123,7 @@ namespace SettingCore
             return null;
         }
 
-        public static IEnumerable<SettingGadgetInfo> GetMainWithDefaultOrder()
+        public static IEnumerable<SettingGadgetInfo> GetMainWithCurrentOrder()
         {
             var main = gadgets
                 .Where(info => info.IsMainMenu);
@@ -121,6 +143,16 @@ namespace SettingCore
 
             // TODO: just for DEBUG, remove before merge
             Logger.Debug($"Customization AFTER change:\n{customizationStore.CurrentCustomizationLog}");
+        }
+
+        public static bool IsMainMenuPath(string menuPath)
+        {
+            var info = gadgets.SingleOrDefault(x => x.Path.ToLowerInvariant() == menuPath.ToLowerInvariant());
+
+            bool isMainMenu = info != null && info.IsMainMenu;
+            Logger.Debug(menuPath + " is " + (isMainMenu ? "" : "NOT ") + "main menu");
+
+            return isMainMenu;
         }
     }
 }

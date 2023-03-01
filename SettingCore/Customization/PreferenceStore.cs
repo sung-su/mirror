@@ -38,6 +38,14 @@ namespace SettingCore.Customization
             }
         }
 
+        public event EventHandler<CustomizationChangedEventArgs> Changed;
+
+        protected void OnCustomizationChanged(CustomizationChangedEventArgs e)
+        {
+            var handler = Changed;
+            handler?.Invoke(this, e);
+        }
+
         public void Clear()
         {
             Logger.Debug("Clearing preference customization store.");
@@ -74,6 +82,8 @@ namespace SettingCore.Customization
             }
 
             Tizen.Applications.Preference.Set(menuPath, order);
+
+            OnCustomizationChanged(new CustomizationChangedEventArgs(menuPath, order));
         }
 
         public int GetOrder(string menuPath)

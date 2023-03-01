@@ -6,7 +6,8 @@ namespace SettingCore
     public class SettingGadgetInfo
     {
         public NUIGadgetInfo Pkg { get; private set; }
-        public int Order { get; private set; }
+        public int Order { get; set; }
+        public bool IsVisible => Order > 0;
         public string ClassName { get; private set; }
         public bool IsMainMenu { get; private set; }
         public string Path { get; private set; }
