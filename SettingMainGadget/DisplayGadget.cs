@@ -103,7 +103,7 @@ namespace Setting.Menu
                 content.Add(fontItem);
             }
 
-            screenTimeOutItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2, DisplayscreenManager.GetScreenTimeoutName());
+            screenTimeOutItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2, DisplayTimeOutManager.GetScreenTimeoutName());
             if (screenTimeOutItem != null)
             {
                 screenTimeOutItem.Clicked += (o, e) =>
@@ -178,7 +178,7 @@ namespace Setting.Menu
         private void SystemSettings_ScreenBacklightTimeChanged(object sender, ScreenBacklightTimeChangedEventArgs e)
         {
             if (screenTimeOutItem != null)
-                screenTimeOutItem.SubText = DisplayscreenManager.GetScreenTimeoutName();
+                screenTimeOutItem.SubText = DisplayTimeOutManager.GetScreenTimeoutName();
         }
 
         private void SystemSettings_FontSizeChanged(object sender, FontSizeChangedEventArgs e)

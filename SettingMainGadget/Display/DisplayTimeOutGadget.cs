@@ -9,7 +9,7 @@ using Tizen.NUI.Components;
 
 namespace Setting.Menu.Display
 {
-    public class DisplayscreenGadget : SettingCore.MenuGadget
+    public class DisplayTimeOutGadget : SettingCore.MenuGadget
     {
         public override string ProvideTitle() => Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2;
 
@@ -34,11 +34,11 @@ namespace Setting.Menu.Display
                 WidthSpecification = LayoutParamPolicies.MatchParent,
             };
 
-            ReadOnlyCollection<string> rc = new ReadOnlyCollection<string>(DisplayscreenManager.TimeoutList.Select(x => x.GetName()).ToList());
+            ReadOnlyCollection<string> rc = new ReadOnlyCollection<string>(DisplayTimeOutManager.TimeoutList.Select(x => x.GetName()).ToList());
             picker.DisplayedValues = rc;
             picker.MinValue = 0;
-            picker.MaxValue = DisplayscreenManager.TimeoutList.Count - 1;
-            picker.CurrentValue = DisplayscreenManager.GetScreenTimeoutIndex();
+            picker.MaxValue = DisplayTimeOutManager.TimeoutList.Count - 1;
+            picker.CurrentValue = DisplayTimeOutManager.GetScreenTimeoutIndex();
 
             Logger.Debug($"ScreenTimeOut CurrentValue: {picker.CurrentValue}");
 
@@ -49,7 +49,7 @@ namespace Setting.Menu.Display
 
             button.Clicked += (bo, be) =>
             {
-                DisplayscreenManager.SetScreenTimeout(picker.CurrentValue);
+                DisplayTimeOutManager.SetScreenTimeout(picker.CurrentValue);
 
                 NavigateBack();
             };
