@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using SettingCore.Customization;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Tizen.NUI;
@@ -8,14 +10,24 @@ namespace SettingCore
     public class GadgetManager
     {
         private const string SettingGadgetPackagePrefix = "org.tizen.setting";
-        private const string SettingMenuPathPrefix = "setting.menu.";
         private const string GadgetClassSuffix = "gadget";
+
+        private static ICustomizationStore customizationStore = new PreferenceStore();
 
         private static IEnumerable<SettingGadgetInfo> gadgets;
 
         static GadgetManager()
         {
             gadgets = getSettingGadgetInfos();
+
+            // TODO: just for DEBUG, remove before merge
+            customizationStore.Clear();
+
+            // save order only if does not exists
+            foreach (var gadget in gadgets)
+            {
+                customizationStore.SetOrder(gadget.Path, gadget.Order);
+            }
         }
 
         private static IEnumerable<SettingGadgetInfo> getSettingGadgetInfos()
@@ -98,6 +110,17 @@ namespace SettingCore
 
             return main
                 .OrderBy(info => info.Order);
+        }
+
+        public static void UpdateCustomization(string menuPath, int order)
+        {
+            // TODO: just for DEBUG, remove before merge
+            Logger.Debug($"Customization BEFORE change:\n{customizationStore.CurrentCustomizationLog}");
+
+            customizationStore.UpdateOrder(menuPath, order);
+
+            // TODO: just for DEBUG, remove before merge
+            Logger.Debug($"Customization AFTER change:\n{customizationStore.CurrentCustomizationLog}");
         }
     }
 }

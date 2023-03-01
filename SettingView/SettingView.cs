@@ -22,6 +22,7 @@ using Tizen.System;
 using SettingAppTextResopurces.TextResources;
 using SettingCore;
 using System.Linq;
+using Tizen.Applications;
 
 namespace SettingView
 {
@@ -52,6 +53,38 @@ namespace SettingView
         {
             Tizen.System.SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
             base.OnTerminate();
+        }
+
+        protected override void OnAppControlReceived(AppControlReceivedEventArgs e)
+        {
+            base.OnAppControlReceived(e);
+
+            var keys = e.ReceivedAppControl.ExtraData.GetKeys();
+            if (keys.Contains("cmd") && keys.Contains("menupath") && keys.Contains("order"))
+            {
+                var data = e.ReceivedAppControl.ExtraData;
+                string cmd = data.Get<string>("cmd");
+                string menupath = data.Get<string>("menupath");
+                string order = data.Get<string>("order");
+                Logger.Debug($"AppControl (cmd: {cmd}, menupath: {menupath}, order: {order})");
+
+                if (cmd == "customize")
+                {
+                    bool negative = order.EndsWith('-');
+                    order = order.Replace("-", "");
+
+                    if (!int.TryParse(order, out int orderValue))
+                    {
+                        Logger.Warn($"order value '{order}' is not corrent type (integer value with minus sign after digits, e.g. 7-)");
+                        return;
+                    }
+
+                    if (negative)
+                        orderValue *= -1;
+
+                    GadgetManager.UpdateCustomization(menupath, orderValue);
+                }
+            }
         }
 
         private void SystemSettings_LocaleLanguageChanged(object sender, Tizen.System.LocaleLanguageChangedEventArgs e)
