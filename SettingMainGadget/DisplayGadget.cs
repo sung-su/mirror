@@ -19,6 +19,7 @@ namespace Setting.Menu
         public override string ProvideTitle() => "Display";
 
         private SliderItem brightnessItem;
+        private DefaultLinearItem fontItem;
         private DefaultLinearItem screenTimeOutItem;
         private DefaultLinearItem themeItem;
 
@@ -30,12 +31,16 @@ namespace Setting.Menu
 
         protected override View OnCreate()
         {
+            SystemSettings.FontSizeChanged += SystemSettings_FontSizeChanged;
+            SystemSettings.FontTypeChanged += SystemSettings_FontTypeChanged;
 
             return CreateView();
         }
 
         protected override void OnDestroy()
         {
+            SystemSettings.FontSizeChanged -= SystemSettings_FontSizeChanged;
+            SystemSettings.FontTypeChanged -= SystemSettings_FontTypeChanged;
 
             base.OnDestroy();
         }
@@ -166,5 +171,10 @@ namespace Setting.Menu
             }
         }
 
+        private void SystemSettings_FontSizeChanged(object sender, FontSizeChangedEventArgs e)
+        {
+            if (fontItem != null)
+                fontItem.SubText = $"{SystemSettings.FontSize}, {SystemSettings.FontType}";
+        }
     }
 }

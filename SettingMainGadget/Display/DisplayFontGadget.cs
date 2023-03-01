@@ -52,6 +52,7 @@ namespace Setting.Menu.Display
             {
                 fontSizeItem.Clicked += (o, e) =>
                 {
+                    NavigateTo("Setting.Menu.Display.FontSize");
                 };
                 content.Add(fontSizeItem);
             }
