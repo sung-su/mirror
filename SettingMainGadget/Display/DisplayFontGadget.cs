@@ -52,7 +52,7 @@ namespace Setting.Menu.Display
             {
                 fontSizeItem.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.Display.FontSize");
+                    NavigateTo("Setting.Menu.Display.Font.FontSize");
                 };
                 content.Add(fontSizeItem);
             }
@@ -62,7 +62,7 @@ namespace Setting.Menu.Display
             {
                 fontTypeItem.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.Display.FontType");
+                    NavigateTo("Setting.Menu.Display.Font.FontType");
                 };
                 content.Add(fontTypeItem);
             }
