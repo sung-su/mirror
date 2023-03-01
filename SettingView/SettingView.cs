@@ -65,7 +65,12 @@ namespace SettingView
 
         private static AppBar CreateAppBar()
         {
-            return new AppBar()
+            // TODO: remove style customization with scalable unit, when merged to TizenFX
+            var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar") as AppBarStyle;
+            appBarStyle.Size = new Size(-1, 64).SpToPx();
+            appBarStyle.TitleTextLabel.PointSize = 18f.SpToPt();
+
+            return new AppBar(appBarStyle)
             {
                 Title = Resources.IDS_ST_OPT_SETTINGS,
                 AutoNavigationContent = false,

@@ -51,9 +51,14 @@ namespace SettingCore
                 var title = gadget.ProvideTitle();
                 var content = gadget.MainView;
 
+                // TODO: remove style customization with scalable unit, when merged to TizenFX
+                var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar") as AppBarStyle;
+                appBarStyle.Size = new Size(-1, 64).SpToPx();
+                appBarStyle.TitleTextLabel.PointSize = 18f.SpToPt();
+
                 var page = new ContentPage
                 {
-                    AppBar = new AppBar
+                    AppBar = new AppBar(appBarStyle)
                     {
                         Title = title,
                         // TODO: use ActionContent here to set button, which opens context menu (if required)
