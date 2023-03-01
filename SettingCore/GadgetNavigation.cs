@@ -48,6 +48,10 @@ namespace SettingCore
             {
                 var gadget = NUIGadgetManager.Add(info.Pkg.ResourceType, info.ClassName) as MenuGadget;
 
+                var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar") as AppBarStyle;
+                var backButton = new Button(appBarStyle.BackButton);
+                backButton.Clicked += (s, e) => NavigateBack();
+
                 var title = gadget.ProvideTitle();
                 var content = gadget.MainView;
 
@@ -61,6 +65,7 @@ namespace SettingCore
                     AppBar = new AppBar(appBarStyle)
                     {
                         Title = title,
+                        NavigationContent = backButton,
                         // TODO: use ActionContent here to set button, which opens context menu (if required)
                     },
                     Content = content,
