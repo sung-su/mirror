@@ -5,7 +5,7 @@ using Tizen.System;
 
 namespace SettingMainGadget.Display
 {
-    public class DisplayscreenManager
+    public class DisplayTimeOutManager
     {
         private const string VconfScreenTimeOut = "db/setting/lcd_backlight_normal";
 

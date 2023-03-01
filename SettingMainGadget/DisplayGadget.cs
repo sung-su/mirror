@@ -108,7 +108,7 @@ namespace Setting.Menu
             {
                 screenTimeOutItem.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.Display.Screen");
+                    NavigateTo("Setting.Menu.Display.TimeOut");
                 };
                 content.Add(screenTimeOutItem);
             }

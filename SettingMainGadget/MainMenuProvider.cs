@@ -14,7 +14,7 @@ namespace SettingMainGadget
                 new SettingMenu(path: "Setting.Menu.Display.Font", defaultOrder: 31, type: typeof(Setting.Menu.Display.DisplayfontGadget)),
                 new SettingMenu(path: "Setting.Menu.Display.Font.FontSize", defaultOrder: 32, type: typeof(Setting.Menu.Display.DisplayfontsizeGadget)),
                 new SettingMenu(path: "Setting.Menu.Display.Font.FontType", defaultOrder: 33, type: typeof(Setting.Menu.Display.DisplayfonttypeGadget)),
-                new SettingMenu(path: "Setting.Menu.Display.Screen", defaultOrder: 34, type: typeof(Setting.Menu.Display.DisplayscreenGadget)),
+                new SettingMenu(path: "Setting.Menu.Display.TimeOut", defaultOrder: 34, type: typeof(Setting.Menu.Display.DisplayTimeOutGadget)),
                 new SettingMenu(path: "Setting.Menu.Display.Theme", defaultOrder: 35, type: typeof(Setting.Menu.Display.DisplaythemeGadget)),
                 new SettingMenu(path: "Setting.Menu.Sound", defaultOrder: 40, type: typeof(Setting.Menu.SoundGadget)),
                 new SettingMenu(path: "Setting.Menu.Sound.SoundMode", defaultOrder: 41, type: typeof(Setting.Menu.Sound.SoundmodeGadget)),
