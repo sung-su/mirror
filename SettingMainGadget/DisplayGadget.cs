@@ -31,6 +31,7 @@ namespace Setting.Menu
 
         protected override View OnCreate()
         {
+            SystemSettings.ScreenBacklightTimeChanged += SystemSettings_ScreenBacklightTimeChanged;
             SystemSettings.FontSizeChanged += SystemSettings_FontSizeChanged;
             SystemSettings.FontTypeChanged += SystemSettings_FontTypeChanged;
 
@@ -39,6 +40,7 @@ namespace Setting.Menu
 
         protected override void OnDestroy()
         {
+            SystemSettings.ScreenBacklightTimeChanged -= SystemSettings_ScreenBacklightTimeChanged;
             SystemSettings.FontSizeChanged -= SystemSettings_FontSizeChanged;
             SystemSettings.FontTypeChanged -= SystemSettings_FontTypeChanged;
 
@@ -91,7 +93,6 @@ namespace Setting.Menu
                 }
             }
 
-            var fontItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_FONT, $"{SystemSettings.FontSize}, {SystemSettings.FontType}");
             fontItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_FONT, $"{SystemSettings.FontSize}, {SystemSettings.FontType}");
             if (fontItem != null)
             {
@@ -107,6 +108,7 @@ namespace Setting.Menu
             {
                 screenTimeOutItem.Clicked += (o, e) =>
                 {
+                    NavigateTo("Setting.Menu.Display.Screen");
                 };
                 content.Add(screenTimeOutItem);
             }
@@ -171,6 +173,12 @@ namespace Setting.Menu
             {
                 Logger.Error(string.Format("error :({0}) {1} ", e.GetType().ToString(), e.Message));
             }
+        }
+
+        private void SystemSettings_ScreenBacklightTimeChanged(object sender, ScreenBacklightTimeChangedEventArgs e)
+        {
+            if (screenTimeOutItem != null)
+                screenTimeOutItem.SubText = DisplayscreenManager.GetScreenTimeoutName();
         }
 
         private void SystemSettings_FontSizeChanged(object sender, FontSizeChangedEventArgs e)
