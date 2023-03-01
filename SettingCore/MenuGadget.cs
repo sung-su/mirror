@@ -1,4 +1,5 @@
-﻿using Tizen.NUI;
+﻿using System.Collections.Generic;
+using Tizen.NUI;
 
 namespace SettingCore
 {
@@ -9,6 +10,8 @@ namespace SettingCore
         }
 
         public abstract string ProvideTitle();
+
+        public virtual IEnumerable<MoreMenuItem> ProvideMoreMenu() => null;
 
         protected void NavigateBack() => GadgetNavigation.NavigateBack();
         protected void NavigateTo(string menuPath) => GadgetNavigation.NavigateTo(menuPath);
