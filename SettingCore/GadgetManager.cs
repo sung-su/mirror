@@ -71,6 +71,19 @@ namespace SettingCore
                 collection.AddRange(settingGadgetInfos);
             }
 
+            // check is there is more than one gadget with the same Menu Path
+            var uniqueMenuPaths = collection.Select(i => i.Path).Distinct();
+            foreach (var menuPath in uniqueMenuPaths)
+            {
+                var found = collection.Where(i => i.Path == menuPath);
+                if (found.Count() > 1)
+                {
+                    Logger.Warn($"Customization may work INCORRECTLY due to the same menu path '{menuPath}' for {found.Count()} gadgets.");
+                    foreach (var info in found)
+                        Logger.Warn($"Menu path: {menuPath} -> {info.ClassName} @ {info.Pkg.PackageId}");
+                }
+            }
+
             return collection;
         }
 
@@ -138,6 +151,18 @@ namespace SettingCore
         {
             // TODO: just for DEBUG, remove before merge
             Logger.Debug($"Customization BEFORE change:\n{customizationStore.CurrentCustomizationLog}");
+
+            var found = gadgets.Where(x => x.Path == menuPath).Count();
+            if (found == 0)
+            {
+                Logger.Warn($"Cannot update customization, because did not find gadget for menu path: {menuPath}.");
+                return;
+            }
+            else if (found > 1)
+            {
+                Logger.Warn($"Cannot update customization, because 1+ gadgets found for menu path: {menuPath}.");
+                return;
+            }
 
             customizationStore.UpdateOrder(menuPath, order);
 

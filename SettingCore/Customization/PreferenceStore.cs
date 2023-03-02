@@ -63,7 +63,7 @@ namespace SettingCore.Customization
 
             if (menuPaths.Contains(menuPath) )
             {
-                Logger.Warn($"Cannot set order, because menuPath {menuPath} already exists. Please use UpdateOrder().");
+                Logger.Warn($"Cannot set order, because menuPath {menuPath} already exists. Please use UpdateOrder() or check menuPath.");
                 return false;
             }
 
