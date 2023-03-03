@@ -90,7 +90,7 @@ namespace Setting.Menu
             Logger.Debug($"GET {AudioVolumeType.Notification} Volume : {SettingAudioManager.GetVolumeLevel(AudioVolumeType.Notification)}");
             Logger.Debug($"GET {AudioVolumeType.System} Volume : {SettingAudioManager.GetVolumeLevel(AudioVolumeType.System)}");
 
-            string soundSliderIconPath = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, "sound/sound_slider_icon_default.png");
+            string soundSliderIconPath = GetResourcePath("sound/sound_slider_icon_default.png");
 
             var bodyMedia = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_MEDIA);
             content.Add(bodyMedia);
