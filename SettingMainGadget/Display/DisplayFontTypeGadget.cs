@@ -9,7 +9,7 @@ using Tizen.System;
 
 namespace Setting.Menu.Display
 {
-    public class DisplayfonttypeGadget : SettingCore.MenuGadget
+    public class DisplayFontTypeGadget : SettingCore.MenuGadget
     {
         public override string ProvideTitle() => Resources.IDS_ST_BODY_FONT_TYPE;
 

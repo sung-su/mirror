@@ -7,7 +7,7 @@ using Tizen.System;
 
 namespace Setting.Menu.Display
 {
-    public class DisplayfontGadget : SettingCore.MenuGadget
+    public class DisplayFontGadget : SettingCore.MenuGadget
     {
         public override string ProvideTitle() => Resources.IDS_ST_BODY_FONT;
         private DefaultLinearItem fontSizeItem;

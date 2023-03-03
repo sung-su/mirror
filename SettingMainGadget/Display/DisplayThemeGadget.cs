@@ -9,7 +9,7 @@ using Tizen.NUI.Components;
 
 namespace Setting.Menu.Display
 {
-    public class DisplaythemeGadget : SettingCore.MenuGadget
+    public class DisplayThemeGadget : SettingCore.MenuGadget
     {
         public override string ProvideTitle() => Resources.IDS_ST_BODY_THEME;
 
