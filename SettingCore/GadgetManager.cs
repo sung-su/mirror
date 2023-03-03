@@ -27,7 +27,21 @@ namespace SettingCore
             // save order only if does not exists
             foreach (var gadget in gadgets)
             {
-                customizationStore.SetOrder(gadget.Path, gadget.Order);
+                var setSuccessfull = customizationStore.SetOrder(gadget.Path, gadget.Order);
+
+                // set was not successfull, becauce the path was already set, so the order might have been changed
+                // read order from customization and update at gadget
+                if (!setSuccessfull)
+                {
+                    try
+                    {
+                        gadget.Order = customizationStore.GetOrder(gadget.Path);
+                    }
+                    catch
+                    {
+                        Logger.Warn($"Could not get Order from customization store for menu path {gadget.Path}");
+                    }
+                }
             }
 
             customizationStore.Changed += CustomizationStoreChanged;
@@ -178,6 +192,36 @@ namespace SettingCore
             Logger.Debug(menuPath + " is " + (isMainMenu ? "" : "NOT ") + "main menu");
 
             return isMainMenu;
+        }
+
+        public static bool IsMenuPathForClass(string menuPath, string fullClassName)
+        {
+            return gadgets.Where(x =>
+            {
+                bool menuPathStartsWith = menuPath.StartsWithIgnoreCase(x.Path + ".");
+                bool classNameEquals = x.ClassName.EqualsIgnoreCase(fullClassName);
+
+                // TODO: just for DEBUG, remove before merge
+                Logger.Debug($"starts {menuPathStartsWith} => {x.Path}, {menuPath}");
+                Logger.Debug($"equals {classNameEquals} => {x.ClassName}, {fullClassName}");
+
+                return menuPathStartsWith && classNameEquals;
+            }).Count() == 1;
+        }
+
+        public static IEnumerable<MenuCustomizationItem> GetCustomization(string fullClassName)
+        {
+            var menus = gadgets.Where(x => x.ClassName.EqualsIgnoreCase(fullClassName));
+            if (menus.Count() != 1)
+            {
+                Logger.Warn($"found {menus.Count()} gadgets for class: '{fullClassName}'");
+                return new List<MenuCustomizationItem>();
+            }
+
+            string menuPath = menus.First().Path + ".";
+            return gadgets
+                .Where(x => x.Path.StartsWithIgnoreCase(menuPath))
+                .Select(x => new MenuCustomizationItem(x.Path, x.Order));
         }
     }
 }

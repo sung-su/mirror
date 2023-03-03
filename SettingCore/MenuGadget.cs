@@ -1,5 +1,7 @@
+using SettingCore.Customization;
 using System.Collections.Generic;
 using Tizen.NUI;
+using Tizen.NUI.BaseComponents;
 
 namespace SettingCore
 {
@@ -7,6 +9,45 @@ namespace SettingCore
     {
         protected MenuGadget(NUIGadgetType type = NUIGadgetType.Normal) : base(type)
         {
+        }
+
+        protected override View OnCreate()
+        {
+            GadgetManager.CustomizationChanged += CustomizationChanged;
+            return base.OnCreate();
+        }
+
+        protected override void OnDestroy()
+        {
+            GadgetManager.CustomizationChanged -= CustomizationChanged;
+            base.OnDestroy();
+        }
+
+        private void CustomizationChanged(object sender, Customization.CustomizationChangedEventArgs e)
+        {
+            string classname = GetType().FullName;
+
+            if (GadgetManager.IsMenuPathForClass(e.MenuPath, classname))
+            {
+                Logger.Verbose($"change @ {classname}: {e.MenuPath} -> {e.Order}");
+                OnCustomizationUpdate(new MenuCustomizationItem(e.MenuPath, e.Order));
+            }
+
+            // TODO: just for debug
+            else
+            {
+                Logger.Verbose($"NO change @ {classname}: {e.MenuPath} -> {e.Order}");
+            }
+        }
+
+        protected virtual void OnCustomizationUpdate(MenuCustomizationItem item)
+        {
+        }
+
+        protected IEnumerable<MenuCustomizationItem> GetCustomization()
+        {
+            string fullClassName = GetType().FullName;
+            return GadgetManager.GetCustomization(fullClassName);
         }
 
         public abstract string ProvideTitle();
