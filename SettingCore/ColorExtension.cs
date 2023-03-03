@@ -17,5 +17,10 @@ namespace SettingCore
             string a = color.A == 1 ? "" : toHex(color.A);
             return $"#{r}{g}{b}{a}";
         }
+
+        public static Color WithAlpha(this Color color, float alpha)
+        {
+            return new Color(color.R, color.G, color.B, alpha);
+        }
     }
 }

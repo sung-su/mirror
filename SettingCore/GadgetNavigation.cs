@@ -61,6 +61,8 @@ namespace SettingCore
 
                 var page = new ContentPage
                 {
+                    // TODO: CornerRadius depends on SettingViewBorder.CornerRadius - SettingViewBorder.BorderLineThickness, which is defined at SettingView project.
+                    CornerRadius = (26.0f - 6.0f).SpToPx(),
                     AppBar = new AppBar(appBarStyle)
                     {
                         Title = title,

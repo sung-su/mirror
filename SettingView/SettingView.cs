@@ -42,6 +42,7 @@ namespace SettingView
 
             mMainPage = new ContentPage()
             {
+                CornerRadius = (SettingViewBorder.WindowCornerRadius - SettingViewBorder.BorderLineSize).SpToPx(),
                 AppBar = CreateAppBar(),
                 Content = CreateContent(),
             };

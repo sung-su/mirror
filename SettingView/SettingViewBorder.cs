@@ -14,90 +14,43 @@
  *  limitations under the License
  */
 
-using System;
-
+using SettingCore;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
-using Tizen.NUI.Components;
-
-using System.Collections.Generic;
-using System.Text;
 
 namespace SettingView
 {
-
-
     class SettingViewBorder : Tizen.NUI.DefaultBorder
     {
+        /// <summary>
+        /// User defined thickness between outer (semi-transparent) window border background and inner (opaque white) window content background in pixels. This PX value is used to calculate SP.
+        /// </summary>
+        public static readonly float BorderLineSize = 6.0f;
 
-        private static readonly Color mBackgroundColor = new Color(0, 0, 1, 0.3f);
+        /// <summary>
+        /// NOT CHANGABLE! It is set by AppFW and cannot be changed so far.
+        /// </summary>
+        public static readonly float WindowCornerRadius = 26.0f;
 
-        private static readonly string ResourcePath = Tizen.Applications.Application.Current.DirectoryInfo.Resource;
+        private static readonly Color mBackgroundColor = Color.White.WithAlpha(0.35f);
 
-//         private static readonly string MinimalizeIcon = ResourcePath + "/images/minimalize.png";
-        private static readonly string MaximalizeIcon = ResourcePath + "/images/maximalize.png";
-        private static readonly string RestoreIcon = ResourcePath + "/images/smallwindow.png";
-        private static readonly string CloseIcon = ResourcePath + "/images/close.png";
-        private static readonly string LeftCornerIcon = ResourcePath + "/images/leftCorner.png";
-        private static readonly string RightCornerIcon = ResourcePath + "/images/rightCorner.png";
+        private static string GetResourcePath(string relativePath) => System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, relativePath);
+        private static string MinimalizeIconPath = GetResourcePath("window-border/window-minimalize.svg");
+        private static string MaximalizeIconPath = GetResourcePath("window-border/window-maximalize.svg");
+        private static string RestoreIconPath = GetResourcePath("window-border/window-restore.svg");
+        private static string CloseIconPath = GetResourcePath("window-border/window-close.svg");
+        private static string LeftCornerIconPath = GetResourcePath("window-border/window-resize-bottom-left.svg");
 
-        private int width = 500;
-        private bool hide = false;
         private View borderView;
 
-//        private ImageView minimalizeIcon;
+        private ImageView minimalizeIcon;
         private ImageView maximalizeIcon;
         private ImageView closeIcon;
         private ImageView leftCornerIcon;
-        private ImageView rightCornerIcon;
 
         public SettingViewBorder() : base()
         {
-            //BorderHeight = 50;
-            BorderLineThickness = 0;
             ResizePolicy = Window.BorderResizePolicyType.Free;
-        }
-
-
-
-        public override bool CreateTopBorderView(View topView)
-        {
-#if false
-            if (topView == null)
-            {
-                return false;
-            }
-            topView.Layout = new LinearLayout()
-            {
-                LinearOrientation = LinearLayout.Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Center,
-                CellPadding = new Size2D(20, 20),
-            };
-
-
-
-            var margin = new View
-            {
-                Size2D = new Size2D(10, 32),
-                HeightResizePolicy = ResizePolicyType.FillToParent
-            };
-            topView.Add(margin);
-
-            PropertyMap titleStyle = new PropertyMap();
-            titleStyle.Add("weight", new PropertyValue(600));
-
-
-            title = new TextLabel()
-            {
-                Text = "Setting",
-                FontStyle = titleStyle,
-            };
-
-            topView.Add(title);
-            return true;
-#else
-            return false;
-#endif
         }
 
         public override bool CreateBottomBorderView(View bottomView)
@@ -106,72 +59,40 @@ namespace SettingView
             {
                 return false;
             }
-            bottomView.Layout = new RelativeLayout();
-#if false
+
             minimalizeIcon = new ImageView()
             {
-                ResourceUrl = MinimalizeIcon,
+                ResourceUrl = MinimalizeIconPath,
                 AccessibilityHighlightable = true,
             };
-#endif
+
             maximalizeIcon = new ImageView()
             {
-                ResourceUrl = MaximalizeIcon,
+                ResourceUrl = MaximalizeIconPath,
                 AccessibilityHighlightable = true,
             };
 
             closeIcon = new ImageView()
             {
-                ResourceUrl = CloseIcon,
+                ResourceUrl = CloseIconPath,
                 AccessibilityHighlightable = true,
             };
 
             leftCornerIcon = new ImageView()
             {
-                ResourceUrl = LeftCornerIcon,
+                ResourceUrl = LeftCornerIconPath,
                 AccessibilityHighlightable = true,
             };
 
-            rightCornerIcon = new ImageView()
-            {
-                ResourceUrl = RightCornerIcon,
-                AccessibilityHighlightable = true,
-            };
-
-#if false
-            RelativeLayout.SetRightTarget(minimalizeIcon, maximalizeIcon);
-            RelativeLayout.SetRightRelativeOffset(minimalizeIcon, 0.0f);
-            RelativeLayout.SetHorizontalAlignment(minimalizeIcon, RelativeLayout.Alignment.End);
-#endif
-            RelativeLayout.SetRightTarget(maximalizeIcon, closeIcon);
-            RelativeLayout.SetRightRelativeOffset(maximalizeIcon, 0.0f);
-            RelativeLayout.SetHorizontalAlignment(maximalizeIcon, RelativeLayout.Alignment.End);
-            RelativeLayout.SetRightTarget(closeIcon, rightCornerIcon);
-            RelativeLayout.SetRightRelativeOffset(closeIcon, 0.0f);
-            RelativeLayout.SetHorizontalAlignment(closeIcon, RelativeLayout.Alignment.End);
-            RelativeLayout.SetRightRelativeOffset(rightCornerIcon, 1.0f);
-            RelativeLayout.SetHorizontalAlignment(rightCornerIcon, RelativeLayout.Alignment.End);
-            bottomView.Add(leftCornerIcon);
-
-//            bottomView.Add(minimalizeIcon);
-
-            bottomView.Add(maximalizeIcon);
-            bottomView.Add(closeIcon);
-            bottomView.Add(rightCornerIcon);
-
-
-//            minimalizeIcon.TouchEvent += OnMinimizeIconTouched;
+            minimalizeIcon.TouchEvent += OnMinimizeIconTouched;
             maximalizeIcon.TouchEvent += OnMaximizeIconTouched;
             closeIcon.TouchEvent += OnCloseIconTouched;
             leftCornerIcon.TouchEvent += OnLeftBottomCornerIconTouched;
-            rightCornerIcon.TouchEvent += OnRightBottomCornerIconTouched;
 
-#if false
             minimalizeIcon.AccessibilityActivated += (s, e) =>
             {
                 MinimizeBorderWindow();
             };
-#endif
             maximalizeIcon.AccessibilityActivated += (s, e) =>
             {
                 MaximizeBorderWindow();
@@ -180,35 +101,64 @@ namespace SettingView
             {
                 CloseBorderWindow();
             };
-#if false
+
             minimalizeIcon.AccessibilityNameRequested += (s, e) =>
             {
+                // TODO: get from Resource file
                 e.Name = "Minimize";
             };
-#endif
             maximalizeIcon.AccessibilityNameRequested += (s, e) =>
             {
+                // TODO: get from Resource file
                 e.Name = "Maximize";
             };
             closeIcon.AccessibilityNameRequested += (s, e) =>
             {
+                // TODO: get from Resource file
                 e.Name = "Close";
             };
             leftCornerIcon.AccessibilityNameRequested += (s, e) =>
             {
-                e.Name = "Resize";
-            };
-            rightCornerIcon.AccessibilityNameRequested += (s, e) =>
-            {
+                // TODO: get from Resource file
                 e.Name = "Resize";
             };
 
-//            minimalizeIcon.SetAccessibilityReadingInfoTypes(Tizen.NUI.BaseComponents.AccessibilityReadingInfoTypes.Name);
-
+            minimalizeIcon.SetAccessibilityReadingInfoTypes(Tizen.NUI.BaseComponents.AccessibilityReadingInfoTypes.Name);
             maximalizeIcon.SetAccessibilityReadingInfoTypes(Tizen.NUI.BaseComponents.AccessibilityReadingInfoTypes.Name);
             closeIcon.SetAccessibilityReadingInfoTypes(Tizen.NUI.BaseComponents.AccessibilityReadingInfoTypes.Name);
             leftCornerIcon.SetAccessibilityReadingInfoTypes(Tizen.NUI.BaseComponents.AccessibilityReadingInfoTypes.Name);
-            rightCornerIcon.SetAccessibilityReadingInfoTypes(Tizen.NUI.BaseComponents.AccessibilityReadingInfoTypes.Name);
+
+            // Apply scalable changes. Has to be called when NUIApplication is initilialized, due to SpToPx() usage.
+            BorderLineThickness = (uint)BorderLineSize.SpToPx();
+
+            var size = new Size(48, 48).SpToPx();
+            leftCornerIcon.Size = size;
+            minimalizeIcon.Size = size;
+            maximalizeIcon.Size = size;
+            closeIcon.Size = size;
+
+            // Default BorderHeight is 50 and does not adopt to content height, so HAVE TO change to SVGs height.
+            bottomView.SizeHeight = 48.SpToPx();
+
+            var controls = new View
+            {
+                Layout = new LinearLayout
+                {
+                    LinearOrientation = LinearLayout.Orientation.Horizontal,
+                },
+                Margin = new Extents(0, (ushort)(WindowCornerRadius - BorderLineSize), 0, 0).SpToPx(),
+            };
+            controls.Add(minimalizeIcon);
+            controls.Add(maximalizeIcon);
+            controls.Add(closeIcon);
+
+            bottomView.Layout = new FlexLayout
+            {
+                Direction = FlexLayout.FlexDirection.Row,
+                Justification = FlexLayout.FlexJustification.SpaceBetween,
+            };
+            bottomView.Add(leftCornerIcon);
+            bottomView.Add(controls);
 
             return true;
         }
@@ -216,91 +166,63 @@ namespace SettingView
         public override void CreateBorderView(View borderView)
         {
             this.borderView = borderView;
-            borderView.CornerRadius = new Vector4(0.03f, 0.03f, 0.03f, 0.03f);
-            borderView.CornerRadiusPolicy = VisualTransformPolicyType.Relative;
+
+            // FIXME: changing CornerRadius has NO effect on borderView - cannot change CornerRadius of the outer window!?
+            // borderView.CornerRadius value is changed with setter, but the View does not change
+
+            //borderView.CornerRadius = new Vector4(0.03f, 0.03f, 0.03f, 0.03f);
+            //borderView.CornerRadiusPolicy = VisualTransformPolicyType.Relative;
+            borderView.CornerRadius = 100;
+            borderView.CornerRadiusPolicy = VisualTransformPolicyType.Absolute;
+
             borderView.BackgroundColor = mBackgroundColor;
         }
 
         public override void OnCreated(View borderView)
         {
             base.OnCreated(borderView);
+
             UpdateIcons();
         }
 
         public override bool OnCloseIconTouched(object sender, View.TouchEventArgs e)
         {
-
-            Tizen.Log.Debug("CustomBorder", $"Item Name : {ResourcePath}");
-
             base.OnCloseIconTouched(sender, e);
-
 
             Tizen.Applications.Application.Current.Exit();
             return true;
         }
 
-
-#if false
-        public override bool OnMinimizeIconTouched(object sender, View.TouchEventArgs e)
-        {
-            if (e.Touch.GetState(0) == PointStateType.Up)
-            {
-                if (BorderWindow.IsMaximized() == true)
-                {
-                    BorderWindow.Maximize(false);
-                }
-                preWinPositonSize = BorderWindow.WindowPositionSize;
-                BorderWindow.WindowPositionSize = new Rectangle(preWinPositonSize.X, preWinPositonSize.Y, 500, 0);
-            }
-            return true;
-        }
-#endif
-
         public override void OnRequestResize()
         {
             if (borderView != null)
             {
-                borderView.BackgroundColor = new Color(0, 1, 0, 0.3f);
+                // TODO: do we need to change borderView color to Green?
+                borderView.BackgroundColor = Color.Green.WithAlpha(0.3f);
             }
         }
 
         public override void OnResized(int width, int height)
         {
-            if (borderView != null)
+            if (borderView == null)
             {
-                if (this.width > width && hide == false)
-                {
-                    hide = true;
-                }
-                else if (this.width < width && hide == true)
-                {
-                    hide = false;
-                }
-                borderView.BackgroundColor = mBackgroundColor;
-                base.OnResized(width, height);
-                UpdateIcons();
+                return;
             }
+
+            borderView.BackgroundColor = mBackgroundColor;
+            UpdateIcons();
+
+            base.OnResized(width, height);
         }
 
         private void UpdateIcons()
         {
-            if (BorderWindow != null && borderView != null)
+            if (BorderWindow == null || borderView == null || maximalizeIcon == null)
             {
-                if (BorderWindow.IsMaximized() == true)
-                {
-                    if (maximalizeIcon != null)
-                    {
-                        maximalizeIcon.ResourceUrl = RestoreIcon;
-                    }
-                }
-                else
-                {
-                    if (maximalizeIcon != null)
-                    {
-                        maximalizeIcon.ResourceUrl = MaximalizeIcon;
-                    }
-                }
+                return;
             }
+
+            maximalizeIcon.ResourceUrl = BorderWindow.IsMaximized() ? RestoreIconPath : MaximalizeIconPath;
         }
     }
 }
