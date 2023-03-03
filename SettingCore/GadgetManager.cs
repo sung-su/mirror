@@ -163,9 +163,6 @@ namespace SettingCore
 
         public static void UpdateCustomization(string menuPath, int order)
         {
-            // TODO: just for DEBUG, remove before merge
-            Logger.Debug($"Customization BEFORE change:\n{customizationStore.CurrentCustomizationLog}");
-
             var found = gadgets.Where(x => x.Path == menuPath).Count();
             if (found == 0)
             {
@@ -179,9 +176,6 @@ namespace SettingCore
             }
 
             customizationStore.UpdateOrder(menuPath, order);
-
-            // TODO: just for DEBUG, remove before merge
-            Logger.Debug($"Customization AFTER change:\n{customizationStore.CurrentCustomizationLog}");
         }
 
         public static bool IsMainMenuPath(string menuPath)
@@ -200,11 +194,6 @@ namespace SettingCore
             {
                 bool menuPathStartsWith = menuPath.StartsWithIgnoreCase(x.Path + ".");
                 bool classNameEquals = x.ClassName.EqualsIgnoreCase(fullClassName);
-
-                // TODO: just for DEBUG, remove before merge
-                Logger.Debug($"starts {menuPathStartsWith} => {x.Path}, {menuPath}");
-                Logger.Debug($"equals {classNameEquals} => {x.ClassName}, {fullClassName}");
-
                 return menuPathStartsWith && classNameEquals;
             }).Count() == 1;
         }

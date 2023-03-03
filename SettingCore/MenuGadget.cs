@@ -32,12 +32,6 @@ namespace SettingCore
                 Logger.Verbose($"Received customization for menupath: {e.MenuPath}, order {e.Order} at class: {classname}");
                 OnCustomizationUpdate(new MenuCustomizationItem(e.MenuPath, e.Order));
             }
-
-            // TODO: just for debug
-            else
-            {
-                Logger.Verbose($"NO change @ {classname}: {e.MenuPath} -> {e.Order}");
-            }
         }
 
         protected virtual void OnCustomizationUpdate(MenuCustomizationItem item)
