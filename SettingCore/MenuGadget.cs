@@ -27,9 +27,9 @@ namespace SettingCore
         {
             string classname = GetType().FullName;
 
-            if (GadgetManager.IsMenuPathForClass(e.MenuPath, classname))
+            if (GadgetManager.DoesMenuPathMatchClassName(e.MenuPath, classname))
             {
-                Logger.Verbose($"change @ {classname}: {e.MenuPath} -> {e.Order}");
+                Logger.Verbose($"Received customization for menupath: {e.MenuPath}, order {e.Order} at class: {classname}");
                 OnCustomizationUpdate(new MenuCustomizationItem(e.MenuPath, e.Order));
             }
 

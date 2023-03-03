@@ -24,11 +24,10 @@ namespace SettingCore
             // save order only if does not exists
             foreach (var gadget in gadgets)
             {
-                var setSuccessfull = customizationStore.SetOrder(gadget.Path, gadget.Order);
+                var initialSet = customizationStore.SetOrder(gadget.Path, gadget.Order);
 
-                // set was not successfull, becauce the path was already set, so the order might have been changed
-                // read order from customization and update at gadget
-                if (!setSuccessfull)
+                // read order from customization, when initial set failed
+                if (!initialSet)
                 {
                     try
                     {
@@ -121,10 +120,9 @@ namespace SettingCore
                 yield break;
             }
 
-            Logger.Debug($"provider type: {providerType.FullName}");
             var settingMenuProvider = assembly.CreateInstance(providerType.FullName) as SettingCore.SettingMenuProvider;
             var settingMenus = settingMenuProvider.Provide();
-            Logger.Debug($"{providerType} contains {settingMenus.Count()} menus");
+            Logger.Debug($"Provider {providerType.FullName} contains {settingMenus.Count()} menus");
 
             foreach (var settingMenu in settingMenus)
             {
@@ -191,7 +189,7 @@ namespace SettingCore
             return isMainMenu;
         }
 
-        public static bool IsMenuPathForClass(string menuPath, string fullClassName)
+        public static bool DoesMenuPathMatchClassName(string menuPath, string fullClassName)
         {
             return gadgets.Where(x =>
             {
