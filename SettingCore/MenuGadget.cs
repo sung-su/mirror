@@ -18,7 +18,8 @@ namespace SettingCore
 
         protected string GetResourcePath(string relativeFilePath)
         {
-            string absoluteDirPath = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, "mount/allowed/");
+            string callingAssemblyName = System.Reflection.Assembly.GetCallingAssembly().GetName().Name;
+            string absoluteDirPath = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, "mount/allowed/", callingAssemblyName);
 
             // remove leading slash
             relativeFilePath = relativeFilePath.TrimStart('/');
