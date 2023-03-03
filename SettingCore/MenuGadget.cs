@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Tizen.NUI;
 
 namespace SettingCore
@@ -15,5 +15,15 @@ namespace SettingCore
 
         protected void NavigateBack() => GadgetNavigation.NavigateBack();
         protected void NavigateTo(string menuPath) => GadgetNavigation.NavigateTo(menuPath);
+
+        protected string GetResourcePath(string relativeFilePath)
+        {
+            string absoluteDirPath = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, "mount/allowed/");
+
+            // remove leading slash
+            relativeFilePath = relativeFilePath.TrimStart('/');
+
+            return System.IO.Path.Combine(absoluteDirPath, relativeFilePath);
+        }
     }
 }

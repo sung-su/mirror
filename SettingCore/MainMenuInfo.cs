@@ -42,9 +42,6 @@ namespace SettingCore
                 GadgetNavigation.NavigateTo(info.Path);
             };
 
-            // FIXME: currently menus return relative icon path, so here we make it absolute
-            iconPath = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, iconPath);
-
             return new MainMenuInfo
             {
                 IconPath = iconPath,
