@@ -16,7 +16,7 @@ namespace Setting.Menu
 
         public override Color ProvideIconColor() => new Color("#DB3069");
 
-        public override string ProvideIconPath() => "main-menu-icons/sound.svg";
+        public override string ProvideIconPath() => GetResourcePath("sound.svg");
 
         public override string ProvideTitle() => Resources.IDS_ST_HEADER_SOUND;
 

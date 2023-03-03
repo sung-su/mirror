@@ -17,7 +17,7 @@ namespace Setting.Menu
 
         public override Color ProvideIconColor() => new Color("#FF6200");
 
-        public override string ProvideIconPath() => "main-menu-icons/wifi.svg";
+        public override string ProvideIconPath() => GetResourcePath("wifi.svg");
 
         public override string ProvideTitle() => "Wi-Fi";
     }

@@ -17,7 +17,7 @@ namespace Setting.Menu
 
         public override Color ProvideIconColor() => new Color("#FF6200");
 
-        public override string ProvideIconPath() => "main-menu-icons/bluetooth.svg";
+        public override string ProvideIconPath() => GetResourcePath("bluetooth.svg");
 
         public override string ProvideTitle() => "Bluetooth";
     }

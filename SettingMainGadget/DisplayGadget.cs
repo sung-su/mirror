@@ -14,7 +14,7 @@ namespace Setting.Menu
     {
         public override Color ProvideIconColor() => new Color("#0075FF");
 
-        public override string ProvideIconPath() => "main-menu-icons/display.svg";
+        public override string ProvideIconPath() => GetResourcePath("display.svg");
 
         public override string ProvideTitle() => "Display";
 
