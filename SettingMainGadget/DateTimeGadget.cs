@@ -26,6 +26,7 @@ namespace Setting.Menu
         {
             base.OnCreate();
 
+            SystemSettings.TimeChanged += SystemSettings_TimeChanged;
             SystemSettings.LocaleTimeFormat24HourSettingChanged += SystemSettings_LocaleTimeFormat24HourSettingChanged;
 
             return CreateView();
@@ -33,6 +34,7 @@ namespace Setting.Menu
 
         protected override void OnDestroy()
         {
+            SystemSettings.TimeChanged -= SystemSettings_TimeChanged;
             SystemSettings.LocaleTimeFormat24HourSettingChanged -= SystemSettings_LocaleTimeFormat24HourSettingChanged;
 
             base.OnDestroy();
@@ -72,6 +74,7 @@ namespace Setting.Menu
             {
                 mDateItem.Clicked += (o, e) =>
                 {
+                    NavigateTo("Setting.Menu.DateTime.SetDate");
                 };
                 content.Add(mDateItem);
             }
@@ -118,6 +121,14 @@ namespace Setting.Menu
             if (mDateItem != null) mDateItem.IsEnabled = !SystemSettings.AutomaticTimeUpdate;
             if (mTimeItem != null) mTimeItem.IsEnabled = !SystemSettings.AutomaticTimeUpdate;
             if (mTimezoneItem != null) mTimezoneItem.IsEnabled = !SystemSettings.AutomaticTimeUpdate;
+        }
+
+        private void SystemSettings_TimeChanged(object sender, Tizen.System.TimeChangedEventArgs e)
+        {
+            if (mDateItem != null)
+                mDateItem.SubText = System.DateTime.Now.ToString("MMM d, yyyy");
+            if (mTimeItem != null)
+                mTimeItem.SubText = DateTimeManager.FormattedTime;
         }
 
         private void SystemSettings_LocaleTimeFormat24HourSettingChanged(object sender, LocaleTimeFormat24HourSettingChangedEventArgs e)
