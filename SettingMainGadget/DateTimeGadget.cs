@@ -14,7 +14,7 @@ namespace Setting.Menu
     {
         public override Color ProvideIconColor() => new Color("#205493");
 
-        public override string ProvideIconPath() => "main-menu-icons/datetime.svg";
+        public override string ProvideIconPath() => GetResourcePath("datetime.svg");
 
         public override string ProvideTitle() => Resources.IDS_ST_BODY_DATE_AND_TIME;
 
