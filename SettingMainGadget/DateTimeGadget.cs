@@ -84,6 +84,7 @@ namespace Setting.Menu
             {
                 mTimeItem.Clicked += (o, e) =>
                 {
+                    NavigateTo("Setting.Menu.DateTime.SetTime");
                 };
                 content.Add(mTimeItem);
             }

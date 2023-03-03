@@ -22,6 +22,7 @@ namespace SettingMainGadget
                 new SettingMenu(path: "Setting.Menu.Sound.SoundOther", defaultOrder: 43, type: typeof(Setting.Menu.Sound.SoundotherGadget)),
                 new SettingMenu(path: "Setting.Menu.DateTime", defaultOrder: 50, type: typeof(Setting.Menu.DateTimeGadget)),
                 new SettingMenu(path: "Setting.Menu.DateTime.SetDate", defaultOrder: 51, type: typeof(Setting.Menu.DateTime.DateTimeSetDateGadget)),
+                new SettingMenu(path: "Setting.Menu.DateTime.SetTime", defaultOrder: 52, type: typeof(Setting.Menu.DateTime.DateTimeSetTimeGadget)),
             };
         }
     }
