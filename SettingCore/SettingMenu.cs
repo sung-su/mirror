@@ -9,11 +9,11 @@ namespace SettingCore
         public string ClassName { get; private set; }
         public bool IsMainMenu { get; private set; }
 
-        public SettingMenu(string path, int defaultOrder, Type type)
+        public SettingMenu(string path, int defaultOrder, Type type = null)
         {
             Path = path;
             DefaultOrder = defaultOrder;
-            ClassName = type.FullName;
+            ClassName = type == null ? string.Empty : type.FullName;
             IsMainMenu = path.Split('.').Length == 3;
         }
 

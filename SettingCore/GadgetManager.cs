@@ -21,9 +21,6 @@ namespace SettingCore
         {
             gadgets = getSettingGadgetInfos();
 
-            // TODO: just for DEBUG, remove before merge
-            customizationStore.Clear();
-
             // save order only if does not exists
             foreach (var gadget in gadgets)
             {
