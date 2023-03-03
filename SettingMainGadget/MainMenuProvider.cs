@@ -23,6 +23,7 @@ namespace SettingMainGadget
                 new SettingMenu(path: "Setting.Menu.DateTime", defaultOrder: 50, type: typeof(Setting.Menu.DateTimeGadget)),
                 new SettingMenu(path: "Setting.Menu.DateTime.SetDate", defaultOrder: 51, type: typeof(Setting.Menu.DateTime.DateTimeSetDateGadget)),
                 new SettingMenu(path: "Setting.Menu.DateTime.SetTime", defaultOrder: 52, type: typeof(Setting.Menu.DateTime.DateTimeSetTimeGadget)),
+                new SettingMenu(path: "Setting.Menu.DateTime.SetTimezone", defaultOrder: 53, type: typeof(Setting.Menu.DateTime.DateTimeSetTimezoneGadget)),
             };
         }
     }

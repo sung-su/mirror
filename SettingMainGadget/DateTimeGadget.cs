@@ -27,6 +27,7 @@ namespace Setting.Menu
             base.OnCreate();
 
             SystemSettings.TimeChanged += SystemSettings_TimeChanged;
+            SystemSettings.LocaleTimeZoneChanged += SystemSettings_LocaleTimeZoneChanged;
             SystemSettings.LocaleTimeFormat24HourSettingChanged += SystemSettings_LocaleTimeFormat24HourSettingChanged;
 
             return CreateView();
@@ -35,6 +36,7 @@ namespace Setting.Menu
         protected override void OnDestroy()
         {
             SystemSettings.TimeChanged -= SystemSettings_TimeChanged;
+            SystemSettings.LocaleTimeZoneChanged -= SystemSettings_LocaleTimeZoneChanged;
             SystemSettings.LocaleTimeFormat24HourSettingChanged -= SystemSettings_LocaleTimeFormat24HourSettingChanged;
 
             base.OnDestroy();
@@ -94,6 +96,7 @@ namespace Setting.Menu
             {
                 mTimezoneItem.Clicked += (o, e) =>
                 {
+                    NavigateTo("Setting.Menu.DateTime.SetTimezone");
                 };
                 content.Add(mTimezoneItem);
             }
@@ -130,6 +133,12 @@ namespace Setting.Menu
                 mDateItem.SubText = System.DateTime.Now.ToString("MMM d, yyyy");
             if (mTimeItem != null)
                 mTimeItem.SubText = DateTimeManager.FormattedTime;
+        }
+
+        private void SystemSettings_LocaleTimeZoneChanged(object sender, LocaleTimeZoneChangedEventArgs e)
+        {
+            if (mTimezoneItem != null)
+                mTimezoneItem.SubText = DateTimeTimezoneManager.GetTimezoneName();
         }
 
         private void SystemSettings_LocaleTimeFormat24HourSettingChanged(object sender, LocaleTimeFormat24HourSettingChangedEventArgs e)
