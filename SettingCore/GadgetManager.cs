@@ -107,7 +107,12 @@ namespace SettingCore
             }
             catch (System.IO.FileLoadException)
             {
-                Logger.Warn($"could not open assembly {assemblyPath}");
+                Logger.Warn($"could not load assembly {assemblyPath}");
+                yield break;
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                Logger.Warn($"could not find assembly {assemblyPath}");
                 yield break;
             }
 
