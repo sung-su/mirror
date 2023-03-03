@@ -57,6 +57,12 @@ namespace SettingCore.Customization
             Logger.Debug("Cleared preference customization store.");
         }
 
+        /// <summary>
+        /// Sets order for menu path, if was not set yet. If menu path is set already, nothing happens.
+        /// </summary>
+        /// <param name="menuPath">Dot separated menu path.</param>
+        /// <param name="order">Integer value, which indicated order on the menu list.</param>
+        /// <returns>False, if menu path already exists and new order was not set. True, if menu path did not exists and order has been set.</returns>
         public bool SetOrder(string menuPath, int order)
         {
             menuPath = menuPath.ToLowerInvariant();
