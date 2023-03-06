@@ -23,9 +23,9 @@ namespace SettingView
     class SettingViewBorder : Tizen.NUI.DefaultBorder
     {
         /// <summary>
-        /// User defined thickness between outer (semi-transparent) window border background and inner (opaque white) window content background in pixels. This PX value is used to calculate SP.
+        /// Padding between outer (semi-transparent) window border background and inner (opaque white) window content background in pixels. This PX value is used to calculate SP.
         /// </summary>
-        public static readonly float BorderLineSize = 6.0f;
+        public static readonly float WindowPadding = 6.0f;
 
         /// <summary>
         /// NOT CHANGABLE! It is set by AppFW and cannot be changed so far.
@@ -129,7 +129,7 @@ namespace SettingView
             leftCornerIcon.SetAccessibilityReadingInfoTypes(Tizen.NUI.BaseComponents.AccessibilityReadingInfoTypes.Name);
 
             // Apply scalable changes. Has to be called when NUIApplication is initilialized, due to SpToPx() usage.
-            BorderLineThickness = (uint)BorderLineSize.SpToPx();
+            BorderLineThickness = (uint)WindowPadding.SpToPx();
 
             var size = new Size(48, 48).SpToPx();
             leftCornerIcon.Size = size;
@@ -146,7 +146,7 @@ namespace SettingView
                 {
                     LinearOrientation = LinearLayout.Orientation.Horizontal,
                 },
-                Margin = new Extents(0, (ushort)(WindowCornerRadius - BorderLineSize), 0, 0).SpToPx(),
+                Margin = new Extents(0, (ushort)(WindowCornerRadius - WindowPadding), 0, 0).SpToPx(),
             };
             controls.Add(minimalizeIcon);
             controls.Add(maximalizeIcon);
