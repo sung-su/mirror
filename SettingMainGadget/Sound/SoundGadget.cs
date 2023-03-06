@@ -178,17 +178,15 @@ namespace Setting.Menu
             }
             sections.Add("Setting.Menu.Sound.System", systemSection);
 
-            // add only visible sections to content view
-            // TODO: use correct order
-
-            var customization = GetCustomization();
-            foreach (var section in sections )
+            // add only visible sections to content view in required order
+            var customization = GetCustomization().OrderBy(c => c.Order);
+            foreach (var cust in customization)
             {
-                string menuPath = section.Key;
-                var cust = customization.Where(x => x.MenuPath.ToLowerInvariant().Equals(menuPath.ToLowerInvariant())).FirstOrDefault();
-                if (cust != null && cust.IsVisible)
+                string visibility = cust.IsVisible ? "visible" : "hidden";
+                Logger.Verbose($"Customization: {cust.MenuPath} - {visibility} - {cust.Order}");
+                if (cust.IsVisible && sections.TryGetValue(cust.MenuPath, out View row))
                 {
-                    content.Add(section.Value);
+                    content.Add(row);
                 }
             }
         }
