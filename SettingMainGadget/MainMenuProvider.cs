@@ -28,6 +28,7 @@ namespace SettingMainGadget
                 new SettingMenu(path: "Setting.Menu.DateTime.SetTime", defaultOrder: 52, type: typeof(Setting.Menu.DateTime.DateTimeSetTimeGadget)),
                 new SettingMenu(path: "Setting.Menu.DateTime.SetTimezone", defaultOrder: 53, type: typeof(Setting.Menu.DateTime.DateTimeSetTimezoneGadget)),
                 new SettingMenu(path: "Setting.Menu.LanguageInput", defaultOrder: 60, type: typeof(Setting.Menu.LanguageInputGadget)),
+                new SettingMenu(path: "Setting.Menu.LanguageInput.DisplayLanguage", defaultOrder: 61, type: typeof(Setting.Menu.LanguageInput.LanguageInputDisplayLanguageGadget)),
             };
         }
     }

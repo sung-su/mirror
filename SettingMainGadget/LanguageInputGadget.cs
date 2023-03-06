@@ -15,15 +15,18 @@ namespace Setting.Menu
 
         public override string ProvideTitle() => Resources.IDS_ST_HEADER_LANGUAGE_AND_INPUT;
 
+        private DefaultLinearItem displayLanguageItem;
 
         protected override View OnCreate()
         {
+            SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
 
             return CreateView();
         }
 
         protected override void OnDestroy()
         {
+            SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
 
             base.OnDestroy();
         }
@@ -42,6 +45,15 @@ namespace Setting.Menu
                 },
             };
 
+            displayLanguageItem = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_HEADER_DISPLAY_LANGUAGE, LanguageInputDisplayLanguageManager.GetDisplayLanguageName());
+            if (displayLanguageItem != null)
+            {
+                displayLanguageItem.Clicked += (o, e) =>
+                {
+                    NavigateTo("Setting.Menu.LanguageInput.DisplayLanguage");
+                };
+                content.Add(displayLanguageItem);
+            }
 
             content.Add(SettingMain.SettingItemCreator.CreateItemStatic(""));
             content.Add(SettingMain.SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_KEYBOARD));
@@ -105,5 +117,11 @@ namespace Setting.Menu
             return content;
         }
 
+        private void SystemSettings_LocaleLanguageChanged(object sender, LocaleLanguageChangedEventArgs e)
+        {
+            // TODO : reload all text or use the TranslatableText
+            if (displayLanguageItem != null)
+                displayLanguageItem.SubText = LanguageInputDisplayLanguageManager.GetDisplayLanguageName();
+        }
     }
 }
