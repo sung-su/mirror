@@ -27,9 +27,6 @@ namespace SettingView
         /// </summary>
         public static readonly float WindowPadding = 6.0f;
 
-        /// <summary>
-        /// NOT CHANGABLE! It is set by AppFW and cannot be changed so far.
-        /// </summary>
         public static readonly float WindowCornerRadius = 26.0f;
 
         private static readonly Color mBackgroundColor = Color.White.WithAlpha(0.35f);
@@ -165,24 +162,19 @@ namespace SettingView
 
         public override void CreateBorderView(View borderView)
         {
+            if (borderView == null)
+            {
+                return;
+            }
+
             this.borderView = borderView;
-
-            // FIXME: changing CornerRadius has NO effect on borderView - cannot change CornerRadius of the outer window!?
-            // borderView.CornerRadius value is changed with setter, but the View does not change
-
-            //borderView.CornerRadius = new Vector4(0.03f, 0.03f, 0.03f, 0.03f);
-            //borderView.CornerRadiusPolicy = VisualTransformPolicyType.Relative;
-            borderView.CornerRadius = 100;
-            borderView.CornerRadiusPolicy = VisualTransformPolicyType.Absolute;
-
             borderView.BackgroundColor = mBackgroundColor;
         }
 
         public override void OnCreated(View borderView)
         {
             base.OnCreated(borderView);
-
-            UpdateIcons();
+            Update();
         }
 
         public override bool OnCloseIconTouched(object sender, View.TouchEventArgs e)
@@ -195,11 +187,12 @@ namespace SettingView
 
         public override void OnRequestResize()
         {
-            if (borderView != null)
+            if (borderView == null)
             {
-                // TODO: do we need to change borderView color to Green?
-                borderView.BackgroundColor = Color.Green.WithAlpha(0.3f);
+                return;
             }
+
+            borderView.BackgroundColor = Color.Green.WithAlpha(0.3f);
         }
 
         public override void OnResized(int width, int height)
@@ -210,19 +203,28 @@ namespace SettingView
             }
 
             borderView.BackgroundColor = mBackgroundColor;
-            UpdateIcons();
-
-            base.OnResized(width, height);
+            Update();
         }
 
-        private void UpdateIcons()
+        private void Update()
         {
             if (BorderWindow == null || borderView == null || maximalizeIcon == null)
             {
                 return;
             }
 
-            maximalizeIcon.ResourceUrl = BorderWindow.IsMaximized() ? RestoreIconPath : MaximalizeIconPath;
+            borderView.CornerRadiusPolicy = VisualTransformPolicyType.Absolute;
+
+            if (BorderWindow.IsMaximized())
+            {
+                maximalizeIcon.ResourceUrl = RestoreIconPath;
+                borderView.CornerRadius = 0;
+            }
+            else
+            {
+                maximalizeIcon.ResourceUrl = MaximalizeIconPath;
+                borderView.CornerRadius = WindowCornerRadius;
+            }
         }
     }
 }
