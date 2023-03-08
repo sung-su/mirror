@@ -31,8 +31,8 @@ namespace SettingView
     {
         private ContentPage mMainPage;
 
-        public Program(string styleSheet, Size2D windowSize, Position2D windowPosition, IBorderInterface borderInterface)
-            : base(styleSheet, windowSize, windowPosition, borderInterface)
+        public Program(Size2D windowSize, Position2D windowPosition, ThemeOptions themeOptions, IBorderInterface borderInterface)
+            : base(windowSize, windowPosition, themeOptions, borderInterface)
         {
         }
 
@@ -172,7 +172,7 @@ namespace SettingView
             Position2D position = new Position2D((screenWidth - width) / 2, (screenHeight - height) / 2 - (int)(bottomMargin * screenHeight));
             var appCustomBorder = new SettingViewBorder();
 
-            var app = new Program("", size, position, appCustomBorder);
+            var app = new Program(size, position, ThemeOptions.PlatformThemeEnabled, appCustomBorder);
 
             app.Run(args);
         }

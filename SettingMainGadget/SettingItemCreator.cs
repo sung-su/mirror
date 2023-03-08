@@ -59,6 +59,7 @@ namespace SettingMain
 
             TextLabel label = new TextLabel(text)
             {
+                ThemeChangeSensitive = true,
                 TextColor = Color.DarkGray
             };
 
@@ -80,6 +81,7 @@ namespace SettingMain
         {
             TextLabel label = new TextLabel(text)
             {
+                ThemeChangeSensitive = true,
                 TextColor = Color.Black
             };
 

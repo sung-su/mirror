@@ -34,6 +34,7 @@ namespace Setting.Menu
             SystemSettings.ScreenBacklightTimeChanged += SystemSettings_ScreenBacklightTimeChanged;
             SystemSettings.FontSizeChanged += SystemSettings_FontSizeChanged;
             SystemSettings.FontTypeChanged += SystemSettings_FontTypeChanged;
+            ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
 
             return CreateView();
         }
@@ -43,6 +44,7 @@ namespace Setting.Menu
             SystemSettings.ScreenBacklightTimeChanged -= SystemSettings_ScreenBacklightTimeChanged;
             SystemSettings.FontSizeChanged -= SystemSettings_FontSizeChanged;
             SystemSettings.FontTypeChanged -= SystemSettings_FontTypeChanged;
+            ThemeManager.ThemeChanged -= ThemeManager_ThemeChanged;
 
             base.OnDestroy();
         }
@@ -80,7 +82,8 @@ namespace Setting.Menu
                 GetBrightnessSliderIcon(brightness, out string iconpath);
 
                 content.Add(new TextLabel 
-                { 
+                {
+                    ThemeChangeSensitive = true,
                     Text = Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING,
                     Margin = new Extents(20, 20, 5, 5),
                 });
@@ -113,7 +116,7 @@ namespace Setting.Menu
                 content.Add(screenTimeOutItem);
             }
 
-            themeItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_THEME);
+            themeItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_THEME, DisplayThemeManager.GetThemeName());
             if (themeItem != null)
             {
                 themeItem.Clicked += (o, e) =>
@@ -191,6 +194,15 @@ namespace Setting.Menu
         {
             if (fontItem != null)
                 fontItem.SubText = $"{SystemSettings.FontSize}, {SystemSettings.FontType}";
+        }
+
+        private void ThemeManager_ThemeChanged(object sender, ThemeChangedEventArgs e)
+        {
+            if (e.IsPlatformThemeChanged)
+            {
+                Logger.Debug($"theme changed to: {e.PlatformThemeId}");
+                themeItem.SubText = DisplayThemeManager.GetThemeName();
+            }
         }
     }
 }

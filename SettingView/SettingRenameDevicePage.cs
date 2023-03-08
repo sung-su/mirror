@@ -89,6 +89,7 @@ namespace SettingView
 
             var textSubTitle = new TextLabel(Resources.IDS_ST_BODY_DEVICE_NAMES_ARE_DISPLAYED)
             {
+                ThemeChangeSensitive = true,
                 MultiLine = true,
                 LineWrapMode = LineWrapMode.Character,
                 Size2D = new Size2D(window.WindowSize.Width-20*2, 100),

@@ -32,6 +32,7 @@ namespace SettingView
 
             var titleTextLabel = new TextLabel
             {
+                ThemeChangeSensitive = true,
                 Text = title,
                 PointSize = 18f.SpToPt(),
                 //PixelSize = 18.SpToPx(),

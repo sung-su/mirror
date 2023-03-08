@@ -50,6 +50,7 @@ namespace SettingView
 
             TextLabel label = new TextLabel(text)
             {
+                ThemeChangeSensitive = true,
                 TextColor = new Color(0.1f, 0.1f, 0.1f, 0.0f)
             };
 
@@ -71,6 +72,7 @@ namespace SettingView
         {
             TextLabel label = new TextLabel(text)
             {
+                ThemeChangeSensitive = true,
                 TextColor = Color.Black
             };
 
