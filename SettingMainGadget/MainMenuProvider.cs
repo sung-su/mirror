@@ -8,8 +8,6 @@ namespace SettingMainGadget
         {
             return new SettingMenu[]
             {
-                new SettingMenu(path: "Setting.Menu.Wifi", defaultOrder: 10, type: typeof(Setting.Menu.WifiGadget)),
-                new SettingMenu(path: "Setting.Menu.Bluetooth", defaultOrder: 20, type: typeof(Setting.Menu.BluetoothGadget)),
                 new SettingMenu(path: "Setting.Menu.Display", defaultOrder: 30, type: typeof(Setting.Menu.DisplayGadget)),
                 new SettingMenu(path: "Setting.Menu.Display.Font", defaultOrder: 31, type: typeof(Setting.Menu.Display.DisplayFontGadget)),
                 new SettingMenu(path: "Setting.Menu.Display.Font.FontSize", defaultOrder: 32, type: typeof(Setting.Menu.Display.DisplayFontSizeGadget)),
