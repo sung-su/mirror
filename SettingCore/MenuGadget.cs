@@ -46,6 +46,7 @@ namespace SettingCore
 
         public abstract string ProvideTitle();
 
+        public virtual IEnumerable<View> ProvideMoreActions() => null;
         public virtual IEnumerable<MoreMenuItem> ProvideMoreMenu() => null;
 
         protected void NavigateBack() => GadgetNavigation.NavigateBack();

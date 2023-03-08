@@ -2,6 +2,7 @@
 using Tizen.NUI.Components;
 using Tizen.NUI;
 using Tizen.System;
+using Tizen.NUI.BaseComponents;
 
 namespace SettingCore
 {
@@ -71,15 +72,21 @@ namespace SettingCore
                     Content = content,
                 };
 
-                var moreMenu = gadget.ProvideMoreMenu();
-                if (moreMenu != null)
+                var moreItems = new List<View>();
+
+                var moreActions = gadget.ProvideMoreActions();
+                if (moreActions != null)
                 {
-                    var moreButton = GetMoreButton(moreMenu);
-                    if (moreButton != null)
-                    {
-                        page.AppBar.Actions = new[] { moreButton };
-                    }
+                    moreItems.AddRange(moreActions);
                 }
+
+                var moreButton = GetMoreButton(gadget.ProvideMoreMenu());
+                if (moreButton != null)
+                {
+                    moreItems.Add(moreButton);
+                }
+
+                page.AppBar.Actions = moreItems;
 
                 NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(page);
                 gadgetPages.Add(page, gadget);
@@ -92,6 +99,11 @@ namespace SettingCore
 
         private static Button GetMoreButton(IEnumerable<MoreMenuItem> moreMenu)
         {
+            if (moreMenu == null)
+            {
+                return null;
+            }
+
             var moreButton = new Button
             {
                 IconURL = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, "more-menu.svg"),
