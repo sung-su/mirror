@@ -1,5 +1,4 @@
-﻿using SettingCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tizen.System;
@@ -8,25 +7,20 @@ namespace SettingMainGadget.DateTime
 {
     public static class DateTimeTimezoneManager
     {
-        public static List<TimeZoneInfo> TimeZones { get; private set; } = new List<TimeZoneInfo>(TimeZoneInfo.GetSystemTimeZones());
+        public static List<TimeZone> GetTimeZones()
+        {
+            var timeZones = new List<TimeZone>();
+            foreach (var timeZoneInfo in TimeZoneInfo.GetSystemTimeZones())
+            {
+                timeZones.Add(new TimeZone(timeZoneInfo));
+            }
+
+            return timeZones;
+        }
 
         public static void SetTimezone(string timezoneId)
         {
             SystemSettings.LocaleTimeZone = timezoneId;
-        }
-
-        public static int GetTimezoneIndex()
-        {
-            string timezoneId = SystemSettings.LocaleTimeZone;
-            var timezone = TimeZones.Where(x => x.Id == timezoneId).First();
-
-            if(timezone != null)
-            {
-                Logger.Debug($"current timezone is: {timezone.DisplayName} - {timezone.Id}");
-                return TimeZones.IndexOf(timezone);
-            }
-
-            return -1;
         }
 
         public static string GetTimezoneName()
@@ -40,6 +34,41 @@ namespace SettingMainGadget.DateTime
             string offset = time < TimeSpan.Zero ? time.ToString(@"\-hh\:mm") : time.ToString(@"\+hh\:mm");
 
             return $"GMT {offset}, {localtimezone.StandardName}";
+        }
+
+        public class TimeZone
+        {
+            public TimeZoneInfo Info { get; private set; }
+
+            public TimeZone(TimeZoneInfo timeZone)
+            {
+                this.Info = timeZone;
+            }
+
+            public string City
+            {
+                get => Info.Id.Split('/').Last();
+            }
+
+            public string Continent
+            {
+                get => Info.Id.Split('/').First();
+            }
+
+            public string DisplayName
+            {
+                get
+                {
+                    var identifiers = Info.Id.Split('/').Reverse().ToList();
+                    string place = String.Join(", ", identifiers.ToArray()).Replace('_', ' ');
+
+                    var displayName = Info.DisplayName;
+                    int index = displayName.LastIndexOf("Time") + 4;
+                    displayName = displayName.Substring(0, index);
+
+                    return $"{place} {displayName}";
+                }
+            }
         }
     }
 }

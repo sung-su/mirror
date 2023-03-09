@@ -1,11 +1,10 @@
 ﻿using SettingAppTextResopurces.TextResources;
-using SettingCore;
 using SettingMainGadget.DateTime;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
+using Tizen.System;
 
 namespace Setting.Menu.DateTime
 {
@@ -13,45 +12,56 @@ namespace Setting.Menu.DateTime
     {
         public override string ProvideTitle() => Resources.IDS_ST_BODY_TIME_ZONE;
 
+        private ScrollableBase content = null;
+
         protected override View OnCreate()
         {
             base.OnCreate();
 
-            var content = new View()
+            content = new ScrollableBase
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
                 HeightSpecification = LayoutParamPolicies.MatchParent,
+                ScrollingDirection = ScrollableBase.Direction.Vertical,
+                HideScrollbar = false,
                 Layout = new LinearLayout()
                 {
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
                     LinearOrientation = LinearLayout.Orientation.Vertical,
                 },
             };
 
-            var picker = new Picker()
+            RadioButtonGroup radioButtonGroup = new RadioButtonGroup();
+
+            var timeZones = DateTimeTimezoneManager.GetTimeZones();
+            timeZones = timeZones.OrderBy(a => a.City).ThenBy(x => x.Continent).ToList();
+
+            foreach (var timeZone in timeZones)
             {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
+                RadioButton radioButton = new RadioButton()
+                {
+                    ItemHorizontalAlignment = HorizontalAlignment.Begin,
+                    Text = timeZone.DisplayName,
+                    IsSelected = SystemSettings.LocaleTimeZone == timeZone.Info.Id,
+                };
+
+                radioButtonGroup.Add(radioButton);
+                content.Add(radioButton);
+            }
+
+            radioButtonGroup.SelectedChanged += (o, e) =>
+            {
+                DateTimeTimezoneManager.SetTimezone(timeZones[radioButtonGroup.SelectedIndex].Info.Id);
             };
 
-            ReadOnlyCollection<string> rc = new ReadOnlyCollection<string>(DateTimeTimezoneManager.TimeZones.Select(x => x.Id).ToList());
-            picker.DisplayedValues = rc;
-            picker.MinValue = 0;
-            picker.MaxValue = DateTimeTimezoneManager.TimeZones.Count - 1;
-            picker.CurrentValue = DateTimeTimezoneManager.GetTimezoneIndex();
-
-            var button = new Button()
+            content.Relayout += (s, e) =>
             {
-                Text = Resources.IDS_ST_BUTTON_OK
-            };
-            button.Clicked += (bo, be) =>
-            {
-                DateTimeTimezoneManager.SetTimezone(DateTimeTimezoneManager.TimeZones[picker.CurrentValue].Id);
-                NavigateBack();
-            };
+                var timeZone = timeZones.Where(x => x.Info.Id == SystemSettings.LocaleTimeZone).FirstOrDefault();
 
-            content.Add(picker);
-            content.Add(button);
+                if (timeZone != null)
+                {
+                    content.ScrollToIndex(timeZones.IndexOf(timeZone));
+                }
+            };
 
             return content;
         }
