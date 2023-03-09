@@ -8,7 +8,7 @@ namespace SettingMainGadget.Sound
 {
     class SettingAudioManager
     {
-        private const string ringtone = "media/settings/Ringtones/ringtone_sdk.mp3";
+        private const string ringtone = "media/Ringtones/ringtone_sdk.mp3";
         public const string VconfRingtonePath = "db/setting/sound/noti/msg_ringtone_path";
 
         private static AudioVolume audioVolume = AudioManager.VolumeController;
@@ -34,7 +34,7 @@ namespace SettingMainGadget.Sound
             volume = volume > audioVolume.MaxLevel[type] ? audioVolume.MaxLevel[type] : volume;
 
             audioVolume.Level[type] = volume;
-            Tizen.Log.Debug("NUI", $"SET {type} Volume : {audioVolume.Level[type]}");        
+            Logger.Debug($"SET {type} Volume : {audioVolume.Level[type]}");        
         }
 
         public static void PlayAudio(AudioStreamType type)
@@ -44,13 +44,15 @@ namespace SettingMainGadget.Sound
             switch (type)
             {
                 case AudioStreamType.Media:
-                    path = System.IO.Path.Combine(NUIApplication.Current.DirectoryInfo.Resource, ringtone);
+                    string callingAssemblyName = System.Reflection.Assembly.GetCallingAssembly().GetName().Name;
+                    string absoluteDirPath = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, "mount/allowed/", callingAssemblyName);
+                    path = System.IO.Path.Combine(absoluteDirPath, ringtone);
                     break;
                 case AudioStreamType.Notification:
                     if (!Tizen.Vconf.TryGetString(VconfRingtonePath, out string value))
                     {
                         Logger.Warn($"could not get vaule for {VconfRingtonePath}");
-                        return;
+                        //return; FIXME : uncomment when TryGetString will work properly 
                     }
                     path = value;
                     break;
@@ -69,7 +71,7 @@ namespace SettingMainGadget.Sound
             }
             catch (Exception ex)
             {
-                Tizen.Log.Error("NUI", $"WavPlayer {type} Error: {ex.Message}");
+                Logger.Error($"WavPlayer {type} Error: {ex.Message}");
             }
         }
     }
