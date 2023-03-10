@@ -28,6 +28,17 @@ namespace SettingMainGadget
                 new SettingMenu(path: "Setting.Menu.DateTime.SetTimezone", defaultOrder: 53, type: typeof(Setting.Menu.DateTime.DateTimeSetTimezoneGadget)),
                 new SettingMenu(path: "Setting.Menu.LanguageInput", defaultOrder: 60, type: typeof(Setting.Menu.LanguageInputGadget)),
                 new SettingMenu(path: "Setting.Menu.LanguageInput.DisplayLanguage", defaultOrder: 61, type: typeof(Setting.Menu.LanguageInput.LanguageInputDisplayLanguageGadget)),
+                new SettingMenu(path: "Setting.Menu.About", defaultOrder: 70, type: typeof(Setting.Menu.AboutGadget)),
+                new SettingMenu(path: "Setting.Menu.About.ManageCertificates", defaultOrder: 71),
+                new SettingMenu(path: "Setting.Menu.About.OpenSourceLicenses", defaultOrder: 72, type: typeof(Setting.Menu.AboutLegalInfoGadget)),
+                new SettingMenu(path: "Setting.Menu.About.DeviceInfo", defaultOrder: 73),
+                new SettingMenu(path: "Setting.Menu.About.RenameDevice", defaultOrder: 74),
+                new SettingMenu(path: "Setting.Menu.About.ModelNumber", defaultOrder: 75),
+                new SettingMenu(path: "Setting.Menu.About.TizenVersion", defaultOrder: 76),
+                new SettingMenu(path: "Setting.Menu.About.Cpu", defaultOrder: 77),
+                new SettingMenu(path: "Setting.Menu.About.Ram", defaultOrder: 78),
+                new SettingMenu(path: "Setting.Menu.About.Resolution", defaultOrder: 79),
+                new SettingMenu(path: "Setting.Menu.About.DeviceStatus", defaultOrder: 80, type: typeof(Setting.Menu.AboutDeviceStatusGadget)),
             };
         }
     }
