@@ -9,11 +9,12 @@ namespace SettingMainGadget
             return new SettingMenu[]
             {
                 new SettingMenu(path: "Setting.Menu.Display", defaultOrder: 30, type: typeof(Setting.Menu.DisplayGadget)),
-                new SettingMenu(path: "Setting.Menu.Display.Font", defaultOrder: 31, type: typeof(Setting.Menu.Display.DisplayFontGadget)),
-                new SettingMenu(path: "Setting.Menu.Display.Font.FontSize", defaultOrder: 32, type: typeof(Setting.Menu.Display.DisplayFontSizeGadget)),
-                new SettingMenu(path: "Setting.Menu.Display.Font.FontType", defaultOrder: 33, type: typeof(Setting.Menu.Display.DisplayFontTypeGadget)),
-                new SettingMenu(path: "Setting.Menu.Display.TimeOut", defaultOrder: 34, type: typeof(Setting.Menu.Display.DisplayTimeOutGadget)),
-                new SettingMenu(path: "Setting.Menu.Display.Theme", defaultOrder: 35, type: typeof(Setting.Menu.Display.DisplayThemeGadget)),
+                new SettingMenu(path: "Setting.Menu.Display.Brightness", defaultOrder: 31),
+                new SettingMenu(path: "Setting.Menu.Display.Font", defaultOrder: 32, type: typeof(Setting.Menu.Display.DisplayFontGadget)),
+                new SettingMenu(path: "Setting.Menu.Display.Font.FontSize", defaultOrder: 33, type: typeof(Setting.Menu.Display.DisplayFontSizeGadget)),
+                new SettingMenu(path: "Setting.Menu.Display.Font.FontType", defaultOrder: 34, type: typeof(Setting.Menu.Display.DisplayFontTypeGadget)),
+                new SettingMenu(path: "Setting.Menu.Display.TimeOut", defaultOrder: 35, type: typeof(Setting.Menu.Display.DisplayTimeOutGadget)),
+                new SettingMenu(path: "Setting.Menu.Display.Theme", defaultOrder: 36, type: typeof(Setting.Menu.Display.DisplayThemeGadget)),
                 new SettingMenu(path: "Setting.Menu.Sound", defaultOrder: 40, type: typeof(Setting.Menu.SoundGadget)),
                 new SettingMenu(path: "Setting.Menu.Sound.SoundMode", defaultOrder: 41, type: typeof(Setting.Menu.Sound.SoundmodeGadget)),
                 new SettingMenu(path: "Setting.Menu.Sound.SoundNotification", defaultOrder: 42, type: typeof(Setting.Menu.Sound.SoundnotificationGadget)),

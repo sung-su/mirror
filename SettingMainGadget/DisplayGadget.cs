@@ -1,8 +1,11 @@
 ﻿using SettingAppTextResopurces.TextResources;
 using SettingCore;
+using SettingCore.Customization;
 using SettingMain;
 using SettingMainGadget.Display;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
@@ -18,6 +21,9 @@ namespace Setting.Menu
 
         public override string ProvideTitle() => Resources.IDS_ST_HEADER_DISPLAY;
 
+        private View content;
+        private Dictionary<string, View> sections = new Dictionary<string, View>();
+
         private SliderItem brightnessItem;
         private DefaultLinearItem fontItem;
         private DefaultLinearItem screenTimeOutItem;
@@ -31,12 +37,28 @@ namespace Setting.Menu
 
         protected override View OnCreate()
         {
+            base.OnCreate();
+
+            content = new ScrollableBase
+            {
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                HeightSpecification = LayoutParamPolicies.MatchParent,
+                ScrollingDirection = ScrollableBase.Direction.Vertical,
+                HideScrollbar = false,
+                Layout = new LinearLayout()
+                {
+                    LinearOrientation = LinearLayout.Orientation.Vertical,
+                },
+            };
+
             SystemSettings.ScreenBacklightTimeChanged += SystemSettings_ScreenBacklightTimeChanged;
             SystemSettings.FontSizeChanged += SystemSettings_FontSizeChanged;
             SystemSettings.FontTypeChanged += SystemSettings_FontTypeChanged;
             ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
 
-            return CreateView();
+            CreateView();
+
+            return content;
         }
 
         protected override void OnDestroy()
@@ -49,19 +71,15 @@ namespace Setting.Menu
             base.OnDestroy();
         }
 
-        private View CreateView()
+        private void CreateView()
         {
-            var content = new ScrollableBase
+            foreach (var section in sections)
             {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                HeightSpecification = LayoutParamPolicies.MatchParent,
-                ScrollingDirection = ScrollableBase.Direction.Vertical,
-                HideScrollbar = false,
-                Layout = new LinearLayout()
-                {
-                    LinearOrientation = LinearLayout.Orientation.Vertical,
-                },
-            };
+                content.Remove(section.Value);
+            }
+            sections.Clear();
+
+            // section: brightness
 
             if (Tizen.System.Display.NumberOfDisplays > 0)
             {
@@ -81,7 +99,17 @@ namespace Setting.Menu
 
                 GetBrightnessSliderIcon(brightness, out string iconpath);
 
-                content.Add(new TextLabel 
+
+                var brightnessView = new View
+                {
+                    WidthSpecification = LayoutParamPolicies.MatchParent,
+                    Layout = new LinearLayout()
+                    {
+                        LinearOrientation = LinearLayout.Orientation.Vertical,
+                    },
+                };
+
+                brightnessView.Add(new TextLabel 
                 {
                     ThemeChangeSensitive = true,
                     Text = Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING,
@@ -92,9 +120,12 @@ namespace Setting.Menu
                 if (brightnessItem != null)
                 {
                     brightnessItem.mSlider.ValueChanged += MSlider_ValueChanged;
-                    content.Add(brightnessItem);
+                    brightnessView.Add(brightnessItem);
+                    sections.Add("Setting.Menu.Display.Brightness", brightnessView);
                 }
             }
+
+            // section: font
 
             fontItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_FONT, $"{SystemSettings.FontSize}, {SystemSettings.FontType}");
             if (fontItem != null)
@@ -103,8 +134,10 @@ namespace Setting.Menu
                 {
                     NavigateTo("Setting.Menu.Display.Font");
                 };
-                content.Add(fontItem);
+                sections.Add("Setting.Menu.Display.Font", fontItem);
             }
+
+            // section: TimeOut
 
             screenTimeOutItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2, DisplayTimeOutManager.GetScreenTimeoutName());
             if (screenTimeOutItem != null)
@@ -113,8 +146,10 @@ namespace Setting.Menu
                 {
                     NavigateTo("Setting.Menu.Display.TimeOut");
                 };
-                content.Add(screenTimeOutItem);
+                sections.Add("Setting.Menu.Display.TimeOut", screenTimeOutItem);
             }
+
+            // section: Theme
 
             themeItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_THEME, DisplayThemeManager.GetThemeName());
             if (themeItem != null)
@@ -123,10 +158,27 @@ namespace Setting.Menu
                 {
                     NavigateTo("Setting.Menu.Display.Theme");
                 };
-                content.Add(themeItem);
+                sections.Add("Setting.Menu.Display.Theme", themeItem);
             }
 
-            return content;
+            var customization = GetCustomization().OrderBy(c => c.Order);
+            Logger.Debug($"customization: {customization.Count()}");
+            foreach (var cust in customization)
+            {
+                string visibility = cust.IsVisible ? "visible" : "hidden";
+                Logger.Verbose($"Customization: {cust.MenuPath} - {visibility} - {cust.Order}");
+                if (cust.IsVisible && sections.TryGetValue(cust.MenuPath, out View row))
+                {
+                    content.Add(row);
+                }
+            }
+        }
+
+
+        protected override void OnCustomizationUpdate(IEnumerable<MenuCustomizationItem> items)
+        {
+            Logger.Verbose($"{nameof(DisplayGadget)} got customization with {items.Count()} items. Recreating view.");
+            CreateView();
         }
 
         private void GetBrightnessSliderIcon(int brightness, out string iconpath)
