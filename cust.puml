@@ -1,0 +1,103 @@
+@startuml
+participant GadgetManager
+participant GadgetProvider
+participant FileStorage
+participant PreferenceStore
+participant GadgetManager.CustomizationChanged
+
+GadgetManager -> GadgetProvider: get installed gadgets
+activate GadgetProvider
+GadgetProvider --> GadgetManager: IEnumerable<SettingGadgetInfo>
+deactivate GadgetProvider
+
+rnote over GadgetManager
+installed gadget with default order from package
+endnote
+
+alt read JSON file and parse failed
+
+GadgetManager -> FileStorage: read JSON file and parse
+activate FileStorage
+FileStorage --> GadgetManager: null
+deactivate FileStorage
+
+loop foreach installed gadget
+GadgetManager -> PreferenceStore: get current order
+activate PreferenceStore
+PreferenceStore --> GadgetManager: current order
+deactivate PreferenceStore
+end
+
+rnote over GadgetManager
+installed gadget with current order from Preferences
+(or default order from package for newly installed gadgets)
+endnote
+
+else read JSON file and parse success
+
+GadgetManager -> FileStorage: read JSON file and parse
+activate FileStorage
+FileStorage --> GadgetManager: IEnumerable<CustItem>
+deactivate FileStorage
+
+rnote over GadgetManager
+installed gadget with current order from JSON file
+(or default order from package for newly installed gadgets)
+endnote
+
+end
+
+GadgetManager -> PreferenceStore: update all gadgets
+
+rnote over PreferenceStore
+- remove from pref, when no gadget (do not store keys not used anymore)
+- add to pref, when no key for gadget
+- set value for existing key
+endnote
+
+GadgetManager -> FileStorage: save all installed gadgets to JSON file
+activate FileStorage
+FileStorage -> FileStorage: write to disk
+deactivate FileStorage
+
+GadgetManager -> GadgetManager: start JSON file monitoring
+
+alt JSON file renamed || removed
+
+GadgetManager -> FileStorage: save all installed gadgets to JSON file
+
+else JSON file created
+
+GadgetManager -> GadgetManager: dlog!
+
+else JSON file changed
+
+alt read JSON file and parse failed - file CORRUPTED?
+
+GadgetManager -> FileStorage: read JSON file and parse
+activate FileStorage
+FileStorage --> GadgetManager: null
+deactivate FileStorage
+
+GadgetManager -> FileStorage: save all installed gadgets to JSON file
+activate FileStorage
+FileStorage -> FileStorage: write to disk
+deactivate FileStorage
+
+else read JSON file and parse success
+
+GadgetManager -> FileStorage: read JSON file and parse
+activate FileStorage
+FileStorage --> GadgetManager: IEnumerable<CustItem>
+deactivate FileStorage
+
+GadgetManager -> PreferenceStore: update all gadgets
+activate PreferenceStore
+PreferenceStore --> GadgetManager: update success||failed
+deactivate PreferenceStore
+GadgetManager -> GadgetManager.CustomizationChanged: trigger event with SINGLE change or COLLECTION of changes?
+end
+
+end
+
+@enduml
