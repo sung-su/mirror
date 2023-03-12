@@ -9,34 +9,7 @@ namespace SettingCore.Customization
     {
         private const string SettingMenuPathPrefix = "setting.menu.";
 
-        private IEnumerable<string> menuPaths => Tizen.Applications.Preference.Keys.Where(menuPath => menuPath.StartsWith(SettingMenuPathPrefix));
-
-        public string CurrentCustomizationLog
-        {
-            get
-            {
-                var dict = new Dictionary<string, int>();
-                foreach (var menuPath in menuPaths)
-                {
-                    try
-                    {
-                        int order = GetOrder(menuPath);
-                        dict.Add(menuPath, order);
-                    }
-                    catch
-                    {
-                        Logger.Warn($"Could not find order for menuPath {menuPath}.");
-                    }
-                }
-
-                StringBuilder sb = new StringBuilder();
-                foreach (var pair in dict.OrderBy(kv => Math.Abs(kv.Value)))
-                {
-                    sb.AppendLine($" ****** Menu Path: {pair.Key}, Order: {pair.Value}");
-                }
-                return sb.ToString();
-            }
-        }
+        public IEnumerable<string> MenuPaths => Tizen.Applications.Preference.Keys.Where(menuPath => menuPath.StartsWith(SettingMenuPathPrefix));
 
         public event EventHandler<CustomizationChangedEventArgs> Changed;
 
@@ -49,7 +22,7 @@ namespace SettingCore.Customization
         public void Clear()
         {
             Logger.Debug("Clearing preference customization store.");
-            foreach (var menuPath in menuPaths)
+            foreach (var menuPath in MenuPaths)
             {
                 Logger.Debug($"Removing menuPath: {menuPath}");
                 Tizen.Applications.Preference.Remove(menuPath);
@@ -67,7 +40,7 @@ namespace SettingCore.Customization
         {
             menuPath = menuPath.ToLowerInvariant();
 
-            if (menuPaths.Contains(menuPath) )
+            if (MenuPaths.Contains(menuPath) )
             {
                 Logger.Warn($"Cannot set order, because menuPath {menuPath} already exists. Please use UpdateOrder() or check menuPath.");
                 return false;
@@ -81,7 +54,7 @@ namespace SettingCore.Customization
         {
             menuPath = menuPath.ToLowerInvariant();
 
-            if (!menuPaths.Contains(menuPath))
+            if (!MenuPaths.Contains(menuPath))
             {
                 Logger.Warn($"Could not update order, because menuPath {menuPath} does not exists.");
                 return;
@@ -92,12 +65,20 @@ namespace SettingCore.Customization
             OnCustomizationChanged(new CustomizationChangedEventArgs(menuPath, order));
         }
 
-        public int GetOrder(string menuPath)
+        public int? GetOrder(string menuPath)
         {
             menuPath = menuPath.ToLowerInvariant();
 
-            int order = Tizen.Applications.Preference.Get<int>(menuPath);
-            return order;
+            try
+            {
+                int order = Tizen.Applications.Preference.Get<int>(menuPath);
+                return order;
+            }
+            catch (Exception exc)
+            {
+                Logger.Warn($"Could not get order from pref for {menuPath} ({exc})");
+                return null;
+            }
         }
     }
 }
