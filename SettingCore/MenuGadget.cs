@@ -1,5 +1,6 @@
 using SettingCore.Customization;
 using System.Collections.Generic;
+using System.Linq;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 
@@ -13,35 +14,44 @@ namespace SettingCore
 
         protected override View OnCreate()
         {
-            GadgetManager.CustomizationChanged += CustomizationChanged;
+            GadgetManager.Instance.CustomizationChanged += CustomizationChanged;
             return base.OnCreate();
         }
 
         protected override void OnDestroy()
         {
-            GadgetManager.CustomizationChanged -= CustomizationChanged;
+            GadgetManager.Instance.CustomizationChanged -= CustomizationChanged;
             base.OnDestroy();
         }
 
-        private void CustomizationChanged(object sender, Customization.CustomizationChangedEventArgs e)
+        private void CustomizationChanged(object sender, CustomizationChangedEventArgs e)
         {
             string classname = GetType().FullName;
 
-            if (GadgetManager.DoesMenuPathMatchClassName(e.MenuPath, classname))
+            List<MenuCustomizationItem> items = new List<MenuCustomizationItem>();
+            foreach (var c in e.CustomizationItems)
             {
-                Logger.Verbose($"Received customization for menupath: {e.MenuPath}, order {e.Order} at class: {classname}");
-                OnCustomizationUpdate(new MenuCustomizationItem(e.MenuPath, e.Order));
+                if (GadgetManager.Instance.DoesMenuPathMatchClassName(c.MenuPath, classname))
+                {
+                    Logger.Debug($"Received customization for menupath: {c.MenuPath}, order {c.Order} at class: {classname}");
+                    items.Add(c);
+                }
+            }
+
+            if (items.Any())
+            {
+                OnCustomizationUpdate(items);
             }
         }
 
-        protected virtual void OnCustomizationUpdate(MenuCustomizationItem item)
+        protected virtual void OnCustomizationUpdate(IEnumerable<MenuCustomizationItem> items)
         {
         }
 
         protected IEnumerable<MenuCustomizationItem> GetCustomization()
         {
             string fullClassName = GetType().FullName;
-            return GadgetManager.GetCustomization(fullClassName);
+            return GadgetManager.Instance.GetCustomization(fullClassName);
         }
 
         public abstract string ProvideTitle();

@@ -191,8 +191,9 @@ namespace Setting.Menu
             }
         }
 
-        protected override void OnCustomizationUpdate(MenuCustomizationItem item)
+        protected override void OnCustomizationUpdate(IEnumerable<MenuCustomizationItem> items)
         {
+            Logger.Verbose($"{nameof(SoundGadget)} got customization with {items.Count()} items. Recreating view.");
             CreateView();
         }
 

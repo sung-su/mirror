@@ -38,7 +38,7 @@ namespace SettingCore
 
         public static void NavigateTo(string menuPath)
         {
-            var info = GadgetManager.GetGadgetInfoFromPath(menuPath);
+            var info = GadgetManager.Instance.GetGadgetInfoFromPath(menuPath);
             if (info == null)
             {
                 Logger.Warn($"could not find gadget for menupath: {menuPath}");

@@ -24,6 +24,7 @@ using SettingCore;
 using System.Linq;
 using Tizen.Applications;
 using SettingCore.Customization;
+using System.Collections.Generic;
 
 namespace SettingView
 {
@@ -49,19 +50,28 @@ namespace SettingView
             GetDefaultWindow().GetDefaultNavigator().Push(mMainPage);
 
             Tizen.System.SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
-            GadgetManager.CustomizationChanged += CustomizationChanged;
+            GadgetManager.Instance.CustomizationChanged += CustomizationChanged;
         }
 
         protected override void OnTerminate()
         {
             Tizen.System.SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
-            GadgetManager.CustomizationChanged -= CustomizationChanged;
+            GadgetManager.Instance.CustomizationChanged -= CustomizationChanged;
             base.OnTerminate();
         }
 
         private void CustomizationChanged(object sender, CustomizationChangedEventArgs e)
         {
-            if (mMainPage != null && GadgetManager.IsMainMenuPath(e.MenuPath))
+            List<MenuCustomizationItem> items = new List<MenuCustomizationItem>();
+            foreach (var c in e.CustomizationItems)
+            {
+                if (GadgetManager.Instance.IsMainMenuPath(c.MenuPath))
+                {
+                    items.Add(c);
+                }
+            }
+
+            if (mMainPage != null && items.Any())
             {
                 mMainPage.Content = CreateContent();
             }
@@ -94,7 +104,7 @@ namespace SettingView
                     if (negative)
                         orderValue *= -1;
 
-                    GadgetManager.UpdateCustomization(menupath, orderValue);
+                    GadgetManager.Instance.UpdateCustomization(menupath, orderValue);
                 }
             }
         }
@@ -137,7 +147,7 @@ namespace SettingView
                 },
             };
 
-            var mainGadgetInfos = GadgetManager.GetMainWithCurrentOrder();
+            var mainGadgetInfos = GadgetManager.Instance.GetMainWithCurrentOrder();
 
             foreach (var gadgetInfo in mainGadgetInfos.Where(i => i.IsVisible))
             {

@@ -2,157 +2,155 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using Tizen.NUI;
 
 namespace SettingCore
 {
     public class GadgetManager
     {
-        private const string SettingGadgetPackagePrefix = "org.tizen.setting";
-        private const string GadgetClassSuffix = "gadget";
+        private static GadgetManager instance = new GadgetManager();
+        public static GadgetManager Instance => instance;
 
-        private static ICustomizationStore customizationStore = new PreferenceStore();
-        public static event EventHandler<CustomizationChangedEventArgs> CustomizationChanged;
+        public event EventHandler<CustomizationChangedEventArgs> CustomizationChanged;
 
-        private static IEnumerable<SettingGadgetInfo> gadgets;
+        private ICustomizationStore customizationStore;
+        private IEnumerable<SettingGadgetInfo> installedGadgets;
 
-        static GadgetManager()
+        private GadgetManager()
         {
-            gadgets = getSettingGadgetInfos();
+            customizationStore = new PreferenceStore();
 
-            // save order only if does not exists
-            foreach (var gadget in gadgets)
+            // 1. get all installed gadgets for Settings
+            installedGadgets = GadgetProvider.Gadgets.ToList();
+
+            // 2. get file customization
+            var fileCust = FileStorage.ReadFromFile();
+            if (fileCust == null)
             {
-                var initialSet = customizationStore.SetOrder(gadget.Path, gadget.Order);
+                // no file, so get current/latest orderfrom pref
+                Logger.Verbose("No cust file, updating latest order from Preferences.");
 
-                // read order from customization, when initial set failed
-                if (!initialSet)
+                foreach (var gadget in installedGadgets)
                 {
-                    try
+                    string gadgetMenuPath = gadget.Path.ToLowerInvariant();
+                    int? order = customizationStore.GetOrder(gadgetMenuPath);
+                    if (order.HasValue)
                     {
-                        gadget.Order = customizationStore.GetOrder(gadget.Path);
+                        gadget.Order = order.Value;
                     }
-                    catch
+                }
+            }
+            else
+            {
+                // file exists, so get current/latest order from file
+                Logger.Verbose("Cust file read, updating latest order from file.");
+
+                foreach (var gadget in installedGadgets)
+                {
+                    string gadgetMenuPath = gadget.Path.ToLowerInvariant();
+                    var item = fileCust.FirstOrDefault(x => x.MenuPath == gadgetMenuPath);
+                    if (item != null)
                     {
-                        Logger.Warn($"Could not get Order from customization store for menu path {gadget.Path}");
+                        gadget.Order = item.Order;
                     }
                 }
             }
 
-            customizationStore.Changed += CustomizationStoreChanged;
+            // 3. update to preferences
+            foreach (var gadget in installedGadgets)
+            {
+                string gadgetMenuPath = gadget.Path.ToLowerInvariant();
+                int? order = customizationStore.GetOrder(gadgetMenuPath);
+                if (order.HasValue)
+                {
+                    customizationStore.UpdateOrder(gadgetMenuPath, gadget.Order);
+                }
+                else
+                {
+                    customizationStore.SetOrder(gadgetMenuPath, gadget.Order);
+                }
+            }
+
+            // TODO: remove entry from Preferences if no gadget installed anymore
+
+            // 4. update to JSON file
+            var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
+            FileStorage.WriteToFile(menuCustItems);
+
+            // 5. start file watching
+            FileStorage.Instance.Changed += CustFileChanged;
+            FileStorage.Instance.Lost += CustFileLost;
+            FileStorage.Instance.StartMonitoring();
         }
 
-        private static void CustomizationStoreChanged(object sender, CustomizationChangedEventArgs e)
+        private void CustFileLost()
         {
-            static bool equalsIgnoreCase(string a, string b) => a.ToLowerInvariant().Equals(b.ToLowerInvariant());
+            var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
+            FileStorage.WriteToFile(menuCustItems);
+        }
 
-            // update order in gadgets collection
-            var infos = gadgets.Where(g => equalsIgnoreCase(g.Path, e.MenuPath));
-            if (infos.Count() != 1)
+        private void CustFileChanged()
+        {
+            var fileCust = FileStorage.ReadFromFile();
+            if (fileCust == null)
             {
-                Logger.Warn($"cannot find gadget with menupath {e.MenuPath}");
+                // file corrupted, so save current state
+                Logger.Verbose("Cust file corrupted, saving file.");
+
+                var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
+                FileStorage.WriteToFile(menuCustItems);
+            }
+            else
+            {
+                // update installed gadgets from file and trigger event to listeners
+                Logger.Verbose("Cust file read, updating latest order from file and triggering event.");
+
+                List<MenuCustomizationItem> changedItems = new List<MenuCustomizationItem>();
+                foreach (var cust in fileCust)
+                {
+                    var gadget = installedGadgets.FirstOrDefault(x => x.Path.ToLowerInvariant() == cust.MenuPath.ToLowerInvariant());
+                    if (gadget != null && gadget.Order != cust.Order)
+                    {
+                        gadget.Order = cust.Order;
+                        changedItems.Add(cust);
+                    }
+                }
+
+                // trigger event (with single or many changes)
+                var handler = CustomizationChanged;
+                handler?.Invoke(this, new CustomizationChangedEventArgs(changedItems));
+            }
+        }
+
+        public void UpdateCustomization(string menuPath, int order)
+        {
+            var found = installedGadgets.Where(x => x.Path.ToLowerInvariant() == menuPath.ToLowerInvariant());
+            if (found.Count() == 0)
+            {
+                Logger.Warn($"Cannot update customization, because did not find gadget for menu path: {menuPath}.");
                 return;
             }
-            Logger.Debug($"updating gadget order {e.Order} for menupath {e.MenuPath}");
-            infos.First().Order = e.Order;
+            else if (found.Count() > 1)
+            {
+                Logger.Warn($"Cannot update customization, because 1+ gadgets found for menu path: {menuPath}.");
+                return;
+            }
 
-            // notifiy listeners
+            // update pref
+            customizationStore.UpdateOrder(menuPath, order);
+
+            // update file
+            found.First().Order = order;
+            var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
+            FileStorage.WriteToFile(menuCustItems);
+
+            // trigger event (with single change)
             var handler = CustomizationChanged;
-            handler?.Invoke(sender, e);
+            handler?.Invoke(this, new CustomizationChangedEventArgs(menuPath, order));
         }
 
-        private static IEnumerable<SettingGadgetInfo> getSettingGadgetInfos()
+        public IEnumerable<SettingGadgetInfo> GetMainWithCurrentOrder()
         {
-            var allGadgetPackages = NUIGadgetManager.GetGadgetInfos();
-            var settingGadgetPackages = allGadgetPackages.Where(pkg => pkg.PackageId.StartsWith(SettingGadgetPackagePrefix));
-
-            Logger.Debug($"all gadget packages: {allGadgetPackages.Count()}, setting gadget packages: {settingGadgetPackages.Count()}");
-            foreach (var pkg in settingGadgetPackages)
-                Logger.Debug($"setting gadget package (pkgId: {pkg.PackageId}, resType: {pkg.ResourceType})");
-            foreach (var pkg in allGadgetPackages.Where(p => !settingGadgetPackages.Contains(p)))
-                Logger.Debug($"other gadget package (pkgId: {pkg.PackageId}, resType: {pkg.ResourceType})");
-
-            List<SettingGadgetInfo> collection = new List<SettingGadgetInfo>();
-
-            foreach (var gadgetInfo in settingGadgetPackages)
-            {
-                var settingGadgetInfos = getSettingGadgetInfos(gadgetInfo);
-                collection.AddRange(settingGadgetInfos);
-            }
-
-            // check is there is more than one gadget with the same Menu Path
-            var uniqueMenuPaths = collection.Select(i => i.Path).Distinct();
-            foreach (var menuPath in uniqueMenuPaths)
-            {
-                var found = collection.Where(i => i.Path == menuPath);
-                if (found.Count() > 1)
-                {
-                    Logger.Warn($"Customization may work INCORRECTLY due to the same menu path '{menuPath}' for {found.Count()} gadgets.");
-                    foreach (var info in found)
-                        Logger.Warn($"Menu path: {menuPath} -> {info.ClassName} @ {info.Pkg.PackageId}");
-                }
-            }
-
-            return collection;
-        }
-
-        private static IEnumerable<SettingGadgetInfo> getSettingGadgetInfos(NUIGadgetInfo gadgetInfo)
-        {
-            string assemblyPath = System.IO.Path.Combine(gadgetInfo.ResourcePath, gadgetInfo.ExecutableFile);
-            System.Reflection.Assembly assembly = null;
-            try
-            {
-                assembly = Assembly.Load(System.IO.File.ReadAllBytes(assemblyPath));
-            }
-            catch (System.IO.FileLoadException)
-            {
-                Logger.Warn($"could not load assembly {assemblyPath}");
-                yield break;
-            }
-            catch (System.IO.FileNotFoundException)
-            {
-                Logger.Warn($"could not find assembly {assemblyPath}");
-                yield break;
-            }
-
-            var providerType = assembly.GetExportedTypes()
-                .Where(t => t.IsSubclassOf(typeof(SettingCore.SettingMenuProvider)))
-                .SingleOrDefault();
-            if (providerType == null)
-            {
-                Logger.Warn($"could not find setting menu provider at {assemblyPath}");
-                yield break;
-            }
-
-            var settingMenuProvider = assembly.CreateInstance(providerType.FullName) as SettingCore.SettingMenuProvider;
-            var settingMenus = settingMenuProvider.Provide();
-            Logger.Debug($"Provider {providerType.FullName} contains {settingMenus.Count()} menus");
-
-            foreach (var settingMenu in settingMenus)
-            {
-                Logger.Verbose($"{settingMenu}");
-                yield return new SettingGadgetInfo(gadgetInfo, settingMenu);
-            }
-        }
-
-        public static IEnumerable<SettingGadgetInfo> GetAll() => gadgets.ToList();
-
-        public static SettingGadgetInfo GetGadgetInfoFromPath(string menuPath)
-        {
-            var menus = gadgets.Where(x => x.Path == menuPath);
-            if (menus.Count() == 1)
-            {
-                return menus.First();
-            }
-
-            Logger.Warn($"found {menus.Count()} gadgets for menu path: '{menuPath}'");
-            return null;
-        }
-
-        public static IEnumerable<SettingGadgetInfo> GetMainWithCurrentOrder()
-        {
-            var main = gadgets
+            var main = installedGadgets
                 .Where(info => info.IsMainMenu);
 
             Logger.Debug($"number of main gadgets: {main.Count()}");
@@ -161,26 +159,9 @@ namespace SettingCore
                 .OrderBy(info => info.Order);
         }
 
-        public static void UpdateCustomization(string menuPath, int order)
+        public bool IsMainMenuPath(string menuPath)
         {
-            var found = gadgets.Where(x => x.Path == menuPath).Count();
-            if (found == 0)
-            {
-                Logger.Warn($"Cannot update customization, because did not find gadget for menu path: {menuPath}.");
-                return;
-            }
-            else if (found > 1)
-            {
-                Logger.Warn($"Cannot update customization, because 1+ gadgets found for menu path: {menuPath}.");
-                return;
-            }
-
-            customizationStore.UpdateOrder(menuPath, order);
-        }
-
-        public static bool IsMainMenuPath(string menuPath)
-        {
-            var info = gadgets.SingleOrDefault(x => x.Path.ToLowerInvariant() == menuPath.ToLowerInvariant());
+            var info = installedGadgets.SingleOrDefault(x => x.Path.ToLowerInvariant() == menuPath.ToLowerInvariant());
 
             bool isMainMenu = info != null && info.IsMainMenu;
             Logger.Debug(menuPath + " is " + (isMainMenu ? "" : "NOT ") + "main menu");
@@ -188,9 +169,9 @@ namespace SettingCore
             return isMainMenu;
         }
 
-        public static bool DoesMenuPathMatchClassName(string menuPath, string fullClassName)
+        internal bool DoesMenuPathMatchClassName(string menuPath, string fullClassName)
         {
-            return gadgets.Where(x =>
+            return installedGadgets.Where(x =>
             {
                 bool menuPathStartsWith = menuPath.StartsWithIgnoreCase(x.Path + ".");
                 bool classNameEquals = x.ClassName.EqualsIgnoreCase(fullClassName);
@@ -198,9 +179,9 @@ namespace SettingCore
             }).Count() == 1;
         }
 
-        public static IEnumerable<MenuCustomizationItem> GetCustomization(string fullClassName)
+        internal IEnumerable<MenuCustomizationItem> GetCustomization(string fullClassName)
         {
-            var menus = gadgets.Where(x => x.ClassName.EqualsIgnoreCase(fullClassName));
+            var menus = installedGadgets.Where(x => x.ClassName.EqualsIgnoreCase(fullClassName));
             if (menus.Count() != 1)
             {
                 Logger.Warn($"found {menus.Count()} gadgets for class: '{fullClassName}'");
@@ -208,9 +189,21 @@ namespace SettingCore
             }
 
             string menuPath = menus.First().Path + ".";
-            return gadgets
+            return installedGadgets
                 .Where(x => x.Path.StartsWithIgnoreCase(menuPath))
                 .Select(x => new MenuCustomizationItem(x.Path, x.Order));
+        }
+
+        internal SettingGadgetInfo GetGadgetInfoFromPath(string menuPath)
+        {
+            var menus = installedGadgets.Where(x => x.Path == menuPath);
+            if (menus.Count() == 1)
+            {
+                return menus.First();
+            }
+
+            Logger.Warn($"found {menus.Count()} gadgets for menu path: '{menuPath}'");
+            return null;
         }
     }
 }
