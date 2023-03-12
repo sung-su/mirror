@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SettingCore.Customization
 {
@@ -6,12 +7,14 @@ namespace SettingCore.Customization
     {
         public CustomizationChangedEventArgs(string menuPath, int order)
         {
-            MenuPath = menuPath;
-            Order = order;
+            CustomizationItems = new MenuCustomizationItem[] { new MenuCustomizationItem(menuPath, order) };
         }
 
-        public string MenuPath { get; private set; }
-        public int Order { get; private set; }
-        public bool IsVisible => Order > 0;
+        public CustomizationChangedEventArgs(IEnumerable<MenuCustomizationItem> items)
+        {
+            CustomizationItems = items;
+        }
+
+        public IEnumerable<MenuCustomizationItem> CustomizationItems { get; private set; }
     }
 }
