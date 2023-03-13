@@ -16,7 +16,7 @@ namespace Setting.Menu
 
         public override string ProvideIconPath() => GetResourcePath("display.svg");
 
-        public override string ProvideTitle() => "Display";
+        public override string ProvideTitle() => Resources.IDS_ST_HEADER_DISPLAY;
 
         private SliderItem brightnessItem;
         private DefaultLinearItem fontItem;
