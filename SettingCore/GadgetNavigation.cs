@@ -6,7 +6,7 @@ using Tizen.NUI.BaseComponents;
 
 namespace SettingCore
 {
-    internal static class GadgetNavigation
+    public static class GadgetNavigation
     {
         // keep page-gadget binding, to update Title & ContextMenu strings when language changed
         private static Dictionary<Page, MenuGadget> gadgetPages = new Dictionary<Page, MenuGadget>();
