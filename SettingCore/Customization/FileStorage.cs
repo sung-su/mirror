@@ -95,7 +95,7 @@ namespace SettingCore.Customization
 
             try
             {
-                fsw = new System.IO.FileSystemWatcher(DirectoryPath, "cust*.json");
+                fsw = new System.IO.FileSystemWatcher(DirectoryPath, "cust.json");
                 fsw.Changed += OnFileChanged;
                 fsw.Renamed += OnFileRenamed;
                 fsw.Deleted += OnFileDeleted;
