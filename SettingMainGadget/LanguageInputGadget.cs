@@ -1,5 +1,8 @@
 ﻿using SettingAppTextResopurces.TextResources;
+using SettingCore;
 using SettingMainGadget.LanguageInput;
+using System.Collections.Generic;
+using System.Linq;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
@@ -16,24 +19,14 @@ namespace Setting.Menu
         public override string ProvideTitle() => Resources.IDS_ST_HEADER_LANGUAGE_AND_INPUT;
 
         private DefaultLinearItem displayLanguageItem;
+        private View content;
+        private List<View> contentItems = new List<View>();
 
         protected override View OnCreate()
         {
             SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
 
-            return CreateView();
-        }
-
-        protected override void OnDestroy()
-        {
-            SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
-
-            base.OnDestroy();
-        }
-
-        private View CreateView()
-        {
-            var content = new ScrollableBase
+            content = new ScrollableBase
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
                 HeightSpecification = LayoutParamPolicies.MatchParent,
@@ -45,6 +38,26 @@ namespace Setting.Menu
                 },
             };
 
+            CreateView();
+
+            return content;
+        }
+
+        protected override void OnDestroy()
+        {
+            SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
+
+            base.OnDestroy();
+        }
+
+        private void CreateView()
+        {
+            foreach (var items in contentItems)
+            {
+                content.Remove(items);
+            }
+            contentItems.Clear();
+
             displayLanguageItem = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_HEADER_DISPLAY_LANGUAGE, LanguageInputDisplayLanguageManager.GetDisplayLanguageName());
             if (displayLanguageItem != null)
             {
@@ -52,11 +65,11 @@ namespace Setting.Menu
                 {
                     NavigateTo("Setting.Menu.LanguageInput.DisplayLanguage");
                 };
-                content.Add(displayLanguageItem);
+                contentItems.Add(displayLanguageItem);
             }
 
-            content.Add(SettingMain.SettingItemCreator.CreateItemStatic(""));
-            content.Add(SettingMain.SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_KEYBOARD));
+            contentItems.Add(SettingMain.SettingItemCreator.CreateItemStatic(""));
+            contentItems.Add(SettingMain.SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_KEYBOARD));
 
             var item = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_KEYBOARD);
             if (item != null)
@@ -65,11 +78,11 @@ namespace Setting.Menu
                 {
                     NavigateTo("Setting.Menu.LanguageInput.InputMethod");
                 };
-                content.Add(item);
+                contentItems.Add(item);
             }
 
-            content.Add(SettingMain.SettingItemCreator.CreateItemStatic(""));
-            content.Add(SettingMain.SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_INPUT_ASSISTANCE));
+            contentItems.Add(SettingMain.SettingItemCreator.CreateItemStatic(""));
+            contentItems.Add(SettingMain.SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_INPUT_ASSISTANCE));
 
             item = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_AUTOFILL_SERVICE);
             if (item != null)
@@ -78,11 +91,11 @@ namespace Setting.Menu
                 {
                     NavigateTo("Setting.Menu.LanguageInput.Autofill");
                 };
-                content.Add(item);
+                contentItems.Add(item);
             }
 
-            content.Add(SettingMain.SettingItemCreator.CreateItemStatic(""));
-            content.Add(SettingMain.SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_SPEECH));
+            contentItems.Add(SettingMain.SettingItemCreator.CreateItemStatic(""));
+            contentItems.Add(SettingMain.SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_SPEECH));
 
             item = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_VOICE_BODY_VOICE_CONTROL_ABB2);
             if (item != null)
@@ -91,7 +104,7 @@ namespace Setting.Menu
                 {
                     NavigateTo("Setting.Menu.LanguageInput.VoiceControl");
                 };
-                content.Add(item);
+                contentItems.Add(item);
             }
 
             item = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_VOICE_HEADER_TEXT_TO_SPEECH_HTTS);
@@ -101,7 +114,7 @@ namespace Setting.Menu
                 {
                     NavigateTo("Setting.Menu.LanguageInput.TTS");
                 };
-                content.Add(item);
+                contentItems.Add(item);
             }
 
             item = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_VOICE_HEADER_SPEECH_TO_TEXT_HSTT);
@@ -111,17 +124,21 @@ namespace Setting.Menu
                 {
                     NavigateTo("Setting.Menu.LanguageInput.STT");
                 };
-                content.Add(item);
+                contentItems.Add(item);
             }
 
-            return content;
+            foreach (var view in contentItems)
+            {
+                content.Add(view);
+            }
         }
 
         private void SystemSettings_LocaleLanguageChanged(object sender, LocaleLanguageChangedEventArgs e)
         {
-            // TODO : reload all text or use the TranslatableText
-            if (displayLanguageItem != null)
-                displayLanguageItem.SubText = LanguageInputDisplayLanguageManager.GetDisplayLanguageName();
+            if (content != null)
+            {
+                CreateView();
+            }
         }
     }
 }
