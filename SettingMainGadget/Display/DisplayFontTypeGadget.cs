@@ -2,6 +2,7 @@
 using SettingCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
@@ -38,6 +39,7 @@ namespace Setting.Menu.Display
                     Text = fontTypeList[i],
                     IsSelected = fontTypeList[i] == SystemSettings.FontType,
                 };
+                radioButton.TextLabel.FontFamily = fontTypeList[i];
 
                 radioButtonGroup.Add(radioButton);
                 content.Add(radioButton);
@@ -53,14 +55,15 @@ namespace Setting.Menu.Display
 
         private List<string> MakeFontTypeList()
         {
-            List<string> fontTypeList = new List<string>
-            {
-                SystemSettings.FontType
-            }; // TODO: add available fonts with GetSystemFonts()
+            var systemFonts = FontClient.Instance.GetSystemFonts();
 
-            if (SystemSettings.FontType != SystemSettings.DefaultFontType)
+            // only fonts from /usr/share/fonts/ folder are works properly.
+            // GetSystemFonts() also returns fonts from /usr/share/fallback_fonts/ folder, but with wrong family name.
+            var fontTypeList = systemFonts.Where(x => x.Path.Contains("/usr/share/fonts/")).Select(a => a.Family).Distinct().ToList();
+
+            if (SystemSettings.FontType.Equals("Default"))
             {
-                fontTypeList.Add(SystemSettings.FontType);
+                SetFonttype(SystemSettings.DefaultFontType);
             }
 
             Logger.Debug($"SystemSettings.DefaultFontType: {SystemSettings.DefaultFontType}");
