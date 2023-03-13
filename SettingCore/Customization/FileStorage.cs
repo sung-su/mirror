@@ -121,9 +121,9 @@ namespace SettingCore.Customization
 
             try
             {
-                fsw.Changed += OnFileChanged;
-                fsw.Renamed += OnFileRenamed;
-                fsw.Deleted += OnFileDeleted;
+                fsw.Changed -= OnFileChanged;
+                fsw.Renamed -= OnFileRenamed;
+                fsw.Deleted -= OnFileDeleted;
                 fsw.EnableRaisingEvents = false;
             }
             catch (Exception ex)
