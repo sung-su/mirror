@@ -158,7 +158,10 @@ namespace SettingCore.Customization
 
                 StringBuilder sb = new StringBuilder("Read from file:" + Environment.NewLine);
                 foreach (var item in items)
+                {
                     sb.AppendLine($"{item}");
+                }
+                Logger.Verbose($"{sb}");
 
                 return items;
             }
