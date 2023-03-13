@@ -63,7 +63,7 @@ namespace Setting.Menu
             {
                 item.Clicked += (o, e) =>
                 {
-                    //RequestWidgetPush("inputmethod@org.tizen.cssetting-inputmethod");
+                    NavigateTo("Setting.Menu.LanguageInput.InputMethod");
                 };
                 content.Add(item);
             }
@@ -76,7 +76,7 @@ namespace Setting.Menu
             {
                 item.Clicked += (o, e) =>
                 {
-                    //RequestWidgetPush("autofill@org.tizen.cssetting-autofill");
+                    NavigateTo("Setting.Menu.LanguageInput.Autofill");
                 };
                 content.Add(item);
             }
@@ -89,7 +89,7 @@ namespace Setting.Menu
             {
                 item.Clicked += (o, e) =>
                 {
-                    //RequestWidgetPush("voicecontrol@org.tizen.cssetting-voicecontrol");
+                    NavigateTo("Setting.Menu.LanguageInput.VoiceControl");
                 };
                 content.Add(item);
             }
@@ -99,7 +99,7 @@ namespace Setting.Menu
             {
                 item.Clicked += (o, e) =>
                 {
-                    //RequestWidgetPush("tts@org.tizen.cssetting-tts");
+                    NavigateTo("Setting.Menu.LanguageInput.TTS");
                 };
                 content.Add(item);
             }
@@ -109,7 +109,7 @@ namespace Setting.Menu
             {
                 item.Clicked += (o, e) =>
                 {
-                    //RequestWidgetPush("stt@org.tizen.cssetting-stt");
+                    NavigateTo("Setting.Menu.LanguageInput.STT");
                 };
                 content.Add(item);
             }
