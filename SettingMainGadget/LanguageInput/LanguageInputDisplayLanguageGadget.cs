@@ -38,7 +38,7 @@ namespace Setting.Menu.LanguageInput
             picker.MaxValue = LanguageInputDisplayLanguageManager.LanguageList.Count - 1;
             picker.CurrentValue = LanguageInputDisplayLanguageManager.GetDisplayLanguageIndex();
 
-            var button = new Button()
+            var button = new Button("Tizen.NUI.Components.Button.Outlined")
             {
                 Text = Resources.IDS_ST_BUTTON_OK
             };

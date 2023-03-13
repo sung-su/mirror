@@ -42,7 +42,7 @@ namespace Setting.Menu.Sound
             picker.MaxValue = pickerItems.Length - 1;
             picker.CurrentValue = GetNotificationSoundIndex(soundList);
 
-            var button = new Button()
+            var button = new Button("Tizen.NUI.Components.Button.Outlined")
             {
                 Text = Resources.IDS_ST_BUTTON_OK
             };

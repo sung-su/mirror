@@ -33,7 +33,7 @@ namespace Setting.Menu.DateTime
                 HeightResizePolicy = ResizePolicyType.FitToChildren,
             };
 
-            var button = new Button()
+            var button = new Button("Tizen.NUI.Components.Button.Outlined")
             {
                 Text = Resources.IDS_ST_BUTTON_OK
             };

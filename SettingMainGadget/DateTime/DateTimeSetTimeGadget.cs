@@ -35,7 +35,7 @@ namespace Setting.Menu.DateTime
                 Is24HourView = DateTimeManager.Is24HourFormat,
             };
 
-            var button = new Button()
+            var button = new Button("Tizen.NUI.Components.Button.Outlined")
             {
                 Text = Resources.IDS_ST_BUTTON_OK
             };
