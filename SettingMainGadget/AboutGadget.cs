@@ -30,6 +30,7 @@ namespace Setting.Menu
 
         protected override View OnCreate()
         {
+            base.OnCreate();
             content = new ScrollableBase()
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
