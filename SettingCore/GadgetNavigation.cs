@@ -57,7 +57,8 @@ namespace SettingCore
                 appBarStyle.Size = new Size(-1, 64).SpToPx();
                 appBarStyle.TitleTextLabel.PointSize = 18f.SpToPt();
 
-                var backButton = new Button(appBarStyle.BackButton);
+                var backButton = new Views.BackButton();
+                backButton.Margin = new Extents(0, 8, 0, 0).SpToPx();
                 backButton.Clicked += (s, e) => NavigateBack();
 
                 var page = new ContentPage
