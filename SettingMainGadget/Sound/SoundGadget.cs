@@ -15,7 +15,7 @@ namespace Setting.Menu
     public class SoundGadget : SettingCore.MainMenuGadget
     {
         private View content;
-        private Dictionary<string, View> sections = new Dictionary<string, View>();
+        private Sections sections = new Sections();
 
         private DefaultLinearItem soundMode;
         private DefaultLinearItem notificationSound;
@@ -62,11 +62,7 @@ namespace Setting.Menu
         private void CreateView()
         {
             // remove all sections from content view
-            foreach (var section in sections)
-            {
-                content.Remove(section.Value);
-            }
-            sections.Clear();
+            sections.RemoveAllSectionsFromView(content);
 
             // section: sound mode
 
