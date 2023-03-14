@@ -31,8 +31,7 @@ namespace SettingCore
 
                 foreach (var gadget in installedGadgets)
                 {
-                    string gadgetMenuPath = gadget.Path.ToLowerInvariant();
-                    int? order = customizationStore.GetOrder(gadgetMenuPath);
+                    int? order = customizationStore.GetOrder(gadget.Path);
                     if (order.HasValue)
                     {
                         gadget.Order = order.Value;
@@ -46,8 +45,7 @@ namespace SettingCore
 
                 foreach (var gadget in installedGadgets)
                 {
-                    string gadgetMenuPath = gadget.Path.ToLowerInvariant();
-                    var item = fileCust.FirstOrDefault(x => x.MenuPath == gadgetMenuPath);
+                    var item = fileCust.FirstOrDefault(x => x.MenuPath.Equals(gadget.Path, StringComparison.InvariantCultureIgnoreCase));
                     if (item != null)
                     {
                         gadget.Order = item.Order;
@@ -58,15 +56,14 @@ namespace SettingCore
             // 3. update to preferences
             foreach (var gadget in installedGadgets)
             {
-                string gadgetMenuPath = gadget.Path.ToLowerInvariant();
-                int? order = customizationStore.GetOrder(gadgetMenuPath);
+                int? order = customizationStore.GetOrder(gadget.Path);
                 if (order.HasValue)
                 {
-                    customizationStore.UpdateOrder(gadgetMenuPath, gadget.Order);
+                    customizationStore.UpdateOrder(gadget.Path, gadget.Order);
                 }
                 else
                 {
-                    customizationStore.SetOrder(gadgetMenuPath, gadget.Order);
+                    customizationStore.SetOrder(gadget.Path, gadget.Order);
                 }
             }
 
@@ -107,7 +104,7 @@ namespace SettingCore
                 List<MenuCustomizationItem> changedItems = new List<MenuCustomizationItem>();
                 foreach (var cust in fileCust)
                 {
-                    var gadget = installedGadgets.FirstOrDefault(x => x.Path.ToLowerInvariant() == cust.MenuPath.ToLowerInvariant());
+                    var gadget = installedGadgets.FirstOrDefault(x => x.Path.Equals(cust.MenuPath, StringComparison.InvariantCultureIgnoreCase));
                     if (gadget != null && gadget.Order != cust.Order)
                     {
                         gadget.Order = cust.Order;
@@ -123,7 +120,7 @@ namespace SettingCore
 
         public void UpdateCustomization(string menuPath, int order)
         {
-            var found = installedGadgets.Where(x => x.Path.ToLowerInvariant() == menuPath.ToLowerInvariant());
+            var found = installedGadgets.Where(x => x.Path.Equals(menuPath, StringComparison.InvariantCultureIgnoreCase));
             if (found.Count() == 0)
             {
                 Logger.Warn($"Cannot update customization, because did not find gadget for menu path: {menuPath}.");
@@ -161,7 +158,7 @@ namespace SettingCore
 
         public bool IsMainMenuPath(string menuPath)
         {
-            var info = installedGadgets.SingleOrDefault(x => x.Path.ToLowerInvariant() == menuPath.ToLowerInvariant());
+            var info = installedGadgets.SingleOrDefault(x => x.Path.Equals(menuPath, StringComparison.InvariantCultureIgnoreCase));
 
             bool isMainMenu = info != null && info.IsMainMenu;
             Logger.Debug(menuPath + " is " + (isMainMenu ? "" : "NOT ") + "main menu");
@@ -173,15 +170,15 @@ namespace SettingCore
         {
             return installedGadgets.Where(x =>
             {
-                bool menuPathStartsWith = menuPath.StartsWithIgnoreCase(x.Path + ".");
-                bool classNameEquals = x.ClassName.EqualsIgnoreCase(fullClassName);
+                bool menuPathStartsWith = menuPath.StartsWith(x.Path + ".", true, System.Globalization.CultureInfo.InvariantCulture);
+                bool classNameEquals = x.ClassName.Equals(fullClassName, StringComparison.InvariantCultureIgnoreCase);
                 return menuPathStartsWith && classNameEquals;
             }).Count() == 1;
         }
 
         internal IEnumerable<MenuCustomizationItem> GetCustomization(string fullClassName)
         {
-            var menus = installedGadgets.Where(x => x.ClassName.EqualsIgnoreCase(fullClassName));
+            var menus = installedGadgets.Where(x => x.ClassName.Equals(fullClassName, StringComparison.InvariantCultureIgnoreCase));
             if (menus.Count() != 1)
             {
                 Logger.Warn($"found {menus.Count()} gadgets for class: '{fullClassName}'");
@@ -190,13 +187,13 @@ namespace SettingCore
 
             string menuPath = menus.First().Path + ".";
             return installedGadgets
-                .Where(x => x.Path.StartsWithIgnoreCase(menuPath))
+                .Where(x => x.Path.StartsWith(menuPath, StringComparison.InvariantCultureIgnoreCase))
                 .Select(x => new MenuCustomizationItem(x.Path, x.Order));
         }
 
         internal SettingGadgetInfo GetGadgetInfoFromPath(string menuPath)
         {
-            var menus = installedGadgets.Where(x => x.Path == menuPath);
+            var menus = installedGadgets.Where(x => x.Path.Equals(menuPath, StringComparison.InvariantCultureIgnoreCase));
             if (menus.Count() == 1)
             {
                 return menus.First();

@@ -20,7 +20,7 @@ namespace SettingCore.Customization
 
         public MenuCustomizationItem(string menuPath, int order)
         {
-            MenuPath = menuPath;
+            MenuPath = menuPath.ToLowerInvariant();
             Order = order;
         }
 
