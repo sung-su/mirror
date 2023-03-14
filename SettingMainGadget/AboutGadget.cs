@@ -19,7 +19,7 @@ namespace Setting.Menu
         private string VconfDeviceName = "db/setting/device_name";
         private string SystemModelName = "tizen.org/system/model_name";
 
-        private Dictionary<string, View> sections = new Dictionary<string, View>();
+        private Sections sections = new Sections();
         private View content;
 
         public override Color ProvideIconColor() => new Color("#301A4B");
@@ -50,11 +50,7 @@ namespace Setting.Menu
 
         private void CreateView()
         {
-            foreach (var section in sections)
-            {
-                content.Remove(section.Value);
-            }
-            sections.Clear();
+            sections.RemoveAllSectionsFromView(content);
 
             DefaultLinearItem item = null;
 

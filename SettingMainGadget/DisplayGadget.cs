@@ -22,7 +22,7 @@ namespace Setting.Menu
         public override string ProvideTitle() => Resources.IDS_ST_HEADER_DISPLAY;
 
         private View content;
-        private Dictionary<string, View> sections = new Dictionary<string, View>();
+        private Sections sections = new Sections();
 
         private SliderItem brightnessItem;
         private DefaultLinearItem fontItem;
@@ -73,11 +73,7 @@ namespace Setting.Menu
 
         private void CreateView()
         {
-            foreach (var section in sections)
-            {
-                content.Remove(section.Value);
-            }
-            sections.Clear();
+            sections.RemoveAllSectionsFromView(content);
 
             // section: brightness
 
