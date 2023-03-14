@@ -51,6 +51,27 @@ namespace SettingView
 
             Tizen.System.SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
             GadgetManager.Instance.CustomizationChanged += CustomizationChanged;
+
+            LogScalableInfo();
+        }
+
+        private void LogScalableInfo()
+        {
+            var scalable = new string[]
+            {
+                $"ScalingFactor = {GraphicsTypeManager.Instance.ScalingFactor}",
+                $"Dpi = {GraphicsTypeManager.Instance.Dpi}",
+                $"ScaledDpi = {GraphicsTypeManager.Instance.ScaledDpi}",
+                $"BaselineDpi = {GraphicsTypeManager.Instance.BaselineDpi}",
+                $"Density = {GraphicsTypeManager.Instance.Density}",
+                $"ScaledDensity = {GraphicsTypeManager.Instance.ScaledDensity}",
+                $"100dp => {GraphicsTypeManager.Instance.ConvertScriptToPixel("100dp")}px",
+                $"100sp => {GraphicsTypeManager.Instance.ConvertScriptToPixel("100sp")}px",
+            };
+            foreach (var s in scalable)
+            {
+                Logger.Debug($"Scalable Info: {s}");
+            }
         }
 
         protected override void OnTerminate()
