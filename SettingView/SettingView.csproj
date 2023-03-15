@@ -14,12 +14,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="lib\" />
     <Folder Include="res\menu\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Tizen.NET" Version="11.0.0.17691" />
+    <PackageReference Include="Tizen.NET" Version="11.0.0.17739" />
     <PackageReference Include="Tizen.NET.Sdk" Version="1.0.9" />
   </ItemGroup>
 

@@ -15,17 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="lib\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Tizen.NET" Version="11.0.0.17691" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Tizen.NUI.Gadget">
-      <HintPath>lib\Tizen.NUI.Gadget.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Tizen.NET" Version="11.0.0.17739" />
   </ItemGroup>
 
 </Project>
