@@ -55,7 +55,7 @@ namespace SettingCore
                 // TODO: remove style customization with scalable unit, when merged to TizenFX
                 var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar") as AppBarStyle;
                 appBarStyle.Size = new Size(-1, 64).SpToPx();
-                appBarStyle.TitleTextLabel.PointSize = 18f.SpToPt();
+                appBarStyle.TitleTextLabel.PixelSize = 24f.SpToPx();
 
                 var backButton = new Views.BackButton();
                 backButton.Margin = new Extents(0, 8, 0, 0).SpToPx();

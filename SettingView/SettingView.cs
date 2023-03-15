@@ -144,7 +144,8 @@ namespace SettingView
             // TODO: remove style customization with scalable unit, when merged to TizenFX
             var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar") as AppBarStyle;
             appBarStyle.Size = new Size(-1, 64).SpToPx();
-            appBarStyle.TitleTextLabel.PointSize = 18f.SpToPt();
+            appBarStyle.TitleTextLabel.PixelSize = 24.SpToPx();
+            appBarStyle.Padding = new Extents(16, 16, 0, 0).SpToPx();
 
             return new AppBar(appBarStyle)
             {

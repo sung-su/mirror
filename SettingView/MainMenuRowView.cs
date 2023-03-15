@@ -34,8 +34,7 @@ namespace SettingView
             {
                 ThemeChangeSensitive = true,
                 Text = title,
-                PointSize = 18f.SpToPt(),
-                //PixelSize = 18.SpToPx(),
+                PixelSize = 24.SpToPx(),
             };
             FlexLayout.SetFlexGrow(titleTextLabel, 1);
 
