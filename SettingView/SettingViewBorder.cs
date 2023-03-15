@@ -224,7 +224,7 @@ namespace SettingView
             else
             {
                 maximalizeIcon.ResourceUrl = MaximalizeIconPath;
-                borderView.CornerRadius = WindowCornerRadius;
+                borderView.CornerRadius = WindowCornerRadius.SpToPx();
             }
         }
     }
