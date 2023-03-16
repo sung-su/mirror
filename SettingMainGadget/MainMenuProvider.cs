@@ -11,6 +11,13 @@ namespace SettingMainGadget
         public static string Display_FontType = "Display.Font.FontType";
         public static string Display_Timeout = "Display.Timeout";
         public static string Display_Theme = "Display.Theme";
+        public static string Sound = "Sound";
+        public static string Sound_Mode = "Sound.Mode";
+        public static string Sound_Notification = "Sound.Notification";
+        public static string Sound_Other = "Sound.Other";
+        public static string Sound_MediaSlider = "Sound.MediaSlider";
+        public static string Sound_NotificationSlider = "Sound.NotificationSlider";
+        public static string Sound_SystemSlider = "Sound.SystemSlider";
 
         public override SettingMenu[] Provide()
         {
@@ -23,13 +30,13 @@ namespace SettingMainGadget
                 new SettingMenu(path: Display_FontType, defaultOrder: 34, type: typeof(Setting.Menu.Display.DisplayFontTypeGadget)),
                 new SettingMenu(path: Display_Timeout, defaultOrder: 35, type: typeof(Setting.Menu.Display.DisplayTimeOutGadget)),
                 new SettingMenu(path: Display_Theme, defaultOrder: 36, type: typeof(Setting.Menu.Display.DisplayThemeGadget)),
-                new SettingMenu(path: "Sound", defaultOrder: 40, type: typeof(Setting.Menu.SoundGadget)),
-                new SettingMenu(path: "Sound.SoundMode", defaultOrder: 41, type: typeof(Setting.Menu.Sound.SoundmodeGadget)),
-                new SettingMenu(path: "Sound.SoundNotification", defaultOrder: 42, type: typeof(Setting.Menu.Sound.SoundnotificationGadget)),
-                new SettingMenu(path: "Sound.SoundOther", defaultOrder: 43, type: typeof(Setting.Menu.Sound.SoundotherGadget)),
-                new SettingMenu(path: "Sound.Media", defaultOrder: 44),
-                new SettingMenu(path: "Sound.Notification", defaultOrder: 45),
-                new SettingMenu(path: "Sound.System", defaultOrder: 46),
+                new SettingMenu(path: Sound, defaultOrder: 40, type: typeof(Setting.Menu.SoundGadget)),
+                new SettingMenu(path: Sound_Mode, defaultOrder: 41, type: typeof(Setting.Menu.Sound.SoundmodeGadget)),
+                new SettingMenu(path: Sound_Notification, defaultOrder: 42, type: typeof(Setting.Menu.Sound.SoundnotificationGadget)),
+                new SettingMenu(path: Sound_Other, defaultOrder: 43, type: typeof(Setting.Menu.Sound.SoundotherGadget)),
+                new SettingMenu(path: Sound_MediaSlider, defaultOrder: 44),
+                new SettingMenu(path: Sound_NotificationSlider, defaultOrder: 45),
+                new SettingMenu(path: Sound_SystemSlider, defaultOrder: 46),
                 new SettingMenu(path: "DateTime", defaultOrder: 50, type: typeof(Setting.Menu.DateTimeGadget)),
                 new SettingMenu(path: "DateTime.SetDate", defaultOrder: 51, type: typeof(Setting.Menu.DateTime.DateTimeSetDateGadget)),
                 new SettingMenu(path: "DateTime.SetTime", defaultOrder: 52, type: typeof(Setting.Menu.DateTime.DateTimeSetTimeGadget)),

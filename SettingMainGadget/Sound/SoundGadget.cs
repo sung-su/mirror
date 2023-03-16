@@ -1,6 +1,7 @@
 ﻿using SettingAppTextResopurces.TextResources;
 using SettingCore;
 using SettingCore.Customization;
+using SettingMainGadget;
 using SettingMainGadget.Sound;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,10 +73,10 @@ namespace Setting.Menu
             {
                 soundMode.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.Sound.SoundMode");
+                    NavigateTo(MainMenuProvider.Sound_Mode);
                 };
             }
-            sections.Add("Setting.Menu.Sound.SoundMode", soundMode);
+            sections.Add(MainMenuProvider.Sound_Mode, soundMode);
 
             // section: notification sound
 
@@ -85,10 +86,10 @@ namespace Setting.Menu
             {
                 notificationSound.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.Sound.SoundNotification");
+                    NavigateTo(MainMenuProvider.Sound_Notification);
                 };
             }
-            sections.Add("Setting.Menu.Sound.SoundNotification", notificationSound);
+            sections.Add(MainMenuProvider.Sound_Notification, notificationSound);
 
             // section: other sounds
 
@@ -97,10 +98,10 @@ namespace Setting.Menu
             {
                 otherSounds.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.Sound.SoundOther");
+                    NavigateTo(MainMenuProvider.Sound_Other);
                 };
             }
-            sections.Add("Setting.Menu.Sound.SoundOther", otherSounds);
+            sections.Add(MainMenuProvider.Sound_Other, otherSounds);
 
             Logger.Debug($"GET {AudioVolumeType.Media} Volume : {SettingAudioManager.GetVolumeLevel(AudioVolumeType.Media)}");
             Logger.Debug($"GET {AudioVolumeType.Notification} Volume : {SettingAudioManager.GetVolumeLevel(AudioVolumeType.Notification)}");
@@ -128,7 +129,7 @@ namespace Setting.Menu
                 slideritem.mSlider.SlidingFinished += OnMediaSlidingFinished;
                 bodyMediaSection.Add(slideritem);
             }
-            sections.Add("Setting.Menu.Sound.Media", bodyMediaSection);
+            sections.Add(MainMenuProvider.Sound_MediaSlider, bodyMediaSection);
 
             // section: notification
 
@@ -150,7 +151,7 @@ namespace Setting.Menu
                 slideritem.mSlider.ValueChanged += OnNofificationSlider_ValueChanged;
                 notificationSection.Add(slideritem);
             }
-            sections.Add("Setting.Menu.Sound.Notification", notificationSection);
+            sections.Add(MainMenuProvider.Sound_NotificationSlider, notificationSection);
 
             // section: system
 
@@ -172,7 +173,7 @@ namespace Setting.Menu
                 slideritem.mSlider.ValueChanged += OnSystemSlider_ValueChanged;
                 systemSection.Add(slideritem);
             }
-            sections.Add("Setting.Menu.Sound.System", systemSection);
+            sections.Add(MainMenuProvider.Sound_SystemSlider, systemSection);
 
             // add only visible sections to content view in required order
             var customization = GetCustomization().OrderBy(c => c.Order);
