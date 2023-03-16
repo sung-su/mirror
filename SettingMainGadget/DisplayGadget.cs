@@ -2,6 +2,7 @@
 using SettingCore;
 using SettingCore.Customization;
 using SettingMain;
+using SettingMainGadget;
 using SettingMainGadget.Display;
 using System;
 using System.Collections.Generic;
@@ -117,7 +118,7 @@ namespace Setting.Menu
                 {
                     brightnessItem.mSlider.ValueChanged += MSlider_ValueChanged;
                     brightnessView.Add(brightnessItem);
-                    sections.Add("Setting.Menu.Display.Brightness", brightnessView);
+                    sections.Add(MainMenuProvider.Display_Brightness, brightnessView);
                 }
             }
 
@@ -128,9 +129,9 @@ namespace Setting.Menu
             {
                 fontItem.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.Display.Font");
+                    NavigateTo(MainMenuProvider.Display_Font);
                 };
-                sections.Add("Setting.Menu.Display.Font", fontItem);
+                sections.Add(MainMenuProvider.Display_Font, fontItem);
             }
 
             // section: TimeOut
@@ -140,9 +141,9 @@ namespace Setting.Menu
             {
                 screenTimeOutItem.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.Display.TimeOut");
+                    NavigateTo(MainMenuProvider.Display_Timeout);
                 };
-                sections.Add("Setting.Menu.Display.TimeOut", screenTimeOutItem);
+                sections.Add(MainMenuProvider.Display_Timeout, screenTimeOutItem);
             }
 
             // section: Theme
@@ -152,9 +153,9 @@ namespace Setting.Menu
             {
                 themeItem.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.Display.Theme");
+                    NavigateTo(MainMenuProvider.Display_Theme);
                 };
-                sections.Add("Setting.Menu.Display.Theme", themeItem);
+                sections.Add(MainMenuProvider.Display_Theme, themeItem);
             }
 
             var customization = GetCustomization().OrderBy(c => c.Order);

@@ -4,17 +4,25 @@ namespace SettingMainGadget
 {
     public class MainMenuProvider : SettingMenuProvider
     {
+        public static string Display = "Display";
+        public static string Display_Brightness = "Display.Brightness";
+        public static string Display_Font = "Display.Font";
+        public static string Display_FontSize = "Display.Font.FontSize";
+        public static string Display_FontType = "Display.Font.FontType";
+        public static string Display_Timeout = "Display.Timeout";
+        public static string Display_Theme = "Display.Theme";
+
         public override SettingMenu[] Provide()
         {
             return new SettingMenu[]
             {
-                new SettingMenu(path: "Display", defaultOrder: 30, type: typeof(Setting.Menu.DisplayGadget)),
-                new SettingMenu(path: "Display.Brightness", defaultOrder: 31),
-                new SettingMenu(path: "Display.Font", defaultOrder: 32, type: typeof(Setting.Menu.Display.DisplayFontGadget)),
-                new SettingMenu(path: "Display.Font.FontSize", defaultOrder: 33, type: typeof(Setting.Menu.Display.DisplayFontSizeGadget)),
-                new SettingMenu(path: "Display.Font.FontType", defaultOrder: 34, type: typeof(Setting.Menu.Display.DisplayFontTypeGadget)),
-                new SettingMenu(path: "Display.TimeOut", defaultOrder: 35, type: typeof(Setting.Menu.Display.DisplayTimeOutGadget)),
-                new SettingMenu(path: "Display.Theme", defaultOrder: 36, type: typeof(Setting.Menu.Display.DisplayThemeGadget)),
+                new SettingMenu(path: Display, defaultOrder: 30, type: typeof(Setting.Menu.DisplayGadget)),
+                new SettingMenu(path: Display_Brightness, defaultOrder: 31),
+                new SettingMenu(path: Display_Font, defaultOrder: 32, type: typeof(Setting.Menu.Display.DisplayFontGadget)),
+                new SettingMenu(path: Display_FontSize, defaultOrder: 33, type: typeof(Setting.Menu.Display.DisplayFontSizeGadget)),
+                new SettingMenu(path: Display_FontType, defaultOrder: 34, type: typeof(Setting.Menu.Display.DisplayFontTypeGadget)),
+                new SettingMenu(path: Display_Timeout, defaultOrder: 35, type: typeof(Setting.Menu.Display.DisplayTimeOutGadget)),
+                new SettingMenu(path: Display_Theme, defaultOrder: 36, type: typeof(Setting.Menu.Display.DisplayThemeGadget)),
                 new SettingMenu(path: "Sound", defaultOrder: 40, type: typeof(Setting.Menu.SoundGadget)),
                 new SettingMenu(path: "Sound.SoundMode", defaultOrder: 41, type: typeof(Setting.Menu.Sound.SoundmodeGadget)),
                 new SettingMenu(path: "Sound.SoundNotification", defaultOrder: 42, type: typeof(Setting.Menu.Sound.SoundnotificationGadget)),

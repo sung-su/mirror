@@ -1,5 +1,6 @@
 ﻿using SettingAppTextResopurces.TextResources;
 using SettingMain;
+using SettingMainGadget;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
@@ -52,7 +53,7 @@ namespace Setting.Menu.Display
             {
                 fontSizeItem.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.Display.Font.FontSize");
+                    NavigateTo(MainMenuProvider.Display_FontSize);
                 };
                 content.Add(fontSizeItem);
             }
@@ -62,7 +63,7 @@ namespace Setting.Menu.Display
             {
                 fontTypeItem.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.Display.Font.FontType");
+                    NavigateTo(MainMenuProvider.Display_FontType);
                 };
                 content.Add(fontTypeItem);
             }
