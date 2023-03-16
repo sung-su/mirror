@@ -18,6 +18,10 @@ namespace SettingMainGadget
         public static string Sound_MediaSlider = "Sound.MediaSlider";
         public static string Sound_NotificationSlider = "Sound.NotificationSlider";
         public static string Sound_SystemSlider = "Sound.SystemSlider";
+        public static string DateTime = "DateTime";
+        public static string DateTime_SetDate = "DateTime.SetDate";
+        public static string DateTime_SetTime = "DateTime.SetTime";
+        public static string DateTime_SetTimezone = "DateTime.SetTimezone";
 
         public override SettingMenu[] Provide()
         {
@@ -37,10 +41,10 @@ namespace SettingMainGadget
                 new SettingMenu(path: Sound_MediaSlider, defaultOrder: 44),
                 new SettingMenu(path: Sound_NotificationSlider, defaultOrder: 45),
                 new SettingMenu(path: Sound_SystemSlider, defaultOrder: 46),
-                new SettingMenu(path: "DateTime", defaultOrder: 50, type: typeof(Setting.Menu.DateTimeGadget)),
-                new SettingMenu(path: "DateTime.SetDate", defaultOrder: 51, type: typeof(Setting.Menu.DateTime.DateTimeSetDateGadget)),
-                new SettingMenu(path: "DateTime.SetTime", defaultOrder: 52, type: typeof(Setting.Menu.DateTime.DateTimeSetTimeGadget)),
-                new SettingMenu(path: "DateTime.SetTimezone", defaultOrder: 53, type: typeof(Setting.Menu.DateTime.DateTimeSetTimezoneGadget)),
+                new SettingMenu(path: DateTime, defaultOrder: 50, type: typeof(Setting.Menu.DateTimeGadget)),
+                new SettingMenu(path: DateTime_SetDate, defaultOrder: 51, type: typeof(Setting.Menu.DateTime.DateTimeSetDateGadget)),
+                new SettingMenu(path: DateTime_SetTime, defaultOrder: 52, type: typeof(Setting.Menu.DateTime.DateTimeSetTimeGadget)),
+                new SettingMenu(path: DateTime_SetTimezone, defaultOrder: 53, type: typeof(Setting.Menu.DateTime.DateTimeSetTimezoneGadget)),
                 new SettingMenu(path: "LanguageInput", defaultOrder: 60, type: typeof(Setting.Menu.LanguageInputGadget)),
                 new SettingMenu(path: "LanguageInput.DisplayLanguage", defaultOrder: 61, type: typeof(Setting.Menu.LanguageInput.LanguageInputDisplayLanguageGadget)),
                 new SettingMenu(path: "About", defaultOrder: 70, type: typeof(Setting.Menu.AboutGadget)),

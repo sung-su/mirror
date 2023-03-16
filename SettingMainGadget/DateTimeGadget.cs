@@ -1,6 +1,7 @@
 ﻿using SettingAppTextResopurces.TextResources;
 using SettingCore;
 using SettingMain;
+using SettingMainGadget;
 using SettingMainGadget.DateTime;
 using System;
 using Tizen.NUI;
@@ -76,7 +77,7 @@ namespace Setting.Menu
             {
                 mDateItem.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.DateTime.SetDate");
+                    NavigateTo(MainMenuProvider.DateTime_SetDate);
                 };
                 content.Add(mDateItem);
             }
@@ -86,7 +87,7 @@ namespace Setting.Menu
             {
                 mTimeItem.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.DateTime.SetTime");
+                    NavigateTo(MainMenuProvider.DateTime_SetTime);
                 };
                 content.Add(mTimeItem);
             }
@@ -96,7 +97,7 @@ namespace Setting.Menu
             {
                 mTimezoneItem.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.DateTime.SetTimezone");
+                    NavigateTo(MainMenuProvider.DateTime_SetTimezone);
                 };
                 content.Add(mTimezoneItem);
             }
