@@ -14,7 +14,7 @@ namespace SettingCore
             Path = path;
             DefaultOrder = defaultOrder;
             ClassName = type == null ? string.Empty : type.FullName;
-            IsMainMenu = path.Split('.').Length == 3;
+            IsMainMenu = path.Split('.').Length == 1;
         }
 
         public override string ToString() => $"{nameof(SettingMenu)} (Path: {Path}, DefaultOrder: {DefaultOrder}, ClassName: {ClassName}, IsMainMenu: {IsMainMenu})";
