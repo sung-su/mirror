@@ -1,11 +1,13 @@
 ﻿using SettingAppTextResopurces.TextResources;
 using SettingCore;
+using SettingMainGadget;
 using SettingMainGadget.LanguageInput;
 using System.Collections.Generic;
 using System.Linq;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
+using Tizen.PhonenumberUtils;
 using Tizen.System;
 
 namespace Setting.Menu
@@ -63,7 +65,7 @@ namespace Setting.Menu
             {
                 displayLanguageItem.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.LanguageInput.DisplayLanguage");
+                    NavigateTo(MainMenuProvider.Language_Display);
                 };
                 contentItems.Add(displayLanguageItem);
             }
@@ -76,7 +78,7 @@ namespace Setting.Menu
             {
                 item.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.LanguageInput.InputMethod");
+                    NavigateTo(MainMenuProvider.Language_InputMethod);
                 };
                 contentItems.Add(item);
             }
@@ -89,7 +91,7 @@ namespace Setting.Menu
             {
                 item.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.LanguageInput.Autofill");
+                    NavigateTo(MainMenuProvider.Language_AutoFill);
                 };
                 contentItems.Add(item);
             }
@@ -102,7 +104,7 @@ namespace Setting.Menu
             {
                 item.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.LanguageInput.VoiceControl");
+                    NavigateTo(MainMenuProvider.Language_VoiceControl);
                 };
                 contentItems.Add(item);
             }
@@ -112,7 +114,7 @@ namespace Setting.Menu
             {
                 item.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.LanguageInput.TTS");
+                    NavigateTo(MainMenuProvider.Language_TTS);
                 };
                 contentItems.Add(item);
             }
@@ -122,7 +124,7 @@ namespace Setting.Menu
             {
                 item.Clicked += (o, e) =>
                 {
-                    NavigateTo("Setting.Menu.LanguageInput.STT");
+                    NavigateTo(MainMenuProvider.Language_STT);
                 };
                 contentItems.Add(item);
             }

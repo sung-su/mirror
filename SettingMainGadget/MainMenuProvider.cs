@@ -22,6 +22,15 @@ namespace SettingMainGadget
         public static string DateTime_SetDate = "DateTime.SetDate";
         public static string DateTime_SetTime = "DateTime.SetTime";
         public static string DateTime_SetTimezone = "DateTime.SetTimezone";
+        public static string Language = "Language";
+        public static string Language_Display = "Language.DisplayLanguage";
+
+        //external
+        public static string Language_InputMethod = "Language.InputMethod";
+        public static string Language_AutoFill = "Language.AutoFill";
+        public static string Language_VoiceControl = "Language.VoiceControl";
+        public static string Language_TTS = "Language.TTS";
+        public static string Language_STT = "Language.STT";
 
         public override SettingMenu[] Provide()
         {
@@ -45,8 +54,8 @@ namespace SettingMainGadget
                 new SettingMenu(path: DateTime_SetDate, defaultOrder: 51, type: typeof(Setting.Menu.DateTime.DateTimeSetDateGadget)),
                 new SettingMenu(path: DateTime_SetTime, defaultOrder: 52, type: typeof(Setting.Menu.DateTime.DateTimeSetTimeGadget)),
                 new SettingMenu(path: DateTime_SetTimezone, defaultOrder: 53, type: typeof(Setting.Menu.DateTime.DateTimeSetTimezoneGadget)),
-                new SettingMenu(path: "LanguageInput", defaultOrder: 60, type: typeof(Setting.Menu.LanguageInputGadget)),
-                new SettingMenu(path: "LanguageInput.DisplayLanguage", defaultOrder: 61, type: typeof(Setting.Menu.LanguageInput.LanguageInputDisplayLanguageGadget)),
+                new SettingMenu(path: Language, defaultOrder: 60, type: typeof(Setting.Menu.LanguageInputGadget)),
+                new SettingMenu(path: Language_Display, defaultOrder: 61, type: typeof(Setting.Menu.LanguageInput.LanguageInputDisplayLanguageGadget)),
                 new SettingMenu(path: "About", defaultOrder: 70, type: typeof(Setting.Menu.AboutGadget)),
                 new SettingMenu(path: "About.ManageCertificates", defaultOrder: 71),
                 new SettingMenu(path: "About.OpenSourceLicenses", defaultOrder: 72, type: typeof(Setting.Menu.AboutLegalInfoGadget)),
