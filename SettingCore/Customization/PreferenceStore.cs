@@ -7,9 +7,11 @@ namespace SettingCore.Customization
 {
     internal class PreferenceStore : ICustomizationStore
     {
-        private const string SettingMenuPathPrefix = "setting.menu.";
+        private const string SettingMenuPathPrefix = "setting-menu.";
 
-        public IEnumerable<string> MenuPaths => Tizen.Applications.Preference.Keys.Where(menuPath => menuPath.StartsWith(SettingMenuPathPrefix));
+        public IEnumerable<string> MenuPaths => Tizen.Applications.Preference.Keys
+            .Where(key => key.StartsWith(SettingMenuPathPrefix, StringComparison.InvariantCultureIgnoreCase))
+            .Select(key => key.Substring(SettingMenuPathPrefix.Length));
 
         public event EventHandler<CustomizationChangedEventArgs> Changed;
 
@@ -25,7 +27,8 @@ namespace SettingCore.Customization
             foreach (var menuPath in MenuPaths)
             {
                 Logger.Debug($"Removing menuPath: {menuPath}");
-                Tizen.Applications.Preference.Remove(menuPath);
+                string key = SettingMenuPathPrefix + menuPath;
+                Tizen.Applications.Preference.Remove(key);
             }
             Logger.Debug("Cleared preference customization store.");
         }
@@ -38,6 +41,7 @@ namespace SettingCore.Customization
         /// <returns>False, if menu path already exists and new order was not set. True, if menu path did not exists and order has been set.</returns>
         public bool SetOrder(string menuPath, int order)
         {
+            menuPath = SettingMenuPathPrefix + menuPath;
             menuPath = menuPath.ToLowerInvariant();
 
             if (MenuPaths.Contains(menuPath) )
@@ -53,13 +57,14 @@ namespace SettingCore.Customization
         public void UpdateOrder(string menuPath, int order)
         {
             menuPath = menuPath.ToLowerInvariant();
-
             if (!MenuPaths.Contains(menuPath))
             {
                 Logger.Warn($"Could not update order, because menuPath {menuPath} does not exists.");
                 return;
             }
 
+            menuPath = SettingMenuPathPrefix + menuPath;
+            menuPath = menuPath.ToLowerInvariant();
             Tizen.Applications.Preference.Set(menuPath, order);
 
             OnCustomizationChanged(new CustomizationChangedEventArgs(menuPath, order));
@@ -67,6 +72,7 @@ namespace SettingCore.Customization
 
         public int? GetOrder(string menuPath)
         {
+            menuPath = SettingMenuPathPrefix + menuPath;
             menuPath = menuPath.ToLowerInvariant();
 
             try
