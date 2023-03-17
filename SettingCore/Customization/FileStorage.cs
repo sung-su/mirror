@@ -16,11 +16,13 @@ namespace SettingCore.Customization
         public event Action Changed;
         public event Action Lost;
 
-        private static string DirectoryPath = Tizen.Applications.Application.Current.DirectoryInfo.Data;
-        private static string CustFilePath = System.IO.Path.Combine(DirectoryPath, "cust.json");
+        private static string DirectoryPath;
+        private static string CustFilePath;
 
         private FileStorage()
         {
+        DirectoryPath = Tizen.Applications.Application.Current.DirectoryInfo.Data;
+        CustFilePath = System.IO.Path.Combine(DirectoryPath, "cust.json");
             try
             {
                 bool exists = System.IO.File.Exists(CustFilePath);
