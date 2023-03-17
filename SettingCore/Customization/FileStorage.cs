@@ -142,7 +142,7 @@ namespace SettingCore.Customization
 
         public static IEnumerable<MenuCustomizationItem> ReadFromFile()
         {
-            Logger.Verbose($"Reading customization to file.");
+            Logger.Verbose($"Reading customization from file.");
 
             bool exists = System.IO.File.Exists(CustFilePath);
             if (!exists)
@@ -154,6 +154,7 @@ namespace SettingCore.Customization
             try
             {
                 string text = System.IO.File.ReadAllText(CustFilePath);
+                text = JsonParser.RemoveComments(text);
                 var dict = JsonSerializer.Deserialize<Dictionary<string, int>>(text);
 
                 var items = dict.Select(pair => new MenuCustomizationItem(pair.Key.ToLowerInvariant(), pair.Value));
@@ -178,12 +179,13 @@ namespace SettingCore.Customization
         {
             Logger.Verbose($"Writing customization to file.");
 
+            items = JsonParser.SortByNesting(items);
             var pairs = items.Select(i => new KeyValuePair<string, int>(i.MenuPath, i.Order));
             var dict = new Dictionary<string, int>(pairs);
 
             var options = new JsonSerializerOptions { WriteIndented = true };
             string jsonString = JsonSerializer.Serialize(dict, options);
-
+            jsonString = JsonParser.GenerateComments(jsonString);
             try
             {
                 System.IO.File.Create(CustFilePath).Dispose();
