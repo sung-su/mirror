@@ -12,14 +12,20 @@ namespace SettingCore.Customization
         private static readonly string commentPattern = @"\s*//.*$";
         public static string RemoveComments(string jsonString)
         {
-            Regex regex = new Regex(commentPattern);
+            Regex commentRegex = new Regex(commentPattern);
+            Regex custRegex = new Regex(customizationPattern);
             StringBuilder jsonStringWithoutComments = new StringBuilder();
             foreach (var JsonLine in jsonString.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
-                Match match = regex.Match(JsonLine);
-                if (!match.Success)
+                Match commentMatch = commentRegex.Match(JsonLine);
+                Match custMatch = custRegex.Match(JsonLine);
+                if (!commentMatch.Success)
                 {
                     jsonStringWithoutComments.AppendLine(JsonLine);
+                }
+                else if (custMatch.Success)
+                {
+                    jsonStringWithoutComments.AppendLine(custMatch.Value);
                 }
             }
             return jsonStringWithoutComments.ToString();
