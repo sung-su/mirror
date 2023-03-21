@@ -21,17 +21,17 @@ namespace SettingCore
 
             // get initial customization from file
             var initCust = FileStorage.ReadFromFile(FileStorage.InitialFilePath);
-            UpdateGadgetsOrder(initCust);
+            _ = UpdateGadgetsOrder(initCust);
 
             // get current customization from file
             var currentCust = FileStorage.ReadFromFile(FileStorage.CurrentFilePath);
-            UpdateGadgetsOrder(currentCust);
+            _ = UpdateGadgetsOrder(currentCust);
 
             // get backup customization from file (in case current was corrupted, when the app was shutdown)
             if (currentCust == null)
             {
                 var backupCust = FileStorage.ReadFromFile(FileStorage.BackupFilePath);
-                UpdateGadgetsOrder(backupCust);
+                _ = UpdateGadgetsOrder(backupCust);
             }
 
             // save current customization to file
@@ -69,15 +69,11 @@ namespace SettingCore
                 // update installed gadgets from file and trigger event to listeners
                 Logger.Verbose("Cust file read, updating latest order from file and triggering event.");
 
-                List<MenuCustomizationItem> changedItems = new List<MenuCustomizationItem>();
-                foreach (var cust in fileCust)
+                var changedItems = UpdateGadgetsOrder(fileCust);
+                if (changedItems == null || changedItems.Count() == 0)
                 {
-                    var gadget = installedGadgets.FirstOrDefault(x => x.Path.Equals(cust.MenuPath, StringComparison.InvariantCultureIgnoreCase));
-                    if (gadget != null && gadget.Order != cust.Order)
-                    {
-                        gadget.Order = cust.Order;
-                        changedItems.Add(cust);
-                    }
+                    Logger.Verbose("None of customization items were changed.");
+                    return;
                 }
 
                 // trigger event (with single or many changes)
@@ -90,38 +86,61 @@ namespace SettingCore
             }
         }
 
-        private void UpdateGadgetsOrder(IEnumerable<MenuCustomizationItem> items)
+        /// <summary>
+        /// Updates customization (order) for menu items, only when the order value changes.
+        /// </summary>
+        /// <param name="items">Collection of menu items with possibly new customization (order).</param>
+        /// <returns>Collection of menu items which customization (order) has been updated, due to different value.</returns>
+        private IEnumerable<MenuCustomizationItem> UpdateGadgetsOrder(IEnumerable<MenuCustomizationItem> items)
         {
+            var updatedItems = new List<MenuCustomizationItem>();
             if (items == null)
             {
-                return;
+                return updatedItems;
             }
 
+            Logger.Verbose($"Checking update for {items.Count()} menu items.");
             foreach (var item in items)
             {
                 var found = installedGadgets.Where(x => x.Path.Equals(item.MenuPath, StringComparison.InvariantCultureIgnoreCase));
-                if (found.Count() == 1)
+                if (found.Count() == 0)
                 {
-                    found.First().Order = item.Order;
+                    Logger.Warn($"Could not find menu item for menu path: {item.MenuPath}");
+                    continue;
+                }
+                else if (found.Count() > 1)
+                {
+                    Logger.Warn($"Found 1+ menu items for menu path: {item.MenuPath}");
+                    continue;
+                }
+                var foundItem = found.FirstOrDefault();
+                if (foundItem == null)
+                {
+                    Logger.Warn($"Found menu item is null.");
+                    continue;
+                }
+
+                if (foundItem.Order != item.Order)
+                {
+                    Logger.Verbose($"Updating menu path {item.MenuPath} with order {foundItem.Order} -> {item.Order}.");
+                    foundItem.Order = item.Order;
+                    updatedItems.Add(item);
                 }
             }
+            Logger.Verbose($"Updated {updatedItems.Count()} menu items.");
+
+            return updatedItems;
         }
 
         public void UpdateCustomization(string menuPath, int order)
         {
-            var found = installedGadgets.Where(x => x.Path.Equals(menuPath, StringComparison.InvariantCultureIgnoreCase));
-            if (found.Count() == 0)
+            var items = new[] { new MenuCustomizationItem(menuPath, order) };
+            var changedItems = UpdateGadgetsOrder(items);
+            if (changedItems == null || changedItems.Count() == 0)
             {
-                Logger.Warn($"Cannot update customization, because did not find gadget for menu path: {menuPath}.");
+                Logger.Verbose("None of customization items were changed.");
                 return;
             }
-            else if (found.Count() > 1)
-            {
-                Logger.Warn($"Cannot update customization, because 1+ gadgets found for menu path: {menuPath}.");
-                return;
-            }
-
-            found.First().Order = order;
 
             // trigger event (with single change)
             var handler = CustomizationChanged;
