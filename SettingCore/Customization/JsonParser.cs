@@ -15,44 +15,34 @@ namespace SettingCore.Customization
             Regex commentRegex = new Regex(commentPattern);
             Regex custRegex = new Regex(customizationPattern);
             StringBuilder jsonStringWithoutComments = new StringBuilder();
-            foreach (var JsonLine in jsonString.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var jsonLine in jsonString.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
-                Match commentMatch = commentRegex.Match(JsonLine);
-                Match custMatch = custRegex.Match(JsonLine);
+                Match commentMatch = commentRegex.Match(jsonLine);
                 if (!commentMatch.Success)
                 {
-                    jsonStringWithoutComments.AppendLine(JsonLine);
+                    jsonStringWithoutComments.AppendLine(jsonLine);
                 }
-                else if (custMatch.Success)
+                else
                 {
-                    jsonStringWithoutComments.AppendLine(custMatch.Value);
+                    Match custMatch = custRegex.Match(jsonLine);
+                    if (custMatch.Success)
+                    {
+                        jsonStringWithoutComments.AppendLine(custMatch.Value);
+                    }
                 }
             }
             return jsonStringWithoutComments.ToString();
         }
 
-        public static IEnumerable<MenuCustomizationItem> sortByDepth(IEnumerable<MenuCustomizationItem> items)
-        {
-            List<MenuCustomizationItem> sorted = new List<MenuCustomizationItem>();
-            int depth = 1;
-            while (sorted.Count() != items.Count())
-            {
-                var depthItems = items.Where(item => getMenuItemDepth(item.MenuPath) == depth);
-                sorted.AddRange(depthItems);
-                depth++;
-            }
-
-            return sorted;
-        }
-
         public static IEnumerable<MenuCustomizationItem> SortByNesting(IEnumerable<MenuCustomizationItem> items)
         {
             List<MenuCustomizationItem> sorted = new List<MenuCustomizationItem>();
-            IEnumerable<MenuCustomizationItem> collection = items.Where(item => getMenuItemDepth(item.MenuPath) == 1);
-            sorted.AddRange(collection);
-            foreach (var mainMenuItem in collection)
+            IEnumerable<MenuCustomizationItem> mainMenus = items.Where(item => getMenuItemDepth(item.MenuPath) == 1);
+            sorted.AddRange(mainMenus);
+            foreach (var mainMenuItem in mainMenus)
             {
-                addChildren(mainMenuItem, items, sorted);
+                var children = addChildren(mainMenuItem, items);
+                sorted.AddRange(children);
             }
 
             return sorted;
@@ -62,15 +52,15 @@ namespace SettingCore.Customization
         {
             Regex regex = new Regex(customizationPattern);
             StringBuilder jsonStringWithComments = new StringBuilder();
-            string lastButOneMenu = "without";
+            string lastMenuGroup = "without";
             foreach (var JsonLine in jsonString.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
                 Match match = regex.Match(JsonLine);
                 if (match.Success)
                 {
                     string menuPath = match.Groups[1].Value;
-                    string currentLastButOneMenu = getLastButOneMenu(menuPath);
-                    if (currentLastButOneMenu != lastButOneMenu)
+                    string currentMenuGroup = getMenuGroup(menuPath);
+                    if (currentMenuGroup != lastMenuGroup)
                     {
                         if (jsonStringWithComments.Length > 2)
                         {
@@ -78,22 +68,25 @@ namespace SettingCore.Customization
                         }
                         jsonStringWithComments.AppendLine($"{generateComment(menuPath)}");
                     }
-                    lastButOneMenu = currentLastButOneMenu;
+                    lastMenuGroup = currentMenuGroup;
                 }
                 jsonStringWithComments.AppendLine($"{JsonLine}");
             }
             return jsonStringWithComments.ToString();
         }
 
-        private static void addChildren(MenuCustomizationItem item, IEnumerable<MenuCustomizationItem> items, List<MenuCustomizationItem> sorted)
+        private static List<MenuCustomizationItem> addChildren(MenuCustomizationItem item, IEnumerable<MenuCustomizationItem> items)
         {
-            var itemDepth = getMenuItemDepth(item.MenuPath);
-            IEnumerable<MenuCustomizationItem> directChildren = items.Where(currItem => checkIfIsDirectChild(item, currItem, itemDepth));
+            List<MenuCustomizationItem> sorted = new List<MenuCustomizationItem>();
+            IEnumerable<MenuCustomizationItem> directChildren = items.Where(currItem => checkIfIsDirectChild(item, currItem));
             sorted.AddRange(directChildren);
             foreach (var menuItem in directChildren)
             {
-                addChildren(menuItem, items, sorted);
+                var children = addChildren(menuItem, items);
+                sorted.AddRange(children);
             }
+
+            return sorted;
         }
 
         private static int getMenuItemDepth(string menuItem)
@@ -101,30 +94,29 @@ namespace SettingCore.Customization
             return menuItem.Split('.').Length;
         }
 
-        private static bool checkIfIsDirectChild(MenuCustomizationItem item, MenuCustomizationItem currItem, int itemDepth)
+        private static bool checkIfIsDirectChild(MenuCustomizationItem item, MenuCustomizationItem currItem)
         {
             return item.MenuPath == string.Join(".", currItem.MenuPath.Split('.').SkipLast(1));
         }
 
         private static object generateComment(string menuPath)
         {
-            StringBuilder comment = new StringBuilder("\t// group menu: Main");
+            StringBuilder comment = new StringBuilder("\t// group menu: main");
             var splitted = menuPath.Split('.');
 
             if (splitted.Length > 1)
             {
-                foreach (var menuItem in menuPath.Split('.').SkipLast(1))
+                foreach (var menuItem in splitted.SkipLast(1))
                 {
-                    comment.Append($" > { char.ToUpper(menuItem[0]) + menuItem.Substring(1)}");
+                    comment.Append($" > { menuItem }");
                 }
             }
             return comment.ToString();
         }
 
-        private static string getLastButOneMenu(string menuPath)
+        private static string getMenuGroup(string menuPath)
         {
-            var splitted = menuPath.Split('.');
-            return splitted.Length < 2 ? string.Empty : splitted.Reverse().Skip(1).First();
+            return menuPath.Split('.').Reverse().Skip(1).FirstOrDefault() ?? string.Empty;
         }
     }
 }
