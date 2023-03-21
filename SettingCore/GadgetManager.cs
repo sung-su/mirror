@@ -12,62 +12,16 @@ namespace SettingCore
 
         public event EventHandler<CustomizationChangedEventArgs> CustomizationChanged;
 
-        private ICustomizationStore customizationStore;
         private IEnumerable<SettingGadgetInfo> installedGadgets;
 
         private GadgetManager()
         {
-            customizationStore = new PreferenceStore();
-
             // 1. get all installed gadgets for Settings
             installedGadgets = GadgetProvider.Gadgets.ToList();
 
             // 2. get current customization from file
             var fileCust = FileStorage.ReadFromFile(FileStorage.CurrentFilePath);
-            if (fileCust == null)
-            {
-                // no file, so get current/latest orderfrom pref
-                Logger.Verbose("No cust file, updating latest order from Preferences.");
-
-                foreach (var gadget in installedGadgets)
-                {
-                    int? order = customizationStore.GetOrder(gadget.Path);
-                    if (order.HasValue)
-                    {
-                        gadget.Order = order.Value;
-                    }
-                }
-            }
-            else
-            {
-                // file exists, so get current/latest order from file
-                Logger.Verbose("Cust file read, updating latest order from file.");
-
-                foreach (var gadget in installedGadgets)
-                {
-                    var item = fileCust.FirstOrDefault(x => x.MenuPath.Equals(gadget.Path, StringComparison.InvariantCultureIgnoreCase));
-                    if (item != null)
-                    {
-                        gadget.Order = item.Order;
-                    }
-                }
-            }
-
-            // 3. update to preferences
-            foreach (var gadget in installedGadgets)
-            {
-                int? order = customizationStore.GetOrder(gadget.Path);
-                if (order.HasValue)
-                {
-                    customizationStore.UpdateOrder(gadget.Path, gadget.Order);
-                }
-                else
-                {
-                    customizationStore.SetOrder(gadget.Path, gadget.Order);
-                }
-            }
-
-            // TODO: remove entry from Preferences if no gadget installed anymore
+            UpdateGadgetsOrder(fileCust);
 
             // 4. save current customization to file
             var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
@@ -118,6 +72,23 @@ namespace SettingCore
             }
         }
 
+        private void UpdateGadgetsOrder(IEnumerable<MenuCustomizationItem> items)
+        {
+            if (items == null)
+            {
+                return;
+            }
+
+            foreach (var item in items)
+            {
+                var found = installedGadgets.Where(x => x.Path.Equals(item.MenuPath, StringComparison.InvariantCultureIgnoreCase));
+                if (found.Count() == 1)
+                {
+                    found.First().Order = item.Order;
+                }
+            }
+        }
+
         public void UpdateCustomization(string menuPath, int order)
         {
             var found = installedGadgets.Where(x => x.Path.Equals(menuPath, StringComparison.InvariantCultureIgnoreCase));
@@ -131,9 +102,6 @@ namespace SettingCore
                 Logger.Warn($"Cannot update customization, because 1+ gadgets found for menu path: {menuPath}.");
                 return;
             }
-
-            // update pref
-            customizationStore.UpdateOrder(menuPath, order);
 
             // update file
             found.First().Order = order;
