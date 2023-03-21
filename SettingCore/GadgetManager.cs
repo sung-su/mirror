@@ -21,17 +21,17 @@ namespace SettingCore
 
             // get initial customization from file
             var initCust = FileStorage.ReadFromFile(FileStorage.InitialFilePath);
-            _ = UpdateGadgetsOrder(initCust);
+            _ = UpdateCustomization(initCust);
 
             // get current customization from file
             var currentCust = FileStorage.ReadFromFile(FileStorage.CurrentFilePath);
-            _ = UpdateGadgetsOrder(currentCust);
+            _ = UpdateCustomization(currentCust);
 
             // get backup customization from file (in case current was corrupted, when the app was shutdown)
             if (currentCust == null)
             {
                 var backupCust = FileStorage.ReadFromFile(FileStorage.BackupFilePath);
-                _ = UpdateGadgetsOrder(backupCust);
+                _ = UpdateCustomization(backupCust);
             }
 
             // save current customization to file
@@ -69,7 +69,7 @@ namespace SettingCore
                 // update installed gadgets from file and trigger event to listeners
                 Logger.Verbose("Cust file read, updating latest order from file and triggering event.");
 
-                var changedItems = UpdateGadgetsOrder(fileCust);
+                var changedItems = UpdateCustomization(fileCust);
                 if (changedItems == null || changedItems.Count() == 0)
                 {
                     Logger.Verbose("None of customization items were changed.");
@@ -91,7 +91,7 @@ namespace SettingCore
         /// </summary>
         /// <param name="items">Collection of menu items with possibly new customization (order).</param>
         /// <returns>Collection of menu items which customization (order) has been updated, due to different value.</returns>
-        private IEnumerable<MenuCustomizationItem> UpdateGadgetsOrder(IEnumerable<MenuCustomizationItem> items)
+        private IEnumerable<MenuCustomizationItem> UpdateCustomization(IEnumerable<MenuCustomizationItem> items)
         {
             var updatedItems = new List<MenuCustomizationItem>();
             if (items == null)
@@ -135,7 +135,7 @@ namespace SettingCore
         public void ChangeMenuPathOrder(string menuPath, int order)
         {
             var items = new[] { new MenuCustomizationItem(menuPath, order) };
-            var changedItems = UpdateGadgetsOrder(items);
+            var changedItems = UpdateCustomization(items);
             if (changedItems == null || changedItems.Count() == 0)
             {
                 Logger.Verbose("None of customization items were changed.");
