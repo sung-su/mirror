@@ -82,6 +82,7 @@ namespace SettingCore
 
                 // save current customization to backup file (do not trigger current file change)
                 var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
+                FileStorage.WriteToFile(menuCustItems, FileStorage.CurrentFilePath);
                 FileStorage.WriteToFile(menuCustItems, FileStorage.BackupFilePath);
             }
         }
