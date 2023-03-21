@@ -16,30 +16,16 @@ namespace SettingCore.Customization
         public event Action Changed;
         public event Action Lost;
 
-        private static string DirectoryPath;
-        private static string CustFilePath;
+        private readonly string CurrentFileName;
+        private readonly string DirectoryPath;
+
+        public static string CurrentFilePath { get; private set; }
 
         private FileStorage()
         {
-        DirectoryPath = Tizen.Applications.Application.Current.DirectoryInfo.Data;
-        CustFilePath = System.IO.Path.Combine(DirectoryPath, "cust.json");
-            try
-            {
-                bool exists = System.IO.File.Exists(CustFilePath);
-                if (!exists)
-                {
-                    System.IO.File.Create(CustFilePath).Dispose();
-                    Logger.Warn($"{CustFilePath} - created");
-                }
-                else
-                {
-                    Logger.Warn($"{CustFilePath} - already exists");
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Warn($"{ex}");
-            }
+            CurrentFileName = "current.json";
+            DirectoryPath = Tizen.Applications.Application.Current.DirectoryInfo.Data;
+            CurrentFilePath = System.IO.Path.Combine(DirectoryPath, CurrentFileName);
         }
 
         private void OnFileChanged(object sender, System.IO.FileSystemEventArgs e)
@@ -73,10 +59,10 @@ namespace SettingCore.Customization
             Logger.Warn($"Invoking {changeType}");
 
             await System.Threading.Tasks.Task.Delay(200);
-            bool exists = System.IO.File.Exists(CustFilePath);
+            bool exists = System.IO.File.Exists(CurrentFilePath);
             if (exists)
             {
-                Logger.Verbose($"{CustFilePath} still exist, so may have beed overwritten...");
+                Logger.Verbose($"{CurrentFilePath} still exist, so may have been overwritten...");
                 return;
             }
 
@@ -97,7 +83,7 @@ namespace SettingCore.Customization
 
             try
             {
-                fsw = new System.IO.FileSystemWatcher(DirectoryPath, "cust.json");
+                fsw = new System.IO.FileSystemWatcher(DirectoryPath, CurrentFileName);
                 fsw.Changed += OnFileChanged;
                 fsw.Renamed += OnFileRenamed;
                 fsw.Deleted += OnFileDeleted;
@@ -140,11 +126,11 @@ namespace SettingCore.Customization
             }
         }
 
-        public static IEnumerable<MenuCustomizationItem> ReadFromFile()
+        public static IEnumerable<MenuCustomizationItem> ReadFromFile(string filepath)
         {
             Logger.Verbose($"Reading customization from file.");
 
-            bool exists = System.IO.File.Exists(CustFilePath);
+            bool exists = System.IO.File.Exists(filepath);
             if (!exists)
             {
                 Logger.Verbose($"Customization file does not exists.");
@@ -153,7 +139,7 @@ namespace SettingCore.Customization
 
             try
             {
-                string text = System.IO.File.ReadAllText(CustFilePath);
+                string text = System.IO.File.ReadAllText(filepath);
                 text = JsonParser.RemoveComments(text);
                 var dict = JsonSerializer.Deserialize<Dictionary<string, int>>(text);
 
@@ -175,7 +161,7 @@ namespace SettingCore.Customization
             }
         }
 
-        public static void WriteToFile(IEnumerable<MenuCustomizationItem> items)
+        public static void WriteToFile(IEnumerable<MenuCustomizationItem> items, string filepath)
         {
             Logger.Verbose($"Writing customization to file.");
 
@@ -188,8 +174,8 @@ namespace SettingCore.Customization
             jsonString = JsonParser.GenerateComments(jsonString);
             try
             {
-                System.IO.File.Create(CustFilePath).Dispose();
-                System.IO.File.WriteAllText(CustFilePath, jsonString);
+                System.IO.File.Create(filepath).Dispose();
+                System.IO.File.WriteAllText(filepath, jsonString);
             }
             catch (Exception exc)
             {

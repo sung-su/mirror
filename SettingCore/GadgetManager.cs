@@ -22,8 +22,8 @@ namespace SettingCore
             // 1. get all installed gadgets for Settings
             installedGadgets = GadgetProvider.Gadgets.ToList();
 
-            // 2. get file customization
-            var fileCust = FileStorage.ReadFromFile();
+            // 2. get current customization from file
+            var fileCust = FileStorage.ReadFromFile(FileStorage.CurrentFilePath);
             if (fileCust == null)
             {
                 // no file, so get current/latest orderfrom pref
@@ -69,9 +69,9 @@ namespace SettingCore
 
             // TODO: remove entry from Preferences if no gadget installed anymore
 
-            // 4. update to JSON file
+            // 4. save current customization to file
             var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
-            FileStorage.WriteToFile(menuCustItems);
+            FileStorage.WriteToFile(menuCustItems, FileStorage.CurrentFilePath);
 
             // 5. start file watching
             FileStorage.Instance.Changed += CustFileChanged;
@@ -82,19 +82,19 @@ namespace SettingCore
         private void CustFileLost()
         {
             var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
-            FileStorage.WriteToFile(menuCustItems);
+            FileStorage.WriteToFile(menuCustItems, FileStorage.CurrentFilePath);
         }
 
         private void CustFileChanged()
         {
-            var fileCust = FileStorage.ReadFromFile();
+            var fileCust = FileStorage.ReadFromFile(FileStorage.CurrentFilePath);
             if (fileCust == null)
             {
                 // file corrupted, so save current state
                 Logger.Verbose("Cust file corrupted, saving file.");
 
                 var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
-                FileStorage.WriteToFile(menuCustItems);
+                FileStorage.WriteToFile(menuCustItems, FileStorage.CurrentFilePath);
             }
             else
             {
@@ -138,7 +138,7 @@ namespace SettingCore
             // update file
             found.First().Order = order;
             var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
-            FileStorage.WriteToFile(menuCustItems);
+            FileStorage.WriteToFile(menuCustItems, FileStorage.CurrentFilePath);
 
             // trigger event (with single change)
             var handler = CustomizationChanged;
