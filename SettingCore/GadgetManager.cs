@@ -24,12 +24,20 @@ namespace SettingCore
             UpdateGadgetsOrder(initCust);
 
             // get current customization from file
-            var fileCust = FileStorage.ReadFromFile(FileStorage.CurrentFilePath);
-            UpdateGadgetsOrder(fileCust);
+            var currentCust = FileStorage.ReadFromFile(FileStorage.CurrentFilePath);
+            UpdateGadgetsOrder(currentCust);
+
+            // get backup customization from file (in case current was corrupted, when the app was shutdown)
+            if (currentCust == null)
+            {
+                var backupCust = FileStorage.ReadFromFile(FileStorage.BackupFilePath);
+                UpdateGadgetsOrder(backupCust);
+            }
 
             // save current customization to file
             var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
             FileStorage.WriteToFile(menuCustItems, FileStorage.CurrentFilePath);
+            FileStorage.WriteToFile(menuCustItems, FileStorage.BackupFilePath);
 
             // start file watching
             FileStorage.Instance.Changed += CustFileChanged;
@@ -41,6 +49,7 @@ namespace SettingCore
         {
             var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
             FileStorage.WriteToFile(menuCustItems, FileStorage.CurrentFilePath);
+            FileStorage.WriteToFile(menuCustItems, FileStorage.BackupFilePath);
         }
 
         private void CustFileChanged()
@@ -53,6 +62,7 @@ namespace SettingCore
 
                 var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
                 FileStorage.WriteToFile(menuCustItems, FileStorage.CurrentFilePath);
+                FileStorage.WriteToFile(menuCustItems, FileStorage.BackupFilePath);
             }
             else
             {
@@ -73,6 +83,10 @@ namespace SettingCore
                 // trigger event (with single or many changes)
                 var handler = CustomizationChanged;
                 handler?.Invoke(this, new CustomizationChangedEventArgs(changedItems));
+
+                // save current customization to backup file (do not trigger current file change)
+                var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
+                FileStorage.WriteToFile(menuCustItems, FileStorage.BackupFilePath);
             }
         }
 
@@ -107,14 +121,16 @@ namespace SettingCore
                 return;
             }
 
-            // update file
             found.First().Order = order;
-            var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
-            FileStorage.WriteToFile(menuCustItems, FileStorage.CurrentFilePath);
 
             // trigger event (with single change)
             var handler = CustomizationChanged;
             handler?.Invoke(this, new CustomizationChangedEventArgs(menuPath, order));
+
+            // save customization to files
+            var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
+            FileStorage.WriteToFile(menuCustItems, FileStorage.CurrentFilePath);
+            FileStorage.WriteToFile(menuCustItems, FileStorage.BackupFilePath);
         }
 
         public IEnumerable<SettingGadgetInfo> GetMainWithCurrentOrder()

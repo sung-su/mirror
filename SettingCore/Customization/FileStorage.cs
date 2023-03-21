@@ -18,18 +18,22 @@ namespace SettingCore.Customization
 
         private readonly string InitialFileName;
         private readonly string CurrentFileName;
+        private readonly string BackupFileName;
         private readonly string DirectoryPath;
 
         public static string InitialFilePath { get; private set; }
         public static string CurrentFilePath { get; private set; }
+        public static string BackupFilePath { get; private set; }
 
         private FileStorage()
         {
             InitialFileName = "initial.json";
             CurrentFileName = "current.json";
+            BackupFileName = "backup.json";
             DirectoryPath = Tizen.Applications.Application.Current.DirectoryInfo.Data;
             InitialFilePath = System.IO.Path.Combine(DirectoryPath, InitialFileName);
             CurrentFilePath = System.IO.Path.Combine(DirectoryPath, CurrentFileName);
+            BackupFilePath = System.IO.Path.Combine(DirectoryPath, BackupFileName);
         }
 
         private void OnFileChanged(object sender, System.IO.FileSystemEventArgs e)
