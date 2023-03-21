@@ -132,7 +132,7 @@ namespace SettingCore
             return updatedItems;
         }
 
-        public void UpdateCustomization(string menuPath, int order)
+        public void ChangeMenuPathOrder(string menuPath, int order)
         {
             var items = new[] { new MenuCustomizationItem(menuPath, order) };
             var changedItems = UpdateGadgetsOrder(items);

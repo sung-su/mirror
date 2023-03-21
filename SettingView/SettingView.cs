@@ -125,7 +125,7 @@ namespace SettingView
                     if (negative)
                         orderValue *= -1;
 
-                    GadgetManager.Instance.UpdateCustomization(menupath, orderValue);
+                    GadgetManager.Instance.ChangeMenuPathOrder(menupath, orderValue);
                 }
             }
         }
