@@ -132,7 +132,7 @@ namespace SettingCore.Customization
 
         public static IEnumerable<MenuCustomizationItem> ReadFromFile(string filepath)
         {
-            Logger.Verbose($"Reading customization from file.");
+            Logger.Verbose($"Reading customization from file {System.IO.Path.GetFileName(filepath)}");
 
             bool exists = System.IO.File.Exists(filepath);
             if (!exists)
@@ -167,7 +167,7 @@ namespace SettingCore.Customization
 
         public static void WriteToFile(IEnumerable<MenuCustomizationItem> items, string filepath)
         {
-            Logger.Verbose($"Writing customization to file.");
+            Logger.Verbose($"Writing customization to file {System.IO.Path.GetFileName(filepath)}");
 
             items = JsonParser.SortByNesting(items);
             var pairs = items.Select(i => new KeyValuePair<string, int>(i.MenuPath, i.Order));
