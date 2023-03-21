@@ -16,18 +16,22 @@ namespace SettingCore
 
         private GadgetManager()
         {
-            // 1. get all installed gadgets for Settings
+            // get all installed gadgets for Settings
             installedGadgets = GadgetProvider.Gadgets.ToList();
 
-            // 2. get current customization from file
+            // get initial customization from file
+            var initCust = FileStorage.ReadFromFile(FileStorage.InitialFilePath);
+            UpdateGadgetsOrder(initCust);
+
+            // get current customization from file
             var fileCust = FileStorage.ReadFromFile(FileStorage.CurrentFilePath);
             UpdateGadgetsOrder(fileCust);
 
-            // 4. save current customization to file
+            // save current customization to file
             var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
             FileStorage.WriteToFile(menuCustItems, FileStorage.CurrentFilePath);
 
-            // 5. start file watching
+            // start file watching
             FileStorage.Instance.Changed += CustFileChanged;
             FileStorage.Instance.Lost += CustFileLost;
             FileStorage.Instance.StartMonitoring();

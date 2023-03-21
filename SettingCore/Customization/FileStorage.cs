@@ -16,15 +16,19 @@ namespace SettingCore.Customization
         public event Action Changed;
         public event Action Lost;
 
+        private readonly string InitialFileName;
         private readonly string CurrentFileName;
         private readonly string DirectoryPath;
 
+        public static string InitialFilePath { get; private set; }
         public static string CurrentFilePath { get; private set; }
 
         private FileStorage()
         {
+            InitialFileName = "initial.json";
             CurrentFileName = "current.json";
             DirectoryPath = Tizen.Applications.Application.Current.DirectoryInfo.Data;
+            InitialFilePath = System.IO.Path.Combine(DirectoryPath, InitialFileName);
             CurrentFilePath = System.IO.Path.Combine(DirectoryPath, CurrentFileName);
         }
 
