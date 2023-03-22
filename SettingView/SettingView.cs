@@ -180,7 +180,9 @@ namespace SettingView
                 var info = MainMenuInfo.Create(gadgetInfo);
                 if (info != null)
                 {
-                    var row = new MainMenuRowView(info.IconPath, info.IconColor, info.Title, info.Action);
+                    var row = new SettingCore.Views.MainMenuItem(info.IconPath, info.IconColor, info.Title);
+                    row.Clicked += (s, e)=> { info.Action?.Invoke(); };
+
                     content.Add(row);
                 }
             }
