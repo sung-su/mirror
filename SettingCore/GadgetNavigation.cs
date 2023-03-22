@@ -3,6 +3,8 @@ using Tizen.NUI.Components;
 using Tizen.NUI;
 using Tizen.System;
 using Tizen.NUI.BaseComponents;
+using System.Linq;
+using System.Threading;
 
 namespace SettingCore
 {
@@ -10,6 +12,8 @@ namespace SettingCore
     {
         // keep page-gadget binding, to update Title & ContextMenu strings when language changed
         private static Dictionary<Page, MenuGadget> gadgetPages = new Dictionary<Page, MenuGadget>();
+
+        private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
 
         static GadgetNavigation()
         {
@@ -38,10 +42,20 @@ namespace SettingCore
 
         public static void NavigateTo(string menuPath)
         {
+            semaphore.Wait();
+
             var info = GadgetManager.Instance.GetGadgetInfoFromPath(menuPath);
             if (info == null)
             {
                 Logger.Warn($"could not find gadget for menupath: {menuPath}");
+                semaphore.Release();
+                return;
+            }
+
+            if (gadgetPages.Values.Select(x => x.ClassName).Contains(info.ClassName))
+            {
+                Logger.Verbose($"Already navigated to menupath: {menuPath}");
+                semaphore.Release();
                 return;
             }
 
@@ -98,6 +112,8 @@ namespace SettingCore
             {
                 Logger.Error($"could not create gadget for menu path: {menuPath} => {e}");
             }
+
+            semaphore.Release();
         }
 
         private static Button GetMoreButton(IEnumerable<MoreMenuItem> moreMenu)
