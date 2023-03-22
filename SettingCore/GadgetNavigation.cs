@@ -79,6 +79,7 @@ namespace SettingCore
                 {
                     // TODO: CornerRadius depends on SettingViewBorder.CornerRadius - SettingViewBorder.BorderLineThickness, which is defined at SettingView project.
                     CornerRadius = (26.0f - 6.0f).SpToPx(),
+                    ClippingMode = ClippingModeType.ClipChildren,
                     AppBar = new AppBar(appBarStyle)
                     {
                         Title = title,
