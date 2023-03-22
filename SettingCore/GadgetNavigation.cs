@@ -69,8 +69,10 @@ namespace SettingCore
                     {
                         Title = title,
                         NavigationContent = backButton,
+                        ThemeChangeSensitive = true,
                     },
                     Content = content,
+                    ThemeChangeSensitive = true,
                 };
 
                 var moreItems = new List<View>();

@@ -44,6 +44,7 @@ namespace SettingView
             mMainPage = new ContentPage()
             {
                 CornerRadius = (SettingViewBorder.WindowCornerRadius - SettingViewBorder.WindowPadding).SpToPx(),
+                ThemeChangeSensitive = true,
                 AppBar = CreateAppBar(),
                 Content = CreateContent(),
             };
@@ -152,6 +153,7 @@ namespace SettingView
                 Title = Resources.IDS_ST_OPT_SETTINGS,
                 AutoNavigationContent = false,
                 NavigationContent = new View(), // FIXME: must be set with empty View to hide default back button
+                ThemeChangeSensitive = true,
             };
         }
 
