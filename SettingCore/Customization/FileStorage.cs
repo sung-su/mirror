@@ -169,7 +169,7 @@ namespace SettingCore.Customization
             }
         }
 
-        public static void WriteToFile(IEnumerable<MenuCustomizationItem> items, string filepath)
+        private static void WriteToFile(IEnumerable<MenuCustomizationItem> items, string filepath)
         {
             Logger.Verbose($"Writing customization to file {System.IO.Path.GetFileName(filepath)}");
 
@@ -189,6 +189,12 @@ namespace SettingCore.Customization
             {
                 Logger.Warn($"Could not write customization to file: {exc}");
             }
+        }
+
+        public static void WriteToFiles(IEnumerable<MenuCustomizationItem> items)
+        {
+            WriteToFile(items, CurrentFilePath);
+            WriteToFile(items, BackupFilePath);
         }
     }
 }
