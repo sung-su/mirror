@@ -30,10 +30,7 @@ namespace Setting.Menu
         protected override View OnCreate()
         {
             base.OnCreate();
-
-            Tizen.System.SystemSettings.SoundSilentModeSettingChanged += SystemSettings_SoundSilentModeSettingChanged;
-            Tizen.System.SystemSettings.VibrationChanged += SystemSettings_VibrationChanged;
-            Tizen.System.SystemSettings.SoundNotificationChanged += SystemSettings_NotificationSoundChanged;
+            AttachToEvents();
 
             content = new ScrollableBase
             {
@@ -53,11 +50,68 @@ namespace Setting.Menu
 
         protected override void OnDestroy()
         {
-            Tizen.System.SystemSettings.SoundSilentModeSettingChanged -= SystemSettings_SoundSilentModeSettingChanged;
-            Tizen.System.SystemSettings.VibrationChanged -= SystemSettings_VibrationChanged;
-            Tizen.System.SystemSettings.SoundNotificationChanged -= SystemSettings_NotificationSoundChanged;
-
+            DetachFromEvents();
             base.OnDestroy();
+        }
+
+        private void AttachToEvents()
+        {
+            try
+            {
+                Tizen.System.SystemSettings.SoundSilentModeSettingChanged += SystemSettings_SoundSilentModeSettingChanged;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"Cannot attach to SystemSettings.SoundSilentModeSettingChanged ({e.GetType()})");
+            }
+
+            try
+            {
+                Tizen.System.SystemSettings.VibrationChanged += SystemSettings_VibrationChanged;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"Cannot attach to SystemSettings.VibrationChanged ({e.GetType()})");
+            }
+
+            try
+            {
+                Tizen.System.SystemSettings.SoundNotificationChanged += SystemSettings_NotificationSoundChanged;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"Cannot attach to SystemSettings.SoundNotificationChanged ({e.GetType()})");
+            }
+        }
+
+        private void DetachFromEvents()
+        {
+            try
+            {
+                Tizen.System.SystemSettings.SoundSilentModeSettingChanged -= SystemSettings_SoundSilentModeSettingChanged;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"Cannot detach from SystemSettings.SoundSilentModeSettingChanged ({e.GetType()})");
+            }
+
+            try
+            {
+                Tizen.System.SystemSettings.VibrationChanged -= SystemSettings_VibrationChanged;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"Cannot detach from SystemSettings.VibrationChanged ({e.GetType()})");
+            }
+
+            try
+            {
+                Tizen.System.SystemSettings.SoundNotificationChanged -= SystemSettings_NotificationSoundChanged;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"Cannot detach from SystemSettings.SoundNotificationChanged ({e.GetType()})");
+            }
         }
 
         private void CreateView()
