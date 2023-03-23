@@ -30,6 +30,8 @@ namespace SettingCore.Views
                 HeightSpecification = LayoutParamPolicies.MatchParent,
             };
             Add(icon);
+
+            ThemeManager.ThemeChanged += (s, e) => { OnChangeSelected(false); };
         }
 
         public override void OnChangeSelected(bool selected)
