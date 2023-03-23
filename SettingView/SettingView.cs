@@ -46,8 +46,11 @@ namespace SettingView
                 CornerRadius = (SettingViewBorder.WindowCornerRadius - SettingViewBorder.WindowPadding).SpToPx(),
                 ThemeChangeSensitive = true,
                 AppBar = CreateAppBar(),
-                Content = CreateContent(),
             };
+
+            bool initilized = GadgetManager.Instance.Init();
+            mMainPage.Content = initilized ? CreateContent() : GetTextNotice("Failed to initialize GadgetManager.\nPlease check error logs for more information.", Color.Red);
+
             GetDefaultWindow().GetDefaultNavigator().Push(mMainPage);
 
             Tizen.System.SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
@@ -181,13 +184,29 @@ namespace SettingView
                 if (info != null)
                 {
                     var row = new SettingCore.Views.MainMenuItem(info.IconPath, info.IconColor, info.Title);
-                    row.Clicked += (s, e)=> { info.Action?.Invoke(); };
+                    row.Clicked += (s, e) => { info.Action?.Invoke(); };
 
                     content.Add(row);
                 }
             }
 
             return content;
+        }
+
+        private static View GetTextNotice(string text, Color color)
+        {
+            return new TextLabel
+            {
+                MultiLine = true,
+                Text = text,
+                TextColor = color,
+                PixelSize = 30.SpToPx(),
+                Margin = new Extents(50, 50, 50, 50).SpToPx(),
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                HeightSpecification = LayoutParamPolicies.MatchParent,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
         }
 
         static void Main(string[] args)

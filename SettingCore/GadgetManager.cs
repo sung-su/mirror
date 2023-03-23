@@ -12,36 +12,46 @@ namespace SettingCore
 
         public event EventHandler<CustomizationChangedEventArgs> CustomizationChanged;
 
-        private IEnumerable<SettingGadgetInfo> installedGadgets;
+        private IEnumerable<SettingGadgetInfo> installedGadgets = new SettingGadgetInfo[0];
 
-        private GadgetManager()
+        public bool Init()
         {
-            // get all installed gadgets for Settings
-            installedGadgets = GadgetProvider.Gadgets.ToList();
-
-            // get initial customization from file
-            var initCust = FileStorage.ReadFromFile(FileStorage.InitialFilePath);
-            _ = UpdateCustomization(initCust);
-
-            // get current customization from file
-            var currentCust = FileStorage.ReadFromFile(FileStorage.CurrentFilePath);
-            _ = UpdateCustomization(currentCust);
-
-            // get backup customization from file (in case current was corrupted, when the app was shutdown)
-            if (currentCust == null)
+            try
             {
-                var backupCust = FileStorage.ReadFromFile(FileStorage.BackupFilePath);
-                _ = UpdateCustomization(backupCust);
+                // get all installed gadgets for Settings
+                installedGadgets = GadgetProvider.Gadgets.ToList();
+
+                // get initial customization from file
+                var initCust = FileStorage.ReadFromFile(FileStorage.InitialFilePath);
+                _ = UpdateCustomization(initCust);
+
+                // get current customization from file
+                var currentCust = FileStorage.ReadFromFile(FileStorage.CurrentFilePath);
+                _ = UpdateCustomization(currentCust);
+
+                // get backup customization from file (in case current was corrupted, when the app was shutdown)
+                if (currentCust == null)
+                {
+                    var backupCust = FileStorage.ReadFromFile(FileStorage.BackupFilePath);
+                    _ = UpdateCustomization(backupCust);
+                }
+
+                // save current customization to both files (current and backup)
+                var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
+                FileStorage.WriteToFiles(menuCustItems);
+
+                // start file watching
+                FileStorage.Instance.Changed += CustFileChanged;
+                FileStorage.Instance.Lost += CustFileLost;
+                FileStorage.Instance.StartMonitoring();
+
+                return true;
             }
-
-            // save current customization to both files (current and backup)
-            var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
-            FileStorage.WriteToFiles(menuCustItems);
-
-            // start file watching
-            FileStorage.Instance.Changed += CustFileChanged;
-            FileStorage.Instance.Lost += CustFileLost;
-            FileStorage.Instance.StartMonitoring();
+            catch (Exception e)
+            {
+                Logger.Error($"{e}");
+                return false;
+            }
         }
 
         private void CustFileLost()
