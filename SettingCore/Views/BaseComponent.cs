@@ -19,6 +19,8 @@ namespace SettingCore.Views
 
         public event EventHandler<ClickedEventArgs> Clicked;
 
+        protected bool isClickedEventEmpty => Clicked is null;
+
         private bool touchStarted = false;
 
         public virtual void OnChangeSelected(bool selected) { }
@@ -43,7 +45,7 @@ namespace SettingCore.Views
 
         private bool OnTouchEvent(object source, TouchEventArgs e)
         {
-            if (Clicked is null)
+            if (isClickedEventEmpty)
             {
                 return false;
             }
