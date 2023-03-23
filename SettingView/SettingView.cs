@@ -162,6 +162,18 @@ namespace SettingView
 
         private static View CreateContent()
         {
+            var mainMenus = GadgetManager.Instance.GetMainWithCurrentOrder();
+            if (!mainMenus.Any())
+            {
+                return GetTextNotice("There is no setting menus installed.", Color.Orange);
+            }
+
+            var visibleMenus = mainMenus.Where(i => i.IsVisible);
+            if (!visibleMenus.Any())
+            {
+                return GetTextNotice("There is no setting menus visible.", Color.Gray);
+            }
+
             var content = new ScrollableBase()
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
@@ -174,9 +186,7 @@ namespace SettingView
                 },
             };
 
-            var mainGadgetInfos = GadgetManager.Instance.GetMainWithCurrentOrder();
-
-            foreach (var gadgetInfo in mainGadgetInfos.Where(i => i.IsVisible))
+            foreach (var gadgetInfo in visibleMenus)
             {
                 Logger.Debug($"{gadgetInfo}");
 
