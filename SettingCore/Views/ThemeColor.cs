@@ -26,5 +26,14 @@ namespace SettingCore.Views
             lightThemeSelectedColor = lightThemeColor;
             darkThemeSelectedColor = darkThemeColor;
         }
+
+        public ThemeColor(Color lightNormal, Color darkNormal, Color lightSelected, Color darkSelected)
+        {
+            lightThemeNormalColor = lightNormal;
+            darkThemeNormalColor = darkNormal;
+
+            lightThemeSelectedColor = lightSelected;
+            darkThemeSelectedColor = darkSelected;
+        }
     }
 }
