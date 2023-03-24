@@ -218,12 +218,13 @@ namespace Setting.Menu
 
         private void SystemSettings_FontSizeChanged(object sender, FontSizeChangedEventArgs e)
         {
-            CreateView();
+            CreateView(); // TODO : change only secondary text instead of re-create all view
         }
 
         private void SystemSettings_FontTypeChanged(object sender, FontTypeChangedEventArgs e)
         {
-            CreateView();
+            if(fontItem != null)
+                fontItem.Secondary = $"{SystemSettings.FontSize}, {SystemSettings.FontType}"; // TODO : show default BreezeSans if FontType = DefaultFontType
         }
 
         private void ThemeManager_ThemeChanged(object sender, ThemeChangedEventArgs e)
@@ -231,7 +232,7 @@ namespace Setting.Menu
             if (e.IsPlatformThemeChanged)
             {
                 Logger.Debug($"theme changed to: {e.PlatformThemeId}");
-                CreateView();
+                themeItem.Secondary = DisplayThemeManager.GetThemeName();
             }
         }
     }
