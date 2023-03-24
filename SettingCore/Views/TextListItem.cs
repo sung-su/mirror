@@ -12,7 +12,7 @@ namespace SettingCore.Views
         public static TextListItem CreatePrimaryTextItemWithSubText(string primaryText, string primarySubText) => new TextListItem(primaryText, primarySubText: primarySubText);
 
         private readonly ThemeColor BackgroundColors = new ThemeColor(Color.Transparent, Color.Transparent, new Color("#FF6400").WithAlpha(0.16f), new Color("#FFFFFF").WithAlpha(0.16f));
-        private readonly ThemeColor TextColors = new ThemeColor(new Color("#090E21"), new Color("#CACACA"), new Color("#FF6200"), new Color("#FF8A00"));
+        private readonly ThemeColor TextColors = new ThemeColor(new Color("#090E21"), new Color("#FDFDFD"), new Color("#FF6200"), new Color("#FF8A00"));
         private readonly ThemeColor NoActionsTextColors = new ThemeColor(new Color("#83868F"), new Color("#666666"), new Color("#83868F"), new Color("#666666"));
 
         public string Secondary
