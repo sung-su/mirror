@@ -41,6 +41,21 @@ namespace SettingCore
             return scrim;
         }
 
+        public static void ShowDialog(View content)
+        {
+            content.CornerRadius = (WindowOuterCornerRadius - WindowBorderThickness).SpToPx();
+            var dialogPage = new RoundedDialogPage()
+            {
+                Content = new Dialog()
+                {
+                    Content = content,
+                },
+            };
+
+            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(dialogPage);
+        }
+
+
         public static new void ShowAlertDialog(string title, string message, params View[] actions)
         {
             var dialogPage = new RoundedDialogPage()

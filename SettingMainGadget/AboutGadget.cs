@@ -16,6 +16,7 @@ namespace Setting.Menu
 {
     public class AboutGadget : SettingCore.MainMenuGadget
     {
+        private const int MAX_DEVICE_NAME_LEN = 32;
         private DefaultLinearItem mDevicenameItem;
         private string VconfDeviceName = "db/setting/device_name";
         private string SystemModelName = "tizen.org/system/model_name";
@@ -44,10 +45,25 @@ namespace Setting.Menu
                 },
             };
 
+            SystemSettings.DeviceNameChanged += SystemSettings_DeviceNameChanged;
             CreateView();
 
             return content;
         }
+
+        protected override void OnDestroy()
+        {
+            SystemSettings.DeviceNameChanged -= SystemSettings_DeviceNameChanged;
+
+            base.OnDestroy();
+        }
+
+        private void SystemSettings_DeviceNameChanged(object sender, DeviceNameChangedEventArgs e)
+        {
+            Logger.Warn($"Device name changed: {e.Value}");
+            mDevicenameItem.SubText = e.Value;
+        }
+
 
         private void CreateView()
         {
@@ -79,8 +95,62 @@ namespace Setting.Menu
             {
                 item.Clicked += (o, e) =>
                 {
-                    //TODO
-                    NavigateTo(MainMenuProvider.About_RenameDevice);
+                    var content = new View()
+                    {
+                        BackgroundColor = new Color("#FAFAFA"),
+                        WidthSpecification = LayoutParamPolicies.MatchParent,
+                        HeightSpecification = LayoutParamPolicies.MatchParent,
+                        Layout = new LinearLayout()
+                        {
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            LinearOrientation = LinearLayout.Orientation.Vertical,
+                        },
+                    };
+
+                    var textTitle = SettingItemCreator.CreateItemTitle(Resources.IDS_ST_HEADER_RENAME_DEVICE);
+                    textTitle.Margin = new Extents(24, 0, 0, 0).SpToPx();
+                    content.Add(textTitle);
+
+                    var textSubTitle = new TextLabel(Resources.IDS_ST_BODY_DEVICE_NAMES_ARE_DISPLAYED)
+                    {
+                        MultiLine = true,
+                        LineWrapMode = LineWrapMode.Character,
+                        Size = new Size(Window.Instance.WindowSize.Width - 20 * 2, 100),
+                        Margin = new Extents(24, 24, 0, 0).SpToPx(),
+                    };
+                    content.Add(textSubTitle);
+
+                    PropertyMap placeholder = new PropertyMap();
+                    placeholder.Add("color", new PropertyValue(Color.CadetBlue));
+                    placeholder.Add("fontFamily", new PropertyValue("Serif"));
+                    placeholder.Add("pointSize", new PropertyValue(25.0f));
+
+                    var textField = new TextField
+                    {
+                        BackgroundColor = Color.White,
+
+                        Placeholder = placeholder,
+
+                        MaxLength = MAX_DEVICE_NAME_LEN,
+                        EnableCursorBlink = true,
+                        Text = name,
+                    };
+                    content.Add(textField);
+
+                    var button = new Button()
+                    {
+                        Text = Resources.IDS_ST_BUTTON_OK,
+                        Margin = new Extents(0, 0, 0, 32).SpToPx(),
+                    };
+                    button.Clicked += (o, e) =>
+                    {
+                        // Change Device Name
+                        Vconf.SetString("db/setting/device_name", textField.Text);
+                        NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop();
+                    };
+                    content.Add(button);
+
+                    RoundedDialogPage.ShowDialog(content);
                 };
             }
             sections.Add(MainMenuProvider.About_RenameDevice, item);
