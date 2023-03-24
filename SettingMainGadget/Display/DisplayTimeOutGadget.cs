@@ -1,7 +1,5 @@
 ﻿using SettingAppTextResopurces.TextResources;
-using SettingCore;
 using SettingMainGadget.Display;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
@@ -23,39 +21,33 @@ namespace Setting.Menu.Display
                 HeightSpecification = LayoutParamPolicies.MatchParent,
                 Layout = new LinearLayout()
                 {
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Begin,
+                    VerticalAlignment = VerticalAlignment.Top,
                     LinearOrientation = LinearLayout.Orientation.Vertical,
                 },
             };
 
-            var picker = new Picker()
+            RadioButtonGroup radioButtonGroup = new RadioButtonGroup();
+
+            var timeoutList = DisplayTimeOutManager.TimeoutList.Select(x => x.GetName()).ToList();
+
+            for (int i = 0; i < timeoutList.Count; i++)
             {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-            };
+                RadioButton radioButton = new RadioButton()
+                {
+                    Text = timeoutList[i],
+                    IsSelected = i.Equals(DisplayTimeOutManager.GetScreenTimeoutIndex()),
+                    Margin = new Extents(24, 0, 0, 0).SpToPx(),
+                };
 
-            ReadOnlyCollection<string> rc = new ReadOnlyCollection<string>(DisplayTimeOutManager.TimeoutList.Select(x => x.GetName()).ToList());
-            picker.DisplayedValues = rc;
-            picker.MinValue = 0;
-            picker.MaxValue = DisplayTimeOutManager.TimeoutList.Count - 1;
-            picker.CurrentValue = DisplayTimeOutManager.GetScreenTimeoutIndex();
+                radioButtonGroup.Add(radioButton);
+                content.Add(radioButton);
+            }
 
-            Logger.Debug($"ScreenTimeOut CurrentValue: {picker.CurrentValue}");
-
-            var button = new Button("Tizen.NUI.Components.Button.Outlined")
+            radioButtonGroup.SelectedChanged += (o, e) =>
             {
-                Text = Resources.IDS_ST_BUTTON_OK
+                DisplayTimeOutManager.SetScreenTimeout(radioButtonGroup.SelectedIndex);
             };
-
-            button.Clicked += (bo, be) =>
-            {
-                DisplayTimeOutManager.SetScreenTimeout(picker.CurrentValue);
-
-                NavigateBack();
-            };
-
-            content.Add(picker);
-            content.Add(button);
 
             return content;
         }
