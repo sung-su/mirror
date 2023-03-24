@@ -1,5 +1,6 @@
 ﻿using SettingAppTextResopurces.TextResources;
 using SettingCore;
+using SettingCore.Views;
 using SettingMain;
 using SettingMainGadget;
 using SettingMainGadget.DateTime;
@@ -22,6 +23,7 @@ namespace Setting.Menu
         private DefaultLinearItem mDateItem = null;
         private DefaultLinearItem mTimeItem = null;
         private DefaultLinearItem mTimezoneItem = null;
+        private SwitchListItem switchItem = null;
 
         protected override View OnCreate()
         {
@@ -57,20 +59,13 @@ namespace Setting.Menu
                 },
             };
 
-            DefaultLinearItem item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_MBODY_AUTO_UPDATE, null, false, true);
-            if (item != null)
+            var autoUpdateItem = new SwitchListItem(Resources.IDS_ST_MBODY_AUTO_UPDATE, isSelected: DateTimeManager.AutoTimeUpdate);
+            autoUpdateItem.Switch.SelectedChanged += (o, e) =>
             {
-                var toggle = item.Extra as Switch;
-                toggle.IsSelected = DateTimeManager.AutoTimeUpdate;
-
-                toggle.SelectedChanged += (o, e) =>
-                {
-                    DateTimeManager.AutoTimeUpdate = e.IsSelected;
-                    ApplyAutomaticTimeUpdate();
-                };
-
-                content.Add(item);
-            }
+                DateTimeManager.AutoTimeUpdate = e.IsSelected;
+                ApplyAutomaticTimeUpdate();
+            };
+            content.Add(autoUpdateItem);
 
             mDateItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_SET_DATE, System.DateTime.Now.ToString("MMM d, yyyy"));
             if (mDateItem != null)
@@ -102,19 +97,12 @@ namespace Setting.Menu
                 content.Add(mTimezoneItem);
             }
 
-            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_MBODY_24_HOUR_CLOCK, Resources.IDS_ST_SBODY_SHOW_THE_TIME_IN_24_HOUR_FORMAT_INSTEAD_OF_12_HOUR_HAM_PM_FORMAT, false, true);
-            if (item != null)
+            switchItem = new SwitchListItem(Resources.IDS_ST_MBODY_24_HOUR_CLOCK, Resources.IDS_ST_SBODY_SHOW_THE_TIME_IN_24_HOUR_FORMAT_INSTEAD_OF_12_HOUR_HAM_PM_FORMAT, DateTimeManager.Is24HourFormat);
+            switchItem.Switch.SelectedChanged += (o, e) =>
             {
-                var toggle = item.Extra as Switch;
-                toggle.IsSelected = DateTimeManager.Is24HourFormat;
-
-                toggle.SelectedChanged += (o, e) =>
-                {
-                    DateTimeManager.Is24HourFormat = e.IsSelected;
-                };
-
-                content.Add(item);
-            }
+                DateTimeManager.Is24HourFormat = e.IsSelected;
+            };
+            content.Add(switchItem);
 
             ApplyAutomaticTimeUpdate();
 
