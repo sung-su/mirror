@@ -77,6 +77,8 @@ namespace SettingCore.Views
             {
                 AddPrimarySubText(primarySubText);
             }
+
+            ThemeManager.ThemeChanged += (s, e) => OnChangeSelected(false);
         }
 
         private void AddSecondaryText(string text)
