@@ -1,7 +1,5 @@
 ﻿using SettingAppTextResopurces.TextResources;
-using SettingCore;
 using SettingMainGadget.Display;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
@@ -21,39 +19,34 @@ namespace Setting.Menu.Display
                 HeightSpecification = LayoutParamPolicies.MatchParent,
                 Layout = new LinearLayout()
                 {
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Begin,
+                    VerticalAlignment = VerticalAlignment.Top,
                     LinearOrientation = LinearLayout.Orientation.Vertical,
                 },
             };
 
-            var picker = new Picker()
+            RadioButtonGroup radioButtonGroup = new RadioButtonGroup();
+
+            var themeList = DisplayThemeManager.ThemeList.Select(a => a.GetName()).ToList();
+
+            for (int i = 0; i < themeList.Count; i++)
             {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-            };
+                RadioButton radioButton = new RadioButton()
+                {
+                    ThemeChangeSensitive = true,
+                    Text = themeList[i],
+                    IsSelected = i.Equals(DisplayThemeManager.GetThemeIndex()),
+                    Margin = new Extents(24, 0, 0, 0).SpToPx(),
+                };
 
-            ReadOnlyCollection<string> rc = new ReadOnlyCollection<string>(DisplayThemeManager.ThemeList.Select(a => a.GetName()).ToList());
-            picker.DisplayedValues = rc;
-            picker.MinValue = 0;
-            picker.MaxValue = DisplayThemeManager.ThemeList.Count - 1;
-            picker.CurrentValue = DisplayThemeManager.GetThemeIndex();
+                radioButtonGroup.Add(radioButton);
+                content.Add(radioButton);
+            }
 
-            Logger.Debug($"ThemePicker CurrentValue: {picker.CurrentValue}");
-
-            var button = new Button("Tizen.NUI.Components.Button.Outlined")
+            radioButtonGroup.SelectedChanged += (o, e) =>
             {
-                Text = Resources.IDS_ST_BUTTON_OK
+                DisplayThemeManager.SetTheme(DisplayThemeManager.ThemeList[radioButtonGroup.SelectedIndex].GetId());
             };
-
-            button.Clicked += (bo, be) =>
-            {
-                DisplayThemeManager.SetTheme(DisplayThemeManager.ThemeList[picker.CurrentValue].GetId());
-
-                NavigateBack();
-            };
-
-            content.Add(picker);
-            content.Add(button);
 
             return content;
         }
