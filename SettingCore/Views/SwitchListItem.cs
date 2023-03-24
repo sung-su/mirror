@@ -80,7 +80,7 @@ namespace SettingCore.Views
 
             Add(Switch);
 
-            Clicked += (s, e) => Switch.IsSelected ^= true;
+            Clicked += (s, e) => Switch.IsSelected = !Switch.IsSelected;
         }
 
         public override void OnChangeSelected(bool selected)
