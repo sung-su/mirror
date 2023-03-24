@@ -1,6 +1,7 @@
 ﻿using SettingAppTextResopurces.TextResources;
 using SettingCore;
 using SettingCore.Customization;
+using SettingCore.Views;
 using SettingMain;
 using SettingMainGadget;
 using SettingMainGadget.Display;
@@ -25,10 +26,10 @@ namespace Setting.Menu
         private View content;
         private Sections sections = new Sections();
 
-        private SliderItem brightnessItem;
-        private DefaultLinearItem fontItem;
-        private DefaultLinearItem screenTimeOutItem;
-        private DefaultLinearItem themeItem;
+        private SliderListItem brightnessItem;
+        private TextListItem fontItem;
+        private TextListItem screenTimeOutItem;
+        private TextListItem themeItem;
 
         private static readonly string[] iconPath = {
             "display/Brightness_0.svg",
@@ -96,35 +97,17 @@ namespace Setting.Menu
 
                 GetBrightnessSliderIcon(brightness, out string iconpath);
 
-
-                var brightnessView = new View
-                {
-                    WidthSpecification = LayoutParamPolicies.MatchParent,
-                    Layout = new LinearLayout()
-                    {
-                        LinearOrientation = LinearLayout.Orientation.Vertical,
-                    },
-                };
-
-                brightnessView.Add(new TextLabel 
-                {
-                    ThemeChangeSensitive = true,
-                    Text = Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING,
-                    Margin = new Extents(20, 20, 5, 5),
-                });
-
-                brightnessItem = SettingItemCreator.CreateSliderItem("BRIGHTNESS", iconpath, (brightness * 1.0f) / maxbrightness);
+                brightnessItem = new SliderListItem(Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING, iconpath, (brightness * 1.0f) / maxbrightness);
                 if (brightnessItem != null)
                 {
-                    brightnessItem.mSlider.ValueChanged += MSlider_ValueChanged;
-                    brightnessView.Add(brightnessItem);
-                    sections.Add(MainMenuProvider.Display_Brightness, brightnessView);
+                    brightnessItem.Slider.ValueChanged += MSlider_ValueChanged;
+                    sections.Add(MainMenuProvider.Display_Brightness, brightnessItem);
                 }
             }
 
             // section: font
 
-            fontItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_FONT, $"{SystemSettings.FontSize}, {SystemSettings.FontType}");
+            fontItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_FONT, $"{SystemSettings.FontSize}, {SystemSettings.FontType}");
             if (fontItem != null)
             {
                 fontItem.Clicked += (o, e) =>
@@ -136,7 +119,7 @@ namespace Setting.Menu
 
             // section: TimeOut
 
-            screenTimeOutItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2, DisplayTimeOutManager.GetScreenTimeoutName());
+            screenTimeOutItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2, DisplayTimeOutManager.GetScreenTimeoutName());
             if (screenTimeOutItem != null)
             {
                 screenTimeOutItem.Clicked += (o, e) =>
@@ -148,7 +131,7 @@ namespace Setting.Menu
 
             // section: Theme
 
-            themeItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_THEME, DisplayThemeManager.GetThemeName());
+            themeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_THEME, DisplayThemeManager.GetThemeName());
             if (themeItem != null)
             {
                 themeItem.Clicked += (o, e) =>
@@ -214,7 +197,7 @@ namespace Setting.Menu
             if (brightnessItem != null)
             {
                 GetBrightnessSliderIcon(brightness, out string iconpath);
-                brightnessItem.mIcon.SetImage(iconpath);
+                brightnessItem.IconPath = iconpath;
             }
 
             try
@@ -230,19 +213,17 @@ namespace Setting.Menu
         private void SystemSettings_ScreenBacklightTimeChanged(object sender, ScreenBacklightTimeChangedEventArgs e)
         {
             if (screenTimeOutItem != null)
-                screenTimeOutItem.SubText = DisplayTimeOutManager.GetScreenTimeoutName();
+                screenTimeOutItem.Secondary = DisplayTimeOutManager.GetScreenTimeoutName();
         }
 
         private void SystemSettings_FontSizeChanged(object sender, FontSizeChangedEventArgs e)
         {
-            if (fontItem != null)
-                fontItem.SubText = $"{SystemSettings.FontSize}, {SystemSettings.FontType}";
+            CreateView();
         }
 
         private void SystemSettings_FontTypeChanged(object sender, FontTypeChangedEventArgs e)
         {
-            if (fontItem != null)
-                fontItem.SubText = $"{SystemSettings.FontSize}, {SystemSettings.FontType}";
+            CreateView();
         }
 
         private void ThemeManager_ThemeChanged(object sender, ThemeChangedEventArgs e)
@@ -250,7 +231,7 @@ namespace Setting.Menu
             if (e.IsPlatformThemeChanged)
             {
                 Logger.Debug($"theme changed to: {e.PlatformThemeId}");
-                themeItem.SubText = DisplayThemeManager.GetThemeName();
+                CreateView();
             }
         }
     }
