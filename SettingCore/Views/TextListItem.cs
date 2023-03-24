@@ -67,10 +67,7 @@ namespace SettingCore.Views
             {
                 AddSecondaryText(secondaryText);
 
-                Relayout += (s, e) =>
-                {
-                    secondary.TextColor = isClickedEventEmpty ? NoActionsTextColors.Normal : TextColors.Normal;
-                };
+                Relayout += TextListItem_Relayout;
             }
 
             if (!String.IsNullOrEmpty(primarySubText))
@@ -79,6 +76,12 @@ namespace SettingCore.Views
             }
 
             ThemeManager.ThemeChanged += (s, e) => OnChangeSelected(false);
+        }
+
+        private void TextListItem_Relayout(object sender, EventArgs e)
+        {
+            secondary.TextColor = isClickedEventEmpty ? NoActionsTextColors.Normal : TextColors.Normal;
+            Relayout -= TextListItem_Relayout;
         }
 
         private void AddSecondaryText(string text)
