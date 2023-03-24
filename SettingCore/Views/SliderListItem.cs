@@ -10,7 +10,7 @@ namespace SettingCore.Views
         private readonly ThemeColor TrackColor = new ThemeColor(new Color("#FF6200"), new Color("#FF8A00"), new Color("#FF6200"), new Color("#FF8A00"));
         private readonly ThemeColor BgTrackColor = new ThemeColor(new Color(1.0f, 0.37f, 0.0f, 0.1f), new Color(1.0f, 0.37f, 0.0f, 0.1f), new Color("#FF6200"), new Color("#FF8A00"));
 
-        public Slider Slider = null;
+        public Slider Slider { get; private set; }
 
         public string IconPath
         {
