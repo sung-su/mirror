@@ -83,8 +83,7 @@ namespace Setting.Menu
             };
             sections.Add(MainMenuProvider.About_OpenSourceLicenses, openSourceLicenses);
 
-            // TODO: replace with header text (gray)
-            var deviceInfo = TextListItem.CreatePrimaryTextItem(Resources.IDS_ST_BODY_DEVICE_INFO);
+            var deviceInfo = new TextHeaderListItem(Resources.IDS_ST_BODY_DEVICE_INFO);
             sections.Add(MainMenuProvider.About_DeviceInfo, deviceInfo);
 
             if (Vconf.TryGetString(VconfDeviceName, out string name))
