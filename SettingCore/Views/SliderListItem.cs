@@ -30,11 +30,6 @@ namespace SettingCore.Views
         public SliderListItem(string primaryText, string iconpath, float curvalue)
             : base()
         {
-            WidthSpecification = LayoutParamPolicies.MatchParent;
-            HeightSpecification = LayoutParamPolicies.WrapContent;
-            LeaveRequired = true;
-            AccessibilityHighlightable = true;
-
             Layout = new LinearLayout()
             {
                 LinearOrientation = LinearLayout.Orientation.Vertical,
