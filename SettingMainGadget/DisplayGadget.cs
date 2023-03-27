@@ -100,6 +100,7 @@ namespace Setting.Menu
                 brightnessItem = new SliderListItem(Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING, iconpath, (brightness * 1.0f) / maxbrightness);
                 if (brightnessItem != null)
                 {
+                    brightnessItem.Margin = new Extents(0, 0, 16, 0).SpToPx();
                     brightnessItem.Slider.ValueChanged += MSlider_ValueChanged;
                     sections.Add(MainMenuProvider.Display_Brightness, brightnessItem);
                 }

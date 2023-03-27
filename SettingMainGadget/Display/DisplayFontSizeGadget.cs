@@ -60,8 +60,10 @@ namespace Setting.Menu.Display
             {
                 RadioButton radioButton = new RadioButton() 
                 {
+                    ThemeChangeSensitive = true,
                     Text = fontsizeList[i].GetName(),
                     IsSelected = fontsizeList[i].GetValue() == SystemSettings.FontSize,
+                    Margin = new Extents(24, 0, 0, 0).SpToPx(),
                 };
 
                 radioButtonGroup.Add(radioButton);

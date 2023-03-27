@@ -36,8 +36,10 @@ namespace Setting.Menu.Display
             {
                 RadioButton radioButton = new RadioButton()
                 {
+                    ThemeChangeSensitive = true,
                     Text = fontTypeList[i],
                     IsSelected = fontTypeList[i] == SystemSettings.FontType,
+                    Margin = new Extents(24, 0, 0, 0).SpToPx(),
                 };
                 radioButton.TextLabel.FontFamily = fontTypeList[i];
 
