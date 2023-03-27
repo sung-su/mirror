@@ -36,6 +36,7 @@ namespace Setting.Menu.Display
                 RadioButton radioButton = new RadioButton()
                 {
                     Text = timeoutList[i],
+                    ThemeChangeSensitive = true,
                     IsSelected = i.Equals(DisplayTimeOutManager.GetScreenTimeoutIndex()),
                     Margin = new Extents(24, 0, 0, 0).SpToPx(),
                 };
