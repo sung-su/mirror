@@ -1,9 +1,8 @@
 ﻿using SettingAppTextResopurces.TextResources;
-using SettingMain;
+using SettingCore.Views;
 using SettingMainGadget;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
-using Tizen.NUI.Components;
 using Tizen.System;
 
 namespace Setting.Menu.Display
@@ -11,8 +10,9 @@ namespace Setting.Menu.Display
     public class DisplayFontGadget : SettingCore.MenuGadget
     {
         public override string ProvideTitle() => Resources.IDS_ST_BODY_FONT;
-        private DefaultLinearItem fontSizeItem;
-        private DefaultLinearItem fontTypeItem;
+        private TextListItem fontSizeItem;
+        private TextListItem fontTypeItem;
+        private View content;
 
         protected override void OnDestroy()
         {
@@ -24,21 +24,47 @@ namespace Setting.Menu.Display
 
         private void SystemSettings_FontSizeChanged(object sender, FontSizeChangedEventArgs e)
         {
-            if (fontSizeItem != null)
-                fontSizeItem.SubText = SystemSettings.FontSize.ToString();
+            CreateItems();
         }
 
         private void SystemSettings_FontTypeChanged(object sender, FontTypeChangedEventArgs e)
         {
             if (fontTypeItem != null)
-                fontTypeItem.SubText = SystemSettings.FontType.ToString();
+                fontTypeItem.Secondary = SystemSettings.FontType.ToString();
+        }
+
+        private void CreateItems()
+        {
+            if(fontSizeItem != null)
+            {
+                content.Remove(fontSizeItem);
+            }
+
+            fontSizeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_MBODY_FONT_SIZE, SystemSettings.FontSize.ToString());
+            fontSizeItem.Clicked += (o, e) =>
+            {
+                NavigateTo(MainMenuProvider.Display_FontSize);
+            };
+            content.Add(fontSizeItem);
+
+            if (fontTypeItem != null)
+            {
+                content.Remove(fontTypeItem);
+            }
+
+            fontTypeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_FONT_TYPE, SystemSettings.FontType.ToString());
+            fontTypeItem.Clicked += (o, e) =>
+            {
+                NavigateTo(MainMenuProvider.Display_FontType);
+            };
+            content.Add(fontTypeItem);
         }
 
         protected override View OnCreate()
         {
             base.OnCreate();
 
-            var content = new View()
+            content = new View()
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
                 HeightSpecification = LayoutParamPolicies.MatchParent,
@@ -48,25 +74,7 @@ namespace Setting.Menu.Display
                 },
             };
 
-            fontSizeItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_MBODY_FONT_SIZE, SystemSettings.FontSize.ToString());
-            if (fontSizeItem != null)
-            {
-                fontSizeItem.Clicked += (o, e) =>
-                {
-                    NavigateTo(MainMenuProvider.Display_FontSize);
-                };
-                content.Add(fontSizeItem);
-            }
-
-            fontTypeItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_FONT_TYPE, SystemSettings.FontType.ToString());
-            if (fontTypeItem != null)
-            {
-                fontTypeItem.Clicked += (o, e) =>
-                {
-                    NavigateTo(MainMenuProvider.Display_FontType);
-                };
-                content.Add(fontTypeItem);
-            }
+            CreateItems();
 
             SystemSettings.FontSizeChanged += SystemSettings_FontSizeChanged;
             SystemSettings.FontTypeChanged += SystemSettings_FontTypeChanged;
