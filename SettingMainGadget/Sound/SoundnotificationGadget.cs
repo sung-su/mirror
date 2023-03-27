@@ -1,9 +1,7 @@
 ﻿using SettingAppTextResopurces.TextResources;
 using SettingCore;
 using SettingMainGadget.Sound;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Tizen.NUI;
@@ -17,41 +15,10 @@ namespace Setting.Menu.Sound
         public override string ProvideTitle() => Resources.IDS_ST_BODY_NOTIFICATIONS;
 
         private const string soundpath = "/opt/usr/data/settings/Alerts";
-        private string[] pickerItems;
 
         protected override View OnCreate()
         {
             base.OnCreate();
-
-            var picker = new Picker()
-            {
-                WidthSpecification = LayoutParamPolicies.MatchParent, // FIXME: required for Picker to draw correctly
-            };
-
-            var soundList = CreateSoundList();
-
-            pickerItems = new string[soundList.Count];
-            for (int i = 0; i < soundList.Count; i++)
-            {
-                pickerItems[i] = SoundNotificationManager.SettingMediaBasename(soundList[i].ToString());
-            }
-
-            ReadOnlyCollection<string> rc = new ReadOnlyCollection<string>(pickerItems);
-            picker.DisplayedValues = rc;
-            picker.MinValue = 0;
-            picker.MaxValue = pickerItems.Length - 1;
-            picker.CurrentValue = GetNotificationSoundIndex(soundList);
-
-            var button = new Button("Tizen.NUI.Components.Button.Outlined")
-            {
-                Text = Resources.IDS_ST_BUTTON_OK
-            };
-            button.Clicked += (bo, be) =>
-            {
-                SoundNotificationManager.SetNotificationSound(soundList[picker.CurrentValue]);
-
-                NavigateBack();
-            };
 
             var content = new View()
             {
@@ -59,14 +26,34 @@ namespace Setting.Menu.Sound
                 HeightSpecification = LayoutParamPolicies.MatchParent,
                 Layout = new LinearLayout()
                 {
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Begin,
+                    VerticalAlignment = VerticalAlignment.Top,
                     LinearOrientation = LinearLayout.Orientation.Vertical,
                 },
             };
 
-            content.Add(picker);
-            content.Add(button);
+            RadioButtonGroup radioButtonGroup = new RadioButtonGroup();
+
+            var soundList = CreateSoundList();
+
+            for (int i = 0; i < soundList.Count; i++)
+            {
+                RadioButton radioButton = new RadioButton()
+                {
+                    ThemeChangeSensitive = true,
+                    Text = SoundNotificationManager.SettingMediaBasename(soundList[i].ToString()),
+                    IsSelected = i.Equals(GetNotificationSoundIndex(soundList)),
+                    Margin = new Extents(24, 0, 0, 0).SpToPx(),
+                };
+
+                radioButtonGroup.Add(radioButton);
+                content.Add(radioButton);
+            }
+
+            radioButtonGroup.SelectedChanged += (o, e) =>
+            {
+                SoundNotificationManager.SetNotificationSound(soundList[radioButtonGroup.SelectedIndex]);
+            };
 
             return content;
         }
