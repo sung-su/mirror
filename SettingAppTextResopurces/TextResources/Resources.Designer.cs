@@ -5646,6 +5646,15 @@ namespace SettingAppTextResopurces.TextResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rename.
+        /// </summary>
+        public static string IDS_ST_BUTTON_RENAME {
+            get {
+                return ResourceManager.GetString("IDS_ST_BUTTON_RENAME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reset.
         /// </summary>
         public static string IDS_ST_BUTTON_RESET {

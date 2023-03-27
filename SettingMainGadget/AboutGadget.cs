@@ -27,6 +27,7 @@ namespace Setting.Menu
         private TextLabel warning;
         private Button renameButton;
         private string deviceName;
+        private bool isLightTheme => ThemeManager.PlatformThemeId == "org.tizen.default-light-theme";
 
         public override Color ProvideIconColor() => new Color("#301A4B");
 
@@ -43,6 +44,7 @@ namespace Setting.Menu
                 HeightSpecification = LayoutParamPolicies.MatchParent,
                 ScrollingDirection = ScrollableBase.Direction.Vertical,
                 HideScrollbar = false,
+                ThemeChangeSensitive = true,
                 Layout = new LinearLayout()
                 {
                     LinearOrientation = LinearLayout.Orientation.Vertical,
@@ -165,7 +167,7 @@ namespace Setting.Menu
         {
             var content = new View()
             {
-                BackgroundColor = new Color("#FAFAFA"),
+                BackgroundColor = isLightTheme ? new Color("#FAFAFA") : new Color("#16131A"),
                 WidthSpecification = LayoutParamPolicies.WrapContent,
                 HeightSpecification = LayoutParamPolicies.WrapContent,
                 Layout = new LinearLayout()
@@ -199,9 +201,10 @@ namespace Setting.Menu
 
             //entry view
             PropertyMap placeholder = new PropertyMap();
-            placeholder.Add("color", new PropertyValue(Color.CadetBlue));
-            placeholder.Add("fontFamily", new PropertyValue("Serif"));
-            placeholder.Add("pointSize", new PropertyValue(25.0f));
+            placeholder.Add("color", new PropertyValue(isLightTheme ? new Color("#CACACA") : new Color("#666666")));
+            placeholder.Add("fontFamily", new PropertyValue("BreezeSans"));
+            placeholder.Add("pixelSize", new PropertyValue(24.SpToPx()));
+            placeholder.Add("text", new PropertyValue("Type text"));
 
             View entryView = new View()
             {
@@ -218,7 +221,7 @@ namespace Setting.Menu
                 FontFamily = "BreezeSans",
                 SizeWidth = 544.SpToPx(),
                 Placeholder = placeholder,
-
+                BackgroundColor = isLightTheme ? new Color("#FAFAFA") : new Color("#1D1A21"),
                 MaxLength = MAX_DEVICE_NAME_LEN,
                 EnableCursorBlink = true,
                 PixelSize = 24.SpToPx(),
@@ -284,23 +287,32 @@ namespace Setting.Menu
                 Padding = new Extents(32, 32, 0, 32).SpToPx(),
             };
 
-            renameButton = new Button()
+            var renameButtonStyle = ThemeManager.GetStyle("Tizen.NUI.Components.Button") as ButtonStyle;
+            renameButtonStyle.Size = new Size(252, 48).SpToPx();
+            renameButtonStyle.Margin = new Extents(61, 0, 0, 0).SpToPx();
+            renameButtonStyle.WidthResizePolicy = ResizePolicyType.FitToChildren;
+            renameButtonStyle.HeightResizePolicy = ResizePolicyType.FitToChildren;
+
+            renameButton = new Button(renameButtonStyle)
             {
-                Text = "Rename",
-                Size = new Size(252, 48).SpToPx(),
-                Margin = new Extents(61, 0, 0, 0).SpToPx(),
+                Text = Resources.IDS_ST_BUTTON_RENAME,
             };
             renameButton.Clicked += (object sender, ClickedEventArgs e) => {
                 Vconf.SetString(VconfDeviceName, textField.Text);
                 NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop();
             };
 
-            var cancelButton = new Button("Tizen.NUI.Components.Button.Outlined")
+            var cancelButtonStyle = ThemeManager.GetStyle("Tizen.NUI.Components.Button.Outlined") as ButtonStyle;
+            cancelButtonStyle.Size = new Size(252, 48).SpToPx();
+            cancelButtonStyle.Margin = new Extents(0, 61, 0, 0).SpToPx();
+            cancelButtonStyle.WidthResizePolicy = ResizePolicyType.FitToChildren;
+            cancelButtonStyle.HeightResizePolicy = ResizePolicyType.FitToChildren;
+
+            var cancelButton = new Button(cancelButtonStyle)
             {
                 Text = Resources.IDS_ST_BUTTON_CANCEL,
-                Size = new Size(252, 48).SpToPx(),
-                Margin = new Extents(0, 61, 0, 0).SpToPx(),
             };
+
             cancelButton.Clicked += (object sender, ClickedEventArgs e) => { NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop(); };
             buttons.Add(cancelButton);
             buttons.Add(renameButton);

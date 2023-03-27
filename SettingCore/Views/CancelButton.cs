@@ -6,7 +6,7 @@ namespace SettingCore.Views
     public class CancelButton : BaseComponent
     {
         private readonly ThemeColor BackgroundColors = new ThemeColor(Color.Transparent, Color.Transparent, Color.Transparent, Color.Transparent);
-        private readonly ThemeColor IconColors = new ThemeColor(new Color("#17234D"), new Color("#FDFDFD"), new Color("#FF6200"), new Color("#FF8A00"));
+        private readonly ThemeColor IconColors = new ThemeColor(new Color("#17234D"), new Color("#FF8A00"), new Color("#FF6200"), new Color("#FDFDFD"));
 
         private readonly ImageView icon;
         private readonly ImageVisual iconVisual;
