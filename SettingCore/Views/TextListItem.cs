@@ -14,6 +14,7 @@ namespace SettingCore.Views
         private readonly ThemeColor BackgroundColors = new ThemeColor(Color.Transparent, Color.Transparent, new Color("#FF6400").WithAlpha(0.16f), new Color("#FFFFFF").WithAlpha(0.16f));
         private readonly ThemeColor TextColors = new ThemeColor(new Color("#090E21"), new Color("#FDFDFD"), new Color("#FF6200"), new Color("#FF8A00"));
         private readonly ThemeColor NoActionsTextColors = new ThemeColor(new Color("#83868F"), new Color("#666666"), new Color("#83868F"), new Color("#666666"));
+        private readonly Color DisabledTextColor = new Color("#CACACA");
 
         public string Secondary
         {
@@ -24,6 +25,11 @@ namespace SettingCore.Views
                 {
                     Remove(secondary);
                     AddSecondaryText(value);
+
+                    if(!IsEnabled)
+                    {
+                        secondary.TextColor = DisabledTextColor;
+                    }
                 } 
             }
         }
@@ -66,7 +72,6 @@ namespace SettingCore.Views
             if(!String.IsNullOrEmpty(secondaryText))
             {
                 AddSecondaryText(secondaryText);
-
                 Relayout += TextListItem_Relayout;
             }
 
@@ -76,11 +81,43 @@ namespace SettingCore.Views
             }
 
             ThemeManager.ThemeChanged += (s, e) => OnChangeSelected(false);
+
+            ControlStateChangedEvent += TextListItem_ControlStateChangedEvent;
+        }
+
+        private void SetDisabledColors(bool isEnabled)
+        {
+            if(isEnabled)
+            {
+                primary.TextColor = TextColors.Normal;
+                secondary.TextColor = TextColors.Normal;
+                primarySubText.TextColor = TextColors.Normal;
+            }
+            else
+            {
+                primary.TextColor = DisabledTextColor;
+                secondary.TextColor = DisabledTextColor;
+                primarySubText.TextColor = DisabledTextColor;
+            }
+        }
+
+        private void TextListItem_ControlStateChangedEvent(object sender, ControlStateChangedEventArgs e)
+        {
+            if (e.PreviousState == ControlState.Disabled)
+            {
+                SetDisabledColors(true);
+            }
+
+            if (e.CurrentState == ControlState.Disabled)
+            {
+                SetDisabledColors(false);
+            }
         }
 
         private void TextListItem_Relayout(object sender, EventArgs e)
         {
             secondary.TextColor = isClickedEventEmpty ? NoActionsTextColors.Normal : TextColors.Normal;
+			SetDisabledColors(IsEnabled);
             Relayout -= TextListItem_Relayout;
         }
 
