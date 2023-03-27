@@ -248,7 +248,7 @@ namespace Setting.Menu
 
             View separator = new View
             {
-                Size = new Size(576, 1).SpToPx(),
+                Size = new Size(576.SpToPx(), 1),
                 BackgroundColor = new Color("#FF6200"),
                 Margin = new Extents(32, 82, 0, 16).SpToPx(),
             };
