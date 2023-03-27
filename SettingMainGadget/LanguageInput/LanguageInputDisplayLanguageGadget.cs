@@ -1,6 +1,5 @@
 ﻿using SettingAppTextResopurces.TextResources;
 using SettingMainGadget.LanguageInput;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
@@ -22,35 +21,32 @@ namespace Setting.Menu.LanguageInput
                 HeightSpecification = LayoutParamPolicies.MatchParent,
                 Layout = new LinearLayout()
                 {
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Begin,
+                    VerticalAlignment = VerticalAlignment.Top,
                     LinearOrientation = LinearLayout.Orientation.Vertical,
                 },
             };
 
-            var picker = new Picker()
+            RadioButtonGroup radioButtonGroup = new RadioButtonGroup();
+
+            for (int i = 0; i < LanguageInputDisplayLanguageManager.LanguageList.Count; i++)
             {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-            };
+                RadioButton radioButton = new RadioButton()
+                {
+                    ThemeChangeSensitive = true,
+                    Text = LanguageInputDisplayLanguageManager.LanguageList[i].GetName(),
+                    IsSelected = i.Equals(LanguageInputDisplayLanguageManager.GetDisplayLanguageIndex()),
+                    Margin = new Extents(24, 0, 0, 0).SpToPx(),
+                };
 
-            picker.DisplayedValues = new ReadOnlyCollection<string>(LanguageInputDisplayLanguageManager.LanguageList.Select(s => s.GetName()).ToList());
-            picker.MinValue = 0;
-            picker.MaxValue = LanguageInputDisplayLanguageManager.LanguageList.Count - 1;
-            picker.CurrentValue = LanguageInputDisplayLanguageManager.GetDisplayLanguageIndex();
+                radioButtonGroup.Add(radioButton);
+                content.Add(radioButton);
+            }
 
-            var button = new Button("Tizen.NUI.Components.Button.Outlined")
+            radioButtonGroup.SelectedChanged += (o, e) =>
             {
-                Text = Resources.IDS_ST_BUTTON_OK
+                LanguageInputDisplayLanguageManager.SetDisplayLanguage(LanguageInputDisplayLanguageManager.LanguageList[radioButtonGroup.SelectedIndex].GetLocale());
             };
-            button.Clicked += (bo, be) =>
-            {
-                LanguageInputDisplayLanguageManager.SetDisplayLanguage(LanguageInputDisplayLanguageManager.LanguageList[picker.CurrentValue].GetLocale());
-
-                NavigateBack();
-            };
-
-            content.Add(picker);
-            content.Add(button);
 
             return content;
         }
