@@ -1,10 +1,10 @@
 ﻿using SettingAppTextResopurces.TextResources;
 using SettingCore;
+using SettingCore.Customization;
 using SettingCore.Views;
-using SettingMain;
 using SettingMainGadget;
 using SettingMainGadget.DateTime;
-using System;
+using System.Linq;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
@@ -20,10 +20,15 @@ namespace Setting.Menu
 
         public override string ProvideTitle() => Resources.IDS_ST_BODY_DATE_AND_TIME;
 
-        private DefaultLinearItem mDateItem = null;
-        private DefaultLinearItem mTimeItem = null;
-        private DefaultLinearItem mTimezoneItem = null;
-        private SwitchListItem switchItem = null;
+        private Sections sections = new Sections();
+        private View content;
+
+        private TextListItem mDateItem = null;
+        private TextListItem mTimeItem = null;
+        private TextListItem mTimezoneItem = null;
+
+        private SwitchListItem autoUpdateItem = null;
+        private SwitchListItem timeFormatItem = null;
 
         protected override View OnCreate()
         {
@@ -33,21 +38,7 @@ namespace Setting.Menu
             SystemSettings.LocaleTimeZoneChanged += SystemSettings_LocaleTimeZoneChanged;
             SystemSettings.LocaleTimeFormat24HourSettingChanged += SystemSettings_LocaleTimeFormat24HourSettingChanged;
 
-            return CreateView();
-        }
-
-        protected override void OnDestroy()
-        {
-            SystemSettings.TimeChanged -= SystemSettings_TimeChanged;
-            SystemSettings.LocaleTimeZoneChanged -= SystemSettings_LocaleTimeZoneChanged;
-            SystemSettings.LocaleTimeFormat24HourSettingChanged -= SystemSettings_LocaleTimeFormat24HourSettingChanged;
-
-            base.OnDestroy();
-        }
-
-        private View CreateView()
-        {
-            var content = new ScrollableBase()
+            content = new ScrollableBase()
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
                 HeightSpecification = LayoutParamPolicies.MatchParent,
@@ -59,7 +50,30 @@ namespace Setting.Menu
                 },
             };
 
-            var autoUpdateItem = new SwitchListItem(Resources.IDS_ST_MBODY_AUTO_UPDATE, isSelected: DateTimeManager.AutoTimeUpdate);
+            CreateView();
+
+            return content;
+        }
+
+        protected override void OnDestroy()
+        {
+            SystemSettings.TimeChanged -= SystemSettings_TimeChanged;
+            SystemSettings.LocaleTimeZoneChanged -= SystemSettings_LocaleTimeZoneChanged;
+            SystemSettings.LocaleTimeFormat24HourSettingChanged -= SystemSettings_LocaleTimeFormat24HourSettingChanged;
+
+            base.OnDestroy();
+        }
+
+        private void CreateView()
+        {
+            sections.RemoveAllSectionsFromView(content);
+
+            if(autoUpdateItem != null)
+            {
+                content.Remove(autoUpdateItem);
+            }
+
+            autoUpdateItem = new SwitchListItem(Resources.IDS_ST_MBODY_AUTO_UPDATE, isSelected: DateTimeManager.AutoTimeUpdate);
             autoUpdateItem.Switch.SelectedChanged += (o, e) =>
             {
                 DateTimeManager.AutoTimeUpdate = e.IsSelected;
@@ -67,46 +81,61 @@ namespace Setting.Menu
             };
             content.Add(autoUpdateItem);
 
-            mDateItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_SET_DATE, System.DateTime.Now.ToString("MMM d, yyyy"));
+            mDateItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_SET_DATE, System.DateTime.Now.ToString("MMM d, yyyy"));
             if (mDateItem != null)
             {
                 mDateItem.Clicked += (o, e) =>
                 {
                     NavigateTo(MainMenuProvider.DateTime_SetDate);
                 };
-                content.Add(mDateItem);
+                sections.Add(MainMenuProvider.DateTime_SetDate, mDateItem);
             }
 
-            mTimeItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_SET_TIME, DateTimeManager.FormattedTime);
+            mTimeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_SET_TIME, DateTimeManager.FormattedTime);
             if (mTimeItem != null)
             {
                 mTimeItem.Clicked += (o, e) =>
                 {
                     NavigateTo(MainMenuProvider.DateTime_SetTime);
                 };
-                content.Add(mTimeItem);
+                sections.Add(MainMenuProvider.DateTime_SetTime, mTimeItem);
             }
 
-            mTimezoneItem = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_TIME_ZONE, DateTimeTimezoneManager.GetTimezoneName());
+            mTimezoneItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_TIME_ZONE, DateTimeTimezoneManager.GetTimezoneName());
             if (mTimezoneItem != null)
             {
                 mTimezoneItem.Clicked += (o, e) =>
                 {
                     NavigateTo(MainMenuProvider.DateTime_SetTimezone);
                 };
-                content.Add(mTimezoneItem);
+                sections.Add(MainMenuProvider.DateTime_SetTimezone, mTimezoneItem);
             }
 
-            switchItem = new SwitchListItem(Resources.IDS_ST_MBODY_24_HOUR_CLOCK, Resources.IDS_ST_SBODY_SHOW_THE_TIME_IN_24_HOUR_FORMAT_INSTEAD_OF_12_HOUR_HAM_PM_FORMAT, DateTimeManager.Is24HourFormat);
-            switchItem.Switch.SelectedChanged += (o, e) =>
+            var customization = GetCustomization().OrderBy(c => c.Order);
+            Logger.Debug($"customization: {customization.Count()}");
+            foreach (var cust in customization)
+            {
+                string visibility = cust.IsVisible ? "visible" : "hidden";
+                Logger.Verbose($"Customization: {cust.MenuPath} - {visibility} - {cust.Order}");
+                if (cust.IsVisible && sections.TryGetValue(cust.MenuPath, out View row))
+                {
+                    content.Add(row);
+                }
+            }
+
+            if (timeFormatItem != null)
+            {
+                content.Remove(timeFormatItem);
+            }
+
+            timeFormatItem = new SwitchListItem(Resources.IDS_ST_MBODY_24_HOUR_CLOCK, Resources.IDS_ST_SBODY_SHOW_THE_TIME_IN_24_HOUR_FORMAT_INSTEAD_OF_12_HOUR_HAM_PM_FORMAT, DateTimeManager.Is24HourFormat);
+            timeFormatItem.Switch.SelectedChanged += (o, e) =>
             {
                 DateTimeManager.Is24HourFormat = e.IsSelected;
             };
-            content.Add(switchItem);
+            content.Add(timeFormatItem);
 
             ApplyAutomaticTimeUpdate();
-
-            return content;
         }
 
         private void ApplyAutomaticTimeUpdate()
@@ -119,21 +148,21 @@ namespace Setting.Menu
         private void SystemSettings_TimeChanged(object sender, Tizen.System.TimeChangedEventArgs e)
         {
             if (mDateItem != null)
-                mDateItem.SubText = System.DateTime.Now.ToString("MMM d, yyyy");
+                mDateItem.Secondary = System.DateTime.Now.ToString("MMM d, yyyy");
             if (mTimeItem != null)
-                mTimeItem.SubText = DateTimeManager.FormattedTime;
+                mTimeItem.Secondary = DateTimeManager.FormattedTime;
         }
 
         private void SystemSettings_LocaleTimeZoneChanged(object sender, LocaleTimeZoneChangedEventArgs e)
         {
             if (mTimezoneItem != null)
-                mTimezoneItem.SubText = DateTimeTimezoneManager.GetTimezoneName();
+                mTimezoneItem.Secondary = DateTimeTimezoneManager.GetTimezoneName();
         }
 
         private void SystemSettings_LocaleTimeFormat24HourSettingChanged(object sender, LocaleTimeFormat24HourSettingChangedEventArgs e)
         {
             if (mTimeItem != null)
-                mTimeItem.SubText = DateTimeManager.FormattedTime;
+                mTimeItem.Secondary = DateTimeManager.FormattedTime;
         }
     }
 }
