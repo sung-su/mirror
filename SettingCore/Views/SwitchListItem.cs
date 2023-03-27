@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
@@ -11,6 +10,7 @@ namespace SettingCore.Views
     {
         private readonly ThemeColor BackgroundColors = new ThemeColor(Color.Transparent, Color.Transparent, new Color("#FF6400").WithAlpha(0.16f), new Color("#FFFFFF").WithAlpha(0.16f));
         private readonly ThemeColor TextColors = new ThemeColor(new Color("#090E21"), new Color("#FDFDFD"), new Color("#FF6200"), new Color("#FF8A00"));
+        private readonly ThemeColor SubTextColors = new ThemeColor(new Color("#83868F"), new Color("#83868F"), new Color("#666666"), new Color("#666666"));
 
         public Switch Switch { get; private set; }
         private TextLabel primary = new TextLabel();
@@ -53,7 +53,7 @@ namespace SettingCore.Views
                 primarySubText = new TextLabel(subText)
                 {
                     AccessibilityHidden = true,
-                    TextColor = TextColors.Normal,
+                    TextColor = SubTextColors.Normal,
                     PixelSize = 24.SpToPx(),
                     Ellipsis = true,
                     LineWrapMode = LineWrapMode.Mixed,
@@ -90,14 +90,14 @@ namespace SettingCore.Views
                 BackgroundColor = BackgroundColors.Selected;
 
                 primary.TextColor = TextColors.Selected;
-                primarySubText.TextColor = TextColors.Selected;
+                primarySubText.TextColor = SubTextColors.Selected;
             }
             else
             {
                 BackgroundColor = BackgroundColors.Normal;
 
                 primary.TextColor = TextColors.Normal;
-                primarySubText.TextColor = TextColors.Normal;
+                primarySubText.TextColor = SubTextColors.Normal;
             }
         }
 
