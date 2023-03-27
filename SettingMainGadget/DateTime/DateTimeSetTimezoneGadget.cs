@@ -39,9 +39,11 @@ namespace Setting.Menu.DateTime
             {
                 RadioButton radioButton = new RadioButton()
                 {
+                    ThemeChangeSensitive = true,
                     ItemHorizontalAlignment = HorizontalAlignment.Begin,
                     Text = timeZone.DisplayName,
                     IsSelected = SystemSettings.LocaleTimeZone == timeZone.Info.Id,
+                    Margin = new Extents(24, 0, 0, 0).SpToPx(),
                 };
 
                 radioButtonGroup.Add(radioButton);
