@@ -23,6 +23,10 @@ namespace Setting.Menu
 
         private Sections sections = new Sections();
         private View content;
+        private TextField textField;
+        private TextLabel warning;
+        private Button renameButton;
+        private string deviceName;
 
         public override Color ProvideIconColor() => new Color("#301A4B");
 
@@ -54,6 +58,7 @@ namespace Setting.Menu
         protected override void OnDestroy()
         {
             SystemSettings.DeviceNameChanged -= SystemSettings_DeviceNameChanged;
+            textField.TextChanged -= TextField_TextChanged;
 
             base.OnDestroy();
         }
@@ -61,6 +66,7 @@ namespace Setting.Menu
         private void SystemSettings_DeviceNameChanged(object sender, DeviceNameChangedEventArgs e)
         {
             Logger.Verbose($"Device name changed: {e.Value}");
+            deviceName = e.Value;
             renameDevice.Secondary = e.Value;
         }
 
@@ -86,15 +92,15 @@ namespace Setting.Menu
             var deviceInfo = new TextHeaderListItem(Resources.IDS_ST_BODY_DEVICE_INFO);
             sections.Add(MainMenuProvider.About_DeviceInfo, deviceInfo);
 
-            if (Vconf.TryGetString(VconfDeviceName, out string name))
+            if (Vconf.TryGetString(VconfDeviceName, out deviceName))
             {
                 Logger.Warn($"Could not get vconf value: {VconfDeviceName}");
             }
 
-            renameDevice = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_NAME, name);
+            renameDevice = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_NAME, deviceName);
             renameDevice.Clicked += (s, e) =>
             {
-                ShowRenamePopup(name);
+                ShowRenamePopup(deviceName);
             };
             sections.Add(MainMenuProvider.About_RenameDevice, renameDevice);
 
@@ -161,8 +167,8 @@ namespace Setting.Menu
             var content = new View()
             {
                 BackgroundColor = new Color("#FAFAFA"),
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                HeightSpecification = LayoutParamPolicies.MatchParent,
+                WidthSpecification = LayoutParamPolicies.WrapContent,
+                HeightSpecification = LayoutParamPolicies.WrapContent,
                 Layout = new LinearLayout()
                 {
                     HorizontalAlignment = HorizontalAlignment.Center,
@@ -170,50 +176,172 @@ namespace Setting.Menu
                 },
             };
 
-            var textTitle = SettingItemCreator.CreateItemTitle(Resources.IDS_ST_HEADER_RENAME_DEVICE);
-            textTitle.Margin = new Extents(24, 0, 0, 0).SpToPx();
+            //title text
+            var textTitle = new TextLabel(Resources.IDS_ST_HEADER_RENAME_DEVICE)
+            {
+                FontFamily = "BreezeSans",
+                PixelSize = 24.SpToPx(),
+                Margin = new Extents(0, 0, 24, 16).SpToPx(),
+            };
+
             content.Add(textTitle);
 
+            // main text
             var textSubTitle = new TextLabel(Resources.IDS_ST_BODY_DEVICE_NAMES_ARE_DISPLAYED)
             {
+                FontFamily = "BreezeSans",
+                PixelSize = 24.SpToPx(),
+                SizeWidth = 618.SpToPx(),
                 MultiLine = true,
-                LineWrapMode = LineWrapMode.Character,
-                Size = new Size(Window.Instance.WindowSize.Width - 20 * 2, 100),
-                Margin = new Extents(24, 24, 0, 0).SpToPx(),
+                LineWrapMode = LineWrapMode.Word,
+                Margin = new Extents(24, 24, 0, 24).SpToPx(),
             };
             content.Add(textSubTitle);
 
+            //entry view
             PropertyMap placeholder = new PropertyMap();
             placeholder.Add("color", new PropertyValue(Color.CadetBlue));
             placeholder.Add("fontFamily", new PropertyValue("Serif"));
             placeholder.Add("pointSize", new PropertyValue(25.0f));
 
-            var textField = new TextField
+            View entryView = new View()
             {
-                BackgroundColor = Color.White,
-
+                WidthSpecification = LayoutParamPolicies.WrapContent,
+                HeightSpecification = LayoutParamPolicies.WrapContent,
+                Layout = new LinearLayout()
+                {
+                    LinearOrientation = LinearLayout.Orientation.Horizontal,
+                },
+                Margin = new Extents(48, 50, 0, 7).SpToPx(),
+            };
+            textField = new TextField
+            {
+                FontFamily = "BreezeSans",
+                SizeWidth = 544.SpToPx(),
                 Placeholder = placeholder,
 
                 MaxLength = MAX_DEVICE_NAME_LEN,
                 EnableCursorBlink = true,
+                PixelSize = 24.SpToPx(),
                 Text = name,
+                Margin = new Extents(0, 26, 0, 0).SpToPx(),
             };
-            content.Add(textField);
+            textField.TextChanged += TextField_TextChanged;
+            CancelButton cancelTextButton = new CancelButton()
+            {
+                Margin = new Extents(10, 10, 10, 10).SpToPx(),
+            };
+            cancelTextButton.Clicked += cancelTextButton_Clicked;
 
-            var button = new Button()
+            entryView.Add(textField);
+            entryView.Add(cancelTextButton);
+            content.Add(entryView);
+
+            // separator
+            View separatorWrapper = new View()
             {
-                Text = Resources.IDS_ST_BUTTON_OK,
-                Margin = new Extents(0, 0, 0, 32).SpToPx(),
+                Layout = new LinearLayout()
+                {
+                    LinearOrientation = LinearLayout.Orientation.Vertical,
+                },
             };
-            button.Clicked += (o, e) =>
+
+            View separator = new View
             {
-                // Change Device Name
-                Vconf.SetString("db/setting/device_name", textField.Text);
+                Size = new Size(576, 1).SpToPx(),
+                BackgroundColor = new Color("#FF6200"),
+                Margin = new Extents(32, 82, 0, 16).SpToPx(),
+            };
+            separatorWrapper.Add(separator);
+            content.Add(separatorWrapper);
+
+            // warn label
+            View warningWrapper = new View()
+            {
+                WidthSpecification = LayoutParamPolicies.WrapContent,
+                HeightSpecification = LayoutParamPolicies.WrapContent,
+                Layout = new LinearLayout()
+                {
+                    LinearOrientation = LinearLayout.Orientation.Vertical,
+                },
+            };
+
+            warning = new TextLabel(Resources.IDS_ST_TPOP_MAXIMUM_NUMBER_OF_CHARACTERS_REACHED)
+            {
+                SizeWidth = 618.SpToPx(),
+                PixelSize = 16.SpToPx(),
+                TextColor = new Color("#A40404"),
+                Margin = new Extents(32, 40, 0, 25).SpToPx(),
+            };
+            warningWrapper.Add(warning);
+            content.Add(warningWrapper);
+
+            // buttons
+            View buttons = new View()
+            {
+                WidthSpecification = LayoutParamPolicies.WrapContent,
+                HeightSpecification = LayoutParamPolicies.WrapContent,
+                Layout = new LinearLayout()
+                {
+                    LinearOrientation = LinearLayout.Orientation.Horizontal,
+                },
+                Padding = new Extents(32, 32, 0, 32).SpToPx(),
+            };
+
+            renameButton = new Button()
+            {
+                Text = "Rename",
+                Size = new Size(252, 48).SpToPx(),
+                Margin = new Extents(61, 0, 0, 0).SpToPx(),
+            };
+            renameButton.Clicked += (object sender, ClickedEventArgs e) => {
+                Vconf.SetString(VconfDeviceName, textField.Text);
                 NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop();
             };
-            content.Add(button);
+
+            var cancelButton = new Button("Tizen.NUI.Components.Button.Outlined")
+            {
+                Text = Resources.IDS_ST_BUTTON_CANCEL,
+                Size = new Size(252, 48).SpToPx(),
+                Margin = new Extents(0, 61, 0, 0).SpToPx(),
+            };
+            cancelButton.Clicked += (object sender, ClickedEventArgs e) => { NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop(); };
+            buttons.Add(cancelButton);
+            buttons.Add(renameButton);
+
+            content.Add(buttons);
+            checkNameLength(textField);
 
             RoundedDialogPage.ShowDialog(content);
+        }
+
+        private void TextField_TextChanged(object sender, TextField.TextChangedEventArgs e)
+        {
+            checkNameLength(e.TextField);
+        }
+
+        private void checkNameLength(TextField textField)
+        {
+            if (textField.Text.Length >= MAX_DEVICE_NAME_LEN)
+            {
+                warning.Show();
+                renameButton.IsEnabled = false;
+            }
+            else
+            {
+                warning.Hide();
+                renameButton.IsEnabled = true;
+            }
+
+            if (textField.Text == string.Empty)
+            {
+                renameButton.IsEnabled = false;
+            }
+        }
+
+        private void cancelTextButton_Clicked(object sender, ClickedEventArgs e)
+        {
+            textField.Text = string.Empty;
         }
     }
 }
