@@ -1,6 +1,7 @@
 ﻿using SettingAppTextResopurces.TextResources;
 using SettingCore;
 using SettingCore.Customization;
+using SettingCore.Views;
 using SettingMainGadget;
 using SettingMainGadget.Sound;
 using System.Collections.Generic;
@@ -18,8 +19,8 @@ namespace Setting.Menu
         private View content;
         private Sections sections = new Sections();
 
-        private DefaultLinearItem soundMode;
-        private DefaultLinearItem notificationSound;
+        private TextListItem soundMode;
+        private TextListItem notificationSound;
 
         public override Color ProvideIconColor() => new Color("#DB3069");
 
@@ -122,7 +123,7 @@ namespace Setting.Menu
             // section: sound mode
 
             string soundModeName = SoundmodeManager.GetSoundmodeName(SoundmodeManager.GetSoundmode());
-            soundMode = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_HEADER_SOUND_MODE, soundModeName);
+            soundMode = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_HEADER_SOUND_MODE, soundModeName);
             if (soundMode != null)
             {
                 soundMode.Clicked += (o, e) =>
@@ -135,7 +136,7 @@ namespace Setting.Menu
             // section: notification sound
 
             string notificationSoundName = SoundNotificationManager.GetNotificationSoundName();
-            notificationSound = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_NOTIFICATIONS, notificationSoundName);
+            notificationSound = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_NOTIFICATIONS, notificationSoundName);
             if (notificationSound != null)
             {
                 notificationSound.Clicked += (o, e) =>
@@ -147,7 +148,7 @@ namespace Setting.Menu
 
             // section: other sounds
 
-            var otherSounds = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_MBODY_OTHER_SOUNDS);
+            var otherSounds = TextListItem.CreatePrimaryTextItem(Resources.IDS_ST_MBODY_OTHER_SOUNDS);
             if (otherSounds != null)
             {
                 otherSounds.Clicked += (o, e) =>
@@ -165,69 +166,24 @@ namespace Setting.Menu
 
             // section: media
 
-            var bodyMediaSection = new View
-            {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                Layout = new LinearLayout
-                {
-                    LinearOrientation = LinearLayout.Orientation.Vertical,
-                },
-            };
-
-            var bodyMedia = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_MEDIA);
-            bodyMediaSection.Add(bodyMedia);
-
-            var slideritem = SettingMain.SettingItemCreator.CreateSliderItem("MEDIA", soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.Media));
-            if (slideritem != null)
-            {
-                slideritem.mSlider.SlidingFinished += OnMediaSlidingFinished;
-                bodyMediaSection.Add(slideritem);
-            }
-            sections.Add(MainMenuProvider.Sound_MediaSlider, bodyMediaSection);
+            var mediaSlider = new SliderListItem(Resources.IDS_ST_BODY_MEDIA, soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.Media));
+            mediaSlider.Slider.SlidingFinished += OnMediaSlidingFinished;
+            mediaSlider.Margin = new Extents(0, 0, 16, 0).SpToPx();
+            sections.Add(MainMenuProvider.Sound_MediaSlider, mediaSlider);
 
             // section: notification
 
-            var notificationSection = new View
-            {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                Layout = new LinearLayout
-                {
-                    LinearOrientation = LinearLayout.Orientation.Vertical,
-                },
-            };
-
-            var notifications = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_NOTIFICATIONS);
-            notificationSection.Add(notifications);
-
-            slideritem = SettingMain.SettingItemCreator.CreateSliderItem("NOTI", soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.Notification));
-            if (slideritem != null)
-            {
-                slideritem.mSlider.ValueChanged += OnNofificationSlider_ValueChanged;
-                notificationSection.Add(slideritem);
-            }
-            sections.Add(MainMenuProvider.Sound_NotificationSlider, notificationSection);
+            var notificationSlider = new SliderListItem(Resources.IDS_ST_BODY_NOTIFICATIONS, soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.Notification));
+            notificationSlider.Slider.ValueChanged += OnNofificationSlider_ValueChanged;
+            notificationSlider.Margin = new Extents(0, 0, 16, 0).SpToPx();
+            sections.Add(MainMenuProvider.Sound_NotificationSlider, notificationSlider);
 
             // section: system
 
-            var systemSection = new View
-            {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                Layout = new LinearLayout
-                {
-                    LinearOrientation = LinearLayout.Orientation.Vertical,
-                },
-            };
-
-            var bodySystem = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_SYSTEM);
-            systemSection.Add(bodySystem);
-
-            slideritem = SettingMain.SettingItemCreator.CreateSliderItem("SYSTEM", soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.System));
-            if (slideritem != null)
-            {
-                slideritem.mSlider.ValueChanged += OnSystemSlider_ValueChanged;
-                systemSection.Add(slideritem);
-            }
-            sections.Add(MainMenuProvider.Sound_SystemSlider, systemSection);
+            var systemSlider = new SliderListItem(Resources.IDS_ST_BODY_SYSTEM, soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.System));
+            systemSlider.Slider.ValueChanged += OnSystemSlider_ValueChanged;
+            systemSlider.Margin = new Extents(0, 0, 16, 0).SpToPx();
+            sections.Add(MainMenuProvider.Sound_SystemSlider, systemSlider);
 
             // add only visible sections to content view in required order
             var customization = GetCustomization().OrderBy(c => c.Order);
@@ -251,13 +207,13 @@ namespace Setting.Menu
         private void SystemSettings_SoundSilentModeSettingChanged(object sender, SoundSilentModeSettingChangedEventArgs e)
         {
             if (soundMode != null)
-                soundMode.SubText = SoundmodeManager.GetSoundmodeName(SoundmodeManager.GetSoundmode());
+                soundMode.Secondary = SoundmodeManager.GetSoundmodeName(SoundmodeManager.GetSoundmode());
         }
 
         private void SystemSettings_VibrationChanged(object sender, VibrationChangedEventArgs e)
         {
             if (soundMode != null)
-                soundMode.SubText = SoundmodeManager.GetSoundmodeName(SoundmodeManager.GetSoundmode());
+                soundMode.Secondary = SoundmodeManager.GetSoundmodeName(SoundmodeManager.GetSoundmode());
         }
 
         private static void OnMediaSlidingFinished(object sender, SliderSlidingFinishedEventArgs e)
@@ -294,7 +250,7 @@ namespace Setting.Menu
         private void SystemSettings_NotificationSoundChanged(object sender, SoundNotificationChangedEventArgs e)
         {
             if (notificationSound != null)
-                notificationSound.SubText = SoundNotificationManager.GetNotificationSoundName();
+                notificationSound.Secondary = SoundNotificationManager.GetNotificationSoundName();
         }
     }
 }
