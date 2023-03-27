@@ -5,7 +5,7 @@ namespace SettingCore.Views
 {
     public class CancelButton : BaseComponent
     {
-        private readonly ThemeColor BackgroundColors = new ThemeColor(Color.Transparent, Color.Transparent, new Color("#FF6200").WithAlpha(0.1f), Color.White.WithAlpha(0.16f));
+        private readonly ThemeColor BackgroundColors = new ThemeColor(Color.Transparent, Color.Transparent, Color.Transparent, Color.Transparent);
         private readonly ThemeColor IconColors = new ThemeColor(new Color("#17234D"), new Color("#FDFDFD"), new Color("#FF6200"), new Color("#FF8A00"));
 
         private readonly ImageView icon;
@@ -15,7 +15,7 @@ namespace SettingCore.Views
         {
             BackgroundColor = BackgroundColors.Normal;
             CornerRadius = 8f.SpToPx();
-            Size = new Size(12, 12).SpToPx();
+            Size = new Size(32, 32).SpToPx();
 
             iconVisual = new ImageVisual
             {

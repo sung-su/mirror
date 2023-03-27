@@ -58,7 +58,6 @@ namespace Setting.Menu
         protected override void OnDestroy()
         {
             SystemSettings.DeviceNameChanged -= SystemSettings_DeviceNameChanged;
-            textField.TextChanged -= TextField_TextChanged;
 
             base.OnDestroy();
         }
@@ -227,10 +226,7 @@ namespace Setting.Menu
                 Margin = new Extents(0, 26, 0, 0).SpToPx(),
             };
             textField.TextChanged += TextField_TextChanged;
-            CancelButton cancelTextButton = new CancelButton()
-            {
-                Margin = new Extents(10, 10, 10, 10).SpToPx(),
-            };
+            CancelButton cancelTextButton = new CancelButton();
             cancelTextButton.Clicked += cancelTextButton_Clicked;
 
             entryView.Add(textField);
