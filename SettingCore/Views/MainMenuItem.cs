@@ -47,6 +47,7 @@ namespace SettingCore.Views
 
             titleTextLabel = new TextLabel
             {
+                AccessibilityHidden = true,
                 Text = title,
                 PixelSize = 24.SpToPx(),
                 TextColor = TextColors.Normal,
@@ -55,6 +56,8 @@ namespace SettingCore.Views
 
             Add(iconBackground);
             Add(titleTextLabel);
+
+            AccessibilityRole = Role.MenuItem;
 
             ThemeManager.ThemeChanged += (s, e) => { OnChangeSelected(false); };
         }
@@ -79,6 +82,11 @@ namespace SettingCore.Views
 
                 titleTextLabel.TextColor = TextColors.Normal;
             }
+        }
+
+        protected override string AccessibilityGetName()
+        {
+            return titleTextLabel.Text;
         }
     }
 }
