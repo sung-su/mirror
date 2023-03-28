@@ -8,14 +8,28 @@ namespace SettingCore.Customization
 {
     internal class GadgetProvider
     {
-        private const string SettingGadgetPackagePrefix = "org.tizen.setting";
+        private static readonly string[] SettingGadgetPackagePrefixes = new string[]
+        {
+            "org.tizen.setting",
+            "org.tizen.cssetting",
+        };
 
         public static IEnumerable<SettingGadgetInfo> Gadgets => getSettingGadgetInfos();
 
         private static IEnumerable<SettingGadgetInfo> getSettingGadgetInfos()
         {
             var allGadgetPackages = NUIGadgetManager.GetGadgetInfos();
-            var settingGadgetPackages = allGadgetPackages.Where(pkg => pkg.PackageId.StartsWith(SettingGadgetPackagePrefix));
+
+            static bool StartsWithAny(string packageId, IEnumerable<string> prefixes)
+            {
+                foreach (var prefix in prefixes)
+                {
+                    if (packageId.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase))
+                        return true;
+                }
+                return false;
+            }
+            var settingGadgetPackages = allGadgetPackages.Where(pkg => StartsWithAny(pkg.PackageId, SettingGadgetPackagePrefixes));
 
             Logger.Debug($"all gadget packages: {allGadgetPackages.Count()}, setting gadget packages: {settingGadgetPackages.Count()}");
             foreach (var pkg in settingGadgetPackages)
