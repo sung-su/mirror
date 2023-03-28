@@ -24,6 +24,9 @@ namespace SettingMainGadget
         public static string DateTime_SetTimezone = "DateTime.SetTimezone";
         public static string Language = "Language";
         public static string Language_Display = "Language.DisplayLanguage";
+        public static string Language_KeyboardHeader = "Language.KeyboardHeader";
+        public static string Language_InputAssistanceHeader = "Language.InputAssistanceHeader";
+        public static string Language_BodySpeach = "Language.BodySpeach";
         public static string About = "About";
         public static string About_ManageCertificates = "About.ManageCertificates";
         public static string About_OpenSourceLicenses = "About.OpenSourceLicenses";
@@ -67,6 +70,14 @@ namespace SettingMainGadget
                 new SettingMenu(path: DateTime_SetTimezone, defaultOrder: 53, type: typeof(Setting.Menu.DateTime.DateTimeSetTimezoneGadget)),
                 new SettingMenu(path: Language, defaultOrder: 60, type: typeof(Setting.Menu.LanguageInputGadget)),
                 new SettingMenu(path: Language_Display, defaultOrder: 61, type: typeof(Setting.Menu.LanguageInput.LanguageInputDisplayLanguageGadget)),
+                new SettingMenu(path: Language_KeyboardHeader, defaultOrder: 62),
+                new SettingMenu(path: Language_InputMethod, defaultOrder: 63),
+                new SettingMenu(path: Language_InputAssistanceHeader, defaultOrder: 64),
+                new SettingMenu(path: Language_AutoFill, defaultOrder: 65),
+                new SettingMenu(path: Language_BodySpeach, defaultOrder: 66),
+                new SettingMenu(path: Language_VoiceControl, defaultOrder: 67),
+                new SettingMenu(path: Language_TTS, defaultOrder: 68),
+                new SettingMenu(path: Language_STT, defaultOrder: 69),
                 new SettingMenu(path: About, defaultOrder: 70, type: typeof(Setting.Menu.AboutGadget)),
                 new SettingMenu(path: About_ManageCertificates, defaultOrder: 71),
                 new SettingMenu(path: About_OpenSourceLicenses, defaultOrder: 72, type: typeof(Setting.Menu.AboutLegalInfoGadget)),

@@ -1,5 +1,7 @@
 ﻿using SettingAppTextResopurces.TextResources;
 using SettingCore;
+using SettingCore.Customization;
+using SettingCore.Views;
 using SettingMainGadget;
 using SettingMainGadget.LanguageInput;
 using System.Collections.Generic;
@@ -20,9 +22,8 @@ namespace Setting.Menu
 
         public override string ProvideTitle() => Resources.IDS_ST_HEADER_LANGUAGE_AND_INPUT;
 
-        private DefaultLinearItem displayLanguageItem;
         private View content;
-        private List<View> contentItems = new List<View>();
+        private Sections sections = new Sections();
 
         protected override View OnCreate()
         {
@@ -54,84 +55,95 @@ namespace Setting.Menu
 
         private void CreateView()
         {
-            foreach (var items in contentItems)
-            {
-                content.Remove(items);
-            }
-            contentItems.Clear();
-
-            displayLanguageItem = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_HEADER_DISPLAY_LANGUAGE, LanguageInputDisplayLanguageManager.GetDisplayLanguageName());
+            sections.RemoveAllSectionsFromView(content);
+            TextListItem displayLanguageItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_HEADER_DISPLAY_LANGUAGE, LanguageInputDisplayLanguageManager.GetDisplayLanguageName());
             if (displayLanguageItem != null)
             {
                 displayLanguageItem.Clicked += (o, e) =>
                 {
                     NavigateTo(MainMenuProvider.Language_Display);
                 };
-                contentItems.Add(displayLanguageItem);
+                sections.Add(MainMenuProvider.Language_Display, displayLanguageItem);
             }
 
-            contentItems.Add(SettingMain.SettingItemCreator.CreateItemStatic(""));
-            contentItems.Add(SettingMain.SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_KEYBOARD));
-
-            var item = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_KEYBOARD);
-            if (item != null)
+            TextHeaderListItem keyboardHeaderItem = new TextHeaderListItem(Resources.IDS_ST_BODY_KEYBOARD);
+            if (keyboardHeaderItem != null)
             {
-                item.Clicked += (o, e) =>
+                sections.Add(MainMenuProvider.Language_KeyboardHeader, keyboardHeaderItem);
+            }
+
+            TextListItem keyboardItem = TextListItem.CreatePrimaryTextItem(Resources.IDS_ST_BODY_KEYBOARD);
+            if (keyboardItem != null)
+            {
+                keyboardItem.Clicked += (o, e) =>
                 {
                     NavigateTo(MainMenuProvider.Language_InputMethod);
                 };
-                contentItems.Add(item);
+                sections.Add(MainMenuProvider.Language_InputMethod, keyboardItem);
             }
 
-            contentItems.Add(SettingMain.SettingItemCreator.CreateItemStatic(""));
-            contentItems.Add(SettingMain.SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_INPUT_ASSISTANCE));
-
-            item = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_AUTOFILL_SERVICE);
-            if (item != null)
+            TextHeaderListItem inputAssistanceHeaderItem = new TextHeaderListItem(Resources.IDS_ST_BODY_INPUT_ASSISTANCE);
+            if (inputAssistanceHeaderItem != null)
             {
-                item.Clicked += (o, e) =>
+                sections.Add(MainMenuProvider.Language_InputAssistanceHeader, inputAssistanceHeaderItem);
+            }
+
+            TextListItem autofillServiceItem = TextListItem.CreatePrimaryTextItem(Resources.IDS_ST_BODY_AUTOFILL_SERVICE);
+            if (autofillServiceItem != null)
+            {
+                autofillServiceItem.Clicked += (o, e) =>
                 {
                     NavigateTo(MainMenuProvider.Language_AutoFill);
                 };
-                contentItems.Add(item);
+                sections.Add(MainMenuProvider.Language_AutoFill, autofillServiceItem);
             }
 
-            contentItems.Add(SettingMain.SettingItemCreator.CreateItemStatic(""));
-            contentItems.Add(SettingMain.SettingItemCreator.CreateItemStatic(Resources.IDS_ST_BODY_SPEECH));
-
-            item = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_VOICE_BODY_VOICE_CONTROL_ABB2);
-            if (item != null)
+            TextHeaderListItem bodySpeachHeaderItem = new TextHeaderListItem(Resources.IDS_ST_BODY_SPEECH);
+            if (bodySpeachHeaderItem != null)
             {
-                item.Clicked += (o, e) =>
+                sections.Add(MainMenuProvider.Language_BodySpeach, bodySpeachHeaderItem);
+            }
+
+            TextListItem voiceControl = TextListItem.CreatePrimaryTextItem(Resources.IDS_VOICE_BODY_VOICE_CONTROL_ABB2);
+            if (voiceControl != null)
+            {
+                voiceControl.Clicked += (o, e) =>
                 {
                     NavigateTo(MainMenuProvider.Language_VoiceControl);
                 };
-                contentItems.Add(item);
+                sections.Add(MainMenuProvider.Language_VoiceControl, voiceControl);
             }
 
-            item = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_VOICE_HEADER_TEXT_TO_SPEECH_HTTS);
-            if (item != null)
+            TextListItem languageTTS = TextListItem.CreatePrimaryTextItem(Resources.IDS_VOICE_HEADER_TEXT_TO_SPEECH_HTTS);
+            if (languageTTS != null)
             {
-                item.Clicked += (o, e) =>
+                languageTTS.Clicked += (o, e) =>
                 {
                     NavigateTo(MainMenuProvider.Language_TTS);
                 };
-                contentItems.Add(item);
+                sections.Add(MainMenuProvider.Language_TTS, languageTTS);
             }
 
-            item = SettingMain.SettingItemCreator.CreateItemWithCheck(Resources.IDS_VOICE_HEADER_SPEECH_TO_TEXT_HSTT);
-            if (item != null)
+            TextListItem languageSTT = TextListItem.CreatePrimaryTextItem(Resources.IDS_VOICE_HEADER_SPEECH_TO_TEXT_HSTT);
+            if (languageTTS != null)
             {
-                item.Clicked += (o, e) =>
+                languageTTS.Clicked += (o, e) =>
                 {
                     NavigateTo(MainMenuProvider.Language_STT);
                 };
-                contentItems.Add(item);
+                sections.Add(MainMenuProvider.Language_STT, languageSTT);
             }
 
-            foreach (var view in contentItems)
+            var customization = GetCustomization().OrderBy(c => c.Order);
+            Logger.Debug($"customization: {customization.Count()}");
+            foreach (var cust in customization)
             {
-                content.Add(view);
+                string visibility = cust.IsVisible ? "visible" : "hidden";
+                Logger.Verbose($"Customization: {cust.MenuPath} - {visibility} - {cust.Order}");
+                if (cust.IsVisible && sections.TryGetValue(cust.MenuPath, out View row))
+                {
+                    content.Add(row);
+                }
             }
         }
 
