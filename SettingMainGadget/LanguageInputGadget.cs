@@ -27,6 +27,8 @@ namespace Setting.Menu
 
         protected override View OnCreate()
         {
+            base.OnCreate();
+
             SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
 
             content = new ScrollableBase
@@ -51,6 +53,12 @@ namespace Setting.Menu
             SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
 
             base.OnDestroy();
+        }
+
+        protected override void OnCustomizationUpdate(IEnumerable<MenuCustomizationItem> items)
+        {
+            Logger.Verbose($"{nameof(DisplayGadget)} got customization with {items.Count()} items. Recreating view.");
+            CreateView();
         }
 
         private void CreateView()
@@ -125,9 +133,9 @@ namespace Setting.Menu
             }
 
             TextListItem languageSTT = TextListItem.CreatePrimaryTextItem(Resources.IDS_VOICE_HEADER_SPEECH_TO_TEXT_HSTT);
-            if (languageTTS != null)
+            if (languageSTT != null)
             {
-                languageTTS.Clicked += (o, e) =>
+                languageSTT.Clicked += (o, e) =>
                 {
                     NavigateTo(MainMenuProvider.Language_STT);
                 };
