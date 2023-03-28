@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SettingAppTextResopurces\SettingAppTextResopurces.csproj" />
     <ProjectReference Include="..\SettingCore\SettingCore.csproj" />
   </ItemGroup>
 

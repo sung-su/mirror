@@ -24,7 +24,7 @@ using Tizen.Applications;
 using Tizen.Telephony;
 using Tizen.Network.Bluetooth;
 
-using SettingAppTextResopurces.TextResources;
+using SettingCore.TextResources;
 
 namespace SettingMain
 {

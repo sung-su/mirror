@@ -1,5 +1,5 @@
-﻿using SettingAppTextResopurces.TextResources;
 using SettingCore.Views;
+using SettingCore.TextResources;
 using SettingMainGadget;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;

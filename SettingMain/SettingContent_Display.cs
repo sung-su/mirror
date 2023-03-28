@@ -22,7 +22,7 @@ using Tizen.NUI.Components;
 using Tizen.Applications;
 using Tizen.System;
 
-using SettingAppTextResopurces.TextResources;
+using SettingCore.TextResources;
 
 namespace SettingMain
 {

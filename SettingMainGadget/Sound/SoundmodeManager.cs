@@ -1,4 +1,4 @@
-﻿using SettingAppTextResopurces.TextResources;
+﻿using SettingCore.TextResources;
 using SettingCore;
 
 namespace SettingMainGadget.Sound

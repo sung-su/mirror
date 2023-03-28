@@ -27,7 +27,7 @@ using Tizen.Content.MediaContent;
 using System.Threading;
 using System.Threading.Tasks;
 
-using SettingAppTextResopurces.TextResources;
+using SettingCore.TextResources;
 
 namespace SettingMain
 {

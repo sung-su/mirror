@@ -24,7 +24,7 @@ using Tizen.Applications;
 using Tizen.System;
 using Tizen.Multimedia;
 
-using SettingAppTextResopurces.TextResources;
+using SettingCore.TextResources;
 
 namespace SettingMain
 {

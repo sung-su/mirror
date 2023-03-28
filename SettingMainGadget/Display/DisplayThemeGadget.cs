@@ -1,4 +1,4 @@
-﻿using SettingAppTextResopurces.TextResources;
+using SettingCore.TextResources;
 using SettingMainGadget.Display;
 using System.Linq;
 using Tizen.NUI;

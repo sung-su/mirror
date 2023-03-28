@@ -20,7 +20,7 @@ using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 using Tizen.Applications;
 
-using SettingAppTextResopurces.TextResources;
+using SettingCore.TextResources;
 
 namespace SettingView
 {

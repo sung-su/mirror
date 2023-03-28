@@ -24,7 +24,7 @@ using Tizen.Applications;
 using System.Collections.ObjectModel;
 using Tizen.System;
 
-using SettingAppTextResopurces.TextResources;
+using SettingCore.TextResources;
 
 namespace SettingMain
 {
