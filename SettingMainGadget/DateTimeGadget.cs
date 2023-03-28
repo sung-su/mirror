@@ -68,18 +68,13 @@ namespace Setting.Menu
         {
             sections.RemoveAllSectionsFromView(content);
 
-            if(autoUpdateItem != null)
-            {
-                content.Remove(autoUpdateItem);
-            }
-
             autoUpdateItem = new SwitchListItem(Resources.IDS_ST_MBODY_AUTO_UPDATE, isSelected: DateTimeManager.AutoTimeUpdate);
             autoUpdateItem.Switch.SelectedChanged += (o, e) =>
             {
                 DateTimeManager.AutoTimeUpdate = e.IsSelected;
                 ApplyAutomaticTimeUpdate();
             };
-            content.Add(autoUpdateItem);
+            sections.Add(MainMenuProvider.DateTime_AutoUpdate, autoUpdateItem);
 
             mDateItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_SET_DATE, System.DateTime.Now.ToString("MMM d, yyyy"));
             if (mDateItem != null)
@@ -111,6 +106,15 @@ namespace Setting.Menu
                 sections.Add(MainMenuProvider.DateTime_SetTimezone, mTimezoneItem);
             }
 
+            timeFormatItem = new SwitchListItem(Resources.IDS_ST_MBODY_24_HOUR_CLOCK, Resources.IDS_ST_SBODY_SHOW_THE_TIME_IN_24_HOUR_FORMAT_INSTEAD_OF_12_HOUR_HAM_PM_FORMAT, DateTimeManager.Is24HourFormat);
+            timeFormatItem.Switch.SelectedChanged += (o, e) =>
+            {
+                DateTimeManager.Is24HourFormat = e.IsSelected;
+            };
+            sections.Add(MainMenuProvider.DateTime_TimeFormat, timeFormatItem);
+
+            ApplyAutomaticTimeUpdate();
+
             var customization = GetCustomization().OrderBy(c => c.Order);
             Logger.Debug($"customization: {customization.Count()}");
             foreach (var cust in customization)
@@ -122,20 +126,6 @@ namespace Setting.Menu
                     content.Add(row);
                 }
             }
-
-            if (timeFormatItem != null)
-            {
-                content.Remove(timeFormatItem);
-            }
-
-            timeFormatItem = new SwitchListItem(Resources.IDS_ST_MBODY_24_HOUR_CLOCK, Resources.IDS_ST_SBODY_SHOW_THE_TIME_IN_24_HOUR_FORMAT_INSTEAD_OF_12_HOUR_HAM_PM_FORMAT, DateTimeManager.Is24HourFormat);
-            timeFormatItem.Switch.SelectedChanged += (o, e) =>
-            {
-                DateTimeManager.Is24HourFormat = e.IsSelected;
-            };
-            content.Add(timeFormatItem);
-
-            ApplyAutomaticTimeUpdate();
         }
 
         private void ApplyAutomaticTimeUpdate()
