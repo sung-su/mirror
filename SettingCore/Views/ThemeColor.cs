@@ -8,6 +8,7 @@ namespace SettingCore.Views
 
         public Color Normal => isLightTheme ? lightThemeNormalColor : darkThemeNormalColor;
         public Color Selected => isLightTheme ? lightThemeSelectedColor : darkThemeSelectedColor;
+        public Color Disabled => isLightTheme ? lightThemeDisabledColor : darkThemeDisabledColor;
 
         private Color lightThemeNormalColor = Color.Transparent;
         private Color darkThemeNormalColor = Color.Transparent;
@@ -15,17 +16,8 @@ namespace SettingCore.Views
         private Color lightThemeSelectedColor = Color.Transparent;
         private Color darkThemeSelectedColor = Color.Transparent;
 
-        public void SetNormalColor(Color lightThemeColor, Color darkThemeColor)
-        {
-            lightThemeNormalColor = lightThemeColor;
-            darkThemeNormalColor = darkThemeColor;
-        }
-
-        public void SetSelectedColor(Color lightThemeColor, Color darkThemeColor)
-        {
-            lightThemeSelectedColor = lightThemeColor;
-            darkThemeSelectedColor = darkThemeColor;
-        }
+        private Color lightThemeDisabledColor = Color.Transparent;
+        private Color darkThemeDisabledColor = Color.Transparent;
 
         public ThemeColor(Color lightNormal, Color darkNormal, Color lightSelected, Color darkSelected)
         {
@@ -34,6 +26,18 @@ namespace SettingCore.Views
 
             lightThemeSelectedColor = lightSelected;
             darkThemeSelectedColor = darkSelected;
+        }
+
+        public ThemeColor(Color lightNormal, Color darkNormal, Color lightSelected, Color darkSelected, Color lightDisabled, Color darkDisabled)
+        {
+            lightThemeNormalColor = lightNormal;
+            darkThemeNormalColor = darkNormal;
+
+            lightThemeSelectedColor = lightSelected;
+            darkThemeSelectedColor = darkSelected;
+
+            lightThemeDisabledColor = lightDisabled;
+            darkThemeDisabledColor = darkDisabled;
         }
     }
 }
