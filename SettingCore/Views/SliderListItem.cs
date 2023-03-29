@@ -7,8 +7,9 @@ namespace SettingCore.Views
 {
     public class SliderListItem : BaseComponent
     {
-        private readonly ThemeColor TrackColor = new ThemeColor(new Color("#FF6200"), new Color("#FF8A00"), new Color("#FF6200"), new Color("#FF8A00"));
-        private readonly ThemeColor BgTrackColor = new ThemeColor(new Color(1.0f, 0.37f, 0.0f, 0.1f), new Color(1.0f, 0.37f, 0.0f, 0.1f), new Color("#FF6200"), new Color("#FF8A00"));
+        private readonly ThemeColor TrackColors = new ThemeColor(new Color("#FF6200"), new Color("#FF8A00"), Color.Transparent, Color.Transparent, new Color("#CACACA"), new Color("#CACACA"));
+        private readonly ThemeColor BgTrackColors = new ThemeColor(new Color(1.0f, 0.37f, 0.0f, 0.1f), new Color(1.0f, 0.37f, 0.0f, 0.1f), Color.Transparent, Color.Transparent);
+        private readonly ThemeColor TextColors = new ThemeColor(new Color("#090E21"), new Color("#FDFDFD"), Color.Transparent, Color.Transparent, new Color("#CACACA"), new Color("#666666"));
 
         public Slider Slider { get; private set; }
 
@@ -70,8 +71,8 @@ namespace SettingCore.Views
                 MinValue = 0,
                 MaxValue = 1.0f,
                 CurrentValue = curvalue,
-                BgTrackColor = BgTrackColor.Normal,
-                SlidedTrackColor = TrackColor.Normal
+                BgTrackColor = BgTrackColors.Normal,
+                SlidedTrackColor = TrackColors.Normal
             };
 
             sliderView.Add(icon);
@@ -83,10 +84,31 @@ namespace SettingCore.Views
             ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
         }
 
+        public override void OnDisabledStateChanged(bool isEnabled)
+        {
+            Slider.IsEnabled = isEnabled;
+
+            if (isEnabled)
+            {
+                primary.TextColor = TextColors.Normal;
+
+                Slider.BgTrackColor = BgTrackColors.Normal;
+                Slider.SlidedTrackColor = TrackColors.Normal;
+            }
+            else
+            {
+                Slider.CurrentValue = Slider.MaxValue;
+
+                primary.TextColor = TextColors.Disabled;
+
+                Slider.BgTrackColor = BgTrackColors.Disabled;
+                Slider.SlidedTrackColor = TrackColors.Disabled;
+            }
+        }
+
         private void ThemeManager_ThemeChanged(object sender, ThemeChangedEventArgs e)
         {
-            Slider.BgTrackColor = BgTrackColor.Normal;
-            Slider.SlidedTrackColor = TrackColor.Normal;
+            OnDisabledStateChanged(IsEnabled);
         }
 
         protected override string AccessibilityGetName()
