@@ -15,6 +15,20 @@ namespace SettingCore.Views
             AccessibilityHighlightable = true;
 
             TouchEvent += OnTouchEvent;
+            ControlStateChangedEvent += BaseComponent_ControlStateChangedEvent;
+        }
+
+        private void BaseComponent_ControlStateChangedEvent(object sender, ControlStateChangedEventArgs e)
+        {
+            if (e.PreviousState == ControlState.Disabled)
+            {
+                OnDisabledStateChanged(true);
+            }
+
+            if (e.CurrentState == ControlState.Disabled)
+            {
+                OnDisabledStateChanged(false);
+            }
         }
 
         public event EventHandler<ClickedEventArgs> Clicked;
@@ -24,6 +38,8 @@ namespace SettingCore.Views
         private bool touchStarted = false;
 
         public virtual void OnChangeSelected(bool selected) { }
+
+        public virtual void OnDisabledStateChanged(bool isEnabled) { }
 
         public override bool OnKey(Key key)
         {
