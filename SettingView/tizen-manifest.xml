@@ -27,13 +27,14 @@
 
         <privilege>http://tizen.org/privilege/appmanager.launch</privilege>
         <privilege>http://tizen.org/privilege/datasharing</privilege>
-        <privilege>http://tizen.org/privilege/widget.viewer</privilege>
 
         <privilege>http://tizen.org/privilege/telephony</privilege>
         <privilege>http://tizen.org/privilege/bluetooth</privilege>
-        <privilege>http://tizen.org/privilege/network.set</privilege>
 
-        <!--sound-->
+        <privilege>http://tizen.org/privilege/network.get</privilege>
+        <privilege>http://tizen.org/privilege/network.set</privilege>
+        <privilege>http://tizen.org/privilege/network.profile</privilege>
+
         <privilege>http://tizen.org/privilege/volume.set</privilege>
     </privileges>
     <dependencies />
