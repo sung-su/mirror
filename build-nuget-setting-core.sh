@@ -3,9 +3,11 @@ PROJECT=SettingCore/SettingCore.csproj
 CONFIGURATION=Debug
 OUTDIR=artifacts
 
-VERSION_SUFFIX=$((10000+$(git rev-list --count HEAD)))
-VERSION_BASE=1.0.0
-VERSION=$VERSION_BASE-$VERSION_SUFFIX
+MAJOR=1
+MINOR=0
+PATCH=$(git rev-list --count HEAD)
+
+VERSION=$MAJOR.$MINOR.$PATCH
 
 dotnet clean $PROJECT
 rm -rf SettingCore/bin SettingCore/obj artifacts
