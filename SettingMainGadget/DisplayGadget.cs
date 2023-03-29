@@ -2,7 +2,6 @@
 using SettingCore;
 using SettingCore.Customization;
 using SettingCore.Views;
-using SettingMain;
 using SettingMainGadget;
 using SettingMainGadget.Display;
 using System;
