@@ -77,6 +77,7 @@ namespace SettingCore.Views
 
             if (!String.IsNullOrEmpty(primarySubText))
             {
+                primary.Margin.Bottom = 0;
                 AddPrimarySubText(primarySubText);
             }
 
@@ -139,7 +140,7 @@ namespace SettingCore.Views
             primarySubText = new TextLabel(text)
             {
                 AccessibilityHidden = true,
-                Margin = new Extents(16, 0, 16, 16).SpToPx(),
+                Margin = new Extents(16, 0, 0, 16).SpToPx(),
                 TextColor = TextColors.Normal,
                 PixelSize = 24.SpToPx(),
             };
