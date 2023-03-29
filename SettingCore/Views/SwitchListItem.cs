@@ -19,8 +19,8 @@ namespace SettingCore.Views
         public SwitchListItem(string primaryText, string subText = "", bool isSelected = false)
             :base()
         {
-            AccessibilityHighlightable = true;
-            Padding = new Extents(16, 16, 8, 8).SpToPx();
+            var paddingTopBottom = String.IsNullOrEmpty(subText) ? 16 : 8;
+            Padding = new Extents(16, 16, (ushort)paddingTopBottom, (ushort)paddingTopBottom).SpToPx();
 
             Layout = new FlexLayout()
             {
