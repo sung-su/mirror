@@ -30,10 +30,17 @@ namespace Setting.Menu
         private TextListItem screenTimeOutItem;
         private TextListItem themeItem;
 
+        private bool isBrightnessSupported;
+
         private static readonly string[] iconPath = {
             "display/Brightness_0.svg",
             "display/Brightness_50.svg",
             "display/Brightness_100.svg",
+        };
+
+        private static readonly string[] iconDisabledPath = {
+            "display/Brightness_light.svg",
+            "display/Brightness_dark.svg",
         };
 
         protected override View OnCreate()
@@ -82,6 +89,18 @@ namespace Setting.Menu
             {
                 int brightness = 0;
                 int maxbrightness = 1;
+
+                try
+                {
+                    Tizen.System.Display.Displays[0].Brightness = Tizen.System.Display.Displays[0].Brightness;
+                    isBrightnessSupported = true;
+                }
+                catch (Exception)
+                {
+                    Logger.Warn($"Brightness is not supported on the device.");
+                }
+
+                
                 try
                 {
                     brightness = Tizen.System.Display.Displays[0].Brightness;
@@ -101,6 +120,7 @@ namespace Setting.Menu
                 {
                     brightnessItem.Margin = new Extents(0, 0, 16, 0).SpToPx();
                     brightnessItem.Slider.ValueChanged += MSlider_ValueChanged;
+                    brightnessItem.IsEnabled = isBrightnessSupported;
                     sections.Add(MainMenuProvider.Display_Brightness, brightnessItem);
                 }
             }
@@ -163,6 +183,12 @@ namespace Setting.Menu
 
         private void GetBrightnessSliderIcon(int brightness, out string iconpath)
         {
+            if(!isBrightnessSupported)
+            {
+                iconpath = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, iconDisabledPath[DisplayThemeManager.GetThemeIndex()]);
+                return;
+            }
+
             int iconlevel = iconPath.Length;
 
             int mapped_level = 0;
@@ -233,6 +259,9 @@ namespace Setting.Menu
             {
                 Logger.Debug($"theme changed to: {e.PlatformThemeId}");
                 themeItem.Secondary = DisplayThemeManager.GetThemeName();
+
+                // update slider icon path
+                brightnessItem.Slider.CurrentValue = brightnessItem.Slider.CurrentValue;
             }
         }
     }
