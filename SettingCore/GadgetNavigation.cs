@@ -27,17 +27,20 @@ namespace SettingCore
                     }
                 }
             };
+
+            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Popped += (s, e) =>
+            {
+                if (gadgetPages.TryGetValue(e.Page, out MenuGadget gadget))
+                {
+                    NUIGadgetManager.Remove(gadget);
+                    gadgetPages.Remove(e.Page);
+                }
+            };
         }
 
         public static void NavigateBack()
         {
-            var page = NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop();
-
-            if (gadgetPages.TryGetValue(page, out MenuGadget gadget))
-            {
-                NUIGadgetManager.Remove(gadget);
-                gadgetPages.Remove(page);
-            }
+            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop();
         }
 
         public static void NavigateTo(string menuPath)
