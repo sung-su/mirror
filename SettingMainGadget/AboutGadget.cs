@@ -130,7 +130,7 @@ namespace Setting.Menu
 
             if (IsEmulBin() == false)
             {
-                var showOther = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_STATUS, Resources.IDS_ST_BODY_SHOW_NETWORK_STATUS_AND_OTHER_INFORMATION);
+                var showOther = TextListItem.CreatePrimaryTextItemWithSubText(Resources.IDS_ST_BODY_STATUS, Resources.IDS_ST_BODY_SHOW_NETWORK_STATUS_AND_OTHER_INFORMATION);
                 showOther.Clicked += (s, e) =>
                 {
                     NavigateTo(MainMenuProvider.About_DeviceStatus);

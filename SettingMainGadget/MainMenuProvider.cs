@@ -40,6 +40,10 @@ namespace SettingMainGadget
         public static string About_Ram = "About.Ram";
         public static string About_Resolution = "About.Resolution";
         public static string About_DeviceStatus = "About.DeviceStatus";
+        public static string About_DeviceStatus_bt_address = "About.DeviceStatus.BluetoothAddress";
+        public static string About_DeviceStatus_wifi_mac_address = "About.DeviceStatus.WifiMacAddress";
+        public static string About_DeviceStatus_storage = "About.DeviceStatus.Storage";
+        public static string About_DeviceStatus_cpu_usage = "About.DeviceStatus.CpuUsage";
 
         //external
         public static string Language_InputMethod = "Language.InputMethod";
@@ -93,6 +97,10 @@ namespace SettingMainGadget
                 new SettingMenu(path: About_Ram, defaultOrder: 78),
                 new SettingMenu(path: About_Resolution, defaultOrder: 79),
                 new SettingMenu(path: About_DeviceStatus, defaultOrder: 80, type: typeof(Setting.Menu.AboutDeviceStatusGadget)),
+                new SettingMenu(path: About_DeviceStatus_bt_address, defaultOrder: 81),
+                new SettingMenu(path: About_DeviceStatus_wifi_mac_address, defaultOrder: 82),
+                new SettingMenu(path: About_DeviceStatus_storage, defaultOrder: 83),
+                new SettingMenu(path: About_DeviceStatus_cpu_usage, defaultOrder: 84),
             };
         }
     }

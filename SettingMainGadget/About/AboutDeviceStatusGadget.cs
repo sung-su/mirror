@@ -1,7 +1,11 @@
-﻿using SettingCore.TextResources;
-using SettingMain;
+using SettingCore.TextResources;
+using SettingCore;
+using SettingCore.Customization;
+using SettingCore.Views;
+using SettingMainGadget;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
@@ -12,19 +16,19 @@ namespace Setting.Menu
 {
     public class AboutDeviceStatusGadget : SettingCore.MenuGadget
     {
+        private SystemCpuUsage systemCpuUsage;
+        private TextListItem cpuUsage;
+        private Timer timer;
+        private View content;
+        private Sections sections = new Sections();
+
         public override string ProvideTitle() => Resources.IDS_ST_MBODY_DEVICE_STATUS;
     
         protected override View OnCreate()
         {
             base.OnCreate();
 
-            return CreateContent();
-        }
-
-        private View CreateContent()
-        {
-            // Content of the page which scrolls items vertically.
-            var content = new ScrollableBase()
+            content = new ScrollableBase()
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
                 HeightSpecification = LayoutParamPolicies.MatchParent,
@@ -36,7 +40,21 @@ namespace Setting.Menu
                 },
             };
 
-            DefaultLinearItem item = null;
+            CreateView();
+
+            return content;
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            timer.Tick -= timerTick;
+            timer.Stop();
+        }
+
+        private void CreateView()
+        {
+            sections.RemoveAllSectionsFromView(content);
 #if false
             IEnumerable<SlotHandle> handlelist = Tizen.Telephony.Manager.Init();
             if (handlelist != null)
@@ -73,10 +91,14 @@ namespace Setting.Menu
             }
             catch (Exception e)
             {
+                Logger.Warn($"Could not get bluetooth address.");
             }
 
-            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_MBODY_BLUETOOTH_ADDRESS, addressBT);
-            content.Add(item);
+            var btAddress = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_MBODY_BLUETOOTH_ADDRESS, addressBT);
+            if (btAddress != null)
+            {
+                sections.Add(MainMenuProvider.About_DeviceStatus_bt_address, btAddress);
+            }
 #endif
 
 #if true
@@ -86,30 +108,78 @@ namespace Setting.Menu
             else
                 addressMac = Resources.IDS_ST_SBODY_DISABLED;
 
-            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_WI_FI_MAC_ADDRESS, addressMac);
-            content.Add(item);
+            var wifiMacAddress = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_WI_FI_MAC_ADDRESS, addressMac);
+            if (wifiMacAddress != null)
+            {
+                sections.Add(MainMenuProvider.About_DeviceStatus_wifi_mac_address, wifiMacAddress);
+
+            }
 #endif
             IEnumerator<Storage> storages = StorageManager.Storages.GetEnumerator();
             ulong total = 0, available = 0;
             while (storages.MoveNext())
             {
-                Storage storage = storages.Current;
-                total += storage.TotalSpace;
-                available += storage.AvailableSpace;
+                Storage deviceStorage = storages.Current;
+                total += deviceStorage.TotalSpace;
+                available += deviceStorage.AvailableSpace;
             }
-            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_STORAGE,
+            var storage = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_STORAGE,
             String.Format("{0:0.0}GB available (Total {1:0.0}GB)", (double)(available / 1000000000.0), (double)(total / 1000000000.0)));
-            content.Add(item);
+            if (storage != null)
+            {
+                sections.Add(MainMenuProvider.About_DeviceStatus_storage, storage);
+            }
 
-
-#if false
-            // To do : Caluacate CPU Usage
-            // Tizen.System.ProcessCpuUsage
-            item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_CPU_USAGE, Resources.IDS_ST_HEADER_UNAVAILABLE);
-            content.Add(item);
+#if true
+            systemCpuUsage = new SystemCpuUsage();
+            cpuUsage = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_CPU_USAGE, getCpuUsageFormated());
+            if (cpuUsage != null)
+            {
+                sections.Add(MainMenuProvider.About_DeviceStatus_cpu_usage, cpuUsage);
+                startTimer();
+            }
 #endif
-            return content;
+
+            // add only visible sections to content view in required order
+            var customization = GetCustomization().OrderBy(c => c.Order);
+            foreach (var cust in customization)
+            {
+                string visibility = cust.IsVisible ? "visible" : "hidden";
+                Logger.Verbose($"Customization: {cust.MenuPath} - {visibility} - {cust.Order}");
+                if (cust.IsVisible && sections.TryGetValue(cust.MenuPath, out View row))
+                {
+                    content.Add(row);
+                }
+            }
         }
 
+        protected override void OnCustomizationUpdate(IEnumerable<MenuCustomizationItem> items)
+        {
+            Logger.Verbose($"{nameof(AboutGadget)} got customization with {items.Count()} items. Recreating view.");
+            CreateView();
+        }
+
+        private string getCpuUsageFormated()
+        {
+            string system = $"{systemCpuUsage.System.ToString("0.#")}%";
+            Logger.Verbose($"CPU usage: {system}");
+            return system;
+        }
+
+        private void startTimer()
+        {
+            timer = new Timer(1000);
+            timer.Tick += timerTick;
+            timer.Start();
+        }
+
+        private bool timerTick(object source, Timer.TickEventArgs e)
+        {
+            systemCpuUsage.Update();
+            var system = getCpuUsageFormated();
+            cpuUsage.Secondary = system;
+
+            return true;
+        }
     }
 }
