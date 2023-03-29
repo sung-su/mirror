@@ -67,6 +67,7 @@ namespace SettingCore.Customization
             Assembly assembly = null;
             try
             {
+                Logger.Verbose($"Opening assembly from {assemblyPath} ({gadgetInfo.ResourcePath}, {gadgetInfo.ExecutableFile})");
                 assembly = Assembly.Load(System.IO.File.ReadAllBytes(assemblyPath));
             }
             catch (System.IO.FileLoadException)
