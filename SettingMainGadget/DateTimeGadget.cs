@@ -30,13 +30,13 @@ namespace Setting.Menu
         private SwitchListItem autoUpdateItem = null;
         private SwitchListItem timeFormatItem = null;
 
+        private bool isAutomaticTimeUpdateSupported;
+
         protected override View OnCreate()
         {
             base.OnCreate();
 
-            SystemSettings.TimeChanged += SystemSettings_TimeChanged;
-            SystemSettings.LocaleTimeZoneChanged += SystemSettings_LocaleTimeZoneChanged;
-            SystemSettings.LocaleTimeFormat24HourSettingChanged += SystemSettings_LocaleTimeFormat24HourSettingChanged;
+            AttachToEvents();
 
             content = new ScrollableBase()
             {
@@ -57,9 +57,7 @@ namespace Setting.Menu
 
         protected override void OnDestroy()
         {
-            SystemSettings.TimeChanged -= SystemSettings_TimeChanged;
-            SystemSettings.LocaleTimeZoneChanged -= SystemSettings_LocaleTimeZoneChanged;
-            SystemSettings.LocaleTimeFormat24HourSettingChanged -= SystemSettings_LocaleTimeFormat24HourSettingChanged;
+            DetachFromEvents();
 
             base.OnDestroy();
         }
@@ -68,7 +66,19 @@ namespace Setting.Menu
         {
             sections.RemoveAllSectionsFromView(content);
 
-            autoUpdateItem = new SwitchListItem(Resources.IDS_ST_MBODY_AUTO_UPDATE, isSelected: DateTimeManager.AutoTimeUpdate);
+            try
+            {
+                // RPI4 device unable to get isAutomaticTimeUpdate system setting
+                var autoUpdate = SystemSettings.AutomaticTimeUpdate;
+                isAutomaticTimeUpdateSupported = true;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"AutomaticTimeUpdate is not supported: {e.Message}");
+            }
+
+            autoUpdateItem = new SwitchListItem(Resources.IDS_ST_MBODY_AUTO_UPDATE, isSelected: isAutomaticTimeUpdateSupported ? DateTimeManager.AutoTimeUpdate : false);
+            autoUpdateItem.IsEnabled = isAutomaticTimeUpdateSupported;
             autoUpdateItem.Switch.SelectedChanged += (o, e) =>
             {
                 DateTimeManager.AutoTimeUpdate = e.IsSelected;
@@ -130,9 +140,9 @@ namespace Setting.Menu
 
         private void ApplyAutomaticTimeUpdate()
         {
-            if (mDateItem != null) mDateItem.IsEnabled = !SystemSettings.AutomaticTimeUpdate;
-            if (mTimeItem != null) mTimeItem.IsEnabled = !SystemSettings.AutomaticTimeUpdate;
-            if (mTimezoneItem != null) mTimezoneItem.IsEnabled = !SystemSettings.AutomaticTimeUpdate;
+            if (mDateItem != null) mDateItem.IsEnabled = !DateTimeManager.AutoTimeUpdate;
+            if (mTimeItem != null) mTimeItem.IsEnabled = !DateTimeManager.AutoTimeUpdate;
+            if (mTimezoneItem != null) mTimezoneItem.IsEnabled = !DateTimeManager.AutoTimeUpdate;
         }
 
         private void SystemSettings_TimeChanged(object sender, Tizen.System.TimeChangedEventArgs e)
@@ -153,6 +163,66 @@ namespace Setting.Menu
         {
             if (mTimeItem != null)
                 mTimeItem.Secondary = DateTimeManager.FormattedTime;
+        }
+
+        private void AttachToEvents()
+        {
+            try
+            {
+                SystemSettings.TimeChanged += SystemSettings_TimeChanged;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"Cannot attach to SystemSettings.TimeChanged ({e.GetType()})");
+            }
+
+            try
+            {
+                SystemSettings.LocaleTimeZoneChanged += SystemSettings_LocaleTimeZoneChanged;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"Cannot attach to SystemSettings.LocaleTimeZoneChanged ({e.GetType()})");
+            }
+
+            try
+            {
+                SystemSettings.LocaleTimeFormat24HourSettingChanged += SystemSettings_LocaleTimeFormat24HourSettingChanged;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"Cannot attach to SystemSettings.LocaleTimeFormat24HourSettingChanged ({e.GetType()})");
+            }
+        }
+
+        private void DetachFromEvents()
+        {
+            try
+            {
+                SystemSettings.TimeChanged -= SystemSettings_TimeChanged;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"Cannot detach from SystemSettings.TimeChanged ({e.GetType()})");
+            }
+
+            try
+            {
+                SystemSettings.LocaleTimeZoneChanged -= SystemSettings_LocaleTimeZoneChanged;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"Cannot detach from SystemSettings.LocaleTimeZoneChanged ({e.GetType()})");
+            }
+
+            try
+            {
+                SystemSettings.LocaleTimeFormat24HourSettingChanged -= SystemSettings_LocaleTimeFormat24HourSettingChanged;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"Cannot detach from SystemSettings.LocaleTimeFormat24HourSettingChanged ({e.GetType()})");
+            }
         }
     }
 }
