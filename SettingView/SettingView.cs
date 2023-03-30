@@ -147,17 +147,18 @@ namespace SettingView
         {
             // TODO: remove style customization with scalable unit, when merged to TizenFX
             var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar") as AppBarStyle;
-            appBarStyle.Size = new Size(-1, 64).SpToPx();
             appBarStyle.TitleTextLabel.PixelSize = 24.SpToPx();
-            appBarStyle.Padding = new Extents(16, 16, 0, 0).SpToPx();
 
-            return new AppBar(appBarStyle)
+            AppBar appBar = new AppBar(appBarStyle)
             {
+                Size = new Size(-1, 64).SpToPx(),
+                Padding = new Extents(16, 16, 0, 0).SpToPx(),
                 Title = Resources.IDS_ST_OPT_SETTINGS,
                 AutoNavigationContent = false,
                 NavigationContent = new View(), // FIXME: must be set with empty View to hide default back button
                 ThemeChangeSensitive = true,
             };
+            return appBar;
         }
 
         private static View CreateContent()

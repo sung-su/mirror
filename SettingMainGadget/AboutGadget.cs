@@ -286,30 +286,26 @@ namespace Setting.Menu
                 Padding = new Extents(32, 32, 0, 32).SpToPx(),
             };
 
-            var renameButtonStyle = ThemeManager.GetStyle("Tizen.NUI.Components.Button") as ButtonStyle;
-            renameButtonStyle.Size = new Size(252, 48).SpToPx();
-            renameButtonStyle.Margin = new Extents(61, 0, 0, 0).SpToPx();
-            renameButtonStyle.WidthResizePolicy = ResizePolicyType.FitToChildren;
-            renameButtonStyle.HeightResizePolicy = ResizePolicyType.FitToChildren;
-
-            renameButton = new Button(renameButtonStyle)
+            renameButton = new Button()
             {
+                WidthResizePolicy = ResizePolicyType.FitToChildren,
+                HeightResizePolicy = ResizePolicyType.FitToChildren,
                 Text = Resources.IDS_ST_BUTTON_RENAME,
+                Size = new Size(252, 48).SpToPx(),
+                Margin = new Extents(61, 0, 0, 0).SpToPx(),
             };
             renameButton.Clicked += (object sender, ClickedEventArgs e) => {
                 Vconf.SetString(VconfDeviceName, textField.Text);
                 NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop();
             };
 
-            var cancelButtonStyle = ThemeManager.GetStyle("Tizen.NUI.Components.Button.Outlined") as ButtonStyle;
-            cancelButtonStyle.Size = new Size(252, 48).SpToPx();
-            cancelButtonStyle.Margin = new Extents(0, 61, 0, 0).SpToPx();
-            cancelButtonStyle.WidthResizePolicy = ResizePolicyType.FitToChildren;
-            cancelButtonStyle.HeightResizePolicy = ResizePolicyType.FitToChildren;
-
-            var cancelButton = new Button(cancelButtonStyle)
+            var cancelButton = new Button("Tizen.NUI.Components.Button.Outlined")
             {
+                WidthResizePolicy = ResizePolicyType.FitToChildren,
+                HeightResizePolicy = ResizePolicyType.FitToChildren,
                 Text = Resources.IDS_ST_BUTTON_CANCEL,
+                Size = new Size(252, 48).SpToPx(),
+                Margin = new Extents(61, 0, 0, 0).SpToPx(),
             };
 
             cancelButton.Clicked += (object sender, ClickedEventArgs e) => { NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop(); };
