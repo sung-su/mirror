@@ -12,9 +12,9 @@ namespace SettingCore.Views
         public static TextListItem CreatePrimaryTextItemWithSubText(string primaryText, string primarySubText) => new TextListItem(primaryText, primarySubText: primarySubText);
 
         private readonly ThemeColor BackgroundColors = new ThemeColor(Color.Transparent, Color.Transparent, new Color("#FF6400").WithAlpha(0.16f), new Color("#FFFFFF").WithAlpha(0.16f));
-        private readonly ThemeColor TextColors = new ThemeColor(new Color("#090E21"), new Color("#FDFDFD"), new Color("#FF6200"), new Color("#FF8A00"));
-        private readonly ThemeColor NoActionsTextColors = new ThemeColor(new Color("#83868F"), new Color("#666666"), new Color("#83868F"), new Color("#666666"));
-        private readonly Color DisabledTextColor = new Color("#CACACA");
+        private readonly ThemeColor TextColors = new ThemeColor(new Color("#090E21"), new Color("#FDFDFD"), new Color("#FF6200"), new Color("#FF8A00"), new Color("#CACACA"), new Color("#666666"));
+        private readonly ThemeColor NoActionsTextColors = new ThemeColor(new Color("#83868F"), new Color("#666666"), Color.Transparent, Color.Transparent);
+        private readonly ThemeColor SubTextColors = new ThemeColor(new Color("#83868F"), new Color("#83868F"), Color.Transparent, Color.Transparent, new Color("#CACACA"), new Color("#666666"));
 
         public string Secondary
         {
@@ -28,7 +28,7 @@ namespace SettingCore.Views
 
                     if(!IsEnabled)
                     {
-                        secondary.TextColor = DisabledTextColor;
+                        secondary.TextColor = TextColors.Disabled;
                     }
                 } 
             }
@@ -82,43 +82,28 @@ namespace SettingCore.Views
             }
 
             ThemeManager.ThemeChanged += (s, e) => OnChangeSelected(false);
-
-            ControlStateChangedEvent += TextListItem_ControlStateChangedEvent;
         }
 
-        private void SetDisabledColors(bool isEnabled)
+        public override void OnDisabledStateChanged(bool isEnabled)
         {
             if(isEnabled)
             {
                 primary.TextColor = TextColors.Normal;
                 secondary.TextColor = TextColors.Normal;
-                primarySubText.TextColor = TextColors.Normal;
+                primarySubText.TextColor = SubTextColors.Normal;
             }
             else
             {
-                primary.TextColor = DisabledTextColor;
-                secondary.TextColor = DisabledTextColor;
-                primarySubText.TextColor = DisabledTextColor;
-            }
-        }
-
-        private void TextListItem_ControlStateChangedEvent(object sender, ControlStateChangedEventArgs e)
-        {
-            if (e.PreviousState == ControlState.Disabled)
-            {
-                SetDisabledColors(true);
-            }
-
-            if (e.CurrentState == ControlState.Disabled)
-            {
-                SetDisabledColors(false);
+                primary.TextColor = TextColors.Disabled;
+                secondary.TextColor = TextColors.Disabled;
+                primarySubText.TextColor = SubTextColors.Disabled;
             }
         }
 
         private void TextListItem_Relayout(object sender, EventArgs e)
         {
             secondary.TextColor = isClickedEventEmpty ? NoActionsTextColors.Normal : TextColors.Normal;
-			SetDisabledColors(IsEnabled);
+            OnDisabledStateChanged(IsEnabled);
             Relayout -= TextListItem_Relayout;
         }
 
@@ -141,7 +126,7 @@ namespace SettingCore.Views
             {
                 AccessibilityHidden = true,
                 Margin = new Extents(16, 0, 0, 16).SpToPx(),
-                TextColor = TextColors.Normal,
+                TextColor = SubTextColors.Normal,
                 PixelSize = 24.SpToPx(),
             };
 
@@ -156,7 +141,7 @@ namespace SettingCore.Views
 
                 primary.TextColor = TextColors.Selected;
                 secondary.TextColor = TextColors.Selected;
-                primarySubText.TextColor = TextColors.Selected;
+                primarySubText.TextColor = SubTextColors.Selected;
             }
             else
             {
@@ -164,7 +149,7 @@ namespace SettingCore.Views
 
                 primary.TextColor = TextColors.Normal;
                 secondary.TextColor = TextColors.Normal;
-                primarySubText.TextColor = TextColors.Normal;
+                primarySubText.TextColor = SubTextColors.Normal;
             }
         }
 
