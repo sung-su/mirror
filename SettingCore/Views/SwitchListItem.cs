@@ -71,10 +71,16 @@ namespace SettingCore.Views
                 Add(primary);
             }
 
-            Switch = new Switch
+            var switchStyle = ThemeManager.GetStyle("Tizen.NUI.Components.Switch") as SwitchStyle;
+            switchStyle.Track.Size = new Size(84, 44).SpToPx();
+            switchStyle.Thumb.Size = new Size(44, 44).SpToPx();
+
+            Switch = new Switch(switchStyle)
             {
                 IsSelected = isSelected,
             };
+            switchStyle.Dispose();
+
             FlexLayout.SetFlexShrink(Switch, 0f);
             FlexLayout.SetFlexAlignmentSelf(Switch, FlexLayout.AlignmentType.FlexStart);
 
