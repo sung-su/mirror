@@ -30,6 +30,7 @@
 
         <privilege>http://tizen.org/privilege/telephony</privilege>
         <privilege>http://tizen.org/privilege/bluetooth</privilege>
+        <privilege>http://tizen.org/privilege/bluetooth.admin</privilege>
 
         <privilege>http://tizen.org/privilege/network.get</privilege>
         <privilege>http://tizen.org/privilege/network.set</privilege>
