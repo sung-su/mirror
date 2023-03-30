@@ -9,8 +9,8 @@ namespace SettingCore.Views
     public class SwitchListItem : BaseComponent
     {
         private readonly ThemeColor BackgroundColors = new ThemeColor(Color.Transparent, Color.Transparent, new Color("#FF6400").WithAlpha(0.16f), new Color("#FFFFFF").WithAlpha(0.16f));
-        private readonly ThemeColor TextColors = new ThemeColor(new Color("#090E21"), new Color("#FDFDFD"), new Color("#FF6200"), new Color("#FF8A00"));
-        private readonly ThemeColor SubTextColors = new ThemeColor(new Color("#83868F"), new Color("#83868F"), new Color("#666666"), new Color("#666666"));
+        private readonly ThemeColor TextColors = new ThemeColor(new Color("#090E21"), new Color("#FDFDFD"), new Color("#FF6200"), new Color("#FF8A00"), new Color("#CACACA"), new Color("#666666"));
+        private readonly ThemeColor SubTextColors = new ThemeColor(new Color("#83868F"), new Color("#83868F"), new Color("#83868F"), new Color("#83868F"), new Color("#CACACA"), new Color("#666666"));
 
         public Switch Switch { get; private set; }
         private TextLabel primary = new TextLabel();
@@ -78,6 +78,7 @@ namespace SettingCore.Views
             Switch = new Switch(switchStyle)
             {
                 IsSelected = isSelected,
+                AccessibilityHidden = true,
             };
             switchStyle.Dispose();
 
@@ -89,6 +90,22 @@ namespace SettingCore.Views
             Clicked += (s, e) => Switch.IsSelected = !Switch.IsSelected;
         }
 
+        public override void OnDisabledStateChanged(bool isEnabled)
+        {
+            Switch.IsEnabled = isEnabled;
+
+            if (isEnabled)
+            {
+                primary.TextColor = TextColors.Normal;
+                primarySubText.TextColor = SubTextColors.Normal;
+            }
+            else
+            {
+                primary.TextColor = TextColors.Disabled;
+                primarySubText.TextColor = SubTextColors.Disabled;
+            }
+        }
+
         public override void OnChangeSelected(bool selected)
         {
             if (selected)
@@ -96,14 +113,12 @@ namespace SettingCore.Views
                 BackgroundColor = BackgroundColors.Selected;
 
                 primary.TextColor = TextColors.Selected;
-                primarySubText.TextColor = SubTextColors.Selected;
             }
             else
             {
                 BackgroundColor = BackgroundColors.Normal;
 
                 primary.TextColor = TextColors.Normal;
-                primarySubText.TextColor = SubTextColors.Normal;
             }
         }
 
