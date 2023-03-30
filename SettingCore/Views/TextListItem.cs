@@ -128,6 +128,7 @@ namespace SettingCore.Views
                 Margin = new Extents(16, 0, 0, 16).SpToPx(),
                 TextColor = SubTextColors.Normal,
                 PixelSize = 24.SpToPx(),
+                MultiLine = true,
             };
 
             Add(primarySubText);
