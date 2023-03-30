@@ -115,16 +115,15 @@ namespace Setting.Menu
 
             }
 #endif
-            IEnumerator<Storage> storages = StorageManager.Storages.GetEnumerator();
             ulong total = 0, available = 0;
-            while (storages.MoveNext())
+            foreach (var deviceStorage in StorageManager.Storages)
             {
-                Storage deviceStorage = storages.Current;
                 total += deviceStorage.TotalSpace;
                 available += deviceStorage.AvailableSpace;
             }
+
             var storage = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_STORAGE,
-            String.Format("{0:0.0}GB available (Total {1:0.0}GB)", (double)(available / 1000000000.0), (double)(total / 1000000000.0)));
+                $"{bytesToGB(available).ToString("0.##")}GB available (Total {bytesToGB(total).ToString("0.##")}GB)");
             if (storage != null)
             {
                 sections.Add(MainMenuProvider.About_DeviceStatus_storage, storage);
@@ -158,10 +157,14 @@ namespace Setting.Menu
             Logger.Verbose($"{nameof(AboutGadget)} got customization with {items.Count()} items. Recreating view.");
             CreateView();
         }
+        private double bytesToGB(double b)
+        {
+            return b / (1024 * 1024 * 1024);
+        }
 
         private string getCpuUsageFormated()
         {
-            string system = $"{systemCpuUsage.System.ToString("0.#")}%";
+            string system = (systemCpuUsage.System/100).ToString("0.#%");
             Logger.Verbose($"CPU usage: {system}");
             return system;
         }

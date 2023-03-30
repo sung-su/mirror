@@ -77,7 +77,7 @@ namespace SettingCore.Views
 
             if (!String.IsNullOrEmpty(primarySubText))
             {
-                primary.Margin.Bottom = 0;
+                primary.Margin = new Extents(16, 0, 16, 0).SpToPx();
                 AddPrimarySubText(primarySubText);
             }
 
