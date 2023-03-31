@@ -1,5 +1,6 @@
 ﻿using SettingCore.TextResources;
 using SettingCore;
+using SettingCore.Views;
 using System;
 using System.Collections.Generic;
 using Tizen.NUI;
@@ -58,16 +59,11 @@ namespace Setting.Menu.Display
 
             for (int i = 0; i < fontsizeList.Count; i++)
             {
-                RadioButton radioButton = new RadioButton() 
-                {
-                    ThemeChangeSensitive = true,
-                    Text = fontsizeList[i].GetName(),
-                    IsSelected = fontsizeList[i].GetValue() == SystemSettings.FontSize,
-                    Margin = new Extents(24, 0, 0, 0).SpToPx(),
-                };
+                RadioButtonListItem item = new RadioButtonListItem(fontsizeList[i].GetName());
+                item.RadioButton.IsSelected = fontsizeList[i].GetValue() == SystemSettings.FontSize;
 
-                radioButtonGroup.Add(radioButton);
-                content.Add(radioButton);
+                radioButtonGroup.Add(item.RadioButton);
+                content.Add(item);
             }
 
             radioButtonGroup.SelectedChanged += (o, e) =>
