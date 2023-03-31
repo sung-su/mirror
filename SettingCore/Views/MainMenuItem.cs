@@ -6,7 +6,7 @@ namespace SettingCore.Views
     public class MainMenuItem : BaseComponent
     {
         private readonly ThemeColor BackgroundColors = new ThemeColor(Color.Transparent, Color.Transparent, new Color("#FF6400").WithAlpha(0.16f), Color.White.WithAlpha(0.16f));
-        private readonly ThemeColor TextColors = new ThemeColor(new Color("#090E21"), new Color("#CACACA"), new Color("#FF6200"), new Color("#FF8A00"));
+        private readonly ThemeColor TextColors = new ThemeColor(new Color("#090E21"), new Color("#FDFDFD"), new Color("#FF6200"), new Color("#FF8A00"));
         private readonly ThemeColor IconColors = new ThemeColor(Color.White, Color.Black, Color.White, Color.Black);
         private readonly ThemeColor IconBackgroundColors;
 
@@ -51,6 +51,7 @@ namespace SettingCore.Views
                 Text = title,
                 PixelSize = 24.SpToPx(),
                 TextColor = TextColors.Normal,
+                Margin = new Extents(16, 16, 16, 16).SpToPx(),
             };
             FlexLayout.SetFlexGrow(titleTextLabel, 1);
 

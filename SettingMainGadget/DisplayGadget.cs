@@ -16,7 +16,7 @@ namespace Setting.Menu
 {
     public class DisplayGadget : SettingCore.MainMenuGadget
     {
-        public override Color ProvideIconColor() => new Color("#0075FF");
+        public override Color ProvideIconColor() => new Color(IsLightTheme ? "#0075FF" : "#1A85FF");
 
         public override string ProvideIconPath() => GetResourcePath("display.svg");
 

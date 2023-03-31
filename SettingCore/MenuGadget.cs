@@ -62,6 +62,8 @@ namespace SettingCore
         protected void NavigateBack() => GadgetNavigation.NavigateBack();
         protected void NavigateTo(string menuPath) => GadgetNavigation.NavigateTo(menuPath);
 
+        protected bool IsLightTheme => ThemeManager.PlatformThemeId == "org.tizen.default-light-theme";
+
         protected string GetResourcePath(string relativeFilePath)
         {
             string callingAssemblyName = System.Reflection.Assembly.GetCallingAssembly().GetName().Name;

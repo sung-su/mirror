@@ -16,7 +16,7 @@ namespace Setting.Menu
 {
     public class LanguageInputGadget : SettingCore.MainMenuGadget
     {
-        public override Color ProvideIconColor() => new Color("#205493");
+        public override Color ProvideIconColor() => new Color(IsLightTheme ? "#205493" : "#2560A8");
 
         public override string ProvideIconPath() => GetResourcePath("language_input.svg");
 

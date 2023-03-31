@@ -22,7 +22,7 @@ namespace Setting.Menu
         private TextListItem soundMode;
         private TextListItem notificationSound;
 
-        public override Color ProvideIconColor() => new Color("#DB3069");
+        public override Color ProvideIconColor() => new Color(IsLightTheme  ? "#DB3069" : "#DF4679");
 
         public override string ProvideIconPath() => GetResourcePath("sound.svg");
 

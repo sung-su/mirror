@@ -28,7 +28,7 @@ namespace Setting.Menu
         private string deviceName;
         private bool isLightTheme => ThemeManager.PlatformThemeId == "org.tizen.default-light-theme";
 
-        public override Color ProvideIconColor() => new Color("#301A4B");
+        public override Color ProvideIconColor() => new Color(IsLightTheme ? "#301A4B" : "#CAB4E5");
 
         public override string ProvideIconPath() => GetResourcePath("about.svg");
 

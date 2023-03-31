@@ -54,6 +54,7 @@ namespace SettingView
             GetDefaultWindow().GetDefaultNavigator().Push(mMainPage);
 
             Tizen.System.SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
+            ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
             GadgetManager.Instance.CustomizationChanged += CustomizationChanged;
 
             LogScalableInfo();
@@ -139,6 +140,15 @@ namespace SettingView
             if (mMainPage != null)
             {
                 mMainPage.AppBar.Title = Resources.IDS_ST_OPT_SETTINGS;
+                mMainPage.Content = CreateContent();
+            }
+        }
+
+        private void ThemeManager_ThemeChanged(object sender, ThemeChangedEventArgs e)
+        {
+            if (mMainPage != null)
+            {
+                // recreate main page content just to apply new colors from gadgets
                 mMainPage.Content = CreateContent();
             }
         }
