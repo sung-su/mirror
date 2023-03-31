@@ -14,7 +14,7 @@ namespace SettingCore.Views
         private readonly ThemeColor BackgroundColors = new ThemeColor(Color.Transparent, Color.Transparent, new Color("#FF6400").WithAlpha(0.16f), new Color("#FFFFFF").WithAlpha(0.16f));
         private readonly ThemeColor TextColors = new ThemeColor(new Color("#090E21"), new Color("#FDFDFD"), new Color("#FF6200"), new Color("#FF8A00"), new Color("#CACACA"), new Color("#666666"));
         private readonly ThemeColor NoActionsTextColors = new ThemeColor(new Color("#83868F"), new Color("#666666"), Color.Transparent, Color.Transparent);
-        private readonly ThemeColor SubTextColors = new ThemeColor(new Color("#83868F"), new Color("#83868F"), Color.Transparent, Color.Transparent, new Color("#CACACA"), new Color("#666666"));
+        private readonly ThemeColor SubTextColors = new ThemeColor(new Color("#83868F"), new Color("#83868F"), new Color("#83868F"), new Color("#83868F"), new Color("#CACACA"), new Color("#666666"));
 
         public string Secondary
         {
@@ -103,7 +103,9 @@ namespace SettingCore.Views
         private void TextListItem_Relayout(object sender, EventArgs e)
         {
             secondary.TextColor = isClickedEventEmpty ? NoActionsTextColors.Normal : TextColors.Normal;
-            OnDisabledStateChanged(IsEnabled);
+
+            if(!IsEnabled) OnDisabledStateChanged(false);
+            
             Relayout -= TextListItem_Relayout;
         }
 
