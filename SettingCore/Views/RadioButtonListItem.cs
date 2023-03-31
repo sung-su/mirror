@@ -52,15 +52,7 @@ namespace SettingCore.Views
 
             RadioButton.ControlStateChangedEvent += (s, e) =>
             {
-                if (e.CurrentState.Equals(ControlState.Pressed))
-                {
-                    OnChangeSelected(true);
-                }
-
-                if (e.CurrentState.Equals(ControlState.Normal) || e.CurrentState.Equals(ControlState.Selected))
-                {
-                    OnChangeSelected(false);
-                }
+                OnChangeSelected(e.CurrentState.Equals(ControlState.Pressed));
             };
 
             Clicked += (s, e) =>
