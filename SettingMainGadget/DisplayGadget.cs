@@ -118,6 +118,11 @@ namespace Setting.Menu
                 brightnessItem = new SliderListItem(Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING, iconpath, (brightness * 1.0f) / maxbrightness);
                 if (brightnessItem != null)
                 {
+                    if(!isBrightnessSupported)
+                    {
+                        brightnessItem.Slider.CurrentValue = brightnessItem.Slider.MaxValue;
+                    }
+
                     brightnessItem.Margin = new Extents(0, 0, 16, 0).SpToPx();
                     brightnessItem.Slider.ValueChanged += MSlider_ValueChanged;
                     brightnessItem.IsEnabled = isBrightnessSupported;
@@ -185,6 +190,7 @@ namespace Setting.Menu
         {
             if(!isBrightnessSupported)
             {
+                // TODO : create a theme helper that provides information about the current theme using an enum variable. 
                 iconpath = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, iconDisabledPath[DisplayThemeManager.GetThemeIndex()]);
                 return;
             }
@@ -260,7 +266,7 @@ namespace Setting.Menu
                 Logger.Debug($"theme changed to: {e.PlatformThemeId}");
                 themeItem.Secondary = DisplayThemeManager.GetThemeName();
 
-                // update slider icon path
+                // reassign CurrentValue to trigger slider icon path update
                 brightnessItem.Slider.CurrentValue = brightnessItem.Slider.CurrentValue;
             }
         }

@@ -97,8 +97,6 @@ namespace SettingCore.Views
             }
             else
             {
-                Slider.CurrentValue = Slider.MaxValue;
-
                 primary.TextColor = TextColors.Disabled;
 
                 Slider.BgTrackColor = BgTrackColors.Disabled;

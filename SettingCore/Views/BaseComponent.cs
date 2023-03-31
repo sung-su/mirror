@@ -20,11 +20,13 @@ namespace SettingCore.Views
 
         private void BaseComponent_ControlStateChangedEvent(object sender, ControlStateChangedEventArgs e)
         {
+            // change Disabled -> Any
             if (e.PreviousState == ControlState.Disabled)
             {
                 OnDisabledStateChanged(true);
             }
 
+            // change Any -> Disabled
             if (e.CurrentState == ControlState.Disabled)
             {
                 OnDisabledStateChanged(false);
