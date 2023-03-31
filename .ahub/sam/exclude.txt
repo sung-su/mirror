@@ -1,0 +1,2 @@
+SettingCore/TextResources/Resources.Designer.cs
+
