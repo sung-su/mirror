@@ -37,6 +37,8 @@
         <privilege>http://tizen.org/privilege/network.profile</privilege>
 
         <privilege>http://tizen.org/privilege/volume.set</privilege>
+
+        <privilege>http://tizen.org/privilege/window.priority.set</privilege>
     </privileges>
     <dependencies />
     <provides-appdefined-privileges />

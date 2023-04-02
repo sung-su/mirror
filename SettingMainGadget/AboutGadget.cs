@@ -10,6 +10,7 @@ using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 using Tizen.System;
+using System;
 
 namespace Setting.Menu
 {
@@ -89,6 +90,13 @@ namespace Setting.Menu
             };
             sections.Add(MainMenuProvider.About_OpenSourceLicenses, openSourceLicenses);
 
+            var scalableUI = TextListItem.CreatePrimaryTextItem("Scalable UI for Developers");
+            scalableUI.Clicked += (s, e) =>
+            {
+                NavigateTo(MainMenuProvider.About_ScalableUI);
+            };
+            sections.Add(MainMenuProvider.About_ScalableUI, scalableUI);
+
             var deviceInfo = new TextHeaderListItem(Resources.IDS_ST_BODY_DEVICE_INFO);
             sections.Add(MainMenuProvider.About_DeviceInfo, deviceInfo);
 
@@ -110,6 +118,13 @@ namespace Setting.Menu
 
             result = Tizen.System.Information.TryGetValue<string>("http://tizen.org/feature/platform.version", out string platformVersionText);
             var platformVersion = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_MBODY_TIZEN_VERSION, result ? platformVersionText : Resources.IDS_ST_HEADER_UNAVAILABLE);
+            platformVersion.MultiTap += (s, e) =>
+            {
+                GadgetManager.Instance.ChangeMenuPathOrder(MainMenuProvider.About_ScalableUI, 30);
+
+                var toast = Notification.MakeToast("Scalable UI for Developers menu enabled", Notification.ToastCenter);
+                toast.Post(1000);
+            };
             sections.Add(MainMenuProvider.About_TizenVersion, platformVersion);
 
             result = Tizen.System.Information.TryGetValue<string>("http://tizen.org/system/platform.processor", out string platformProcessorText);

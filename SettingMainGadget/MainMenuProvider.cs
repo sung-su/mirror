@@ -32,6 +32,7 @@ namespace SettingMainGadget
         public static string About = "About";
         public static string About_ManageCertificates = "About.ManageCertificates";
         public static string About_OpenSourceLicenses = "About.OpenSourceLicenses";
+        public static string About_ScalableUI = "About.ScalableUI";
         public static string About_DeviceInfo = "About.DeviceInfo";
         public static string About_RenameDevice = "About.RenameDevice";
         public static string About_ModelNumber = "About.ModelNumber";
@@ -87,20 +88,21 @@ namespace SettingMainGadget
                 new SettingMenu(path: Language_TTS, defaultOrder: 68),
                 new SettingMenu(path: Language_STT, defaultOrder: 69),
                 new SettingMenu(path: About, defaultOrder: 70, type: typeof(Setting.Menu.AboutGadget)),
-                new SettingMenu(path: About_ManageCertificates, defaultOrder: 71),
-                new SettingMenu(path: About_OpenSourceLicenses, defaultOrder: 72, type: typeof(Setting.Menu.AboutLegalInfoGadget)),
-                new SettingMenu(path: About_DeviceInfo, defaultOrder: 73),
-                new SettingMenu(path: About_RenameDevice, defaultOrder: 74),
-                new SettingMenu(path: About_ModelNumber, defaultOrder: 75),
-                new SettingMenu(path: About_TizenVersion, defaultOrder: 76),
-                new SettingMenu(path: About_Cpu, defaultOrder: 77),
-                new SettingMenu(path: About_Ram, defaultOrder: 78),
-                new SettingMenu(path: About_Resolution, defaultOrder: 79),
-                new SettingMenu(path: About_DeviceStatus, defaultOrder: 80, type: typeof(Setting.Menu.AboutDeviceStatusGadget)),
-                new SettingMenu(path: About_DeviceStatus_bt_address, defaultOrder: 81),
-                new SettingMenu(path: About_DeviceStatus_wifi_mac_address, defaultOrder: 82),
-                new SettingMenu(path: About_DeviceStatus_storage, defaultOrder: 83),
-                new SettingMenu(path: About_DeviceStatus_cpu_usage, defaultOrder: 84),
+                new SettingMenu(path: About_ManageCertificates, defaultOrder: 10),
+                new SettingMenu(path: About_OpenSourceLicenses, defaultOrder: 20, type: typeof(Setting.Menu.AboutLegalInfoGadget)),
+                new SettingMenu(path: About_ScalableUI, defaultOrder: -30, type: typeof(SettingMainGadget.About.AboutScalableGadget)),
+                new SettingMenu(path: About_DeviceInfo, defaultOrder: 40),
+                new SettingMenu(path: About_RenameDevice, defaultOrder: 50),
+                new SettingMenu(path: About_ModelNumber, defaultOrder: 60),
+                new SettingMenu(path: About_TizenVersion, defaultOrder: 70),
+                new SettingMenu(path: About_Cpu, defaultOrder: 80),
+                new SettingMenu(path: About_Ram, defaultOrder: 90),
+                new SettingMenu(path: About_Resolution, defaultOrder: 100),
+                new SettingMenu(path: About_DeviceStatus, defaultOrder: 110, type: typeof(Setting.Menu.AboutDeviceStatusGadget)),
+                new SettingMenu(path: About_DeviceStatus_bt_address, defaultOrder: 10),
+                new SettingMenu(path: About_DeviceStatus_wifi_mac_address, defaultOrder: 20),
+                new SettingMenu(path: About_DeviceStatus_storage, defaultOrder: 30),
+                new SettingMenu(path: About_DeviceStatus_cpu_usage, defaultOrder: 40),
             };
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
@@ -35,6 +36,11 @@ namespace SettingCore.Views
 
         public event EventHandler<ClickedEventArgs> Clicked;
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public event EventHandler<EventArgs> MultiTap;
+        private int multiTapCounter;
+        private DateTime multiTapLast = DateTime.MinValue;
+
         protected bool isClickedEventEmpty => Clicked is null;
 
         private bool touchStarted = false;
@@ -63,6 +69,31 @@ namespace SettingCore.Views
 
         private bool OnTouchEvent(object source, TouchEventArgs e)
         {
+            if (MultiTap != null)
+            {
+                var now = DateTime.Now;
+                if (now - multiTapLast > TimeSpan.FromSeconds(2))
+                {
+                    multiTapCounter = 0;
+                    Logger.Verbose("multitap zeroed");
+                }
+
+                if (e.Touch.GetState(0) == PointStateType.Down)
+                {
+                    multiTapLast = now;
+                    ++multiTapCounter;
+                    Logger.Verbose($"multitap {multiTapCounter}");
+                }
+
+                if (multiTapCounter >= 5)
+                {
+                    Logger.Verbose("multitap invoke");
+                    var handler = MultiTap;
+                    handler?.Invoke(this, EventArgs.Empty);
+                }
+                return false;
+            }
+
             if (isClickedEventEmpty)
             {
                 return false;
