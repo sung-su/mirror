@@ -29,7 +29,8 @@ namespace SettingView
 
         public static readonly float WindowCornerRadius = 26.0f;
 
-        private static readonly Color mBackgroundColor = Color.White.WithAlpha(0.35f);
+        private bool IsLightTheme => ThemeManager.PlatformThemeId == "org.tizen.default-light-theme";
+        private Color mBackgroundColor => IsLightTheme ? Color.White.WithAlpha(0.35f) : new Color("#161319").WithAlpha(0.5f);
 
         private static string GetResourcePath(string relativePath) => System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, relativePath);
         private static string MinimalizeIconPath = GetResourcePath("window-border/window-minimalize.svg");
@@ -49,6 +50,18 @@ namespace SettingView
         {
             ResizePolicy = Window.BorderResizePolicyType.Free;
             MinSize = new Size2D(500, 300);
+
+            ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
+        }
+
+        private void ThemeManager_ThemeChanged(object sender, ThemeChangedEventArgs e)
+        {
+            if (borderView == null)
+            {
+                return;
+            }
+
+            borderView.BackgroundColor = mBackgroundColor;
         }
 
         public override bool CreateBottomBorderView(View bottomView)
