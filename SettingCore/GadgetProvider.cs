@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Tizen.NUI;
 
-namespace SettingCore.Customization
+namespace SettingCore
 {
     internal class GadgetProvider
     {

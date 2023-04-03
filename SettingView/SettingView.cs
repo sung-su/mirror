@@ -23,7 +23,6 @@ using SettingCore.TextResources;
 using SettingCore;
 using System.Linq;
 using Tizen.Applications;
-using SettingCore.Customization;
 using System.Collections.Generic;
 
 namespace SettingView

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 
-namespace SettingCore.Customization
+namespace SettingCore
 {
     internal class FileStorage
     {

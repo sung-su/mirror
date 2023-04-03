@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace SettingCore.Customization
+namespace SettingCore
 {
     public class MenuCustomizationItem
     {

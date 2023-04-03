@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SettingCore.Customization
+namespace SettingCore
 {
     public class CustomizationChangedEventArgs : EventArgs
     {

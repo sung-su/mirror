@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Tizen.NUI.BaseComponents;
 
-namespace SettingCore.Customization
+namespace SettingCore
 {
     public class Sections
     {

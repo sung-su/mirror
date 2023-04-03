@@ -1,6 +1,5 @@
 using SettingCore.TextResources;
 using SettingCore;
-using SettingCore.Customization;
 using SettingCore.Views;
 using SettingMainGadget;
 using System;
