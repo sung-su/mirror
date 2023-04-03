@@ -85,7 +85,7 @@ namespace SettingCore.Views
                     Logger.Verbose($"multitap {multiTapCounter}");
                 }
 
-                if (multiTapCounter >= 5)
+                if (multiTapCounter == 5)
                 {
                     Logger.Verbose("multitap invoke");
                     var handler = MultiTap;
