@@ -5,6 +5,7 @@ using Tizen.System;
 using Tizen.NUI.BaseComponents;
 using System.Linq;
 using System.Threading;
+using SettingCore.Views;
 
 namespace SettingCore
 {
@@ -77,7 +78,7 @@ namespace SettingCore
                 backButton.Margin = new Extents(0, 8, 0, 0).SpToPx();
                 backButton.Clicked += (s, e) => NavigateBack();
 
-                var page = new ContentPage
+                var page = new BaseContentPage
                 {
                     // TODO: CornerRadius depends on SettingViewBorder.CornerRadius - SettingViewBorder.BorderLineThickness, which is defined at SettingView project.
                     CornerRadius = (26.0f - 6.0f).SpToPx(),

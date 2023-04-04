@@ -24,6 +24,7 @@ using SettingCore;
 using System.Linq;
 using Tizen.Applications;
 using System.Collections.Generic;
+using SettingCore.Views;
 
 namespace SettingView
 {
@@ -40,7 +41,7 @@ namespace SettingView
         {
             base.OnCreate();
 
-            mMainPage = new ContentPage()
+            mMainPage = new BaseContentPage()
             {
                 CornerRadius = (SettingViewBorder.WindowCornerRadius - SettingViewBorder.WindowPadding).SpToPx(),
                 ThemeChangeSensitive = true,
