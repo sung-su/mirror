@@ -1,4 +1,5 @@
-﻿using Tizen.NUI;
+﻿using System.Text;
+using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 
@@ -16,6 +17,8 @@ namespace SettingCore.Views
         public RadioButtonListItem(string text)
             :base()
         {
+            AccessibilityRole = Role.RadioButton;
+
             Layout = new LinearLayout()
             {
                 LinearOrientation = LinearLayout.Orientation.Vertical,
@@ -91,6 +94,17 @@ namespace SettingCore.Views
         private string GetIconPath(string name)
         {
             return System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, $"radiobutton/{name}");
+        }
+
+        protected override string AccessibilityGetName() => RadioButton.Text;
+
+        protected override AccessibilityStates AccessibilityCalculateStates()
+        {
+            var states = base.AccessibilityCalculateStates();
+
+            states[AccessibilityState.Checked] = RadioButton.IsSelected;
+
+            return states;
         }
     }
 }
