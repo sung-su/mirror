@@ -137,7 +137,7 @@ namespace SettingView
 
         private void SystemSettings_LocaleLanguageChanged(object sender, Tizen.System.LocaleLanguageChangedEventArgs e)
         {
-            if (mMainPage != null)
+            if (mMainPage != null && mMainPage.AppBar != null)
             {
                 mMainPage.AppBar.Title = Resources.IDS_ST_OPT_SETTINGS;
                 mMainPage.Content = CreateContent();

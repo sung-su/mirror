@@ -24,7 +24,11 @@ namespace SettingCore
                     if (pair.Key is ContentPage page)
                     {
                         var title = pair.Value.ProvideTitle();
-                        page.AppBar.Title = title;
+
+                        if (page.AppBar != null)
+                        {
+                            page.AppBar.Title = title;
+                        }
                     }
                 }
             };
