@@ -19,6 +19,8 @@ namespace SettingCore.Views
         public SwitchListItem(string primaryText, string subText = "", bool isSelected = false)
             :base()
         {
+            AccessibilityRole = Role.ToggleButton;
+
             var paddingTopBottom = String.IsNullOrEmpty(subText) ? 16 : 8;
             Padding = new Extents(16, 16, (ushort)paddingTopBottom, (ushort)paddingTopBottom).SpToPx();
 
@@ -131,6 +133,15 @@ namespace SettingCore.Views
             }
 
             return sb.ToString();
+        }
+
+        protected override AccessibilityStates AccessibilityCalculateStates()
+        {
+            var states = base.AccessibilityCalculateStates();
+
+            states[AccessibilityState.Checked] = Switch.IsSelected;
+
+            return states;
         }
     }
 }
