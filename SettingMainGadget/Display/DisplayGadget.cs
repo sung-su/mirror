@@ -128,6 +128,10 @@ namespace Setting.Menu
                     sections.Add(MainMenuProvider.Display_Brightness, brightnessItem);
                 }
             }
+            else
+            {
+                Logger.Warn($"There are no available displays. The Brightness section has not been created.");
+            }
 
             // section: font
 
@@ -266,7 +270,10 @@ namespace Setting.Menu
                 themeItem.Secondary = DisplayThemeManager.GetThemeName();
 
                 // reassign CurrentValue to trigger slider icon path update
-                brightnessItem.Slider.CurrentValue = brightnessItem.Slider.CurrentValue;
+                if (brightnessItem != null)
+                {
+                    brightnessItem.Slider.CurrentValue = brightnessItem.Slider.CurrentValue;
+                }
             }
         }
     }
