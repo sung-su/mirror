@@ -1,4 +1,5 @@
 ﻿using SettingCore.TextResources;
+using SettingCore.Views;
 using SettingMainGadget.DateTime;
 using System.Linq;
 using Tizen.NUI;
@@ -37,17 +38,11 @@ namespace Setting.Menu.DateTime
 
             foreach (var timeZone in timeZones)
             {
-                RadioButton radioButton = new RadioButton()
-                {
-                    ThemeChangeSensitive = true,
-                    ItemHorizontalAlignment = HorizontalAlignment.Begin,
-                    Text = timeZone.DisplayName,
-                    IsSelected = SystemSettings.LocaleTimeZone == timeZone.Info.Id,
-                    Margin = new Extents(24, 0, 0, 0).SpToPx(),
-                };
+                RadioButtonListItem item = new RadioButtonListItem(timeZone.DisplayName);
+                item.RadioButton.IsSelected = SystemSettings.LocaleTimeZone == timeZone.Info.Id;
 
-                radioButtonGroup.Add(radioButton);
-                content.Add(radioButton);
+                radioButtonGroup.Add(item.RadioButton);
+                content.Add(item);
             }
 
             radioButtonGroup.SelectedChanged += (o, e) =>

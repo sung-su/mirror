@@ -7,6 +7,7 @@ using System.Linq;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
+using SettingCore.Views;
 
 namespace Setting.Menu.Sound
 {
@@ -38,16 +39,11 @@ namespace Setting.Menu.Sound
 
             for (int i = 0; i < soundList.Count; i++)
             {
-                RadioButton radioButton = new RadioButton()
-                {
-                    ThemeChangeSensitive = true,
-                    Text = SoundNotificationManager.SettingMediaBasename(soundList[i].ToString()),
-                    IsSelected = i.Equals(GetNotificationSoundIndex(soundList)),
-                    Margin = new Extents(24, 0, 0, 0).SpToPx(),
-                };
+                RadioButtonListItem item = new RadioButtonListItem(SoundNotificationManager.SettingMediaBasename(soundList[i].ToString()));
+                item.RadioButton.IsSelected = i.Equals(GetNotificationSoundIndex(soundList));
 
-                radioButtonGroup.Add(radioButton);
-                content.Add(radioButton);
+                radioButtonGroup.Add(item.RadioButton);
+                content.Add(item);
             }
 
             radioButtonGroup.SelectedChanged += (o, e) =>

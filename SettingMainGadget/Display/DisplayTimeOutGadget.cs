@@ -1,4 +1,5 @@
 using SettingCore.TextResources;
+using SettingCore.Views;
 using SettingMainGadget.Display;
 using System.Linq;
 using Tizen.NUI;
@@ -33,16 +34,11 @@ namespace Setting.Menu.Display
 
             for (int i = 0; i < timeoutList.Count; i++)
             {
-                RadioButton radioButton = new RadioButton()
-                {
-                    Text = timeoutList[i],
-                    ThemeChangeSensitive = true,
-                    IsSelected = i.Equals(DisplayTimeOutManager.GetScreenTimeoutIndex()),
-                    Margin = new Extents(24, 0, 0, 0).SpToPx(),
-                };
+                RadioButtonListItem item = new RadioButtonListItem(timeoutList[i]);
+                item.RadioButton.IsSelected = i.Equals(DisplayTimeOutManager.GetScreenTimeoutIndex());
 
-                radioButtonGroup.Add(radioButton);
-                content.Add(radioButton);
+                radioButtonGroup.Add(item.RadioButton);
+                content.Add(item);
             }
 
             radioButtonGroup.SelectedChanged += (o, e) =>

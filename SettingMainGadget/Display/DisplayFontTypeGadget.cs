@@ -7,6 +7,7 @@ using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 using Tizen.System;
+using SettingCore.Views;
 
 namespace Setting.Menu.Display
 {
@@ -34,17 +35,12 @@ namespace Setting.Menu.Display
 
             for (int i = 0; i < fontTypeList.Count; i++)
             {
-                RadioButton radioButton = new RadioButton()
-                {
-                    ThemeChangeSensitive = true,
-                    Text = fontTypeList[i],
-                    IsSelected = fontTypeList[i] == SystemSettings.FontType,
-                    Margin = new Extents(24, 0, 0, 0).SpToPx(),
-                };
-                radioButton.TextLabel.FontFamily = fontTypeList[i];
+                RadioButtonListItem item = new RadioButtonListItem(fontTypeList[i]);
+                item.RadioButton.IsSelected = fontTypeList[i] == SystemSettings.FontType;
+                item.RadioButton.TextLabel.FontFamily = fontTypeList[i];
 
-                radioButtonGroup.Add(radioButton);
-                content.Add(radioButton);
+                radioButtonGroup.Add(item.RadioButton);
+                content.Add(item);
             }
 
             radioButtonGroup.SelectedChanged += (o, e) =>

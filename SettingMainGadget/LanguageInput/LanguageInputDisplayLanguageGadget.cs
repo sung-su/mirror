@@ -1,6 +1,6 @@
 ﻿using SettingCore.TextResources;
+using SettingCore.Views;
 using SettingMainGadget.LanguageInput;
-using System.Linq;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
@@ -31,16 +31,11 @@ namespace Setting.Menu.LanguageInput
 
             for (int i = 0; i < LanguageInputDisplayLanguageManager.LanguageList.Count; i++)
             {
-                RadioButton radioButton = new RadioButton()
-                {
-                    ThemeChangeSensitive = true,
-                    Text = LanguageInputDisplayLanguageManager.LanguageList[i].GetName(),
-                    IsSelected = i.Equals(LanguageInputDisplayLanguageManager.GetDisplayLanguageIndex()),
-                    Margin = new Extents(24, 0, 0, 0).SpToPx(),
-                };
+                RadioButtonListItem item = new RadioButtonListItem(LanguageInputDisplayLanguageManager.LanguageList[i].GetName());
+                item.RadioButton.IsSelected = i.Equals(LanguageInputDisplayLanguageManager.GetDisplayLanguageIndex());
 
-                radioButtonGroup.Add(radioButton);
-                content.Add(radioButton);
+                radioButtonGroup.Add(item.RadioButton);
+                content.Add(item);
             }
 
             radioButtonGroup.SelectedChanged += (o, e) =>
