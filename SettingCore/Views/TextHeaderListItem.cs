@@ -1,4 +1,5 @@
-﻿using Tizen.NUI;
+﻿using System.Text;
+using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 
 namespace SettingCore.Views
@@ -11,6 +12,8 @@ namespace SettingCore.Views
 
         public TextHeaderListItem(string text) : base()
         {
+            AccessibilityRole = Role.Label;
+
             Layout = new LinearLayout()
             {
                 LinearOrientation = LinearLayout.Orientation.Horizontal,
@@ -33,5 +36,7 @@ namespace SettingCore.Views
                 textLabel.TextColor = TextColors.Normal;
             };
         }
+
+        protected override string AccessibilityGetName() => textLabel.Text;
     }
 }
