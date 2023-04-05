@@ -111,7 +111,7 @@ namespace SettingCore.Views
 
         protected override string AccessibilityGetName()
         {
-            return $"{primary.Text}, {(int)(Slider.CurrentValue / Slider.MaxValue * 100)} percent";
+            return $"{primary.Text}, {(int)(Slider.CurrentValue / Slider.MaxValue * 100)} %";
         }
     }
 }
