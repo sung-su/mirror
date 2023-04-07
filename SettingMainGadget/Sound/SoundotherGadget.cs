@@ -3,6 +3,7 @@ using SettingCore;
 using SettingCore.Views;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
+using Tizen.NUI.Components;
 
 namespace Setting.Menu.Sound
 {
@@ -17,10 +18,12 @@ namespace Setting.Menu.Sound
         {
             base.OnCreate();
 
-            var content = new View()
+            var content = new ScrollableBase
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
                 HeightSpecification = LayoutParamPolicies.MatchParent,
+                ScrollingDirection = ScrollableBase.Direction.Vertical,
+                HideScrollbar = false,
                 Layout = new LinearLayout()
                 {
                     LinearOrientation = LinearLayout.Orientation.Vertical,

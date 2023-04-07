@@ -15,14 +15,14 @@ namespace Setting.Menu.LanguageInput
         {
             base.OnCreate();
 
-            var content = new View()
+            var content = new ScrollableBase
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
                 HeightSpecification = LayoutParamPolicies.MatchParent,
+                ScrollingDirection = ScrollableBase.Direction.Vertical,
+                HideScrollbar = false,
                 Layout = new LinearLayout()
                 {
-                    HorizontalAlignment = HorizontalAlignment.Begin,
-                    VerticalAlignment = VerticalAlignment.Top,
                     LinearOrientation = LinearLayout.Orientation.Vertical,
                 },
             };

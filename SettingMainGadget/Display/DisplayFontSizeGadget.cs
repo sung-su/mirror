@@ -40,10 +40,12 @@ namespace Setting.Menu.Display
         {
             base.OnCreate();
 
-            var content = new View()
+            var content = new ScrollableBase
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
                 HeightSpecification = LayoutParamPolicies.MatchParent,
+                ScrollingDirection = ScrollableBase.Direction.Vertical,
+                HideScrollbar = false,
                 Layout = new LinearLayout()
                 {
                     LinearOrientation = LinearLayout.Orientation.Vertical,
