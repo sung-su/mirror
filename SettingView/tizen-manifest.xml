@@ -7,19 +7,19 @@
         <icon>SettingView.png</icon>
         <metadata key="http://tizen.org/metadata/prefer_dotnet_aot" value="true" />
         <splash-screens />
-      <res-control resource-type="org.tizen.appfw.gadget.Settings" min-res-version="1.5.0" max-res-version="2.0.0" auto-close="true"></res-control>
-      <res-control resource-type="org.tizen.appfw.gadget.setting-wifi" min-res-version="1.5.0" max-res-version="2.0.0" auto-close="true"></res-control>
-      <res-control resource-type="org.tizen.appfw.gadget.setting-bluetooth" min-res-version="1.5.0" max-res-version="2.0.0" auto-close="true"></res-control>
-      <res-control resource-type="org.tizen.appfw.gadget.setting-wallpaper" min-res-version="1.5.0" max-res-version="2.0.0" auto-close="true"></res-control>
-      <res-control resource-type="org.tizen.appfw.gadget.setting-account" min-res-version="1.5.0" max-res-version="2.0.0" auto-close="true"></res-control>
-      <res-control resource-type="org.tizen.appfw.gadget.setting-privacy" min-res-version="1.5.0" max-res-version="2.0.0" auto-close="true"></res-control>
-      <res-control resource-type="org.tizen.appfw.gadget.setting-inputmethod" min-res-version="1.5.0" max-res-version="2.0.0" auto-close="true"></res-control>
-      <res-control resource-type="org.tizen.appfw.gadget.setting-autofill" min-res-version="1.5.0" max-res-version="2.0.0" auto-close="true"></res-control>
-      <res-control resource-type="org.tizen.appfw.gadget.setting-voicecontrol" min-res-version="1.5.0" max-res-version="2.0.0" auto-close="true"></res-control>
-      <res-control resource-type="org.tizen.appfw.gadget.setting-tts" min-res-version="1.5.0" max-res-version="2.0.0" auto-close="true"></res-control>
-      <res-control resource-type="org.tizen.appfw.gadget.setting-stt" min-res-version="1.5.0" max-res-version="2.0.0" auto-close="true"></res-control>
-      <res-control resource-type="org.tizen.appfw.gadget.setting-accessibility" min-res-version="1.5.0" max-res-version="2.0.0" auto-close="true"></res-control>
-      <res-control resource-type="org.tizen.appfw.gadget.setting-certificates" min-res-version="1.5.0" max-res-version="2.0.0" auto-close="true"></res-control>
+      <res-control resource-type="org.tizen.appfw.gadget.Settings" min-res-version="1.0.0" max-res-version="2.0.0" auto-close="true"></res-control>
+      <res-control resource-type="org.tizen.appfw.gadget.setting-wifi" min-res-version="1.0.0" max-res-version="2.0.0" auto-close="true"></res-control>
+      <res-control resource-type="org.tizen.appfw.gadget.setting-bluetooth" min-res-version="1.0.0" max-res-version="2.0.0" auto-close="true"></res-control>
+      <res-control resource-type="org.tizen.appfw.gadget.setting-wallpaper" min-res-version="1.0.0" max-res-version="2.0.0" auto-close="true"></res-control>
+      <res-control resource-type="org.tizen.appfw.gadget.setting-account" min-res-version="1.0.0" max-res-version="2.0.0" auto-close="true"></res-control>
+      <res-control resource-type="org.tizen.appfw.gadget.setting-privacy" min-res-version="1.0.0" max-res-version="2.0.0" auto-close="true"></res-control>
+      <res-control resource-type="org.tizen.appfw.gadget.setting-inputmethod" min-res-version="1.0.0" max-res-version="2.0.0" auto-close="true"></res-control>
+      <res-control resource-type="org.tizen.appfw.gadget.setting-autofill" min-res-version="1.0.0" max-res-version="2.0.0" auto-close="true"></res-control>
+      <res-control resource-type="org.tizen.appfw.gadget.setting-voicecontrol" min-res-version="1.0.0" max-res-version="2.0.0" auto-close="true"></res-control>
+      <res-control resource-type="org.tizen.appfw.gadget.setting-tts" min-res-version="1.0.0" max-res-version="2.0.0" auto-close="true"></res-control>
+      <res-control resource-type="org.tizen.appfw.gadget.setting-stt" min-res-version="1.0.0" max-res-version="2.0.0" auto-close="true"></res-control>
+      <res-control resource-type="org.tizen.appfw.gadget.setting-accessibility" min-res-version="1.0.0" max-res-version="2.0.0" auto-close="true"></res-control>
+      <res-control resource-type="org.tizen.appfw.gadget.setting-certificates" min-res-version="1.0.0" max-res-version="2.0.0" auto-close="true"></res-control>
     </ui-application>
     <shortcut-list />
     <privileges>
