@@ -1,0 +1,13 @@
+* text=auto eol=lf
+*.png   binary
+*.tpk   binary
+*.rpk   binary
+*.wav   binary
+*.mp3   binary
+*.dll   binary
+*.cs        eol=lf
+*.csproj    eol=lf
+*.sln       eol=lf
+*.xml       eol=lf
+*.svg       eol=lf
+*.xaml      eol=lf

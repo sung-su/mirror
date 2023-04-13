@@ -1,9 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Tizen.NET.Sdk/1.1.9">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-      <AssemblyName>SettingView</AssemblyName>
+     <TargetFramework>netcoreapp3.1</TargetFramework>
+     <TizenCreateTpkOnBuild>false</TizenCreateTpkOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -14,20 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="res\menu\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Tizen.NET" Version="11.0.0.17739" />
-    <PackageReference Include="Tizen.NET.Sdk" Version="1.0.9" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SettingCore\SettingCore.csproj" />
+    <ProjectReference Include="..\..\SettingCore\SettingCore.csproj" />
   </ItemGroup>
-
-  <PropertyGroup>
-    <NeedInjection>True</NeedInjection>
-  </PropertyGroup>
 
 </Project>
+

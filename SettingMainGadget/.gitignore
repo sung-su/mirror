@@ -1,0 +1,9 @@
+**/.vs/
+**/.vscode/
+**/[Oo]bj/
+**/[Bb]in/
+**/[Dd]ebug/
+**/[Rr]elease/
+**/.gn
+**/[Bb]uild/
+**/res/allowed/*.dll

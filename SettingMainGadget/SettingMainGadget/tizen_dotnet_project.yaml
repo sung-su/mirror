@@ -1,0 +1,12 @@
+# csproj file path
+csproj_file: SettingMainGadget.csproj
+
+# files monitored for dirty/modified status
+files:
+
+# Enable to pack as rpk
+pack_as_rpk: true
+
+# List of resource files to be packed in rpk
+resources:
+  - res/
