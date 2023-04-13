@@ -10,7 +10,7 @@ namespace SettingCore.Views
 
         private TextLabel textLabel;
 
-        public TextHeaderListItem(string text) : base()
+        public TextHeaderListItem(string text, bool multiLine = false) : base()
         {
             AccessibilityRole = Role.Label;
 
@@ -22,11 +22,13 @@ namespace SettingCore.Views
 
             textLabel = new TextLabel(text)
             {
+                WidthSpecification = LayoutParamPolicies.MatchParent,
                 AccessibilityHidden = true,
                 Margin = new Extents(24, 0, 16, 16).SpToPx(),
                 TextColor = TextColors.Normal,
                 PixelSize = 24.SpToPx(),
                 Text = text,
+                MultiLine = multiLine,
             };
 
             Add(textLabel);
@@ -40,3 +42,4 @@ namespace SettingCore.Views
         protected override string AccessibilityGetName() => textLabel.Text;
     }
 }
+
