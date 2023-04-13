@@ -56,6 +56,7 @@ namespace SettingMainGadget
         public static string Storage_UsageIndicator = "Storage.UsageIndicator";
         public static string Storage_ExternalUsage = "Storage.ExternalUsage";
         public static string Storage_ExternalStorage = "Storage.ExternalStorage";
+        public static string Storage_DefaultSettings = "Storage.DefaultSettings";
 
         //external
         public static string Language_InputMethod = "Language.InputMethod";
@@ -124,6 +125,7 @@ namespace SettingMainGadget
                 new SettingMenu(path: Storage_UsageSummary, defaultOrder: 35),
                 new SettingMenu(path: Storage_ExternalUsage, defaultOrder: 40),
                 new SettingMenu(path: Storage_ExternalStorage, defaultOrder: 45),
+                new SettingMenu(path: Storage_DefaultSettings, defaultOrder: 50, typeof(Setting.Menu.Storage.DefaultStorageGadget)),
             };
         }
     }

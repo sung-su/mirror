@@ -229,6 +229,7 @@ namespace Setting.Menu
             var storageLocationItem = TextListItem.CreatePrimaryTextItemWithSubText("Default storage settings", "Device/Storage"); // FIXME : sub text should be dynamic & add translation to Resources
             storageLocationItem.Clicked += (s, e) =>
             {
+                NavigateTo(MainMenuProvider.Storage_DefaultSettings);
             };
 
             defaultSettings.Add(defaultSettingsItem);
