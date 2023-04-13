@@ -39,7 +39,11 @@
         <privilege>http://tizen.org/privilege/volume.set</privilege>
 
         <privilege>http://tizen.org/privilege/window.priority.set</privilege>
-    </privileges>
+
+		<privilege>http://tizen.org/privilege/mediastorage</privilege>	
+		<privilege>http://tizen.org/privilege/packagemanager.admin</privilege>
+		<privilege>http://tizen.org/privilege/packagemanager.clearcache</privilege>
+	</privileges>
     <dependencies />
     <provides-appdefined-privileges />
 </manifest>

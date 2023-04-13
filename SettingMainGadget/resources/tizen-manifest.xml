@@ -8,6 +8,11 @@
       <privilege>http://tizen.org/privilege/volume.set</privilege>
       <!--display-->
 	  <privilege>http://tizen.org/privilege/systemsettings.admin</privilege>
+		
+		<!--storage-->
+		<privilege>http://tizen.org/privilege/mediastorage</privilege>
+		<privilege>http://tizen.org/privilege/packagemanager.admin</privilege>
+		<privilege>http://tizen.org/privilege/packagemanager.clearcache</privilege>
     </required-privileges>
   </allowed-package>
   <metadata key="http://tizen.org/metadata/ui-gadget/dll" value="SettingMainGadget.dll"/>
