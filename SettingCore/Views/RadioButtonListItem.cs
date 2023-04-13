@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
@@ -8,7 +8,7 @@ namespace SettingCore.Views
     public class RadioButtonListItem : BaseComponent
     {
         private readonly ThemeColor BackgroundColors = new ThemeColor(Color.Transparent, Color.Transparent, new Color("#FF6400").WithAlpha(0.16f), new Color("#FFFFFF").WithAlpha(0.16f));
-        private readonly ThemeColor TextColors = new ThemeColor(new Color("#090E21"), new Color("#FDFDFD"), new Color("#FF6200"), new Color("#FF8A00"));
+        private readonly ThemeColor TextColors = new ThemeColor(new Color("#090E21"), new Color("#FDFDFD"), new Color("#FF6200"), new Color("#FF8A00"), new Color("#CACACA"), new Color("#666666"));
 
         public RadioButton RadioButton { get; private set; }
 
@@ -73,6 +73,15 @@ namespace SettingCore.Views
                 RadioButton.ApplyStyle(isLightTheme ? style_light : style_dark);
                 OnChangeSelected(false);
             };
+
+            Relayout += RadioButtonListItem_Relayout;
+        }
+
+        private void RadioButtonListItem_Relayout(object sender, EventArgs e)
+        {
+            if (!IsEnabled) OnDisabledStateChanged(false);
+
+            Relayout -= RadioButtonListItem_Relayout;
         }
 
         public override void OnChangeSelected(bool selected)
@@ -88,6 +97,20 @@ namespace SettingCore.Views
                 base.BackgroundColor = BackgroundColors.Normal;
 
                 RadioButton.TextColor = TextColors.Normal;
+            }
+        }
+
+        public override void OnDisabledStateChanged(bool isEnabled)
+        {
+            RadioButton.IsEnabled = isEnabled;
+
+            if (isEnabled)
+            {
+                RadioButton.TextColor = TextColors.Normal;
+            }
+            else
+            {
+                RadioButton.TextColor = TextColors.Disabled;
             }
         }
 
