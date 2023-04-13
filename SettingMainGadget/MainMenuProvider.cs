@@ -46,6 +46,17 @@ namespace SettingMainGadget
         public static string About_DeviceStatus_storage = "About.DeviceStatus.Storage";
         public static string About_DeviceStatus_cpu_usage = "About.DeviceStatus.CpuUsage";
 
+        //storage
+        public static string Storage = "Storage";
+        public static string Storage_InternalUsage = "Storage.InternalUsage";
+        public static string Storage_Used = "Storage.Used";
+        public static string Storage_TotalInternal = "Storage.TotalInternal";
+        public static string Storage_FreeInternal = "Storage.FreeInternal";
+        public static string Storage_UsageSummary = "Storage.UsageSummary";
+        public static string Storage_UsageIndicator = "Storage.UsageIndicator";
+        public static string Storage_ExternalUsage = "Storage.ExternalUsage";
+        public static string Storage_ExternalStorage = "Storage.ExternalStorage";
+
         //external
         public static string Language_InputMethod = "Language.InputMethod";
         public static string Language_AutoFill = "Language.AutoFill";
@@ -103,6 +114,16 @@ namespace SettingMainGadget
                 new SettingMenu(path: About_DeviceStatus_wifi_mac_address, defaultOrder: 20),
                 new SettingMenu(path: About_DeviceStatus_storage, defaultOrder: 30),
                 new SettingMenu(path: About_DeviceStatus_cpu_usage, defaultOrder: 40),
+                //storage
+                new SettingMenu(path: Storage, defaultOrder: 120, type: typeof(Setting.Menu.StorageGadget)),
+                new SettingMenu(path: Storage_InternalUsage, defaultOrder: 10),
+                new SettingMenu(path: Storage_Used, defaultOrder: 15),
+                new SettingMenu(path: Storage_UsageIndicator, defaultOrder: 20),
+                new SettingMenu(path: Storage_TotalInternal, defaultOrder: 25),
+                new SettingMenu(path: Storage_FreeInternal, defaultOrder: 30),
+                new SettingMenu(path: Storage_UsageSummary, defaultOrder: 35),
+                new SettingMenu(path: Storage_ExternalUsage, defaultOrder: 40),
+                new SettingMenu(path: Storage_ExternalStorage, defaultOrder: 45),
             };
         }
     }
