@@ -1,14 +1,58 @@
-﻿using Tizen.NUI;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 
 namespace SettingCore.Views
 {
     public class StorageIndicator : View
     {
-        // TODO : make it dynamic and renewable 
-        public StorageIndicator()
+        public class IndicatorItem
         {
-            WidthSpecification = LayoutParamPolicies.MatchParent;
+            public string Name { get; private set; }
+            public Color Color { get; private set; }
+            public double SizeInfo { get; private set; }
+            public float Width { get; private set; }
+
+            public IndicatorItem(string name, Color color, double sizeInfo)
+            {
+                Name = name;
+                Color = color;
+                SizeInfo = sizeInfo;
+            }
+
+            public void SetWidth(float width)
+            {
+                Width = width;
+            }
+
+            public void SetSize(double sizeInfo)
+            {
+                SizeInfo = sizeInfo;
+            }
+        }
+
+        private const int duration = 1000;
+        private double totalSize;
+
+        private Animation animation;      
+        private List<IndicatorItem> sizeInfoList = new List<IndicatorItem>();
+
+        public List<IndicatorItem> SizeInfoList
+        {
+            get => sizeInfoList; 
+            set 
+            { 
+                if(sizeInfoList != value) 
+                {
+                    sizeInfoList = value;
+                }
+            }
+        }
+
+        public StorageIndicator(double totalSize)
+        {
+            this.totalSize = totalSize;
 
             Layout = new LinearLayout()
             {
@@ -16,37 +60,97 @@ namespace SettingCore.Views
                 VerticalAlignment = VerticalAlignment.Center,
             };
 
+            WidthSpecification = LayoutParamPolicies.MatchParent;
+            BackgroundColor = new Color("#83868F").WithAlpha(0.1f);
             Margin = new Extents(40, 40, 24, 24).SpToPx();
             SizeHeight = 8.SpToPx();
             CornerRadius = 4.SpToPx();
-
-            BackgroundColor = new Color("#FF6200").WithAlpha(0.1f);
-
-            AddParts();
         }
 
-        private void AddParts()
+        public void AddItem(string name, Color color, double size)
         {
-            Add(CreateColoredView(new Color("#FFC700"), 100, new Vector4(4, 0, 0, 4)));
-            Add(CreateColoredView(new Color("#FF8A00"), 150));
-            Add(CreateColoredView(new Color("#FF6200"), 200));
-            Add(CreateColoredView(new Color("#A40404"), 300));
+            sizeInfoList.Add(new IndicatorItem(name, color, size));
         }
 
-        private View CreateColoredView(Color color, float width, Vector4 cornerRadius = null)
+        public void Update()
+        {
+            if (animation != null)
+            {
+                return;
+            }
+
+            sizeInfoList = new List<IndicatorItem>(sizeInfoList.OrderByDescending(a => a.SizeInfo).ToList());
+
+            Calculation();
+            RemoveChildren(this);
+            AddItems();
+        }
+
+        private void AddItems()
+        {
+            animation = new Animation(duration);
+
+            for (int i = sizeInfoList.Count - 1; i >= 0; i--)
+            {
+                var coloredView = CreateColoredView(sizeInfoList[i].Color, sizeInfoList[i].Equals(sizeInfoList.First()));
+                Add(coloredView);
+
+                animation.AnimateTo(coloredView, "SizeWidth", sizeInfoList[i].Width, 0, duration, new AlphaFunction(AlphaFunction.BuiltinFunctions.EaseOut));
+
+                if (i > 0)
+                {
+                    animation.AnimateTo(coloredView, "PositionX", sizeInfoList.GetRange(0, i).Select(x => x.Width).Sum(), 0, duration, new AlphaFunction(AlphaFunction.BuiltinFunctions.EaseOut));
+                }
+            }
+
+            animation.Play();
+            animation.Finished += (s, e) => 
+            { 
+                animation.Dispose();
+            };
+        }
+
+        private View CreateColoredView(Color color, bool first)
         {
             View view = new View()
             {
-                Size = new Size(width, 8).SpToPx(),
+                SizeHeight = 8.SpToPx(),
                 BackgroundColor = color,
+                CornerRadius = first ? new Vector4(4.SpToPx(), 0, 0, 4.SpToPx()) : 0,
             };
 
-            if (cornerRadius != null)
+            return view;
+        }
+
+        private void RemoveChildren(View parent)
+        {
+            if (parent == null)
             {
-                view.CornerRadius = cornerRadius;
+                return;
             }
 
-            return view;
+            int maxChild = (int)parent.ChildCount;
+            for (int i = maxChild - 1; i >= 0; --i)
+            {
+                View child = parent.GetChildAt((uint)i);
+
+                if (child == null)
+                {
+                    continue;
+                }
+
+                RemoveChildren(child);
+                parent.Remove(child);
+                child.Dispose();
+            }
+        }
+
+        private void Calculation()
+        {
+            foreach (var item in sizeInfoList)
+            {
+                item.SetWidth((float)(item.SizeInfo / totalSize * SizeWidth));
+            }
         }
     }
 }
