@@ -1,22 +1,17 @@
 ﻿using SettingMainGadget.TextResources;
 using SettingCore;
+using SettingCore.Views;
+using SettingMainGadget;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Tizen.NUI.BaseComponents;
-using Tizen.NUI;
-using SettingCore.Views;
-using SettingMainGadget.DateTime;
 using System.Linq;
-using Tizen.NUI.Components;
-using Tizen.System;
-using SettingMainGadget;
-using Tizen.Pims.Contacts.ContactsViews;
 using System.Threading.Tasks;
 using Tizen.Applications;
 using Tizen.Content.MediaContent;
-using static System.Collections.Specialized.BitVector32;
-using Tizen;
+using Tizen.NUI;
+using Tizen.NUI.BaseComponents;
+using Tizen.NUI.Components;
+using Tizen.System;
 
 namespace Setting.Menu
 {
@@ -61,7 +56,15 @@ namespace Setting.Menu
 
             CreateView();
 
-            StartCalculatingAppCacheSize();
+            var calculating = StartCalculatingAppCacheSize();
+
+            content.Relayout += (s, e) =>
+            {
+                if (calculating.IsCompleted)
+                {
+                    storageIndicator.Update();
+                }
+            };
 
             return content;
         }
@@ -80,14 +83,24 @@ namespace Setting.Menu
             sections.Add(MainMenuProvider.Storage_InternalUsage, internalUsageItem);
 
             GetStorageStatus(out int InternalCount, out double InternalTotal, out int ExternalCount, out double InternalAvailable, out double ExternalTotal, out double ExternalAvailable);
+            GetMediaInfo(out double sizeImage, out double sizeVideo, out double sizeAudio);
+            GetMiscInfo(out double sizeMisc);
+
+            nonSystemSpace = InternalTotal - InternalAvailable - sizeImage - sizeVideo - sizeAudio - sizeMisc;
 
             if (InternalCount > 0)
             {
                 var usedItem = TextListItem.CreatePrimaryTextItem(GetMediaSizeString(InternalTotal - InternalAvailable));
                 sections.Add(MainMenuProvider.Storage_Used, usedItem);
 
-                // TODO : add size dependency
-                storageIndicator = new StorageIndicator();
+                storageIndicator = new StorageIndicator(InternalTotal);
+                storageIndicator.AddItem("apps", new Color("#FFC700"), 0);
+                storageIndicator.AddItem("images", new Color("#FF8A00"), sizeImage);
+                storageIndicator.AddItem("video", new Color("#FF6200"), sizeVideo);
+                storageIndicator.AddItem("audio", new Color("#A40404"), sizeAudio);
+                storageIndicator.AddItem("misc", new Color("#28262B"), sizeMisc);
+                storageIndicator.AddItem("cache", new Color("#3641FA"), 0);
+                storageIndicator.AddItem("system", new Color("#17234D"), 0);
                 sections.Add(MainMenuProvider.Storage_UsageIndicator, storageIndicator);
 
                 var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{Resources.IDS_ST_HEADER_TOTAL_SPACE}:", GetMediaSizeString(InternalTotal));
@@ -96,11 +109,6 @@ namespace Setting.Menu
                 var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText("Free space:", GetMediaSizeString(InternalAvailable)); // TODO : add translation to Resources
                 sections.Add(MainMenuProvider.Storage_FreeInternal, freeItem);
             }
-
-            GetMediaInfo(out double sizeImage, out double sizeVideo, out double sizeAudio);
-            GetMiscInfo(out double sizeMisc);
-
-            nonSystemSpace = InternalTotal - InternalAvailable - sizeImage - sizeVideo - sizeAudio - sizeMisc;
 
             var usageSummary = new View()
             {
@@ -231,7 +239,6 @@ namespace Setting.Menu
             {
                 NavigateTo(MainMenuProvider.Storage_DefaultSettings);
             };
-
             defaultSettings.Add(defaultSettingsItem);
             defaultSettings.Add(storageLocationItem);
             sections.Add(MainMenuProvider.Storage_DefaultSettings, defaultSettings);
@@ -298,29 +305,31 @@ namespace Setting.Menu
             return string.Format("{0:0.##} {1}", size, suffixes[counter]);
         }
 
-        private void StartCalculatingAppCacheSize()
+        private async Task StartCalculatingAppCacheSize()
         {
-            Task<PackageSizeInformation> task = PackageManager.GetTotalSizeInformationAsync();
-            task.ContinueWith(x =>
+            var sizeInfo = await PackageManager.GetTotalSizeInformationAsync();
+
+            long sizeApp = sizeInfo.AppSize;
+            long sizeCache = sizeInfo.CacheSize;
+
+            if (appsItem != null)
             {
-                PackageSizeInformation sizeinfo = x.Result;
-                long sizeApp = sizeinfo.AppSize;
-                long sizeCache = sizeinfo.CacheSize;
+                appsItem.SubText = GetMediaSizeString(sizeApp);
+            }
+            if (cacheItem != null)
+            {
+                cacheItem.SubText = GetMediaSizeString(sizeCache);
+            }
+            if (systemItem != null)
+            {
+                systemItem.SubText = GetMediaSizeString(nonSystemSpace - sizeApp - sizeCache);
+            }
 
-                if (appsItem != null)
-                {
-                    appsItem.SubText = GetMediaSizeString(sizeApp);
-                }
-                if (cacheItem != null)
-                {
-                    cacheItem.SubText = GetMediaSizeString(sizeCache);
-                }
-                if (systemItem != null)
-                {
-                    systemItem.SubText = GetMediaSizeString(nonSystemSpace - sizeApp - sizeCache);
-                }
+            storageIndicator.SizeInfoList.Where(x => x.Name == "apps").FirstOrDefault()?.SetSize(sizeApp);
+            storageIndicator.SizeInfoList.Where(x => x.Name == "cache").FirstOrDefault()?.SetSize(sizeCache);
+            storageIndicator.SizeInfoList.Where(x => x.Name == "system").FirstOrDefault()?.SetSize(nonSystemSpace - sizeApp - sizeCache);
 
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+            storageIndicator.Update();
         }
 
         private void GetMediaInfo(out double sizeImage, out double sizeVideo, out double sizeAudio)
@@ -511,6 +520,12 @@ namespace Setting.Menu
         private void OnFolderUpdated(object sender, FolderUpdatedEventArgs args)
         {
             Logger.Debug($"Folder updated: Id = {args.Id}, Operation = {args.OperationType}");
+        }
+
+        protected override void OnCustomizationUpdate(IEnumerable<MenuCustomizationItem> items)
+        {
+            Logger.Verbose($"{nameof(DisplayGadget)} got customization with {items.Count()} items. Recreating view.");
+            CreateView();
         }
     }
 }
