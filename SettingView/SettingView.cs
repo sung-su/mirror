@@ -19,7 +19,7 @@ using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 using Tizen.System;
 
-using SettingCore.TextResources;
+using SettingView.TextResources;
 using SettingCore;
 using System.Linq;
 using Tizen.Applications;

@@ -1,9 +1,10 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tizen.System;
+using Tizen.NUI;
 
 namespace SettingMainGadget.LanguageInput
 {
@@ -71,7 +72,7 @@ namespace SettingMainGadget.LanguageInput
             return -1;
         }
 
-        public static string GetDisplayLanguageName()
+        public static string GetDisplayLanguageName(NUIGadget gadget)
         {
             string title = "N/A";
 
@@ -82,7 +83,7 @@ namespace SettingMainGadget.LanguageInput
 
             if (lang_automatic)
             {
-                return Resources.IDS_ST_BODY_ANSWERINGMODE_AUTOMATIC;
+                return gadget.NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_ANSWERINGMODE_AUTOMATIC));
             }
 
             string locale = GetDisplayLanguage();

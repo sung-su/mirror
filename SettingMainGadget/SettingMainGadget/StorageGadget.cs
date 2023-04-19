@@ -1,4 +1,4 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore;
 using System;
 using System.Collections.Generic;

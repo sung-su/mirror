@@ -1,4 +1,4 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore.Views;
 using SettingMainGadget.LanguageInput;
 using Tizen.NUI;
@@ -9,7 +9,7 @@ namespace Setting.Menu.LanguageInput
 {
     public class LanguageInputDisplayLanguageGadget : SettingCore.MenuGadget
     {
-        public override string ProvideTitle() => Resources.IDS_ST_HEADER_DISPLAY_LANGUAGE;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_DISPLAY_LANGUAGE));
 
         protected override View OnCreate()
         {

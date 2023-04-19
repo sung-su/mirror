@@ -1,4 +1,4 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore;
 using SettingMainGadget.DateTime;
 using System;
@@ -10,7 +10,7 @@ namespace Setting.Menu.DateTime
 {
     public class DateTimeSetTimeGadget : SettingCore.MenuGadget
     {
-        public override string ProvideTitle() => Resources.IDS_ST_BODY_SET_TIME;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SET_TIME));
 
         protected override View OnCreate()
         {
@@ -37,7 +37,7 @@ namespace Setting.Menu.DateTime
 
             var button = new Button("Tizen.NUI.Components.Button.Outlined")
             {
-                Text = Resources.IDS_ST_BUTTON_OK,
+                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BUTTON_OK)),
                 Size = new Size(252, 48).SpToPx(),
                 WidthResizePolicy = ResizePolicyType.FitToChildren,
                 HeightResizePolicy = ResizePolicyType.FitToChildren,

@@ -10414,7 +10414,7 @@ interface SystemInfoStorageUnit {
 	/** 
  True if this unit can be removed from the system (such as an sdcard unplugged), false otherwise.
              */
-	isRemoveable: boolean;
+	isRemovable: boolean;
 }
 
 interface SystemInfoDisplay {

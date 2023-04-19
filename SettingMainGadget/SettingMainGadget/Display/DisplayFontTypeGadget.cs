@@ -1,4 +1,4 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace Setting.Menu.Display
 {
     public class DisplayFontTypeGadget : SettingCore.MenuGadget
     {
-        public override string ProvideTitle() => Resources.IDS_ST_BODY_FONT_TYPE;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_FONT_TYPE));
 
         protected override View OnCreate()
         {

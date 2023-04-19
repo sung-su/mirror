@@ -1,4 +1,4 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore;
 using SettingMainGadget.Sound;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace Setting.Menu.Sound
 {
     public class SoundnotificationGadget : SettingCore.MenuGadget
     {
-        public override string ProvideTitle() => Resources.IDS_ST_BODY_NOTIFICATIONS;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NOTIFICATIONS));
 
         private const string soundpath = "/opt/usr/data/settings/Alerts";
 
@@ -39,7 +39,7 @@ namespace Setting.Menu.Sound
 
             for (int i = 0; i < soundList.Count; i++)
             {
-                RadioButtonListItem item = new RadioButtonListItem(SoundNotificationManager.SettingMediaBasename(soundList[i].ToString()));
+                RadioButtonListItem item = new RadioButtonListItem(SoundNotificationManager.SettingMediaBasename(this, soundList[i].ToString()));
                 item.RadioButton.IsSelected = i.Equals(GetNotificationSoundIndex(soundList));
 
                 radioButtonGroup.Add(item.RadioButton);

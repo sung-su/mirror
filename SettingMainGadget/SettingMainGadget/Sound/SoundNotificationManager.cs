@@ -1,8 +1,9 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore;
 using System;
 using System.Linq;
 using Tizen.Multimedia;
+using Tizen.NUI;
 
 namespace SettingMainGadget.Sound
 {
@@ -28,10 +29,10 @@ namespace SettingMainGadget.Sound
             return folders.Length > 0 ? folders.Last() : path;
         }
 
-        public static string SettingMediaBasename(string path)
+        public static string SettingMediaBasename(NUIGadget gadget, string path)
         {
             if (string.IsNullOrEmpty(path))
-                return Resources.IDS_ST_BODY_PHONEPROFILES_SILENT;
+                return gadget.NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_PHONEPROFILES_SILENT));
 
             string title = String.Empty;
 
@@ -49,10 +50,10 @@ namespace SettingMainGadget.Sound
             return !string.IsNullOrEmpty(title) ? title : GetFileName(path);
         }
 
-        public static string GetNotificationSoundName()
+        public static string GetNotificationSoundName(NUIGadget gadget)
         {
             string path = GetNotificationSound();
-            return SettingMediaBasename(path);
+            return SettingMediaBasename(gadget, path);
         }
     }
 }

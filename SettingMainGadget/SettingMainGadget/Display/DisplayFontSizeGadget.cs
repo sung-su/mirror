@@ -1,4 +1,4 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore;
 using SettingCore.Views;
 using System;
@@ -12,7 +12,7 @@ namespace Setting.Menu.Display
 {
     public class DisplayFontSizeGadget : SettingCore.MenuGadget
     {
-        public override string ProvideTitle() => Resources.IDS_ST_MBODY_FONT_SIZE;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_FONT_SIZE));
 
         private class FontsizeInfo
         {

@@ -1,4 +1,4 @@
-using SettingCore.TextResources;
+using SettingMainGadget.TextResources;
 using SettingCore.Views;
 using SettingMainGadget.Display;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace Setting.Menu.Display
 {
     public class DisplayThemeGadget : SettingCore.MenuGadget
     {
-        public override string ProvideTitle() => Resources.IDS_ST_BODY_THEME;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_THEME));
 
         protected override View OnCreate()
         {

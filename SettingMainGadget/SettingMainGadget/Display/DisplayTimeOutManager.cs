@@ -1,7 +1,8 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore;
 using System.Collections.Generic;
 using Tizen.System;
+using Tizen.NUI;
 
 namespace SettingMainGadget.Display
 {
@@ -31,16 +32,21 @@ namespace SettingMainGadget.Display
             }
         };
 
-        public static readonly List<ScreenTimeoutInfo> TimeoutList = new List<ScreenTimeoutInfo>
+        public static List<ScreenTimeoutInfo> TimeoutList(NUIGadget gadget)
         {
-            new ScreenTimeoutInfo(Resources.IDS_ST_BODY_ALWAYS_ON, 0),
-            new ScreenTimeoutInfo(Resources.IDS_ST_BODY_15SEC, 15),
-            new ScreenTimeoutInfo(Resources.IDS_ST_BODY_30SEC, 30),
-            new ScreenTimeoutInfo(Resources.IDS_ST_BODY_1_MINUTE, 60),
-            new ScreenTimeoutInfo(Resources.IDS_ST_BODY_2_MINUTES, 120),
-            new ScreenTimeoutInfo(Resources.IDS_ST_BODY_5_MINUTES, 300),
-            new ScreenTimeoutInfo(Resources.IDS_ST_BODY_10_MINUTES, 600)
-        };
+            var timeoutList = new List<ScreenTimeoutInfo>
+            {
+                new ScreenTimeoutInfo(gadget.NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_ALWAYS_ON)), 0),
+                new ScreenTimeoutInfo(gadget.NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_15SEC)), 15),
+                new ScreenTimeoutInfo(gadget.NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_30SEC)), 30),
+                new ScreenTimeoutInfo(gadget.NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_1_MINUTE)), 60),
+                new ScreenTimeoutInfo(gadget.NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_2_MINUTES)), 120),
+                new ScreenTimeoutInfo(gadget.NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_5_MINUTES)), 300),
+                new ScreenTimeoutInfo(gadget.NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_10_MINUTES)), 600)
+            };
+
+            return timeoutList;
+        }
 
         public static int GetScreenTimeoutIndex()
         {
@@ -84,15 +90,15 @@ namespace SettingMainGadget.Display
             return index;
         }
 
-        public static string GetScreenTimeoutName()
+        public static string GetScreenTimeoutName(NUIGadget gadget)
         {
-            return TimeoutList[GetScreenTimeoutIndex()].GetName();
+            return TimeoutList(gadget)[GetScreenTimeoutIndex()].GetName();
         }
 
-        public static void SetScreenTimeout(int index)
+        public static void SetScreenTimeout(NUIGadget gadget, int index)
         {
-            SystemSettings.ScreenBacklightTime = TimeoutList[index].GetValue();
-            Logger.Debug($"ScreenTimeOut changed value to: {TimeoutList[index].GetName()}");
+            SystemSettings.ScreenBacklightTime = TimeoutList(gadget)[index].GetValue();
+            Logger.Debug($"ScreenTimeOut changed value to: {TimeoutList(gadget)[index].GetName()}");
         }
     }
 }

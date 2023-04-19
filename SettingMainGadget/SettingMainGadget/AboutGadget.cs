@@ -1,4 +1,4 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore;
 using SettingCore.Views;
 using SettingMainGadget;
@@ -32,7 +32,7 @@ namespace Setting.Menu
 
         public override string ProvideIconPath() => GetResourcePath("about.svg");
 
-        public override string ProvideTitle() => Resources.IDS_ST_BODY_ABOUT_DEVICE;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_ABOUT_DEVICE));
 
         protected override View OnCreate()
         {
@@ -75,14 +75,14 @@ namespace Setting.Menu
         {
             sections.RemoveAllSectionsFromView(content);
 
-            var manageCertificates = TextListItem.CreatePrimaryTextItem(Resources.IDS_ST_HEADER_MANAGE_CERTIFICATES_ABB);
+            var manageCertificates = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_MANAGE_CERTIFICATES_ABB)));
             manageCertificates.Clicked += (s, e) =>
             {
                 NavigateTo(MainMenuProvider.About_ManageCertificates);
             };
             sections.Add(MainMenuProvider.About_ManageCertificates, manageCertificates);
 
-            var openSourceLicenses = TextListItem.CreatePrimaryTextItem(Resources.IDS_ST_BODY_OPEN_SOURCE_LICENCES);
+            var openSourceLicenses = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_OPEN_SOURCE_LICENCES)));
             openSourceLicenses.Clicked += (s, e) =>
             {
                 NavigateTo(MainMenuProvider.About_OpenSourceLicenses);
@@ -96,7 +96,7 @@ namespace Setting.Menu
             };
             sections.Add(MainMenuProvider.About_ScalableUI, scalableUI);
 
-            var deviceInfo = new TextHeaderListItem(Resources.IDS_ST_BODY_DEVICE_INFO);
+            var deviceInfo = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DEVICE_INFO)));
             sections.Add(MainMenuProvider.About_DeviceInfo, deviceInfo);
 
             if (Vconf.TryGetString(VconfDeviceName, out deviceName))
@@ -104,7 +104,7 @@ namespace Setting.Menu
                 Logger.Warn($"Could not get vconf value: {VconfDeviceName}");
             }
 
-            renameDevice = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_NAME, deviceName);
+            renameDevice = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NAME)), deviceName);
             renameDevice.Clicked += (s, e) =>
             {
                 ShowRenamePopup(deviceName);
@@ -112,11 +112,11 @@ namespace Setting.Menu
             sections.Add(MainMenuProvider.About_RenameDevice, renameDevice);
 
             bool result = Tizen.System.Information.TryGetValue<string>("http://tizen.org/system/model_name", out string modelNumberText);
-            var modelNumber = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_MODEL_NUMBER, result ? modelNumberText : Resources.IDS_ST_HEADER_UNAVAILABLE);
+            var modelNumber = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_MODEL_NUMBER)), result ? modelNumberText : NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_UNAVAILABLE)));
             sections.Add(MainMenuProvider.About_ModelNumber, modelNumber);
 
             result = Tizen.System.Information.TryGetValue<string>("http://tizen.org/feature/platform.version", out string platformVersionText);
-            var platformVersion = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_MBODY_TIZEN_VERSION, result ? platformVersionText : Resources.IDS_ST_HEADER_UNAVAILABLE);
+            var platformVersion = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_TIZEN_VERSION)), result ? platformVersionText : NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_UNAVAILABLE)));
             platformVersion.MultiTap += (s, e) =>
             {
                 GadgetManager.Instance.ChangeMenuPathOrder(MainMenuProvider.About_ScalableUI, 30);
@@ -127,7 +127,7 @@ namespace Setting.Menu
             sections.Add(MainMenuProvider.About_TizenVersion, platformVersion);
 
             result = Tizen.System.Information.TryGetValue<string>("http://tizen.org/system/platform.processor", out string platformProcessorText);
-            var cpu = TextListItem.CreatePrimaryTextItemWithSecondaryText("CPU", result ? platformProcessorText : Resources.IDS_ST_HEADER_UNAVAILABLE);
+            var cpu = TextListItem.CreatePrimaryTextItemWithSecondaryText("CPU", result ? platformProcessorText : NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_UNAVAILABLE)));
             sections.Add(MainMenuProvider.About_Cpu, cpu);
 
             var memusage = new Tizen.System.SystemMemoryUsage();
@@ -138,12 +138,12 @@ namespace Setting.Menu
             bool result1 = Tizen.System.Information.TryGetValue<int>("http://tizen.org/feature/screen.width", out int screenwidth);
             bool result2 = Tizen.System.Information.TryGetValue<int>("http://tizen.org/feature/screen.height", out int screenheight);
 
-            var resolution = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_RESOLUTION, result1 && result2 ? $"{screenwidth} x {screenheight}" : Resources.IDS_ST_HEADER_UNAVAILABLE);
+            var resolution = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_RESOLUTION)), result1 && result2 ? $"{screenwidth} x {screenheight}" : NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_UNAVAILABLE)));
             sections.Add(MainMenuProvider.About_Resolution, resolution);
 
             if (IsEmulBin() == false)
             {
-                var showOther = TextListItem.CreatePrimaryTextItemWithSubText(Resources.IDS_ST_BODY_STATUS, Resources.IDS_ST_BODY_SHOW_NETWORK_STATUS_AND_OTHER_INFORMATION);
+                var showOther = TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_STATUS)), NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SHOW_NETWORK_STATUS_AND_OTHER_INFORMATION)));
                 showOther.Clicked += (s, e) =>
                 {
                     NavigateTo(MainMenuProvider.About_DeviceStatus);
@@ -191,7 +191,7 @@ namespace Setting.Menu
             };
 
             //title text
-            var textTitle = new TextLabel(Resources.IDS_ST_HEADER_RENAME_DEVICE)
+            var textTitle = new TextLabel(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_RENAME_DEVICE)))
             {
                 FontFamily = "BreezeSans",
                 PixelSize = 24.SpToPx(),
@@ -201,7 +201,7 @@ namespace Setting.Menu
             content.Add(textTitle);
 
             // main text
-            var textSubTitle = new TextLabel(Resources.IDS_ST_BODY_DEVICE_NAMES_ARE_DISPLAYED)
+            var textSubTitle = new TextLabel(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DEVICE_NAMES_ARE_DISPLAYED)))
             {
                 FontFamily = "BreezeSans",
                 PixelSize = 24.SpToPx(),
@@ -278,7 +278,7 @@ namespace Setting.Menu
                 },
             };
 
-            warning = new TextLabel(Resources.IDS_ST_TPOP_MAXIMUM_NUMBER_OF_CHARACTERS_REACHED)
+            warning = new TextLabel(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_TPOP_MAXIMUM_NUMBER_OF_CHARACTERS_REACHED)))
             {
                 SizeWidth = 618.SpToPx(),
                 PixelSize = 16.SpToPx(),
@@ -304,7 +304,7 @@ namespace Setting.Menu
             {
                 WidthResizePolicy = ResizePolicyType.FitToChildren,
                 HeightResizePolicy = ResizePolicyType.FitToChildren,
-                Text = Resources.IDS_ST_BUTTON_RENAME,
+                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BUTTON_RENAME)),
                 Size = new Size(252, 48).SpToPx(),
                 Margin = new Extents(61, 0, 0, 0).SpToPx(),
             };
@@ -317,7 +317,7 @@ namespace Setting.Menu
             {
                 WidthResizePolicy = ResizePolicyType.FitToChildren,
                 HeightResizePolicy = ResizePolicyType.FitToChildren,
-                Text = Resources.IDS_ST_BUTTON_CANCEL,
+                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BUTTON_CANCEL)),
                 Size = new Size(252, 48).SpToPx(),
                 Margin = new Extents(61, 0, 0, 0).SpToPx(),
             };

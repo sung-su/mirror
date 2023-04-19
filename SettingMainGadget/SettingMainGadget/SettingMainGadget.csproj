@@ -13,12 +13,38 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Tizen.NET" Version="11.0.0.17739" />
+    <PackageReference Include="Tizen.NET" Version="11.0.0.17773" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\SettingCore\SettingCore.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="TextResources\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="TextResources\Resources.en-US.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="TextResources\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="res\" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command=":: Copy resource dll&#xD;&#xA;rmdir /S /Q res\allowed\locale&#xD;&#xA;mkdir res\allowed\locale&#xD;&#xA;dir $(OutDir)\&#xD;&#xA;xcopy /S /K /D /H /Y $(OutDir)\ res\allowed\locale&#xD;&#xA;del /q res\allowed\locale\*.*&#xD;&#xA;xcopy /S /K /D /H /Y res\allowed\locale\* res\allowed&#xD;&#xA;rmdir /S /Q res\allowed\locale&#xD;&#xA;" />
+  </Target>
 
 </Project>
 

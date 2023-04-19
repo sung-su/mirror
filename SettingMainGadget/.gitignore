@@ -7,3 +7,4 @@
 **/.gn
 **/[Bb]uild/
 **/res/allowed/*.dll
+**/res/allowed/*/*.dll

@@ -1977,6 +1977,9 @@
   <data name="IDS_ST_BUTTON_REMOVE_DEFAULT_APPS_ABB" xml:space="preserve">
     <value>Remove default apps</value>
   </data>
+  <data name="IDS_ST_BUTTON_RENAME" xml:space="preserve">
+    <value>Rename</value>
+  </data>
   <data name="IDS_ST_BUTTON_RESET" xml:space="preserve">
     <value>Reset</value>
   </data>
@@ -2939,8 +2942,5 @@
   </data>
   <data name="IDS_XTAG_POP_RESET_ALL_SETTINGS_FOR_C_DEFAULT_APPS_BACKGROUND_DATA_RESTRICTIONS_YOUR_EXISTING_DATA_WILL_NOT_BE_LOST" xml:space="preserve">
     <value>Reset all settings for:&lt;br&gt;&lt;br&gt;Default apps&lt;br&gt;Background data restrictions&lt;br&gt;&lt;br&gt;Your existing data will not be lost.</value>
-  </data>
-  <data name="IDS_ST_BUTTON_RENAME" xml:space="preserve">
-    <value>Rename</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore;
 using SettingCore.Views;
 using SettingMainGadget;
@@ -19,7 +19,7 @@ namespace Setting.Menu
 
         public override string ProvideIconPath() => GetResourcePath("language_input.svg");
 
-        public override string ProvideTitle() => Resources.IDS_ST_HEADER_LANGUAGE_AND_INPUT;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_LANGUAGE_AND_INPUT));
 
         private View content;
         private Sections sections = new Sections();
@@ -63,7 +63,7 @@ namespace Setting.Menu
         private void CreateView()
         {
             sections.RemoveAllSectionsFromView(content);
-            TextListItem displayLanguageItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_HEADER_DISPLAY_LANGUAGE, LanguageInputDisplayLanguageManager.GetDisplayLanguageName());
+            TextListItem displayLanguageItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_DISPLAY_LANGUAGE)), LanguageInputDisplayLanguageManager.GetDisplayLanguageName(this));
             if (displayLanguageItem != null)
             {
                 displayLanguageItem.Clicked += (o, e) =>
@@ -73,13 +73,13 @@ namespace Setting.Menu
                 sections.Add(MainMenuProvider.Language_Display, displayLanguageItem);
             }
 
-            TextHeaderListItem keyboardHeaderItem = new TextHeaderListItem(Resources.IDS_ST_BODY_KEYBOARD);
+            TextHeaderListItem keyboardHeaderItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_KEYBOARD)));
             if (keyboardHeaderItem != null)
             {
                 sections.Add(MainMenuProvider.Language_KeyboardHeader, keyboardHeaderItem);
             }
 
-            TextListItem keyboardItem = TextListItem.CreatePrimaryTextItem(Resources.IDS_ST_BODY_KEYBOARD);
+            TextListItem keyboardItem = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_KEYBOARD)));
             if (keyboardItem != null)
             {
                 keyboardItem.Clicked += (o, e) =>
@@ -89,13 +89,13 @@ namespace Setting.Menu
                 sections.Add(MainMenuProvider.Language_InputMethod, keyboardItem);
             }
 
-            TextHeaderListItem inputAssistanceHeaderItem = new TextHeaderListItem(Resources.IDS_ST_BODY_INPUT_ASSISTANCE);
+            TextHeaderListItem inputAssistanceHeaderItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_INPUT_ASSISTANCE)));
             if (inputAssistanceHeaderItem != null)
             {
                 sections.Add(MainMenuProvider.Language_InputAssistanceHeader, inputAssistanceHeaderItem);
             }
 
-            TextListItem autofillServiceItem = TextListItem.CreatePrimaryTextItem(Resources.IDS_ST_BODY_AUTOFILL_SERVICE);
+            TextListItem autofillServiceItem = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_AUTOFILL_SERVICE)));
             if (autofillServiceItem != null)
             {
                 autofillServiceItem.Clicked += (o, e) =>
@@ -105,13 +105,13 @@ namespace Setting.Menu
                 sections.Add(MainMenuProvider.Language_AutoFill, autofillServiceItem);
             }
 
-            TextHeaderListItem bodySpeachHeaderItem = new TextHeaderListItem(Resources.IDS_ST_BODY_SPEECH);
+            TextHeaderListItem bodySpeachHeaderItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SPEECH)));
             if (bodySpeachHeaderItem != null)
             {
                 sections.Add(MainMenuProvider.Language_BodySpeach, bodySpeachHeaderItem);
             }
 
-            TextListItem voiceControl = TextListItem.CreatePrimaryTextItem(Resources.IDS_VOICE_BODY_VOICE_CONTROL_ABB2);
+            TextListItem voiceControl = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_VOICE_BODY_VOICE_CONTROL_ABB2)));
             if (voiceControl != null)
             {
                 voiceControl.Clicked += (o, e) =>
@@ -121,7 +121,7 @@ namespace Setting.Menu
                 sections.Add(MainMenuProvider.Language_VoiceControl, voiceControl);
             }
 
-            TextListItem languageTTS = TextListItem.CreatePrimaryTextItem(Resources.IDS_VOICE_HEADER_TEXT_TO_SPEECH_HTTS);
+            TextListItem languageTTS = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_VOICE_HEADER_TEXT_TO_SPEECH_HTTS)));
             if (languageTTS != null)
             {
                 languageTTS.Clicked += (o, e) =>
@@ -131,7 +131,7 @@ namespace Setting.Menu
                 sections.Add(MainMenuProvider.Language_TTS, languageTTS);
             }
 
-            TextListItem languageSTT = TextListItem.CreatePrimaryTextItem(Resources.IDS_VOICE_HEADER_SPEECH_TO_TEXT_HSTT);
+            TextListItem languageSTT = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_VOICE_HEADER_SPEECH_TO_TEXT_HSTT)));
             if (languageSTT != null)
             {
                 languageSTT.Clicked += (o, e) =>

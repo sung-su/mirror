@@ -1,5 +1,6 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore;
+using Tizen.NUI;
 
 namespace SettingMainGadget.Sound
 {
@@ -65,13 +66,13 @@ namespace SettingMainGadget.Sound
             }
         }
 
-        public static string GetSoundmodeName(Soundmode soundmode)
+        public static string GetSoundmodeName(NUIGadget gadget, Soundmode soundmode)
         {
             return soundmode switch
             {
-                Soundmode.SOUND_MODE_SOUND => Resources.IDS_ST_HEADER_SOUND,
-                Soundmode.SOUND_MODE_VIBRATE => Resources.IDS_ST_HEADER_VIBRATE,
-                Soundmode.SOUND_MODE_MUTE => Resources.IDS_ST_HEADER_MUTE,
+                Soundmode.SOUND_MODE_SOUND => gadget.NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_SOUND)),
+                Soundmode.SOUND_MODE_VIBRATE => gadget.NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_VIBRATE)),
+                Soundmode.SOUND_MODE_MUTE => gadget.NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_MUTE)),
                 _ => string.Empty,
             };
         }

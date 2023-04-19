@@ -1,4 +1,4 @@
-using SettingCore.TextResources;
+using SettingMainGadget.TextResources;
 using SettingCore;
 using SettingCore.Views;
 using SettingMainGadget;
@@ -21,7 +21,7 @@ namespace Setting.Menu
         private View content;
         private Sections sections = new Sections();
 
-        public override string ProvideTitle() => Resources.IDS_ST_MBODY_DEVICE_STATUS;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_DEVICE_STATUS));
     
         protected override View OnCreate()
         {
@@ -63,14 +63,14 @@ namespace Setting.Menu
                 Sim sim = new Sim(enumerator.Current);
                 if (sim != null)
                 {
-                    item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_PHONE_NUMBER, sim.SubscriberNumber);
+                    item = SettingItemCreator.CreateItemWithCheck(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_PHONE_NUMBER)), sim.SubscriberNumber);
                     content.Add(item);
                 }
 
                 Modem modem = new Modem(enumerator.Current);
                 if (modem != null)
                 {
-                    item = SettingItemCreator.CreateItemWithCheck(Resources.IDS_ST_BODY_IMEI, modem.Imei);
+                    item = SettingItemCreator.CreateItemWithCheck(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_IMEI)), modem.Imei);
                     content.Add(item);
                 }
 
@@ -80,20 +80,20 @@ namespace Setting.Menu
 
 
 #if true
-            string addressBT = Resources.IDS_ST_HEADER_UNAVAILABLE;
+            string addressBT = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_UNAVAILABLE));
             try
             {
                 if (Tizen.Network.Bluetooth.BluetoothAdapter.IsBluetoothEnabled)
                     addressBT = Tizen.Network.Bluetooth.BluetoothAdapter.Address;
                 else
-                    addressBT = Resources.IDS_ST_SBODY_DISABLED;
+                    addressBT = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_SBODY_DISABLED));
             }
             catch (Exception e)
             {
                 Logger.Warn($"Could not get bluetooth address.");
             }
 
-            var btAddress = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_MBODY_BLUETOOTH_ADDRESS, addressBT);
+            var btAddress = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_BLUETOOTH_ADDRESS)), addressBT);
             if (btAddress != null)
             {
                 sections.Add(MainMenuProvider.About_DeviceStatus_bt_address, btAddress);
@@ -101,13 +101,13 @@ namespace Setting.Menu
 #endif
 
 #if true
-            string addressMac = Resources.IDS_ST_HEADER_UNAVAILABLE;
+            string addressMac = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_UNAVAILABLE));
             if (Tizen.Network.WiFi.WiFiManager.IsActive)
                 addressMac = Tizen.Network.WiFi.WiFiManager.MacAddress;
             else
-                addressMac = Resources.IDS_ST_SBODY_DISABLED;
+                addressMac = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_SBODY_DISABLED));
 
-            var wifiMacAddress = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_WI_FI_MAC_ADDRESS, addressMac);
+            var wifiMacAddress = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_WI_FI_MAC_ADDRESS)), addressMac);
             if (wifiMacAddress != null)
             {
                 sections.Add(MainMenuProvider.About_DeviceStatus_wifi_mac_address, wifiMacAddress);
@@ -121,7 +121,7 @@ namespace Setting.Menu
                 available += deviceStorage.AvailableSpace;
             }
 
-            var storage = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_STORAGE,
+            var storage = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_STORAGE)),
                 $"{bytesToGB(available).ToString("0.##")}GB available (Total {bytesToGB(total).ToString("0.##")}GB)");
             if (storage != null)
             {
@@ -130,7 +130,7 @@ namespace Setting.Menu
 
 #if true
             systemCpuUsage = new SystemCpuUsage();
-            cpuUsage = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_CPU_USAGE, getCpuUsageFormated());
+            cpuUsage = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_CPU_USAGE)), getCpuUsageFormated());
             if (cpuUsage != null)
             {
                 sections.Add(MainMenuProvider.About_DeviceStatus_cpu_usage, cpuUsage);

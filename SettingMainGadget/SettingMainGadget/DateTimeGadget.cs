@@ -1,4 +1,4 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore;
 using SettingCore.Views;
 using SettingMainGadget;
@@ -17,7 +17,7 @@ namespace Setting.Menu
 
         public override string ProvideIconPath() => GetResourcePath("datetime.svg");
 
-        public override string ProvideTitle() => Resources.IDS_ST_BODY_DATE_AND_TIME;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DATE_AND_TIME));
 
         private Sections sections = new Sections();
         private View content;
@@ -76,7 +76,7 @@ namespace Setting.Menu
                 Logger.Warn($"AutomaticTimeUpdate is not supported: {e.Message}");
             }
 
-            autoUpdateItem = new SwitchListItem(Resources.IDS_ST_MBODY_AUTO_UPDATE, isSelected: isAutomaticTimeUpdateSupported ? DateTimeManager.AutoTimeUpdate : false);
+            autoUpdateItem = new SwitchListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_AUTO_UPDATE)), isSelected: isAutomaticTimeUpdateSupported ? DateTimeManager.AutoTimeUpdate : false);
             autoUpdateItem.IsEnabled = isAutomaticTimeUpdateSupported;
             autoUpdateItem.Switch.SelectedChanged += (o, e) =>
             {
@@ -85,7 +85,7 @@ namespace Setting.Menu
             };
             sections.Add(MainMenuProvider.DateTime_AutoUpdate, autoUpdateItem);
 
-            mDateItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_SET_DATE, System.DateTime.Now.ToString("MMM d, yyyy"));
+            mDateItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SET_DATE)), System.DateTime.Now.ToString("MMM d, yyyy"));
             if (mDateItem != null)
             {
                 mDateItem.Clicked += (o, e) =>
@@ -95,7 +95,7 @@ namespace Setting.Menu
                 sections.Add(MainMenuProvider.DateTime_SetDate, mDateItem);
             }
 
-            mTimeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_SET_TIME, DateTimeManager.FormattedTime);
+            mTimeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SET_TIME)), DateTimeManager.FormattedTime);
             if (mTimeItem != null)
             {
                 mTimeItem.Clicked += (o, e) =>
@@ -105,7 +105,7 @@ namespace Setting.Menu
                 sections.Add(MainMenuProvider.DateTime_SetTime, mTimeItem);
             }
 
-            mTimezoneItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_TIME_ZONE, DateTimeTimezoneManager.GetTimezoneName());
+            mTimezoneItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_TIME_ZONE)), DateTimeTimezoneManager.GetTimezoneName());
             if (mTimezoneItem != null)
             {
                 mTimezoneItem.Clicked += (o, e) =>
@@ -115,7 +115,7 @@ namespace Setting.Menu
                 sections.Add(MainMenuProvider.DateTime_SetTimezone, mTimezoneItem);
             }
 
-            timeFormatItem = new SwitchListItem(Resources.IDS_ST_MBODY_24_HOUR_CLOCK, Resources.IDS_ST_SBODY_SHOW_THE_TIME_IN_24_HOUR_FORMAT_INSTEAD_OF_12_HOUR_HAM_PM_FORMAT, DateTimeManager.Is24HourFormat);
+            timeFormatItem = new SwitchListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_24_HOUR_CLOCK)), NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_SBODY_SHOW_THE_TIME_IN_24_HOUR_FORMAT_INSTEAD_OF_12_HOUR_HAM_PM_FORMAT)), DateTimeManager.Is24HourFormat);
             timeFormatItem.Switch.SelectedChanged += (o, e) =>
             {
                 DateTimeManager.Is24HourFormat = e.IsSelected;

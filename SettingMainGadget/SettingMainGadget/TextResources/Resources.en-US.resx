@@ -612,6 +612,9 @@
   <data name="IDS_ST_BODY_AUTH_TYPE" xml:space="preserve">
     <value>Auth type</value>
   </data>
+  <data name="IDS_ST_BODY_AUTOFILL_SERVICE" xml:space="preserve">
+    <value>Autofill service</value>
+  </data>
   <data name="IDS_ST_BODY_AUTO_DOWNLOAD" xml:space="preserve">
     <value>Auto download</value>
   </data>
@@ -1091,6 +1094,9 @@
   </data>
   <data name="IDS_ST_BODY_INCORRECT_PIN_E" xml:space="preserve">
     <value>Incorrect PIN.</value>
+  </data>
+  <data name="IDS_ST_BODY_INPUT_ASSISTANCE" xml:space="preserve">
+    <value>Input assistance</value>
   </data>
   <data name="IDS_ST_BODY_INSERT_SD_CARD" xml:space="preserve">
     <value>Insert SD card.</value>
@@ -1659,6 +1665,9 @@
   <data name="IDS_ST_BODY_TEXTSTYLE_LARGE" xml:space="preserve">
     <value>Large</value>
   </data>
+  <data name="IDS_ST_BODY_THEME" xml:space="preserve">
+    <value>Theme</value>
+  </data>
   <data name="IDS_ST_BODY_THERE_ARE_NO_APPS_SET_AS_DEFAULTS" xml:space="preserve">
     <value>There are no apps set as defaults.</value>
   </data>
@@ -1955,6 +1964,9 @@
   </data>
   <data name="IDS_ST_BUTTON_REMOVE_DEFAULT_APPS_ABB" xml:space="preserve">
     <value>Remove default apps</value>
+  </data>
+  <data name="IDS_ST_BUTTON_RENAME" xml:space="preserve">
+    <value>Rename</value>
   </data>
   <data name="IDS_ST_BUTTON_RESET" xml:space="preserve">
     <value>Reset</value>

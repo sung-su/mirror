@@ -1,4 +1,4 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore.Views;
 using SettingMainGadget.DateTime;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace Setting.Menu.DateTime
 {
     public class DateTimeSetTimezoneGadget : SettingCore.MenuGadget
     {
-        public override string ProvideTitle() => Resources.IDS_ST_BODY_TIME_ZONE;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_TIME_ZONE));
 
         private ScrollableBase content = null;
 

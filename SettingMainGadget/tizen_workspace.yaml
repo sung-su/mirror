@@ -31,7 +31,7 @@ dotnet_build_tool: dotnet-cli
 #  Default nuget version for Tizen.Net
 tizen_net_version: 
 #  Default nuget version for Xamarin.Forms
-tizen_net_sdk_verison: 1.1.9
+tizen_net_sdk_version: 1.1.9
 #  Default nuget version for MSBuild.Tasks
 xamarin_forms_version: 5.0.0.2515
 #  Default nuget version for Tizen.Wearable.CircleUI
@@ -45,7 +45,7 @@ tizen_nuixaml_version: 1.0.34
 #  Default nuget version for Tizen.HotReload
 tizen_hotreload_version: 1.0.1
 #  Working folder for dotnet & web workspace, paths to csproj or sln or config.xml, if empty all projects will be build
-working_folder:
+working_folder: C:\Users\p.czaja\Work\Settings_APP\settings\SettingMainGadget\SettingMainGadget
 #  Default path for Google Chrome
 chrome_path: 
 #  Default options to be passed to Chrome when running web simulator

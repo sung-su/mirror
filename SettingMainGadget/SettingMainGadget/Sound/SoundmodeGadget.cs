@@ -1,4 +1,4 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore.Views;
 using SettingMainGadget.Sound;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace Setting.Menu.Sound
 {
     public class SoundmodeGadget : SettingCore.MenuGadget
     {
-        public override string ProvideTitle() => Resources.IDS_ST_HEADER_SOUND_MODE;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_SOUND_MODE));
 
         private SettingMainGadget.Sound.Soundmode[] sounds = new[] {
             Soundmode.SOUND_MODE_SOUND,
@@ -38,7 +38,7 @@ namespace Setting.Menu.Sound
 
             for (int i = 0; i < sounds.Length; i++)
             {
-                RadioButtonListItem item = new RadioButtonListItem(SoundmodeManager.GetSoundmodeName(sounds[i]));
+                RadioButtonListItem item = new RadioButtonListItem(SoundmodeManager.GetSoundmodeName(this, sounds[i]));
                 item.RadioButton.IsSelected = i.Equals(sounds.ToList().IndexOf(SoundmodeManager.GetSoundmode()));
 
                 radioButtonGroup.Add(item.RadioButton);

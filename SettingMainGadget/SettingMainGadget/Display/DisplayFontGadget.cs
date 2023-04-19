@@ -1,5 +1,5 @@
 using SettingCore.Views;
-using SettingCore.TextResources;
+using SettingMainGadget.TextResources;
 using SettingMainGadget;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
@@ -9,7 +9,7 @@ namespace Setting.Menu.Display
 {
     public class DisplayFontGadget : SettingCore.MenuGadget
     {
-        public override string ProvideTitle() => Resources.IDS_ST_BODY_FONT;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_FONT));
         private TextListItem fontSizeItem;
         private TextListItem fontTypeItem;
         private View content;
@@ -40,7 +40,7 @@ namespace Setting.Menu.Display
                 content.Remove(fontSizeItem);
             }
 
-            fontSizeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_MBODY_FONT_SIZE, SystemSettings.FontSize.ToString());
+            fontSizeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_FONT_SIZE)), SystemSettings.FontSize.ToString());
             fontSizeItem.Clicked += (o, e) =>
             {
                 NavigateTo(MainMenuProvider.Display_FontSize);
@@ -52,7 +52,7 @@ namespace Setting.Menu.Display
                 content.Remove(fontTypeItem);
             }
 
-            fontTypeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_FONT_TYPE, SystemSettings.FontType.ToString());
+            fontTypeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_FONT_TYPE)), SystemSettings.FontType.ToString());
             fontTypeItem.Clicked += (o, e) =>
             {
                 NavigateTo(MainMenuProvider.Display_FontType);

@@ -1,4 +1,4 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore.Views;
 using System;
 using Tizen.NUI.BaseComponents;

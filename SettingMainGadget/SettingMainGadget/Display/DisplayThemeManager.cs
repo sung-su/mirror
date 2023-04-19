@@ -1,4 +1,4 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore;
 using System;
 using System.Collections.Generic;
@@ -71,11 +71,11 @@ namespace SettingMainGadget.Display
             return -1;
         }
 
-        public static string GetThemeName()
+        public static string GetThemeName(NUIGadget gadget)
         {
             int index = GetThemeIndex();
 
-            return index >= 0 ? ThemeList[index].GetName() : Resources.IDS_ST_HEADER_UNAVAILABLE;
+            return index >= 0 ? ThemeList[index].GetName() : gadget.NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_UNAVAILABLE));
         }
     }
 }

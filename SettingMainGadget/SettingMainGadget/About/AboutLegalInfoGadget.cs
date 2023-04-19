@@ -1,4 +1,4 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using Tizen.NUI.BaseComponents;
 
 namespace Setting.Menu
@@ -6,7 +6,7 @@ namespace Setting.Menu
     public class AboutLegalInfoGadget : SettingCore.MenuGadget
     {
         const string LegalinfoURL = "file:///usr/share/license.html";
-        public override string ProvideTitle() => Resources.IDS_ST_BODY_OPEN_SOURCE_LICENCES;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_OPEN_SOURCE_LICENCES));
 
         protected override View OnCreate()
         {

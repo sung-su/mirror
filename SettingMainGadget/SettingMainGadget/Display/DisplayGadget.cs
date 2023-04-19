@@ -1,4 +1,4 @@
-﻿using SettingCore.TextResources;
+﻿using SettingMainGadget.TextResources;
 using SettingCore;
 using SettingCore.Views;
 using SettingMainGadget;
@@ -19,7 +19,7 @@ namespace Setting.Menu
 
         public override string ProvideIconPath() => GetResourcePath("display.svg");
 
-        public override string ProvideTitle() => Resources.IDS_ST_HEADER_DISPLAY;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_DISPLAY));
 
         private View content;
         private Sections sections = new Sections();
@@ -114,7 +114,7 @@ namespace Setting.Menu
 
                 GetBrightnessSliderIcon(brightness, out string iconpath);
 
-                brightnessItem = new SliderListItem(Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING, iconpath, (brightness * 1.0f) / maxbrightness);
+                brightnessItem = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING)), iconpath, (brightness * 1.0f) / maxbrightness);
                 if (brightnessItem != null)
                 {
                     if(!isBrightnessSupported)
@@ -135,7 +135,7 @@ namespace Setting.Menu
 
             // section: font
 
-            fontItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_FONT, $"{SystemSettings.FontSize}, {SystemSettings.FontType}");
+            fontItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_FONT)), $"{SystemSettings.FontSize}, {SystemSettings.FontType}");
             if (fontItem != null)
             {
                 fontItem.Clicked += (o, e) =>
@@ -147,7 +147,7 @@ namespace Setting.Menu
 
             // section: TimeOut
 
-            screenTimeOutItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2, DisplayTimeOutManager.GetScreenTimeoutName());
+            screenTimeOutItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2)), DisplayTimeOutManager.GetScreenTimeoutName(this));
             if (screenTimeOutItem != null)
             {
                 screenTimeOutItem.Clicked += (o, e) =>
@@ -159,7 +159,7 @@ namespace Setting.Menu
 
             // section: Theme
 
-            themeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(Resources.IDS_ST_BODY_THEME, DisplayThemeManager.GetThemeName());
+            themeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_THEME)), DisplayThemeManager.GetThemeName(this));
             if (themeItem != null)
             {
                 themeItem.Clicked += (o, e) =>
@@ -248,7 +248,7 @@ namespace Setting.Menu
         private void SystemSettings_ScreenBacklightTimeChanged(object sender, ScreenBacklightTimeChangedEventArgs e)
         {
             if (screenTimeOutItem != null)
-                screenTimeOutItem.Secondary = DisplayTimeOutManager.GetScreenTimeoutName();
+                screenTimeOutItem.Secondary = DisplayTimeOutManager.GetScreenTimeoutName(this);
         }
 
         private void SystemSettings_FontSizeChanged(object sender, FontSizeChangedEventArgs e)
@@ -267,7 +267,7 @@ namespace Setting.Menu
             if (e.IsPlatformThemeChanged)
             {
                 Logger.Debug($"theme changed to: {e.PlatformThemeId}");
-                themeItem.Secondary = DisplayThemeManager.GetThemeName();
+                themeItem.Secondary = DisplayThemeManager.GetThemeName(this);
 
                 // reassign CurrentValue to trigger slider icon path update
                 if (brightnessItem != null)

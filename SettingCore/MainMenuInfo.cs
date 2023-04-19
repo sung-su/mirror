@@ -26,7 +26,7 @@ namespace SettingCore
                 return null;
             }
 
-            var mainMenu = assembly.CreateInstance(info.ClassName, true) as MainMenuGadget;
+            var mainMenu = NUIGadgetManager.Add(info.Pkg.ResourceType, info.ClassName) as MainMenuGadget;
             if (mainMenu == null)
             {
                 Logger.Warn($"could not create MainMenuGadget from {info.ClassName} at {assemblyPath}");
@@ -41,6 +41,7 @@ namespace SettingCore
                 Logger.Debug($"navigating to menupath {info.Path}, title: {title}");
                 GadgetNavigation.NavigateTo(info.Path);
             };
+            NUIGadgetManager.Remove(mainMenu);
 
             return new MainMenuInfo
             {

@@ -16,4 +16,6 @@
     </required-privileges>
   </allowed-package>
   <metadata key="http://tizen.org/metadata/ui-gadget/dll" value="SettingMainGadget.dll"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/resource/dll" value="SettingMainGadget.resources.dll"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/resource/class-name" value="SettingMainGadget.TextResources.Resources"/>
 </manifest>

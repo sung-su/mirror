@@ -1,4 +1,4 @@
-using SettingCore.TextResources;
+using SettingMainGadget.TextResources;
 using SettingCore.Views;
 using SettingMainGadget.Display;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace Setting.Menu.Display
 {
     public class DisplayTimeOutGadget : SettingCore.MenuGadget
     {
-        public override string ProvideTitle() => Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2));
 
         protected override View OnCreate()
         {
@@ -30,7 +30,7 @@ namespace Setting.Menu.Display
 
             RadioButtonGroup radioButtonGroup = new RadioButtonGroup();
 
-            var timeoutList = DisplayTimeOutManager.TimeoutList.Select(x => x.GetName()).ToList();
+            var timeoutList = DisplayTimeOutManager.TimeoutList(this).Select(x => x.GetName()).ToList();
 
             for (int i = 0; i < timeoutList.Count; i++)
             {
@@ -43,7 +43,7 @@ namespace Setting.Menu.Display
 
             radioButtonGroup.SelectedChanged += (o, e) =>
             {
-                DisplayTimeOutManager.SetScreenTimeout(radioButtonGroup.SelectedIndex);
+                DisplayTimeOutManager.SetScreenTimeout(this, radioButtonGroup.SelectedIndex);
             };
 
             return content;
