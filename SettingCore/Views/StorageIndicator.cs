@@ -9,10 +9,10 @@ namespace SettingCore.Views
     {
         public class IndicatorItem
         {
-            public string Name { get; private set; }
-            public Color Color { get; private set; }
-            public double SizeInfo { get; private set; }
-            public float Width { get; private set; }
+            public string Name { get; set; }
+            public Color Color { get; set; }
+            public double SizeInfo { get; set; }
+            public float Width { get; set; }
 
             public IndicatorItem(string name, Color color, double sizeInfo)
             {
@@ -20,35 +20,13 @@ namespace SettingCore.Views
                 Color = color;
                 SizeInfo = sizeInfo;
             }
-
-            public void SetWidth(float width)
-            {
-                Width = width;
-            }
-
-            public void SetSize(double sizeInfo)
-            {
-                SizeInfo = sizeInfo;
-            }
         }
 
-        private const int duration = 1000;
+        private const int duration = 500;
         private double totalSize;
-
         private Animation animation;      
-        private List<IndicatorItem> sizeInfoList = new List<IndicatorItem>();
 
-        public List<IndicatorItem> SizeInfoList
-        {
-            get => sizeInfoList; 
-            set 
-            { 
-                if(sizeInfoList != value) 
-                {
-                    sizeInfoList = value;
-                }
-            }
-        }
+        public List<IndicatorItem> SizeInfoList = new List<IndicatorItem>();
 
         public StorageIndicator(double totalSize)
         {
@@ -69,7 +47,7 @@ namespace SettingCore.Views
 
         public void AddItem(string name, Color color, double size)
         {
-            sizeInfoList.Add(new IndicatorItem(name, color, size));
+            SizeInfoList.Add(new IndicatorItem(name, color, size));
         }
 
         public void Update()
@@ -79,10 +57,14 @@ namespace SettingCore.Views
                 return;
             }
 
-            sizeInfoList = new List<IndicatorItem>(sizeInfoList.OrderByDescending(a => a.SizeInfo).ToList());
+            SizeInfoList = new List<IndicatorItem>(SizeInfoList.OrderByDescending(a => a.SizeInfo).ToList());
 
-            Calculation();
-            RemoveChildren(this);
+            foreach (var item in SizeInfoList)
+            {
+                item.Width = (float)(item.SizeInfo / totalSize * SizeWidth);
+            }
+
+            RemoveChildren();
             AddItems();
         }
 
@@ -90,16 +72,16 @@ namespace SettingCore.Views
         {
             animation = new Animation(duration);
 
-            for (int i = sizeInfoList.Count - 1; i >= 0; i--)
+            for (int i = SizeInfoList.Count - 1; i >= 0; i--)
             {
-                var coloredView = CreateColoredView(sizeInfoList[i].Color, sizeInfoList[i].Equals(sizeInfoList.First()));
+                var coloredView = CreateColoredView(SizeInfoList[i].Color, i == 0);
                 Add(coloredView);
 
-                animation.AnimateTo(coloredView, "SizeWidth", sizeInfoList[i].Width, 0, duration, new AlphaFunction(AlphaFunction.BuiltinFunctions.EaseOut));
+                animation.AnimateTo(coloredView, "SizeWidth", SizeInfoList[i].Width, 0, duration, new AlphaFunction(AlphaFunction.BuiltinFunctions.EaseOut));
 
                 if (i > 0)
                 {
-                    animation.AnimateTo(coloredView, "PositionX", sizeInfoList.GetRange(0, i).Select(x => x.Width).Sum(), 0, duration, new AlphaFunction(AlphaFunction.BuiltinFunctions.EaseOut));
+                    animation.AnimateTo(coloredView, "PositionX", SizeInfoList.GetRange(0, i).Select(x => x.Width).Sum(), 0, duration, new AlphaFunction(AlphaFunction.BuiltinFunctions.EaseOut));
                 }
             }
 
@@ -122,34 +104,19 @@ namespace SettingCore.Views
             return view;
         }
 
-        private void RemoveChildren(View parent)
+        private void RemoveChildren()
         {
-            if (parent == null)
+            for (int i = (int)ChildCount - 1; i >= 0; --i)
             {
-                return;
-            }
-
-            int maxChild = (int)parent.ChildCount;
-            for (int i = maxChild - 1; i >= 0; --i)
-            {
-                View child = parent.GetChildAt((uint)i);
+                View child = GetChildAt((uint)i);
 
                 if (child == null)
                 {
                     continue;
                 }
 
-                RemoveChildren(child);
-                parent.Remove(child);
+                Remove(child);
                 child.Dispose();
-            }
-        }
-
-        private void Calculation()
-        {
-            foreach (var item in sizeInfoList)
-            {
-                item.SetWidth((float)(item.SizeInfo / totalSize * SizeWidth));
             }
         }
     }

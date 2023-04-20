@@ -123,7 +123,6 @@ namespace Setting.Menu
             appsItem = new TextWithIconListItem(Resources.IDS_SM_TMBODY_APPS_ABB, new Color("#FFC700"), subText: Resources.IDS_SM_SBODY_CALCULATING_ING);
             appsItem.Clicked += (s, e) =>
             {
-                // TODO : add apps info gadget 
             };
             usageSummary.Add(appsItem);
 
@@ -315,19 +314,33 @@ namespace Setting.Menu
             if (appsItem != null)
             {
                 appsItem.SubText = GetMediaSizeString(sizeApp);
+
+                var apps = storageIndicator.SizeInfoList.FirstOrDefault(x => x.Name == "apps");
+                if (apps != null)
+                {
+                    apps.SizeInfo = sizeApp;
+                }
             }
             if (cacheItem != null)
             {
                 cacheItem.SubText = GetMediaSizeString(sizeCache);
+
+                var cache = storageIndicator.SizeInfoList.FirstOrDefault(x => x.Name == "cache");
+                if (cache != null)
+                {
+                    cache.SizeInfo = sizeCache;
+                }
             }
             if (systemItem != null)
             {
                 systemItem.SubText = GetMediaSizeString(nonSystemSpace - sizeApp - sizeCache);
-            }
 
-            storageIndicator.SizeInfoList.Where(x => x.Name == "apps").FirstOrDefault()?.SetSize(sizeApp);
-            storageIndicator.SizeInfoList.Where(x => x.Name == "cache").FirstOrDefault()?.SetSize(sizeCache);
-            storageIndicator.SizeInfoList.Where(x => x.Name == "system").FirstOrDefault()?.SetSize(nonSystemSpace - sizeApp - sizeCache);
+                var system = storageIndicator.SizeInfoList.FirstOrDefault(x => x.Name == "system");
+                if (system != null)
+                {
+                    system.SizeInfo = (float)(nonSystemSpace - sizeApp - sizeCache);
+                }
+            }
 
             storageIndicator.Update();
         }
