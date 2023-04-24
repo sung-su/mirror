@@ -11,7 +11,7 @@ namespace Setting.Menu.Storage
 {
     public class DefaultStorageGadget : SettingCore.MenuGadget
     {
-        public override string ProvideTitle() => Resources.IDS_SM_HEADER_DEFAULT_STORAGE_SETTINGS_ABB;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_HEADER_DEFAULT_STORAGE_SETTINGS_ABB));
 
         private const string VconfSharedContent = "db/setting/default_memory/wifi_direct";
         private const string VconfAppInstall = "db/setting/default_memory/install_applications";
@@ -56,18 +56,18 @@ namespace Setting.Menu.Storage
             GetStorageStatus(out int shared, out int app, out int status);
 
             // Shared contents
-            var headerItem = new TextHeaderListItem(Resources.IDS_ST_HEADER_SHARED_CONTENT);
+            var headerItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_SHARED_CONTENT)));
             content.Add(headerItem);
 
-            headerItem = new TextHeaderListItem(Resources.IDS_SM_BODY_SELECT_THE_DEFAULT_STORAGE_LOCATION_FOR_CONTENT_SHARED_VIA_BLUETOOTH_OR_WI_FI_DIRECT, true);
+            headerItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_BODY_SELECT_THE_DEFAULT_STORAGE_LOCATION_FOR_CONTENT_SHARED_VIA_BLUETOOTH_OR_WI_FI_DIRECT)), true);
             content.Add(headerItem);
 
             RadioButtonGroup radioButtonStorageGroup = new RadioButtonGroup();
 
-            RadioButtonListItem device = new RadioButtonListItem(Resources.IDS_ST_BODY_DEVICE_STORAGE);
+            RadioButtonListItem device = new RadioButtonListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DEVICE_STORAGE)));
             device.RadioButton.IsSelected = shared == 0;
 
-            RadioButtonListItem card = new RadioButtonListItem(Resources.IDS_ST_BODY_SD_CARD);
+            RadioButtonListItem card = new RadioButtonListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SD_CARD)));
             // disable storage selection if the card is not mounted 
             if (status != 1)
             {
@@ -91,15 +91,15 @@ namespace Setting.Menu.Storage
             headerItem = new TextHeaderListItem("App installation"); // TODO : add translation to Resources
             content.Add(headerItem);
 
-            headerItem = new TextHeaderListItem(Resources.IDS_SM_BODY_SELECT_THE_DEFAULT_LOCATION_FOR_INSTALLING_APPS_WHERE_APPS_CAN_BE_SAVED_DEPENDS_ON_THE_TYPE_OF_APP_AND_THE_AVAILABILITY_OF_THE_LOCATION, true);
+            headerItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_BODY_SELECT_THE_DEFAULT_LOCATION_FOR_INSTALLING_APPS_WHERE_APPS_CAN_BE_SAVED_DEPENDS_ON_THE_TYPE_OF_APP_AND_THE_AVAILABILITY_OF_THE_LOCATION)), true);
             content.Add(headerItem);
 
             RadioButtonGroup radioButtonAppGroup = new RadioButtonGroup();
 
-            RadioButtonListItem deviceStorage = new RadioButtonListItem(Resources.IDS_ST_BODY_DEVICE_STORAGE);
+            RadioButtonListItem deviceStorage = new RadioButtonListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DEVICE_STORAGE)));
             deviceStorage.RadioButton.IsSelected = app == 0;
 
-            RadioButtonListItem cardStorage = new RadioButtonListItem(Resources.IDS_ST_BODY_SD_CARD);
+            RadioButtonListItem cardStorage = new RadioButtonListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SD_CARD)));
             // disable storage selection if the card is not mounted
             if (status != 1)
             {

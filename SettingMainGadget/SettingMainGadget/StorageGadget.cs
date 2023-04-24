@@ -21,7 +21,7 @@ namespace Setting.Menu
 
         public override string ProvideIconPath() => GetResourcePath("storage.svg");
 
-        public override string ProvideTitle() => Resources.IDS_ST_BODY_DEVICE_STORAGE;
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DEVICE_STORAGE));
 
         private const string VconfCardStatus = "memory/sysman/mmc";
 
@@ -103,7 +103,7 @@ namespace Setting.Menu
                 storageIndicator.AddItem("system", new Color("#17234D"), 0);
                 sections.Add(MainMenuProvider.Storage_UsageIndicator, storageIndicator);
 
-                var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{Resources.IDS_ST_HEADER_TOTAL_SPACE}:", GetMediaSizeString(InternalTotal));
+                var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_TOTAL_SPACE))}:", GetMediaSizeString(InternalTotal));
                 sections.Add(MainMenuProvider.Storage_TotalInternal, totalItem);
 
                 var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText("Free space:", GetMediaSizeString(InternalAvailable)); // TODO : add translation to Resources
@@ -120,27 +120,27 @@ namespace Setting.Menu
                 },
             };
 
-            appsItem = new TextWithIconListItem(Resources.IDS_SM_TMBODY_APPS_ABB, new Color("#FFC700"), subText: Resources.IDS_SM_SBODY_CALCULATING_ING);
+            appsItem = new TextWithIconListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_TMBODY_APPS_ABB)), new Color("#FFC700"), subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
             appsItem.Clicked += (s, e) =>
             {
             };
             usageSummary.Add(appsItem);
 
-            var imageItem = new TextWithIconListItem(Resources.IDS_ST_BODY_IMAGES, new Color("#FF8A00"), subText: GetMediaSizeString(sizeImage));
+            var imageItem = new TextWithIconListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_IMAGES)), new Color("#FF8A00"), subText: GetMediaSizeString(sizeImage));
             imageItem.Clicked += (s, e) =>
             {
                 // TODO : add media files info gadget 
             };
             usageSummary.Add(imageItem);
 
-            var videoItem = new TextWithIconListItem(Resources.IDS_ST_BODY_VIDEOS, new Color("#FF6200"), subText: GetMediaSizeString(sizeVideo));
+            var videoItem = new TextWithIconListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_VIDEOS)), new Color("#FF6200"), subText: GetMediaSizeString(sizeVideo));
             videoItem.Clicked += (s, e) =>
             {
                 // TODO : add media files info gadget 
             };
             usageSummary.Add(videoItem);
 
-            var audioItem = new TextWithIconListItem(Resources.IDS_ST_BODY_AUDIO, new Color("#A40404"), subText: GetMediaSizeString(sizeAudio));
+            var audioItem = new TextWithIconListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_AUDIO)), new Color("#A40404"), subText: GetMediaSizeString(sizeAudio));
             audioItem.Clicked += (s, e) =>
             {
                 // TODO : add media files info gadget 
@@ -149,21 +149,21 @@ namespace Setting.Menu
 
             // TODO : add documents item
 
-            var miscItem = new TextWithIconListItem(Resources.IDS_ST_BODY_MISCELLANEOUS_FILES, new Color("#28262B"), subText: GetMediaSizeString(sizeMisc));
+            var miscItem = new TextWithIconListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_MISCELLANEOUS_FILES)), new Color("#28262B"), subText: GetMediaSizeString(sizeMisc));
             miscItem.Clicked += (s, e) =>
             {
                 // TODO : add miscellaneous info gadget 
             };
             usageSummary.Add(miscItem);
 
-            cacheItem = new TextWithIconListItem(Resources.IDS_ST_BODY_CACHED_DATA_ABB, new Color("#3641FA"), subText: Resources.IDS_SM_SBODY_CALCULATING_ING);
+            cacheItem = new TextWithIconListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_CACHED_DATA_ABB)), new Color("#3641FA"), subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
             cacheItem.Clicked += (s, e) =>
             {
                 ShowCachePopup();
             };
             usageSummary.Add(cacheItem);            
             
-            systemItem = new TextWithIconListItem(Resources.IDS_ST_BODY_SYSTEM_STORAGE, new Color("#17234D"), subText: Resources.IDS_SM_SBODY_CALCULATING_ING);
+            systemItem = new TextWithIconListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SYSTEM_STORAGE)), new Color("#17234D"), subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
             usageSummary.Add(systemItem);
 
             sections.Add(MainMenuProvider.Storage_UsageSummary, usageSummary);
@@ -193,20 +193,20 @@ namespace Setting.Menu
                     Logger.Warn($"could not get value for {VconfCardStatus}");
                 }
 
-                var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{Resources.IDS_ST_HEADER_TOTAL_SPACE}:", GetMediaSizeString(ExternalTotal));
+                var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_TOTAL_SPACE))}:", GetMediaSizeString(ExternalTotal));
                 externalStorage.Add(totalItem);
 
                 var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText("Free space:", GetMediaSizeString(ExternalAvailable)); // TODO : add translation to Resources
                 externalStorage.Add(freeItem);
 
-                var unmount = TextListItem.CreatePrimaryTextItem(Resources.IDS_ST_BODY_UNMOUNT_SD_CARD);
+                var unmount = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_UNMOUNT_SD_CARD)));
                 unmount.Clicked += (s, e) =>
                 {
                     // TODO : add popup with unmount functionality (storage_request_unmount_mmc)
                 };
                 externalStorage.Add(unmount);
 
-                var format = TextListItem.CreatePrimaryTextItem(Resources.IDS_ST_BODY_FORMAT_SD_CARD);
+                var format = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_FORMAT_SD_CARD)));
                 format.Clicked += (s, e) =>
                 {
                     // TODO : add popup with format card functionality (storage_request_format_mmc)
@@ -215,7 +215,7 @@ namespace Setting.Menu
             }
             else
             {
-                var item = TextListItem.CreatePrimaryTextItemWithSubText("No SD card", Resources.IDS_ST_BODY_INSERT_SD_CARD); // TODO : add translation to Resources
+                var item = TextListItem.CreatePrimaryTextItemWithSubText("No SD card", NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_INSERT_SD_CARD))); // TODO : add translation to Resources
                 item.IsEnabled = false;
                 externalStorage.Add(item);
             }
@@ -507,7 +507,7 @@ namespace Setting.Menu
             {
                 WidthResizePolicy = ResizePolicyType.FitToChildren,
                 HeightResizePolicy = ResizePolicyType.FitToChildren,
-                Text = Resources.IDS_ST_BUTTON_CANCEL,
+                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BUTTON_CANCEL)),
                 Size = new Size(252, 48).SpToPx(),
                 Margin = new Extents(32, 61, 0, 32).SpToPx(),
             };
