@@ -105,10 +105,10 @@ namespace Setting.Menu
                 sections.Add(MainMenuProvider.Language_AutoFill, autofillServiceItem);
             }
 
-            TextHeaderListItem bodySpeachHeaderItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SPEECH)));
-            if (bodySpeachHeaderItem != null)
+            TextHeaderListItem bodySpeechHeaderItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SPEECH)));
+            if (bodySpeechHeaderItem != null)
             {
-                sections.Add(MainMenuProvider.Language_BodySpeach, bodySpeachHeaderItem);
+                sections.Add(MainMenuProvider.Language_BodySpeach, bodySpeechHeaderItem);
             }
 
             TextListItem voiceControl = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_VOICE_BODY_VOICE_CONTROL_ABB2)));
