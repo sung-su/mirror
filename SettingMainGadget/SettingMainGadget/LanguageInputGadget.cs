@@ -108,7 +108,7 @@ namespace Setting.Menu
             TextHeaderListItem bodySpeechHeaderItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SPEECH)));
             if (bodySpeechHeaderItem != null)
             {
-                sections.Add(MainMenuProvider.Language_BodySpeach, bodySpeechHeaderItem);
+                sections.Add(MainMenuProvider.Language_BodySpeech, bodySpeechHeaderItem);
             }
 
             TextListItem voiceControl = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_VOICE_BODY_VOICE_CONTROL_ABB2)));

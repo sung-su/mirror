@@ -28,7 +28,7 @@ namespace SettingMainGadget
         public static string Language_Display = "Language.DisplayLanguage";
         public static string Language_KeyboardHeader = "Language.KeyboardHeader";
         public static string Language_InputAssistanceHeader = "Language.InputAssistanceHeader";
-        public static string Language_BodySpeach = "Language.BodySpeach";
+        public static string Language_BodySpeech = "Language.BodySpeech";
         public static string About = "About";
         public static string About_ManageCertificates = "About.ManageCertificates";
         public static string About_OpenSourceLicenses = "About.OpenSourceLicenses";
@@ -95,7 +95,7 @@ namespace SettingMainGadget
                 new SettingMenu(path: Language_InputMethod, defaultOrder: 63),
                 new SettingMenu(path: Language_InputAssistanceHeader, defaultOrder: 64),
                 new SettingMenu(path: Language_AutoFill, defaultOrder: 65),
-                new SettingMenu(path: Language_BodySpeach, defaultOrder: 66),
+                new SettingMenu(path: Language_BodySpeech, defaultOrder: 66),
                 new SettingMenu(path: Language_VoiceControl, defaultOrder: 67),
                 new SettingMenu(path: Language_TTS, defaultOrder: 68),
                 new SettingMenu(path: Language_STT, defaultOrder: 69),
