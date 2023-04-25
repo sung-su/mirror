@@ -45,7 +45,7 @@ tizen_nuixaml_version: 1.0.34
 #  Default nuget version for Tizen.HotReload
 tizen_hotreload_version: 1.0.1
 #  Working folder for dotnet & web workspace, paths to csproj or sln or config.xml, if empty all projects will be build
-working_folder: C:\Users\p.czaja\Work\Settings_APP\settings\SettingMainGadget\SettingMainGadget
+working_folder:
 #  Default path for Google Chrome
 chrome_path: 
 #  Default options to be passed to Chrome when running web simulator
