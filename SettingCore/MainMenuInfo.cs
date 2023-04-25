@@ -25,8 +25,17 @@ namespace SettingCore
                 Logger.Warn($"could not open assembly {assemblyPath}");
                 return null;
             }
-
-            var mainMenu = NUIGadgetManager.Add(info.Pkg.ResourceType, info.ClassName) as MainMenuGadget;
+            MainMenuGadget mainMenu;
+            try
+            {
+                mainMenu = NUIGadgetManager.Add(info.Pkg.ResourceType, info.ClassName) as MainMenuGadget;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"could not create MainMenuGadget from {info.ClassName} at {assemblyPath}");
+                Logger.Error(e.Message);
+                return null;
+            }
             if (mainMenu == null)
             {
                 Logger.Warn($"could not create MainMenuGadget from {info.ClassName} at {assemblyPath}");
