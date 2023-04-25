@@ -1,2 +1,4 @@
 SettingCore/TextResources/Resources.Designer.cs
+SettingMainGadget/SettingMainGadget/TextResources/Resources.Designer.cs
+
 
