@@ -63,7 +63,6 @@ namespace SettingCore.Views
             {
                 iconVisual = new ImageVisual
                 {
-                    MixColor = IconColors.Normal,
                     URL = iconPath,
                     FittingMode = FittingModeType.ScaleToFill,
                 };
