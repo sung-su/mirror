@@ -13,7 +13,10 @@
 		<privilege>http://tizen.org/privilege/mediastorage</privilege>
 		<privilege>http://tizen.org/privilege/packagemanager.admin</privilege>
 		<privilege>http://tizen.org/privilege/packagemanager.clearcache</privilege>
-    </required-privileges>
+		<privilege>http://tizen.org/privilege/packagemanager.info</privilege>
+		<privilege>http://tizen.org/privilege/apphistory.read</privilege>
+		
+	</required-privileges>
   </allowed-package>
   <metadata key="http://tizen.org/metadata/ui-gadget/dll" value="SettingMainGadget.dll"/>
   <metadata key="http://tizen.org/metadata/ui-gadget/resource/dll" value="SettingMainGadget.resources.dll"/>
