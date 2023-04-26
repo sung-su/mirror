@@ -149,11 +149,18 @@ namespace SettingCore
                 foreach (var moreMenuItem in moreMenu)
                 {
                     var item = new MenuItem { Text = moreMenuItem.Text };
-                    item.Clicked += (s, e) =>
+                    if (moreMenuItem.Action is null)
                     {
-                        moreMenuItem.Action?.Invoke();
-                        menu.Dismiss();
-                    };
+                        item.TextColor = new Color("#83868F");
+                    }
+                    else
+                    {
+                        item.Clicked += (s, e) =>
+                        {
+                            moreMenuItem.Action?.Invoke();
+                            menu.Dismiss();
+                        };
+                    }
 
                     items.Add(item);
                 }
