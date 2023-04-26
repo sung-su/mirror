@@ -123,6 +123,7 @@ namespace Setting.Menu
             appsItem = new TextWithIconListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_TMBODY_APPS_ABB)), new Color("#FFC700"), subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
             appsItem.Clicked += (s, e) =>
             {
+                NavigateTo(MainMenuProvider.Storage_Apps);
             };
             usageSummary.Add(appsItem);
 
