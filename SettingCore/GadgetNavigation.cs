@@ -145,6 +145,14 @@ namespace SettingCore
                     VerticalPositionToAnchor = Menu.RelativePosition.End,
                 };
 
+                NUIApplication.GetDefaultWindow().GetDefaultNavigator().Popped += (s, e) =>
+                {
+                    if (menu != null)
+                    {
+                        menu.Dismiss();
+                    }
+                };
+
                 var items = new List<MenuItem>();
                 foreach (var moreMenuItem in moreMenu)
                 {
