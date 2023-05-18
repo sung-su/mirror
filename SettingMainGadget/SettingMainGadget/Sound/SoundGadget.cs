@@ -17,9 +17,11 @@ namespace Setting.Menu
     {
         private View content;
         private Sections sections = new Sections();
+        private AudioVolume audioVolume = AudioManager.VolumeController;
 
         private TextListItem soundMode;
         private TextListItem notificationSound;
+        private SliderListItem mediaSlider;
 
         public override Color ProvideIconColor() => new Color(IsLightTheme  ? "#DB3069" : "#DF4679");
 
@@ -82,6 +84,23 @@ namespace Setting.Menu
             {
                 Logger.Warn($"Cannot attach to SystemSettings.SoundNotificationChanged ({e.GetType()})");
             }
+
+            try
+            {
+                audioVolume.Changed += AudioVolume_Changed;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"Cannot attach to AudioVolume changed event ({e.GetType()})");
+            }
+        }
+
+        private void AudioVolume_Changed(object sender, VolumeChangedEventArgs e)
+        {
+            if (e.Type == AudioVolumeType.Media && mediaSlider != null)
+            {
+                mediaSlider.Slider.CurrentValue = SettingAudioManager.GetPercentageVolumeLevel(e.Type);
+            }
         }
 
         private void DetachFromEvents()
@@ -111,6 +130,15 @@ namespace Setting.Menu
             catch (System.Exception e)
             {
                 Logger.Warn($"Cannot detach from SystemSettings.SoundNotificationChanged ({e.GetType()})");
+            }
+
+            try
+            {
+                audioVolume.Changed -= AudioVolume_Changed;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"Cannot detach to AudioVolume changed event ({e.GetType()})");
             }
         }
 
@@ -165,7 +193,7 @@ namespace Setting.Menu
 
             // section: media
 
-            var mediaSlider = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_MEDIA)), soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.Media));
+            mediaSlider = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_MEDIA)), soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.Media));
             mediaSlider.Slider.SlidingFinished += OnMediaSlidingFinished;
             mediaSlider.Margin = new Extents(0, 0, 16, 0).SpToPx();
             sections.Add(MainMenuProvider.Sound_MediaSlider, mediaSlider);
