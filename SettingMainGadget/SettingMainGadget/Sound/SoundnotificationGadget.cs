@@ -15,7 +15,7 @@ namespace Setting.Menu.Sound
     {
         public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NOTIFICATIONS));
 
-        private const string soundpath = "/opt/usr/data/settings/Alerts";
+        private string soundpath = Directory.GetParent(Tizen.System.SystemSettings.EmailAlertRingtone).FullName;
 
         protected override View OnCreate()
         {
