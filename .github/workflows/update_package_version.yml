@@ -1,0 +1,57 @@
+name: Update Package Version
+on:
+  workflow_dispatch:
+    inputs:
+      update_type:
+        description: Update type
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+jobs:
+  update_package_version:
+    runs-on: [ code-default ]
+    container:
+      image: srpol-avengers-docker-local.bart.sec.samsung.net/tizen-dotnet-builder:c28c62d
+      credentials:
+        username: ${{ secrets.BART_USER}}
+        password: ${{ secrets.BART_TOKEN}}
+      options: --user root
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Print update type
+        run: |
+          echo "Update type: ${{ github.event.inputs.update_type }}"
+      - name: Update project version in spec and manifest files.
+        run: |
+          python3 ./workflowScripts/update_package_version.py update -t ${{ github.event.inputs.update_type }}
+      - name: Setup git author data
+        run: |
+          git config --global user.name ${{ github.actor }}
+          git config --global user.email ${{ github.actor }}@users.noreply.github.com
+      - name: Build project
+        run: |
+          workflowScripts/create_tpk.sh
+          workflowScripts/create_rpk.sh
+      - name: Create commit
+        run: |
+          python3 ./workflowScripts/update_package_version.py commit
+      - name: Clean other changes
+        run: |
+          git checkout -f
+          git clean -fdx
+      - name: Create pull request
+        uses: code-actions/peter-evans-create-pull-request@v5
+        with:
+          title: 'Update Package Version'
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          committer: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          reviewers: |
+            m-romaniuk
+            y-zinchuk
+            p-czaja
+          delete-branch: true
