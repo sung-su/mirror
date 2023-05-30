@@ -63,6 +63,9 @@ namespace SettingMainGadget.Sound
                         feedback.Play(FeedbackType.Sound, "Tap");
                     }
                     return;
+                default:
+                    Logger.Debug($"don't play any audio for AudioStreamType = {type}");
+                    return;
             }
 
             try
