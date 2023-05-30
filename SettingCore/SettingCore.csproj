@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- Property Group for Tizen Project -->
   <PropertyGroup>
@@ -16,6 +16,21 @@
 
   <ItemGroup>
     <PackageReference Include="Tizen.NET" Version="11.0.0.17773" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="TextResources\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="TextResources\Resources.resx">
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

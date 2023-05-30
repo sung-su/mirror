@@ -56,7 +56,7 @@ namespace SettingCore.Views
 
         protected override string AccessibilityGetName()
         {
-            return Resources.IDS_ST_BUTTON_BACK.ToString();
+            return Resources.IDS_ST_BUTTON_BACK;
         }
     }
 }
