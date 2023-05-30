@@ -1,4 +1,5 @@
-﻿using Tizen.NUI;
+﻿using SettingCore.TextResources;
+using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 
 namespace SettingCore.Views
@@ -13,6 +14,7 @@ namespace SettingCore.Views
 
         public BackButton() : base()
         {
+            AccessibilityRole = Role.PushButton;
             BackgroundColor = BackgroundColors.Normal;
             CornerRadius = 8f.SpToPx();
             Size = new Size(40, 40).SpToPx();
@@ -50,6 +52,11 @@ namespace SettingCore.Views
 
                 BackgroundColor = BackgroundColors.Normal;
             }
+        }
+
+        protected override string AccessibilityGetName()
+        {
+            return Resources.IDS_ST_BUTTON_BACK.ToString();
         }
     }
 }
