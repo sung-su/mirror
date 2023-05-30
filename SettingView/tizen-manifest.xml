@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="org.tizen.SettingView" version="1.1.7" api-version="6.5" xmlns="http://tizen.org/ns/packages">
+<manifest package="org.tizen.cssettings" version="1.1.7" api-version="6.5" xmlns="http://tizen.org/ns/packages">
     <profile name="common" />
-    <ui-application appid="org.tizen.SettingView" exec="SettingView.dll" multiple="false" nodisplay="false"
+    <ui-application appid="org.tizen.cssettings" exec="SettingView.dll" multiple="false" nodisplay="false"
                                                 taskmanage="true" api-version="9" type="dotnet" launch_mode="single">
         <label>Settings</label>
         <icon>SettingView.png</icon>

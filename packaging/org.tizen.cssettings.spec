@@ -9,7 +9,7 @@ Source0:    %{name}-%{version}.tar.gz
 BuildRequires:  pkgconfig(libtzplatform-config)
 Requires(post):  /usr/bin/tpk-backend
 
-%define viewer_name org.tizen.SettingView
+%define viewer_name org.tizen.cssettings
 %define gadgets_name org.tizen.settings.main
 %define preload_tpk_path %{TZ_SYS_RO_APP}/.preload-tpk
 %define preload_rpk_path %{TZ_SYS_RO_APP}/.preload-rpk
