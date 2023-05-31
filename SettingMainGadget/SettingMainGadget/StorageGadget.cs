@@ -12,6 +12,7 @@ using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 using Tizen.System;
+using Tizen;
 
 namespace Setting.Menu
 {
@@ -29,6 +30,7 @@ namespace Setting.Menu
 
         private Sections sections = new Sections();
         private View content;
+        private View externalStorage;
 
         private TextWithIconListItem appsItem;
         private TextWithIconListItem cacheItem;
@@ -66,11 +68,15 @@ namespace Setting.Menu
                 }
             };
 
+            Vconf.Notify(VconfCardStatus, OnCardStatusChanged);
+
             return content;
         }
 
         protected override void OnDestroy()
         {
+            Vconf.Ignore(VconfCardStatus, OnCardStatusChanged);
+
             base.OnDestroy();
         }
 
@@ -90,7 +96,7 @@ namespace Setting.Menu
 
             if (InternalCount > 0)
             {
-                var usedItem = TextListItem.CreatePrimaryTextItem(GetMediaSizeString(InternalTotal - InternalAvailable));
+                var usedItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_USED))}", GetMediaSizeString(InternalTotal - InternalAvailable));
                 sections.Add(MainMenuProvider.Storage_Used, usedItem);
 
                 storageIndicator = new StorageIndicator(InternalTotal);
@@ -103,10 +109,10 @@ namespace Setting.Menu
                 storageIndicator.AddItem("system", new Color("#17234D"), 0);
                 sections.Add(MainMenuProvider.Storage_UsageIndicator, storageIndicator);
 
-                var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_TOTAL_SPACE))}:", GetMediaSizeString(InternalTotal));
+                var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_TOTAL_SPACE))}", GetMediaSizeString(InternalTotal));
                 sections.Add(MainMenuProvider.Storage_TotalInternal, totalItem);
 
-                var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText("Free space:", GetMediaSizeString(InternalAvailable)); // TODO : add translation to Resources
+                var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText("Free space", GetMediaSizeString(InternalAvailable)); // TODO : add translation to Resources
                 sections.Add(MainMenuProvider.Storage_FreeInternal, freeItem);
             }
 
@@ -173,7 +179,7 @@ namespace Setting.Menu
             var externalUsageItem = new TextHeaderListItem("External storage usage"); // TODO : add translation to Resources
             sections.Add(MainMenuProvider.Storage_ExternalUsage, externalUsageItem);
 
-            var externalStorage = new View()
+            externalStorage = new View()
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
                 HeightSpecification = LayoutParamPolicies.WrapContent,
@@ -185,15 +191,6 @@ namespace Setting.Menu
 
             if (ExternalCount > 0)
             {
-                // VCONFKEY_SYSMAN_MMC_STATUS
-                // 0 : VCONFKEY_SYSMAN_MMC_REMOVED
-                // 1 : VCONFKEY_SYSMAN_MMC_MOUNTED
-                // 2 : VCONFKEY_SYSMAN_MMC_INSERTED_NOT_MOUNTED
-                if (!Tizen.Vconf.TryGetInt(VconfCardStatus, out int status))
-                {
-                    Logger.Warn($"could not get value for {VconfCardStatus}");
-                }
-
                 var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_TOTAL_SPACE))}:", GetMediaSizeString(ExternalTotal));
                 externalStorage.Add(totalItem);
 
@@ -534,6 +531,57 @@ namespace Setting.Menu
         private void OnFolderUpdated(object sender, FolderUpdatedEventArgs args)
         {
             Logger.Debug($"Folder updated: Id = {args.Id}, Operation = {args.OperationType}");
+        }
+
+        private void OnCardStatusChanged(string key, Type type, dynamic arg)
+        {
+            // update content when card was removed (0) or mounted (1)
+            if (arg == 0 || arg == 1)
+            {
+                for (int i = (int)externalStorage.ChildCount - 1; i >= 0; --i)
+                {
+                    View child = externalStorage.GetChildAt((uint)i);
+
+                    if (child == null)
+                    {
+                        continue;
+                    }
+
+                    externalStorage.Remove(child);
+                    child.Dispose();
+                }
+
+                if (arg > 0)
+                {
+                    GetStorageStatus(out int InternalCount, out double InternalTotal, out int ExternalCount, out double InternalAvailable, out double ExternalTotal, out double ExternalAvailable);
+
+                    var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_TOTAL_SPACE))}:", GetMediaSizeString(ExternalTotal));
+                    externalStorage.Add(totalItem);
+
+                    var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText("Free space:", GetMediaSizeString(ExternalAvailable)); // TODO : add translation to Resources
+                    externalStorage.Add(freeItem);
+
+                    var unmount = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_UNMOUNT_SD_CARD)));
+                    unmount.Clicked += (s, e) =>
+                    {
+                        // TODO : add popup with unmount functionality (storage_request_unmount_mmc)
+                    };
+                    externalStorage.Add(unmount);
+
+                    var format = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_FORMAT_SD_CARD)));
+                    format.Clicked += (s, e) =>
+                    {
+                        // TODO : add popup with format card functionality (storage_request_format_mmc)
+                    };
+                    externalStorage.Add(format);
+                }
+                else
+                {
+                    var item = TextListItem.CreatePrimaryTextItemWithSubText("No SD card", NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_INSERT_SD_CARD))); // TODO : add translation to Resources
+                    item.IsEnabled = false;
+                    externalStorage.Add(item);
+                }
+            }
         }
 
         protected override void OnCustomizationUpdate(IEnumerable<MenuCustomizationItem> items)
