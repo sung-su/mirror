@@ -8594,5 +8594,225 @@ namespace SettingMainGadget.TextResources {
                         "OUR_EXISTING_DATA_WILL_NOT_BE_LOST", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Owner.
+        /// </summary>
+        internal static string IDS_SCP_BODY_OWNER_ABB
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_SCP_BODY_OWNER_ABB", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Certificate details.
+        /// </summary>
+        internal static string IDS_ST_BODY_CERTIFICATE_DETAILS
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_CERTIFICATE_DETAILS", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Certificate information.
+        /// </summary>
+        internal static string IDS_ST_BODY_CERTIFICATE_INFORMATION
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_CERTIFICATE_INFORMATION", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Certification authority:.
+        /// </summary>
+        internal static string IDS_ST_BODY_CERTIFICATION_AUTHORITY_C
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_CERTIFICATION_AUTHORITY_C", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Common name:.
+        /// </summary>
+        internal static string IDS_ST_BODY_COMMON_NAME_C
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_COMMON_NAME_C", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to False.
+        /// </summary>
+        internal static string IDS_ST_BODY_FALSE
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_FALSE", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Issuer:.
+        /// </summary>
+        internal static string IDS_ST_BODY_ISSUER
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_ISSUER", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Issuer:.
+        /// </summary>
+        internal static string IDS_ST_BODY_ISSUER_COLON
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_ISSUER_COLON", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Key usage:.
+        /// </summary>
+        internal static string IDS_ST_BODY_KEY_USAGE_C
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_KEY_USAGE_C", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Organisation:.
+        /// </summary>
+        internal static string IDS_ST_BODY_ORGANISATION_C
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_ORGANISATION_C", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Public key:.
+        /// </summary>
+        internal static string IDS_ST_BODY_PUBLIC_KEY_C
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_PUBLIC_KEY_C", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Serial number:.
+        /// </summary>
+        internal static string IDS_ST_BODY_SERIAL_NUMBER_COLON
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_SERIAL_NUMBER_COLON", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Signature algorithm:.
+        /// </summary>
+        internal static string IDS_ST_BODY_SIGNATURE_ALGORITHM_C
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_SIGNATURE_ALGORITHM_C", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to True.
+        /// </summary>
+        internal static string IDS_ST_BODY_TRUE
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_TRUE", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Trusted root CA certificates.
+        /// </summary>
+        internal static string IDS_ST_BODY_TRUSTED_ROOT_CA_CERTIFICATES_ABB
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_TRUSTED_ROOT_CA_CERTIFICATES_ABB", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to User certificates.
+        /// </summary>
+        internal static string IDS_ST_BODY_USER_CERTIFICATES
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_USER_CERTIFICATES", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Valid from:.
+        /// </summary>
+        internal static string IDS_ST_BODY_VALID_FROM_C
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_VALID_FROM_C", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Valid to:.
+        /// </summary>
+        internal static string IDS_ST_BODY_VALID_TO_C
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_VALID_TO_C", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Version:.
+        /// </summary>
+        internal static string IDS_ST_BODY_VERSION_C
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_BODY_VERSION_C", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to After you install certificates, they will be shown here..
+        /// </summary>
+        internal static string IDS_ST_TPOP_NO_CERTIFICATE_FOUND_DETAIL
+        {
+            get
+            {
+                return ResourceManager.GetString("IDS_ST_TPOP_NO_CERTIFICATE_FOUND_DETAIL", resourceCulture);
+            }
+        }
     }
 }

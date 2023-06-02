@@ -2958,4 +2958,64 @@
   <data name="IDS_ST_HEADER_SMART_MANAGER" xml:space="preserve">
     <value>스마트 매니저</value>
   </data>
+	<data name="IDS_SCP_BODY_OWNER_ABB" xml:space="preserve">
+    <value>소유자</value>
+  </data>
+	<data name="IDS_ST_BODY_CERTIFICATE_DETAILS" xml:space="preserve">
+    <value>인증서 상세정보</value>
+  </data>
+	<data name="IDS_ST_BODY_CERTIFICATE_INFORMATION" xml:space="preserve">
+    <value>인증서 정보</value>
+  </data>
+	<data name="IDS_ST_BODY_CERTIFICATION_AUTHORITY_C" xml:space="preserve">
+    <value>인증 기관</value>
+  </data>
+	<data name="IDS_ST_BODY_COMMON_NAME_C" xml:space="preserve">
+    <value>일반 이름</value>
+  </data>
+	<data name="IDS_ST_BODY_FALSE" xml:space="preserve">
+    <value>거짓</value>
+  </data>
+	<data name="IDS_ST_BODY_ISSUER" xml:space="preserve">
+    <value>발급자</value>
+  </data>
+	<data name="IDS_ST_BODY_ISSUER_COLON" xml:space="preserve">
+    <value>발급자</value>
+  </data>
+	<data name="IDS_ST_BODY_KEY_USAGE_C" xml:space="preserve">
+    <value>키 용도</value>
+  </data>
+	<data name="IDS_ST_BODY_ORGANISATION_C" xml:space="preserve">
+    <value>기관</value>
+  </data>
+	<data name="IDS_ST_BODY_PUBLIC_KEY_C" xml:space="preserve">
+    <value>공개키</value>
+  </data>
+	<data name="IDS_ST_BODY_SERIAL_NUMBER_COLON" xml:space="preserve">
+    <value>시리얼 번호</value>
+  </data>
+	<data name="IDS_ST_BODY_SIGNATURE_ALGORITHM_C" xml:space="preserve">
+    <value>서명 알고리즘</value>
+  </data>
+	<data name="IDS_ST_BODY_TRUE" xml:space="preserve">
+    <value>진실</value>
+  </data>
+	<data name="IDS_ST_BODY_TRUSTED_ROOT_CA_CERTIFICATES_ABB" xml:space="preserve">
+    <value>신뢰할 수 있는 루트 CA 인증서</value>
+  </data>
+	<data name="IDS_ST_BODY_USER_CERTIFICATES" xml:space="preserve">
+    <value>사용자 인증서</value>
+  </data>
+	<data name="IDS_ST_BODY_VALID_FROM_C" xml:space="preserve">
+    <value>유효기간 시작일</value>
+  </data>
+	<data name="IDS_ST_BODY_VALID_TO_C" xml:space="preserve">
+    <value>유효기간 만료일</value>
+  </data>
+	<data name="IDS_ST_BODY_VERSION_C" xml:space="preserve">
+    <value>버전</value>
+  </data>
+	<data name="IDS_ST_TPOP_NO_CERTIFICATE_FOUND_DETAIL" xml:space="preserve">
+    <value>인증서 추가 후에 인증서를 여기서 볼 수 있습니다.</value>
+  </data>
 </root>
