@@ -106,7 +106,7 @@ namespace SettingMainGadget
                 new SettingMenu(path: Language_TTS, defaultOrder: 68),
                 new SettingMenu(path: Language_STT, defaultOrder: 69),
                 new SettingMenu(path: About, defaultOrder: 70, type: typeof(Setting.Menu.AboutGadget)),
-                new SettingMenu(path: About_ManageCertificates, defaultOrder: 10),
+                new SettingMenu(path: About_ManageCertificates, defaultOrder: 10, type: typeof(Setting.Menu.About.AboutManageCertificatesGadget)),
                 new SettingMenu(path: About_OpenSourceLicenses, defaultOrder: 20, type: typeof(Setting.Menu.AboutLegalInfoGadget)),
                 new SettingMenu(path: About_ScalableUI, defaultOrder: -30, type: typeof(SettingMainGadget.About.AboutScalableGadget)),
                 new SettingMenu(path: About_DeviceInfo, defaultOrder: 40),
