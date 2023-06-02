@@ -41,6 +41,7 @@ namespace Setting.Menu.About
             var rootCertItem = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_TRUSTED_ROOT_CA_CERTIFICATES_ABB)));
             rootCertItem.Clicked += (o, e) =>
             {
+                NavigateTo(MainMenuProvider.About_RootCertificates);
             };
             content.Add(rootCertItem);
 
