@@ -32,6 +32,7 @@ namespace SettingMainGadget
         public static string About = "About";
         public static string About_ManageCertificates = "About.ManageCertificates";
         public static string About_RootCertificates = "About.RootCertificates";
+        public static string About_CertificateDetails = "About.CertificateDetails";
         public static string About_OpenSourceLicenses = "About.OpenSourceLicenses";
         public static string About_ScalableUI = "About.ScalableUI";
         public static string About_DeviceInfo = "About.DeviceInfo";
@@ -109,6 +110,7 @@ namespace SettingMainGadget
                 new SettingMenu(path: About, defaultOrder: 70, type: typeof(Setting.Menu.AboutGadget)),
                 new SettingMenu(path: About_ManageCertificates, defaultOrder: 10, type: typeof(Setting.Menu.About.AboutManageCertificatesGadget)),
                 new SettingMenu(path: About_RootCertificates, defaultOrder: 15, type: typeof(Setting.Menu.About.AboutRootCertificatesGadget)),
+                new SettingMenu(path: About_CertificateDetails, defaultOrder: 10, type: typeof(Setting.Menu.About.AboutCertificateDetailsGadget)),
                 new SettingMenu(path: About_OpenSourceLicenses, defaultOrder: 20, type: typeof(Setting.Menu.AboutLegalInfoGadget)),
                 new SettingMenu(path: About_ScalableUI, defaultOrder: -30, type: typeof(SettingMainGadget.About.AboutScalableGadget)),
                 new SettingMenu(path: About_DeviceInfo, defaultOrder: 40),
