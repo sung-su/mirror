@@ -46,6 +46,11 @@ namespace SettingMainGadget
         public static string About_DeviceStatus_storage = "About.DeviceStatus.Storage";
         public static string About_DeviceStatus_cpu_usage = "About.DeviceStatus.CpuUsage";
 
+        // apps
+        public static string Apps = "Apps";
+        public static string Apps_AppsManager = "Apps.AppsManager";
+        public static string Apps_DefaultApps = "Apps.DefaultApps";
+
         //storage
         public static string Storage = "Storage";
         public static string Storage_InternalUsage = "Storage.InternalUsage";
@@ -116,6 +121,10 @@ namespace SettingMainGadget
                 new SettingMenu(path: About_DeviceStatus_wifi_mac_address, defaultOrder: 20),
                 new SettingMenu(path: About_DeviceStatus_storage, defaultOrder: 30),
                 new SettingMenu(path: About_DeviceStatus_cpu_usage, defaultOrder: 40),
+                // apps
+                new SettingMenu(path: Apps, defaultOrder: 80, type: typeof(Setting.Menu.AppsGadget)),
+                new SettingMenu(path: Apps_AppsManager, defaultOrder: 10),
+                new SettingMenu(path: Apps_DefaultApps, defaultOrder: 20),
                 //storage
                 new SettingMenu(path: Storage, defaultOrder: 120, type: typeof(Setting.Menu.StorageGadget)),
                 new SettingMenu(path: Storage_InternalUsage, defaultOrder: 10),
