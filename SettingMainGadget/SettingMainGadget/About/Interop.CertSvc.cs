@@ -249,7 +249,7 @@ internal static partial class Interop
         }
         internal struct Certificate
         {
-            internal int privateHandler;
+            internal IntPtr privateHandler;
             internal Instance Instance;
         }
 
