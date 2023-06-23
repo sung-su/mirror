@@ -6,6 +6,7 @@ using Tizen.NUI.BaseComponents;
 using System.Linq;
 using System.Threading;
 using SettingCore.Views;
+using System;
 
 namespace SettingCore
 {
@@ -13,6 +14,8 @@ namespace SettingCore
     {
         // keep page-gadget binding, to update Title & ContextMenu strings when language changed
         private static Dictionary<Page, MenuGadget> gadgetPages = new Dictionary<Page, MenuGadget>();
+
+        public static event EventHandler<bool> OnWindowModeChanged;
 
         private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
 
@@ -41,11 +44,28 @@ namespace SettingCore
                     gadgetPages.Remove(e.Page);
                 }
             };
+
+            NUIApplication.GetDefaultWindow().KeyEvent += GadgetNavigation_KeyEvent;
+        }
+
+        public static void SetFullScreenMode(bool fullScreen)
+        {
+            OnWindowModeChanged?.Invoke(null, fullScreen);
         }
 
         public static void NavigateBack()
         {
-            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop();
+            var baseContentPage = NUIApplication.GetDefaultWindow().GetDefaultNavigator().Peek();
+
+            if (baseContentPage is BaseContentPage)
+            {
+                NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop();
+            }
+            else
+            {
+                SetFullScreenMode(false);
+                NUIApplication.GetDefaultWindow().GetDefaultNavigator().PopWithTransition();
+            }
         }
 
         public static void NavigateTo(string menuPath)
@@ -78,25 +98,8 @@ namespace SettingCore
                 var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar") as AppBarStyle;
                 appBarStyle.TitleTextLabel.PixelSize = 24f.SpToPx();
 
-                var backButton = new Views.BackButton();
-                backButton.Margin = new Extents(0, 8, 0, 0).SpToPx();
+                var backButton = new Views.BackButton();            
                 backButton.Clicked += (s, e) => NavigateBack();
-
-                var page = new BaseContentPage
-                {
-                    // TODO: CornerRadius depends on SettingViewBorder.CornerRadius - SettingViewBorder.BorderLineThickness, which is defined at SettingView project.
-                    CornerRadius = (26.0f - 6.0f).SpToPx(),
-                    ClippingMode = ClippingModeType.ClipChildren,
-                    AppBar = new AppBar(appBarStyle)
-                    {
-                        Size = new Size(-1, 64).SpToPx(),
-                        Title = title,
-                        NavigationContent = backButton,
-                        ThemeChangeSensitive = true,
-                    },
-                    Content = content,
-                    ThemeChangeSensitive = true,
-                };
 
                 var moreItems = new List<View>();
 
@@ -112,10 +115,45 @@ namespace SettingCore
                     moreItems.Add(moreButton);
                 }
 
-                page.AppBar.Actions = moreItems;
+                if (info.IsFullScreenMode)
+                {
+                    SetFullScreenMode(true);
 
-                NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(page);
-                gadgetPages.Add(page, gadget);
+                    var contentPage = new ContentPage
+                    {
+                        CornerRadius = 0.SpToPx(),
+                        Content = content,
+                        ThemeChangeSensitive = true,
+                    };
+
+                    NUIApplication.GetDefaultWindow().GetDefaultNavigator().PushWithTransition(contentPage);
+                    gadgetPages.Add(contentPage, gadget);
+                }
+                else
+                {
+                    backButton.Margin = new Extents(0, 8, 0, 0).SpToPx();
+
+                    var page = new BaseContentPage
+                    {
+                        // TODO: CornerRadius depends on SettingViewBorder.CornerRadius - SettingViewBorder.BorderLineThickness, which is defined at SettingView project.
+                        CornerRadius = (26.0f - 6.0f).SpToPx(),
+                        ClippingMode = ClippingModeType.ClipChildren,
+                        AppBar = new AppBar(appBarStyle)
+                        {
+                            Size = new Size(-1, 64).SpToPx(),
+                            Title = title,
+                            NavigationContent = backButton,
+                            ThemeChangeSensitive = true,
+                        },
+                        Content = content,
+                        ThemeChangeSensitive = true,
+                    };
+
+                    page.AppBar.Actions = moreItems;
+
+                    NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(page);
+                    gadgetPages.Add(page, gadget);
+                }
             }
             catch (System.Exception e) // TODO: add separate catch blocks for specific exceptions?
             {
@@ -177,6 +215,19 @@ namespace SettingCore
             };
 
             return moreButton;
+        }
+
+        private static void GadgetNavigation_KeyEvent(object sender, Window.KeyEventArgs e)
+        {
+            if (e.Key.State == Key.StateType.Up)
+            {
+                if (e.Key.KeyPressedName == "XF86Back")
+                {
+                    NUIApplication.GetDefaultWindow().GetDefaultNavigator().EnableBackNavigation = false;
+                    NavigateBack();
+                    NUIApplication.GetDefaultWindow().GetDefaultNavigator().EnableBackNavigation = true;
+                }
+            }
         }
     }
 }
