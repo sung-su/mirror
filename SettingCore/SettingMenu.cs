@@ -8,6 +8,7 @@ namespace SettingCore
         public int DefaultOrder { get; private set; }
         public string ClassName { get; private set; }
         public bool IsMainMenu { get; private set; }
+        public bool IsFullScreenMode { get; set; } = false;
 
         public SettingMenu(string path, int defaultOrder, Type type = null)
         {
@@ -17,6 +18,6 @@ namespace SettingCore
             IsMainMenu = path.Split('.').Length == 1;
         }
 
-        public override string ToString() => $"{nameof(SettingMenu)} (Path: {Path}, DefaultOrder: {DefaultOrder}, ClassName: {ClassName}, IsMainMenu: {IsMainMenu})";
+        public override string ToString() => $"{nameof(SettingMenu)} (Path: {Path}, DefaultOrder: {DefaultOrder}, ClassName: {ClassName}, IsMainMenu: {IsMainMenu}, IsFullScreenMode {IsFullScreenMode})";
     }
 }

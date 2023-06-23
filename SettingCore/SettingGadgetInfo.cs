@@ -11,6 +11,7 @@ namespace SettingCore
         public string ClassName { get; private set; }
         public bool IsMainMenu { get; private set; }
         public string Path { get; private set; }
+        public bool IsFullScreenMode { get; private set; }
 
         public SettingGadgetInfo(NUIGadgetInfo pkg, SettingMenu settingMenu)
         {
@@ -19,8 +20,9 @@ namespace SettingCore
             ClassName = settingMenu.ClassName;
             IsMainMenu = settingMenu.IsMainMenu;
             Path = settingMenu.Path;
+            IsFullScreenMode = settingMenu.IsFullScreenMode;
         }
 
-        public override string ToString() => $"{nameof(SettingGadgetInfo)} (PackageId: {Pkg.PackageId}, ClassName: {ClassName}, Order: {Order}, IsMainMenu: {IsMainMenu}, Path: {Path})";
+        public override string ToString() => $"{nameof(SettingGadgetInfo)} (PackageId: {Pkg.PackageId}, ClassName: {ClassName}, Order: {Order}, IsMainMenu: {IsMainMenu}, Path: {Path}, IsFullScreenMode: {IsFullScreenMode})";
     }
 }
