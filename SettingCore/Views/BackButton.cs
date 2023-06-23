@@ -6,7 +6,7 @@ namespace SettingCore.Views
 {
     public class BackButton : BaseComponent
     {
-        private readonly ThemeColor BackgroundColors = new ThemeColor(Color.Transparent, Color.Transparent, new Color("#FF6200").WithAlpha(0.1f), Color.White.WithAlpha(0.16f));
+        private readonly ThemeColor BackgroundColors = new ThemeColor(new Color("#FAFAFACC"), new Color("#16131ACC"), new Color("#FBE2D2"), new Color("#2D2B30"));
         private readonly ThemeColor IconColors = new ThemeColor(new Color("#17234D"), new Color("#FDFDFD"), new Color("#FF6200"), new Color("#FF8A00"));
 
         private readonly ImageView icon;
