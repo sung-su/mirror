@@ -30,6 +30,7 @@ namespace SettingView
 {
     public class Program : NUIApplication
     {
+        private static SettingViewBorder appCustomBorder;
         private ContentPage mMainPage;
 
         public Program(Size2D windowSize, Position2D windowPosition, ThemeOptions themeOptions, IBorderInterface borderInterface)
@@ -56,6 +57,29 @@ namespace SettingView
             Tizen.System.SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
             ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
             GadgetManager.Instance.CustomizationChanged += CustomizationChanged;
+
+            GadgetNavigation.OnWindowModeChanged += (ob, fullScreenMode) =>
+            {
+                if (fullScreenMode)
+                {
+                    if (appCustomBorder.BorderWindow is null || appCustomBorder.BorderWindow.IsMaximized())
+                    {
+                        return;
+                    }
+
+                    appCustomBorder.OverlayMode = true;
+                    appCustomBorder.BorderWindow.Maximize(true);
+                }
+                else
+                {
+                    if (appCustomBorder.BorderWindow is null || appCustomBorder.BorderWindow.IsMinimized())
+                    {
+                        return;
+                    }
+
+                    appCustomBorder.BorderWindow.Maximize(false);
+                }
+            };
 
             LogScalableInfo();
         }
@@ -246,7 +270,7 @@ namespace SettingView
             // INFO: it looks like size of custom border is not included in total window size
             Size2D size = new Size2D(width, height);
             Position2D position = new Position2D((screenWidth - width) / 2, (screenHeight - height) / 2 - (int)(bottomMargin * screenHeight));
-            var appCustomBorder = new SettingViewBorder();
+            appCustomBorder = new SettingViewBorder();
 
             var app = new Program(size, position, ThemeOptions.PlatformThemeEnabled, appCustomBorder);
 
