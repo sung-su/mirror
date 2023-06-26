@@ -43,6 +43,7 @@ namespace SettingCore
                     NUIGadgetManager.Remove(gadget);
                     gadgetPages.Remove(e.Page);
                 }
+                NUIApplication.GetDefaultWindow().GetDefaultNavigator().EnableBackNavigation = true;
             };
 
             NUIApplication.GetDefaultWindow().KeyEvent += GadgetNavigation_KeyEvent;
@@ -219,14 +220,22 @@ namespace SettingCore
 
         private static void GadgetNavigation_KeyEvent(object sender, Window.KeyEventArgs e)
         {
-            if (e.Key.State == Key.StateType.Up)
+            if (NUIApplication.GetDefaultWindow().GetDefaultNavigator().ChildCount == 1)
             {
-                if (e.Key.KeyPressedName == "XF86Back")
-                {
-                    NUIApplication.GetDefaultWindow().GetDefaultNavigator().EnableBackNavigation = false;
-                    NavigateBack();
-                    NUIApplication.GetDefaultWindow().GetDefaultNavigator().EnableBackNavigation = true;
-                }
+                return;
+            }
+
+            if (e.Key.State == Key.StateType.Down && e.Key.KeyPressedName == "XF86Back")
+            {
+                NUIApplication.GetDefaultWindow().GetDefaultNavigator().EnableBackNavigation = false;
+            }
+            else if (e.Key.State == Key.StateType.Up && e.Key.KeyPressedName == "XF86Back")
+            {
+                NavigateBack();
+            }
+            else
+            {
+                NUIApplication.GetDefaultWindow().GetDefaultNavigator().EnableBackNavigation = true;
             }
         }
     }
