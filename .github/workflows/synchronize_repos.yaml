@@ -1,0 +1,37 @@
+name: Synchronize repositories
+on:
+  workflow_dispatch:
+jobs:
+  update_package_version:
+    runs-on: [ code-default ]
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Checkout to tizen_next
+        run: git checkout remotes/origin/tizen_next -b local_tizen_next
+      - name: Install SSH key
+        uses: code-actions/shimataro-ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          name: id_rsa
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      - name: Get gerrit remote
+        run: |
+          git remote add gerrit ssh://${{ secrets.GERRIT_USERNAME }}@review.tizen.org:29418/profile/iot/apps/dotnet/settings
+          git fetch gerrit
+          git checkout remotes/gerrit/tizen -b gerrit_tizen
+      - name: Synchronize gerrit to github
+        run: |
+          if git merge-base --is-ancestor gerrit_tizen local_tizen_next; then 
+            NUMBER_OF_COMMITS=$(git rev-list --count gerrit_tizen..local_tizen_next)
+            echo Repository can be synchronized. Number of commits: $NUMBER_OF_COMMITS
+            git merge local_tizen_next
+          else
+            echo Repository can not be synchronized.
+            exit 1
+          fi
+      - name: Push changes
+        run: |
+          git push gerrit HEAD:tizen
