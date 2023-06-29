@@ -146,7 +146,7 @@ namespace SettingView
 
         private void ThemeManager_ThemeChanged(object sender, ThemeChangedEventArgs e)
         {
-            if (mMainPage != null)
+            if (mMainPage != null && e.IsPlatformThemeChanged)
             {
                 // recreate main page content just to apply new colors from gadgets
                 mMainPage.Content = CreateContent();
