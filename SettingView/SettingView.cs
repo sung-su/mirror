@@ -14,17 +14,16 @@
  *  limitations under the License
  */
 
+using SettingCore;
+using SettingCore.Views;
+using SettingView.TextResources;
+using System.Collections.Generic;
+using System.Linq;
+using Tizen.Applications;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 using Tizen.System;
-
-using SettingView.TextResources;
-using SettingCore;
-using System.Linq;
-using Tizen.Applications;
-using System.Collections.Generic;
-using SettingCore.Views;
 
 namespace SettingView
 {
@@ -52,6 +51,12 @@ namespace SettingView
             bool initilized = GadgetManager.Instance.Init();
             mMainPage.Content = initilized ? CreateContent() : GetTextNotice("Failed to initialize GadgetManager.\nPlease check error logs for more information.", Color.Red);
 
+            var navigator = new SettingNavigation();
+            navigator.WidthResizePolicy = ResizePolicyType.FillToParent;
+            navigator.HeightResizePolicy = ResizePolicyType.FillToParent;
+
+            GetDefaultWindow().Remove(GetDefaultWindow().GetDefaultNavigator());
+            GetDefaultWindow().SetDefaultNavigator(navigator);
             GetDefaultWindow().GetDefaultNavigator().Push(mMainPage);
 
             Tizen.System.SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
