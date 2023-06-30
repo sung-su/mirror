@@ -10,6 +10,7 @@ SPEC_FILEPATH = 'packaging/org.tizen.cssettings.spec'
 GADGET_MANIFEST_PATH = 'SettingMainGadget/SettingMainGadget/tizen-manifest.xml'
 APP_MANIFEST_PATH = 'SettingView/tizen-manifest.xml'
 
+
 class VersionUpdater():
     """
     Class for updating project version.
@@ -84,7 +85,7 @@ class VersionUpdater():
         files_to_remove = []
         for dir_path, _, filename in os.walk('packaging'):
             files_to_remove.extend(os.path.join(dir_path, f)
-              for f in filename if os.path.splitext(f)[1] in ['.tpk', '.rpk'])
+                                   for f in filename if os.path.splitext(f)[1] in ['.tpk', '.rpk'])
         if len(files_to_remove) > 0:
             for file in files_to_remove:
                 os.remove(file)
@@ -96,9 +97,9 @@ class VersionUpdater():
             GADGET_MANIFEST_PATH,
             SPEC_FILEPATH,
             os.path.join('packaging',
-              f'org.tizen.cssettings-{self.__get_current_version_string()}.tpk'),
+                         f'org.tizen.cssettings-{self.__get_current_version_string()}.tpk'),
             os.path.join('packaging',
-              f'org.tizen.settings.main-{self.__get_current_version_string()}.rpk'),
+                         f'org.tizen.settings.main-{self.__get_current_version_string()}.rpk'),
         ]
         if self.__check_if_files_exist(files_to_commit):
             self.repo.git.add(files_to_commit)
@@ -117,17 +118,17 @@ class VersionUpdater():
         result = re.search(regex, file_content)
         if result is not None:
             self.__replace(file_path, result.group(0),
-                            result.group(0).replace(self.ver, self.new_ver))
+                           result.group(0).replace(self.ver, self.new_ver))
 
     def __get_current_version_string(self):
         return '.'.join([self.major, self.minor, self.patch])
 
     def __get_new_version_string(self):
         if self.update_type == 'patch':
-            return '.'.join([self.major, self.minor, str(int(self.patch)+1)])
+            return '.'.join([self.major, self.minor, str(int(self.patch) + 1)])
         if self.update_type == 'minor':
-            return '.'.join([self.major, str(int(self.minor)+1), "0"])
-        return '.'.join([str(int(self.major)+1), "0", "0"])
+            return '.'.join([self.major, str(int(self.minor) + 1), "0"])
+        return '.'.join([str(int(self.major) + 1), "0", "0"])
 
     def __replace(self, file, search, replace):
         with open(file, 'r', newline='', encoding='utf8') as filestream:
@@ -148,6 +149,7 @@ class VersionUpdater():
             file_content = filestream.read()
         return file_content
 
+
 def main():
     """The main function.
     """
@@ -160,9 +162,9 @@ def main():
     update_parser = subparsers.add_parser('update', help='update the project version')
     subparsers.add_parser('commit', help='git commit changes')
     update_parser.add_argument('-t', '--type',
-                    default='patch',
-                    choices=['major', 'minor', 'patch'],
-                    help='update type (default: %(default)s)')
+                               default='patch',
+                               choices=['major', 'minor', 'patch'],
+                               help='update type (default: %(default)s)')
     args = parser.parse_args()
 
     version_updater = VersionUpdater()
@@ -175,6 +177,7 @@ def main():
             version_updater.update_version(args.type)
         elif args.command == 'commit':
             version_updater.commit_changes()
+
 
 if __name__ == "__main__":
     main()
