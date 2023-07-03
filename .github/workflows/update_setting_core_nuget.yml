@@ -11,8 +11,8 @@ jobs:
     container:
       image: srpol-avengers-docker-local.bart.sec.samsung.net/tizen-dotnet-builder:c28c62d
       credentials:
-        username: ${{ secrets.BART_USER}}
-        password: ${{ secrets.BART_TOKEN}}
+        username: ${{ secrets.BART_USERNAME}}
+        password: ${{ secrets.BART_APIKEY}}
       options: --user root
     steps:
       - name: Get code
@@ -33,5 +33,5 @@ jobs:
       - name: Push nuget to BART server
         run: |
           dotnet nuget add source https://bart.sec.samsung.net/artifactory/api/nuget/v3/srpol-avengers-nuget-local/setting \
-          -n bart -u ${{ secrets.BART_USER}} -p ${{ secrets.BART_TOKEN}} --store-password-in-clear-text
+          -n bart -u ${{ secrets.BART_USERNAME}} -p ${{ secrets.BART_APIKEY}} --store-password-in-clear-text
           dotnet nuget push artifacts/$NUGET_FILENAME -s bart

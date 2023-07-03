@@ -17,8 +17,8 @@ jobs:
     container:
       image: srpol-avengers-docker-local.bart.sec.samsung.net/tizen-dotnet-builder:c28c62d
       credentials:
-        username: ${{ secrets.BART_USER}}
-        password: ${{ secrets.BART_TOKEN}}
+        username: ${{ secrets.BART_USERNAME}}
+        password: ${{ secrets.BART_APIKEY}}
       options: --user root
     steps:
       - name: Get code
