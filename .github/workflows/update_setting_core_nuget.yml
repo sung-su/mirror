@@ -1,0 +1,37 @@
+name: Update SettingCore nuget
+on:
+  push:
+    branches:
+      - 'tizen_next'
+    paths:
+      - 'SettingCore/**.cs'
+jobs:
+  update_settingcore_nuget:
+    runs-on: [ code-default ]
+    container:
+      image: srpol-avengers-docker-local.bart.sec.samsung.net/tizen-dotnet-builder:c28c62d
+      credentials:
+        username: ${{ secrets.BART_USER}}
+        password: ${{ secrets.BART_TOKEN}}
+      options: --user root
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Build nuget
+        run: ./workflowScripts/build-nuget-setting-core.sh
+      - name: Check if nuget was successfully built
+        run: |
+          if ls artifacts/* 1> /dev/null 2>&1; then
+            NUGET_FILENAME=$(ls artifacts/)
+            echo "Nuget successfully created: $NUGET_FILENAME"
+          else
+            echo "Nuget NOT created"
+            exit 1
+          fi
+      - name: Push nuget to BART server
+        run: |
+          dotnet nuget add source https://bart.sec.samsung.net/artifactory/api/nuget/v3/srpol-avengers-nuget-local/setting \
+          -n bart -u ${{ secrets.BART_USER}} -p ${{ secrets.BART_TOKEN}} --store-password-in-clear-text
+          dotnet nuget push artifacts/$NUGET_FILENAME -s bart
