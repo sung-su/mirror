@@ -27,7 +27,6 @@ internal static partial class Interop
 {
     internal static partial class CertSvc
     {
-        internal static string LogTag = "InteropTest.CertSvc";
         internal enum ErrorCode
         {
             CERTSVC_TRUE = 1,
@@ -184,13 +183,13 @@ internal static partial class Interop
                 InstanceNew(out IntPtr instance);
                 if (instance == null)
                 {
-                    Tizen.Log.Debug(LogTag, "Unable to create new instance");
+                    Logger.Warn("Unable to create new instance");
                     return;
                 }
                 ErrorCode err = (ErrorCode)GetPKCS12CertificateFromStore(instance, storeType, gname, out Certificate cout);
                 if (err != ErrorCode.CERTSVC_SUCCESS)
                 {
-                    Tizen.Log.Debug(LogTag, "Unable to GetPKCS12CertificateFromStore, err: " + err + ", instance: "
+                    Logger.Warn($"Unable to GetPKCS12CertificateFromStore, err: " + err + ", instance: "
                         + instance + " gname: " + gname + " store_type: " + storeType);
                     InstanceFree(instance);
                     return;
@@ -199,7 +198,7 @@ internal static partial class Interop
                 err = (ErrorCode)GetCertificateNotAfter(cout, out long time);
                 if (err != ErrorCode.CERTSVC_SUCCESS)
                 {
-                    Tizen.Log.Debug(LogTag, "Unable to GetCertificateNotAfter, , err: " + err + ", instance: "
+                    Logger.Warn("Unable to GetCertificateNotAfter, , err: " + err + ", instance: "
                     + instance + " gname: " + gname + " store_type: " + storeType);
                     InstanceFree(instance);
                     return;
@@ -208,7 +207,7 @@ internal static partial class Interop
                 err = (ErrorCode)GetCertificateNotBefore(cout, out time);
                 if (err != ErrorCode.CERTSVC_SUCCESS)
                 {
-                    Tizen.Log.Debug(LogTag, "Unable to GetCertificateNotBefore, , err: " + err + ", instance: "
+                    Logger.Warn("Unable to GetCertificateNotBefore, , err: " + err + ", instance: "
                     + instance + " gname: " + gname + " store_type: " + storeType);
                     InstanceFree(instance);
                     return;
@@ -217,7 +216,7 @@ internal static partial class Interop
                 err = (ErrorCode)GetCertificateIsRootCa(cout, out int isRootCa);
                 if (err != ErrorCode.CERTSVC_SUCCESS)
                 {
-                    Tizen.Log.Debug(LogTag, "Unable to GetCertificateIsRootCa, , err: " + err + ", instance: "
+                    Logger.Warn("Unable to GetCertificateIsRootCa, , err: " + err + ", instance: "
                     + instance + " gname: " + gname + " store_type: " + storeType);
                     InstanceFree(instance);
                     return;
@@ -228,7 +227,7 @@ internal static partial class Interop
                     err = (ErrorCode)GetCertificateStringField(cout, certificateField, out CertSvcString certSvcString);
                     if (err != ErrorCode.CERTSVC_SUCCESS)
                     {
-                        Tizen.Log.Debug(LogTag, "Unable to GetCertificateStringField, , err: " + err + ", instance: "
+                        Logger.Warn("Unable to GetCertificateStringField, , err: " + err + ", instance: "
                         + instance + " gname: " + gname + " store_type: " + storeType);
                         continue;
                     }
@@ -301,7 +300,7 @@ internal static partial class Interop
                 cur = item.next;
                 list.Add(cert);
             }
-            Tizen.Log.Debug(LogTag, "CertList size: " + list.Count);
+            Logger.Debug("CertList size: " + list.Count);
             return list;
         }
 
