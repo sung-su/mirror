@@ -51,7 +51,7 @@ namespace Setting.Menu
             sections.Add(MainMenuProvider.Apps_AppsManager, appsManagerItem);
             appsManagerItem.Clicked += (o, e) =>
             {
-                // TODO : NavigateTo App Manager
+                NavigateTo(MainMenuProvider.Apps_AppsManager);
             };
             content.Add(appsManagerItem);
 

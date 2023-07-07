@@ -127,7 +127,7 @@ namespace SettingMainGadget
                 new SettingMenu(path: About_DeviceStatus_cpu_usage, defaultOrder: 40),
                 // apps
                 new SettingMenu(path: Apps, defaultOrder: 80, type: typeof(Setting.Menu.AppsGadget)),
-                new SettingMenu(path: Apps_AppsManager, defaultOrder: 10),
+                new SettingMenu(path: Apps_AppsManager, defaultOrder: 10, typeof(Setting.Menu.Apps.AppsManagerGadget)),
                 new SettingMenu(path: Apps_DefaultApps, defaultOrder: 20),
                 //storage
                 new SettingMenu(path: Storage, defaultOrder: 120, type: typeof(Setting.Menu.StorageGadget)),
