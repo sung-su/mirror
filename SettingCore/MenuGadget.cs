@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tizen.NUI;
@@ -54,6 +55,7 @@ namespace SettingCore
         }
 
         public abstract string ProvideTitle();
+        public Action OnPageAppeared;
 
         public virtual IEnumerable<View> ProvideMoreActions() => null;
         public virtual IEnumerable<MoreMenuItem> ProvideMoreMenu() => null;

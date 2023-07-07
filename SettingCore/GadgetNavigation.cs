@@ -145,6 +145,11 @@ namespace SettingCore
                     ThemeChangeSensitive = true,
                 };
 
+                page.Appeared += (s, e) =>
+                {
+                    gadget.OnPageAppeared?.Invoke();
+                };
+
                 NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(page);
                 gadgetPages.Add(page, gadget);
             }
