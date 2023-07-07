@@ -286,7 +286,7 @@
     <value>Security update</value>
   </data>
   <data name="IDS_FP_BODY_NO_APPLICATIONS" xml:space="preserve">
-    <value>No applications</value>
+    <value>No applications.</value>
   </data>
   <data name="IDS_HEALTH_OPT_ACCESSORIES" xml:space="preserve">
     <value>Accessories</value>
@@ -559,7 +559,7 @@
     <value>After resetting, phone will restart automatically.</value>
   </data>
   <data name="IDS_ST_BODY_AFTER_YOU_DOWNLOAD_AND_INSTALL_APPLICATIONS_APPLICATIONS_WILL_BE_SHOWN_HERE" xml:space="preserve">
-    <value>After you download and install applications, applications will be shown here</value>
+    <value>After you download and install applications, applications will be shown here.</value>
   </data>
   <data name="IDS_ST_BODY_ALARM" xml:space="preserve">
     <value>Alarm</value>

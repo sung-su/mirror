@@ -568,7 +568,7 @@ namespace SettingMainGadget.TextResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No applications.
+        ///   Looks up a localized string similar to No applications..
         /// </summary>
         public static string IDS_FP_BODY_NO_APPLICATIONS {
             get {
@@ -1407,7 +1407,7 @@ namespace SettingMainGadget.TextResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to After you download and install applications, applications will be shown here.
+        ///   Looks up a localized string similar to After you download and install applications, applications will be shown here..
         /// </summary>
         public static string IDS_ST_BODY_AFTER_YOU_DOWNLOAD_AND_INSTALL_APPLICATIONS_APPLICATIONS_WILL_BE_SHOWN_HERE {
             get {

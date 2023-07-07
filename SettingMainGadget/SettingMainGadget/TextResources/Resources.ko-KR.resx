@@ -286,7 +286,7 @@
     <value>보안 업데이트</value>
   </data>
   <data name="IDS_FP_BODY_NO_APPLICATIONS" xml:space="preserve">
-    <value>애플리케이션이 없습니다</value>
+    <value>애플리케이션이 없습니다.</value>
   </data>
   <data name="IDS_HEALTH_OPT_ACCESSORIES" xml:space="preserve">
     <value>액세서리</value>
@@ -559,7 +559,7 @@
     <value>초기화가 끝나면 휴대전화가 자동으로 다시 시작합니다.</value>
   </data>
   <data name="IDS_ST_BODY_AFTER_YOU_DOWNLOAD_AND_INSTALL_APPLICATIONS_APPLICATIONS_WILL_BE_SHOWN_HERE" xml:space="preserve">
-    <value>앱을 다운로드하여 설치하면 여기에 표시됩니다</value>
+    <value>앱을 다운로드하여 설치하면 여기에 표시됩니다.</value>
   </data>
   <data name="IDS_ST_BODY_ALARM" xml:space="preserve">
     <value>알람</value>
