@@ -128,9 +128,11 @@ namespace SettingCore.Views
             {
                 AccessibilityHidden = true,
                 Margin = new Extents(16, 0, 0, 16).SpToPx(),
-                TextColor = SubTextColors.Normal,
+                TextColor = TextColors.Normal,
                 PixelSize = 24.SpToPx(),
                 MultiLine = true,
+                LineWrapMode = LineWrapMode.Mixed,
+                WidthSpecification = LayoutParamPolicies.MatchParent,
             };
 
             Add(primarySubText);
@@ -144,7 +146,7 @@ namespace SettingCore.Views
 
                 primary.TextColor = TextColors.Selected;
                 secondary.TextColor = TextColors.Selected;
-                primarySubText.TextColor = SubTextColors.Selected;
+                primarySubText.TextColor = TextColors.Selected;
             }
             else
             {
@@ -152,7 +154,7 @@ namespace SettingCore.Views
 
                 primary.TextColor = TextColors.Normal;
                 secondary.TextColor = TextColors.Normal;
-                primarySubText.TextColor = SubTextColors.Normal;
+                primarySubText.TextColor = TextColors.Normal;
             }
         }
 
