@@ -1,15 +1,9 @@
 ﻿<Project Sdk="Tizen.NET.Sdk/1.1.9">
 
   <PropertyGroup>
-     <TargetFramework>netcoreapp3.1</TargetFramework>
+     <TargetFramework>net6.0</TargetFramework>
      <TizenCreateTpkOnBuild>false</TizenCreateTpkOnBuild>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>None</DebugType>
+  <DisableImplicitTizenReferences>True</DisableImplicitTizenReferences>
   </PropertyGroup>
 
   <ItemGroup>

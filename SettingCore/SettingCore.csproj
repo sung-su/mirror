@@ -2,16 +2,10 @@
 
   <!-- Property Group for Tizen Project -->
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <TizenCreateTpkOnBuild>false</TizenCreateTpkOnBuild>
-    <AssemblyName>SettingCore</AssemblyName>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>None</DebugType>
+	  <TargetFramework>net6.0</TargetFramework>
+	  <TizenCreateTpkOnBuild>false</TizenCreateTpkOnBuild>
+	  <AssemblyName>SettingCore</AssemblyName>
+	  <DisableImplicitTizenReferences>True</DisableImplicitTizenReferences>
   </PropertyGroup>
 
   <ItemGroup>
