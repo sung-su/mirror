@@ -8,6 +8,7 @@ using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 using Tizen.System;
+using Tizen;
 
 namespace Setting.Menu
 {
@@ -30,6 +31,7 @@ namespace Setting.Menu
         private SwitchListItem timeFormatItem = null;
 
         private bool isAutomaticTimeUpdateSupported;
+        private string VconfTimezone = "db/setting/timezone";
 
         protected override View OnCreate()
         {
@@ -105,7 +107,7 @@ namespace Setting.Menu
                 sections.Add(MainMenuProvider.DateTime_SetTime, mTimeItem);
             }
 
-            mTimezoneItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_TIME_ZONE)), DateTimeTimezoneManager.GetTimezoneName());
+            mTimezoneItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_TIME_ZONE)), DateTimeTimezoneManager.GetTimezoneName().timezoneName);
             if (mTimezoneItem != null)
             {
                 mTimezoneItem.Clicked += (o, e) =>
@@ -154,8 +156,14 @@ namespace Setting.Menu
 
         private void SystemSettings_LocaleTimeZoneChanged(object sender, LocaleTimeZoneChangedEventArgs e)
         {
+            (string offset, string timezoneName) = DateTimeTimezoneManager.GetTimezoneName();
+
+            Vconf.SetString(VconfTimezone, offset);
+
             if (mTimezoneItem != null)
-                mTimezoneItem.Secondary = DateTimeTimezoneManager.GetTimezoneName();
+            {
+                mTimezoneItem.Secondary = timezoneName;
+            }
         }
 
         private void SystemSettings_LocaleTimeFormat24HourSettingChanged(object sender, LocaleTimeFormat24HourSettingChangedEventArgs e)

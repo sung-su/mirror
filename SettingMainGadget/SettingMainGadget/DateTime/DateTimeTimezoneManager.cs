@@ -23,7 +23,7 @@ namespace SettingMainGadget.DateTime
             SystemSettings.LocaleTimeZone = timezoneId;
         }
 
-        public static string GetTimezoneName()
+        public static (string offset, string timezoneName) GetTimezoneName()
         {
             // DO NOT USE TimeZoneInfo localtimezone = TimeZoneInfo.Local;
             // It take long time to sync TimeZoneInfo.Local after setting SystemSettings.LocaleTimeZone
@@ -33,7 +33,7 @@ namespace SettingMainGadget.DateTime
             TimeSpan time = localtimezone.GetUtcOffset(date);
             string offset = time < TimeSpan.Zero ? time.ToString(@"\-hh\:mm") : time.ToString(@"\+hh\:mm");
 
-            return $"GMT {offset}, {localtimezone.StandardName}";
+            return (offset, $"GMT {offset}, {localtimezone.StandardName}");
         }
 
         public class TimeZone
