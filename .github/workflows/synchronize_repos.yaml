@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 jobs:
   update_package_version:
-    runs-on: [ code-default ]
+    runs-on: [ code-linux, code-default ]
     steps:
       - name: Get code
         uses: actions/checkout@v3

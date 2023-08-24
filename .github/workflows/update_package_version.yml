@@ -13,7 +13,7 @@ on:
           - patch
 jobs:
   update_package_version:
-    runs-on: [ code-default ]
+    runs-on: [ code-linux, code-default ]
     container:
       image: srpol-avengers-docker-local.bart.sec.samsung.net/tizen-dotnet-builder:c28c62d
       credentials:
