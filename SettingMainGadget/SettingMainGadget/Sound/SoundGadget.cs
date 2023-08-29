@@ -10,11 +10,15 @@ using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 using Tizen.System;
+using Tizen.Applications;
 
 namespace Setting.Menu
 {
     public class SoundGadget : SettingCore.MainMenuGadget
     {
+        private const string soundSliderIconDefault = "sound/sound_slider_icon_default.svg";
+        private const string soundSliderIconMute = "sound/sound_slider_icon_mute.svg";
+
         private View content;
         private Sections sections = new Sections();
         private AudioVolume audioVolume = AudioManager.VolumeController;
@@ -22,6 +26,8 @@ namespace Setting.Menu
         private TextListItem soundMode;
         private TextListItem notificationSound;
         private SliderListItem mediaSlider;
+        private SliderListItem notificationSlider;
+        private SliderListItem systemSlider;
 
         public override Color ProvideIconColor() => new Color(IsLightTheme  ? "#DB3069" : "#DF4679");
 
@@ -189,26 +195,29 @@ namespace Setting.Menu
             Logger.Debug($"GET {AudioVolumeType.Notification} Volume : {SettingAudioManager.GetVolumeLevel(AudioVolumeType.Notification)}");
             Logger.Debug($"GET {AudioVolumeType.System} Volume : {SettingAudioManager.GetVolumeLevel(AudioVolumeType.System)}");
 
-            string soundSliderIconPath = GetResourcePath("sound/sound_slider_icon_default.png");
+            bool soundsEnabled = SoundmodeManager.GetSoundmode() == Soundmode.SOUND_MODE_SOUND;
+            string soundSliderIconPath = soundsEnabled ? GetResourcePath(soundSliderIconDefault) : GetResourcePath(soundSliderIconMute);
 
             // section: media
 
-            mediaSlider = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_MEDIA)), soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.Media));
+            mediaSlider = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_MEDIA)), GetResourcePath(soundSliderIconDefault), SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.Media));
             mediaSlider.Slider.SlidingFinished += OnMediaSlidingFinished;
             mediaSlider.Margin = new Extents(0, 0, 16, 0).SpToPx();
             sections.Add(MainMenuProvider.Sound_MediaSlider, mediaSlider);
 
             // section: notification
 
-            var notificationSlider = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NOTIFICATIONS)), soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.Notification));
+            notificationSlider = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NOTIFICATIONS)), soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.Notification));
             notificationSlider.Slider.ValueChanged += OnNofificationSlider_ValueChanged;
+            notificationSlider.Slider.IsEnabled = soundsEnabled;
             notificationSlider.Margin = new Extents(0, 0, 16, 0).SpToPx();
             sections.Add(MainMenuProvider.Sound_NotificationSlider, notificationSlider);
 
             // section: system
 
-            var systemSlider = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SYSTEM)), soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.System));
+            systemSlider = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SYSTEM)), soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.System));
             systemSlider.Slider.ValueChanged += OnSystemSlider_ValueChanged;
+            systemSlider.Slider.IsEnabled = soundsEnabled;
             systemSlider.Margin = new Extents(0, 0, 16, 0).SpToPx();
             sections.Add(MainMenuProvider.Sound_SystemSlider, systemSlider);
 
@@ -235,6 +244,25 @@ namespace Setting.Menu
         {
             if (soundMode != null)
                 soundMode.Secondary = SoundmodeManager.GetSoundmodeName(this, SoundmodeManager.GetSoundmode());
+
+            bool soundsEnabled = SoundmodeManager.GetSoundmode() == Soundmode.SOUND_MODE_SOUND;
+            string soundSliderIconPath = soundsEnabled ? GetResourcePath(soundSliderIconDefault) : GetResourcePath(soundSliderIconMute);
+
+            if (notificationSlider != null)
+            {
+                notificationSlider.Slider.IsEnabled = soundsEnabled;
+                notificationSlider.IconPath = soundSliderIconPath;
+                notificationSlider.Slider.CurrentValue = SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.Notification);
+            }
+
+            if (systemSlider != null)
+            {
+                systemSlider.Slider.IsEnabled = soundsEnabled;
+                systemSlider.IconPath = soundSliderIconPath;
+                systemSlider.Slider.CurrentValue = SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.System);
+            }
+
+            Logger.Debug($"Sound silent mode: {e.Value}");
         }
 
         private void SystemSettings_VibrationChanged(object sender, VibrationChangedEventArgs e)
