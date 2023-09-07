@@ -53,6 +53,7 @@ namespace SettingMainGadget
         public static string Apps_AppsManager = "Apps.AppsManager";
         public static string Apps_DefaultApps = "Apps.DefaultApps";
         public static string Apps_DefaultHome = "Apps.DefaultHome";
+        public static string Apps_AppInfo = "Apps.AppsInfo";
 
         //storage
         public static string Storage = "Storage";
@@ -131,6 +132,7 @@ namespace SettingMainGadget
                 new SettingMenu(path: Apps_AppsManager, defaultOrder: 10, typeof(Setting.Menu.Apps.AppsManagerGadget)),
                 new SettingMenu(path: Apps_DefaultApps, defaultOrder: 20, typeof(Setting.Menu.Apps.AppsDefaultGadget)),
                 new SettingMenu(path: Apps_DefaultHome, defaultOrder: 40, typeof(Setting.Menu.Apps.AppsDefaultHomeGadget)),
+                new SettingMenu(path: Apps_AppInfo, defaultOrder: 50, typeof(Setting.Menu.Apps.AppsAppInfoGadget)),
 
                 //storage
                 new SettingMenu(path: Storage, defaultOrder: 120, type: typeof(Setting.Menu.StorageGadget)),

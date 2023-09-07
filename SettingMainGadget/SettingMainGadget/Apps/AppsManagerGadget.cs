@@ -216,6 +216,9 @@ namespace Setting.Menu.Apps
                     var appItem = new TextWithIconListItem(package.Label, Color.Transparent, iconPath: iconPath, subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
                     appItem.Clicked += (s, e) =>
                     {
+                        Logger.Debug($"Set current package id: {package.Id}");
+                        AppManager.CurrentApp = package;
+                        NavigateTo(MainMenuProvider.Apps_AppInfo);
                     };
 
                     installedApps.Add(package, appItem);
@@ -259,6 +262,8 @@ namespace Setting.Menu.Apps
                 var appItem = new TextWithIconListItem(applicationInfo.Label, Color.Transparent, iconPath: iconPath, subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
                 appItem.Clicked += (s, e) =>
                 {
+                    AppManager.CurrentApp = PackageManager.GetPackage(applicationInfo.PackageId);
+                    NavigateTo(MainMenuProvider.Apps_AppInfo);
                 };
 
                 runningApps.Add(applicationInfo, appItem);
@@ -283,6 +288,8 @@ namespace Setting.Menu.Apps
                 var appItem = new TextWithIconListItem(package.Label, Color.Transparent, iconPath: iconPath, subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
                 appItem.Clicked += (s, e) =>
                 {
+                    AppManager.CurrentApp = package;
+                    NavigateTo(MainMenuProvider.Apps_AppInfo);
                 };
 
                 allApps.Add(package, appItem);
