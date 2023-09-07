@@ -1,7 +1,10 @@
 ﻿using SettingCore;
 using SettingCore.Views;
+using SettingMainGadget;
 using SettingMainGadget.Apps;
 using SettingMainGadget.TextResources;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Tizen;
 using Tizen.Applications;
@@ -69,7 +72,7 @@ namespace Setting.Menu.Apps
                 {
                     homeScreenItem.Clicked += (o, e) =>
                     {
-
+                        NavigateTo(MainMenuProvider.Apps_DefaultHome);
                     };
                 }
 

@@ -59,7 +59,7 @@ namespace Setting.Menu
             sections.Add(MainMenuProvider.Apps_DefaultApps, defaultAppsItem);
             defaultAppsItem.Clicked += (o, e) =>
             {
-                // TODO : NavigateTo Default apps
+                NavigateTo(MainMenuProvider.Apps_DefaultApps);
             };
             content.Add(defaultAppsItem);
         }
