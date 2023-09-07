@@ -8,7 +8,8 @@
       <privilege>http://tizen.org/privilege/volume.set</privilege>
       <!--display-->
 	  <privilege>http://tizen.org/privilege/systemsettings.admin</privilege>
-		
+		<privilege>http://tizen.org/privilege/display</privilege>
+
 		<!--storage-->
 		<privilege>http://tizen.org/privilege/mediastorage</privilege>
 		<privilege>http://tizen.org/privilege/packagemanager.admin</privilege>

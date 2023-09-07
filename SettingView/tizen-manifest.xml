@@ -28,6 +28,7 @@
 		<privilege>http://tizen.org/privilege/bluetooth</privilege>
 		<privilege>http://tizen.org/privilege/bluetooth.admin</privilege>
 		<privilege>http://tizen.org/privilege/datasharing</privilege>
+		<privilege>http://tizen.org/privilege/display</privilege>
 		<privilege>http://tizen.org/privilege/mediastorage</privilege>
 		<privilege>http://tizen.org/privilege/network.get</privilege>
 		<privilege>http://tizen.org/privilege/network.set</privilege>
