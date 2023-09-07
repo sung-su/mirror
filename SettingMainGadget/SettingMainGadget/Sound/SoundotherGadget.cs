@@ -13,6 +13,7 @@ namespace Setting.Menu.Sound
 
         private const string keyTouchSound = "db/setting/sound/touch_sounds";
         private const string keyKeyboardSound = "db/setting/sound/button_sounds";
+        private const string keySoundLock = "db/setting/sound/sound_lock";
 
         protected override View OnCreate()
         {
@@ -32,6 +33,7 @@ namespace Setting.Menu.Sound
 
             Tizen.Vconf.TryGetBool(keyTouchSound, out bool bTouchSound);
             Tizen.Vconf.TryGetBool(keyKeyboardSound, out bool bKeyboardSound);
+            Tizen.Vconf.TryGetBool(keySoundLock, out bool bKeySoundLock);
 
             var item = new SwitchListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_TOUCH_SOUND)), NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_PLAY_SOUNDS_WHEN_LOCKING_AND_UNLOCKING_SCREEN)), bTouchSound);
             item.Switch.SelectedChanged += (o, e) =>
@@ -46,6 +48,14 @@ namespace Setting.Menu.Sound
             {
                 Tizen.Vconf.SetBool(keyKeyboardSound, e.IsSelected);
                 Logger.Debug($"Keyboard Sound enabled: {e.IsSelected}");
+            };
+            content.Add(item);
+
+            item = new SwitchListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SCREEN_LOCK_SOUND)), NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_PLAY_SOUNDS_WHEN_LOCKING_AND_UNLOCKING_SCREEN)), bKeySoundLock);
+            item.Switch.SelectedChanged += (o, e) =>
+            {
+                Tizen.Vconf.SetBool(keySoundLock, e.IsSelected);
+                Logger.Debug($"Lock screen sound enabled: {e.IsSelected}");
             };
             content.Add(item);
 
