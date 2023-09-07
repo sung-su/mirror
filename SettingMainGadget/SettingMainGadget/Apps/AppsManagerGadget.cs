@@ -1,5 +1,6 @@
 ﻿using SettingCore;
 using SettingCore.Views;
+using SettingMainGadget;
 using SettingMainGadget.Apps;
 using SettingMainGadget.TextResources;
 using System;
@@ -48,9 +49,52 @@ namespace Setting.Menu.Apps
             };
 
             AddTabs();
+
+            PackageManager.UninstallProgressChanged += PackageManager_UninstallProgressChanged;
+            PackageManager.InstallProgressChanged += PackageManager_InstallProgressChanged;
+
             OnPageAppeared += AddTabsContent;
 
             return content;
+        }
+
+        private void PackageManager_InstallProgressChanged(object sender, PackageManagerEventArgs e)
+        {
+            if (e.State == PackageEventState.Completed)
+            {
+                try
+                {
+                    RemoveChildren(content);
+                    AddTabs();
+                    AddTabsContent();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Warn($"Updating apps gadget after installation failed: {ex.Message}");
+                }
+            }
+        }
+
+        private void PackageManager_UninstallProgressChanged(object sender, PackageManagerEventArgs e)
+        {
+            if (e.State == PackageEventState.Completed)
+            {
+                try
+                {
+                    // the completed status of the uninstall process comes twice, so this protects against a second update 
+                    PackageManager.UninstallProgressChanged -= PackageManager_UninstallProgressChanged;
+
+                    RemoveChildren(content);
+                    AddTabs();
+                    AddTabsContent();
+
+                    PackageManager.UninstallProgressChanged += PackageManager_UninstallProgressChanged;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Warn($"Updating apps gadget after uninstallation failed: {ex.Message}");
+                }
+            }
         }
 
         private void AddTabs()
@@ -111,6 +155,9 @@ namespace Setting.Menu.Apps
 
         private void AddTabsContent()
         {
+            OnPageAppeared -= AddTabsContent;
+
+            allPackages.Clear();
             allPackages = PackageManager.GetPackages().ToList();
 
             AddInstalledApps(installedAppsContent);
@@ -149,42 +196,49 @@ namespace Setting.Menu.Apps
                 content.Add(noAppsLabel);
                 content.Add(infoLabel);
 
-                installedAppsIndicator.Stop();
-                installedAppsIndicator.Unparent();
-                installedAppsIndicator.Dispose();
+                installedAppsIndicator?.Stop();
+                installedAppsIndicator?.Unparent();
+                installedAppsIndicator?.Dispose();
 
                 return;
             }
 
             var scrollView = CreateScrollableBase();
-
             scrollView.Add(CreateAppSizeLabel());
+
+            installedApps.Clear();
 
             foreach (var package in packages)
             {
-                var iconPath = File.Exists(package.IconPath) ? package.IconPath : defaultIcon;
-
-                var appItem = new TextWithIconListItem(package.Label, Color.Transparent, iconPath: iconPath, subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
-                appItem.Clicked += (s, e) =>
+                try
                 {
-                    // TODO : goto app info by AppId
-                };
+                    var iconPath = File.Exists(package.IconPath) ? package.IconPath : defaultIcon;
+                    var appItem = new TextWithIconListItem(package.Label, Color.Transparent, iconPath: iconPath, subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
+                    appItem.Clicked += (s, e) =>
+                    {
+                    };
 
-                installedApps.Add(package, appItem);
+                    installedApps.Add(package, appItem);
 
-                scrollView.Add(appItem);
-                content.Add(scrollView);
+                    scrollView.Add(appItem);
+                    content.Add(scrollView);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error($"{package.Id} - {ex.Message}");
+                }
             }
 
-            installedAppsIndicator.Stop();
-            installedAppsIndicator.Unparent();
-            installedAppsIndicator.Dispose();
+            installedAppsIndicator?.Stop();
+            installedAppsIndicator?.Unparent();
+            installedAppsIndicator?.Dispose();
 
             _ = UpdateSizeInfo(installedApps);
         }
 
         private async Task AddRunningAppsAsync(View content)
         {
+            runningApps.Clear();
             var runningApplicationsContexts = await ApplicationManager.GetAllRunningApplicationsAsync();
 
             content.Add(CreateAppSizeLabel());
@@ -205,7 +259,6 @@ namespace Setting.Menu.Apps
                 var appItem = new TextWithIconListItem(applicationInfo.Label, Color.Transparent, iconPath: iconPath, subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
                 appItem.Clicked += (s, e) =>
                 {
-                    // TODO : goto app info by AppId
                 };
 
                 runningApps.Add(applicationInfo, appItem);
@@ -217,6 +270,8 @@ namespace Setting.Menu.Apps
 
         private void AddAllApps(View content)
         {
+            allApps.Clear();
+
             var packages = allPackages.Where(x => !string.IsNullOrEmpty(x.Label) && x.PackageType != PackageType.WGT).OrderBy(x => x.Label).ToList();
 
             content.Add(CreateAppSizeLabel());
@@ -228,7 +283,6 @@ namespace Setting.Menu.Apps
                 var appItem = new TextWithIconListItem(package.Label, Color.Transparent, iconPath: iconPath, subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
                 appItem.Clicked += (s, e) =>
                 {
-                    // TODO : goto app info by AppId
                 };
 
                 allApps.Add(package, appItem);
@@ -253,6 +307,7 @@ namespace Setting.Menu.Apps
             {
                 var appContext = new ApplicationRunningContext(info.Key.ApplicationId);
                 var processMemmory = new Tizen.System.ProcessMemoryUsage(new List<int> { appContext.ProcessId });
+
                 processMemmory.Update(new List<int> { appContext.ProcessId });
                 info.Value.SubText = AppManager.GetSizeString(processMemmory.GetVsz(appContext.ProcessId));
             }
@@ -282,6 +337,22 @@ namespace Setting.Menu.Apps
                 PixelSize = 24.SpToPx(),
                 Margin = new Extents(20, 0, 16, 16).SpToPx(),
             };
+        }
+
+        private void RemoveChildren(View view)
+        {
+            for (int i = (int)view.ChildCount - 1; i >= 0; --i)
+            {
+                View child = view.GetChildAt((uint)i);
+
+                if (child == null)
+                {
+                    continue;
+                }
+
+                view.Remove(child);
+                child.Dispose();
+            }
         }
     }
 }
