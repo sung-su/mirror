@@ -1,5 +1,6 @@
 ﻿using SettingCore;
 using SettingCore.Views;
+using SettingMainGadget.Apps;
 using SettingMainGadget.TextResources;
 using System;
 using System.Collections.Generic;
@@ -242,7 +243,7 @@ namespace Setting.Menu.Apps
             foreach (var package in packages)
             {
                 packageSizeInfo = await package.Key.GetSizeInformationAsync();
-                package.Value.SubText = GetSizeString(packageSizeInfo.AppSize);
+                package.Value.SubText = AppManager.GetSizeString(packageSizeInfo.AppSize);
             }
         }
 
@@ -253,22 +254,8 @@ namespace Setting.Menu.Apps
                 var appContext = new ApplicationRunningContext(info.Key.ApplicationId);
                 var processMemmory = new Tizen.System.ProcessMemoryUsage(new List<int> { appContext.ProcessId });
                 processMemmory.Update(new List<int> { appContext.ProcessId });
-                info.Value.SubText = GetSizeString(processMemmory.GetVsz(appContext.ProcessId));
+                info.Value.SubText = AppManager.GetSizeString(processMemmory.GetVsz(appContext.ProcessId));
             }
-        }
-
-        private string GetSizeString(double size)
-        {
-            string[] suffixes = { "Bytes", "KB", "MB", "GB" };
-            int counter = 0;
-
-            while (Math.Round(size / 1024, 2) >= 1)
-            {
-                size = size / 1024;
-                counter++;
-            }
-
-            return string.Format("{0:0.##} {1}", size, suffixes[counter]);
         }
 
         private ScrollableBase CreateScrollableBase()

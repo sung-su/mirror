@@ -19,7 +19,7 @@ namespace SettingMainGadget.Apps
             }
             catch (Exception ex)
             {
-                Logger.Warn($"Cann't get application running context: {ex.Message}");
+                Logger.Warn($"Can't get application running context: {ex.Message}");
                 return null;
             }
         }

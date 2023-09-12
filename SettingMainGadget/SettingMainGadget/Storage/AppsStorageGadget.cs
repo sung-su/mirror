@@ -1,5 +1,6 @@
 ﻿using SettingCore;
 using SettingCore.Views;
+using SettingMainGadget.Apps;
 using SettingMainGadget.TextResources;
 using System;
 using System.Collections.Generic;
@@ -148,7 +149,7 @@ namespace Setting.Menu.Storage
 
             foreach (var app in applicationInfos)
             {
-                var item = new TextWithIconListItem(app.Name, Color.Transparent, iconPath: app.IconPath, subText: GetSizeString(app.AppSize));
+                var item = new TextWithIconListItem(app.Name, Color.Transparent, iconPath: app.IconPath, subText: AppManager.GetSizeString(app.AppSize));
                 content.Add(item);
 
                 if (app.AppSize == 0)
@@ -175,7 +176,7 @@ namespace Setting.Menu.Storage
                 if (app != null)
                 {
                     app.AppSize = packageSizeInfo.AppSize;
-                    item.Value.SubText = GetSizeString(packageSizeInfo.AppSize);
+                    item.Value.SubText = AppManager.GetSizeString(packageSizeInfo.AppSize);
                 }
             }
 
@@ -184,20 +185,6 @@ namespace Setting.Menu.Storage
                 sortMenuItem.Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SIZE));
                 sortMenuItem.Action = () => { SortAppications(currentSortType != SortType.size_asc ? SortType.size_asc : SortType.size_desc); };
             }
-        }
-
-        private string GetSizeString(double size)
-        {
-            string[] suffixes = { "Bytes", "KB", "MB", "GB" };
-            int counter = 0;
-
-            while (Math.Round(size / 1024, 2) >= 1)
-            {
-                size = size / 1024;
-                counter++;
-            }
-
-            return string.Format("{0:0.##} {1}", size, suffixes[counter]);
         }
 
         private class ApplicationInfo
