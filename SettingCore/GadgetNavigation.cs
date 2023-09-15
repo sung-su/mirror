@@ -12,6 +12,8 @@ namespace SettingCore
 {
     public static class GadgetNavigation
     {
+        private static bool IsLightTheme => ThemeManager.PlatformThemeId == "org.tizen.default-light-theme";
+
         // keep page-gadget binding, to update Title & ContextMenu strings when language changed
         private static Dictionary<Page, MenuGadget> gadgetPages = new Dictionary<Page, MenuGadget>();
 
@@ -163,24 +165,61 @@ namespace SettingCore
             }
         }
 
-        private static Button GetMoreButton(IEnumerable<MoreMenuItem> moreMenu)
+        private static Control GetMoreButton(IEnumerable<MoreMenuItem> moreMenu)
         {
             if (moreMenu == null)
             {
                 return null;
             }
 
-            var moreButton = new Button
+            var moreButton = new BaseComponent
             {
-                IconURL = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, "more-menu.svg"),
+                Size = new Size(48, 48).SpToPx(),
+                Layout = new LinearLayout
+                {
+                    LinearOrientation = LinearLayout.Orientation.Horizontal,
+                    VerticalAlignment = VerticalAlignment.Center,
+                },
+            };
+
+            var iconVisual = new ImageVisual
+            {
+                MixColor = IsLightTheme ? new Color("#17234D") : new Color("#FDFDFD"),
+                URL = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, "more-menu.svg"),
+                FittingMode = FittingModeType.ScaleToFill,
+            };
+            var icon = new ImageView
+            {
+                Image = iconVisual.OutputVisualMap,
                 Size = new Size(48, 48).SpToPx(),
             };
-            moreButton.Clicked += (s, e) => {
-                var menu = new Menu
+
+            moreButton.Add(icon);
+
+            var menuStyle = ThemeManager.GetStyle("Tizen.NUI.Components.Menu") as MenuStyle;
+            menuStyle.Content.BackgroundColor = IsLightTheme ? new Color("#FAFAFA") : new Color("#1D1A21");
+            menuStyle.Content.CornerRadius = 12.SpToPx();
+
+            var menuItemStyle = ThemeManager.GetStyle("Tizen.NUI.Components.MenuItem") as ButtonStyle;
+            menuItemStyle.BackgroundColor = IsLightTheme ? new Color("#FAFAFA") : new Color("#1D1A21");
+            menuItemStyle.Size = new Size(324, 64).SpToPx();
+
+            moreButton.Clicked += (s, e) =>
+            {
+                iconVisual.MixColor = IsLightTheme ? new Color("#FFA166") : new Color("#FF8A00");
+                icon.Image = iconVisual.OutputVisualMap;
+
+                var menu = new Menu(menuStyle)
                 {
                     Anchor = moreButton,
-                    HorizontalPositionToAnchor = Menu.RelativePosition.Start,
+                    HorizontalPositionToAnchor = Menu.RelativePosition.Center,
                     VerticalPositionToAnchor = Menu.RelativePosition.End,
+                };
+
+                menu.RemovedFromWindow += (s, e) =>
+                {
+                    iconVisual.MixColor = IsLightTheme ? new Color("#17234D") : new Color("#FDFDFD");
+                    icon.Image = iconVisual.OutputVisualMap;
                 };
 
                 NUIApplication.GetDefaultWindow().GetDefaultNavigator().Popped += (s, e) =>
@@ -191,13 +230,26 @@ namespace SettingCore
                     }
                 };
 
+                NUIApplication.GetDefaultWindow().Resized += (s, e) =>
+                {
+                    if (menu != null)
+                    {
+                        menu.Dismiss();
+                    }
+                };
+
                 var items = new List<MenuItem>();
                 foreach (var moreMenuItem in moreMenu)
                 {
-                    var item = new MenuItem { Text = moreMenuItem.Text };
+                    var item = new MenuItem(menuItemStyle)
+                    {
+                        Text = moreMenuItem.Text,
+                        TextColor = IsLightTheme ? new Color("#090E21") : new Color("#FDFDFD"),
+                    };
+
                     if (moreMenuItem.Action is null)
                     {
-                        item.TextColor = new Color("#83868F");
+                        item.TextColor = IsLightTheme ? new Color("#83868F") : new Color("#666666");
                     }
                     else
                     {
