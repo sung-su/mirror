@@ -84,9 +84,9 @@ namespace Setting.Menu
             {
                 keyboardItem.Clicked += (o, e) =>
                 {
-                    NavigateTo(MainMenuProvider.Language_InputMethod);
+                    NavigateTo("Language.InputMethod");
                 };
-                sections.Add(MainMenuProvider.Language_InputMethod, keyboardItem);
+                sections.Add("Language.InputMethod", keyboardItem);
             }
 
             TextHeaderListItem inputAssistanceHeaderItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_INPUT_ASSISTANCE)));
@@ -100,9 +100,9 @@ namespace Setting.Menu
             {
                 autofillServiceItem.Clicked += (o, e) =>
                 {
-                    NavigateTo(MainMenuProvider.Language_AutoFill);
+                    NavigateTo("Language.AutoFill");
                 };
-                sections.Add(MainMenuProvider.Language_AutoFill, autofillServiceItem);
+                sections.Add("Language.AutoFill", autofillServiceItem);
             }
 
             TextHeaderListItem bodySpeechHeaderItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SPEECH)));
@@ -116,9 +116,9 @@ namespace Setting.Menu
             {
                 voiceControl.Clicked += (o, e) =>
                 {
-                    NavigateTo(MainMenuProvider.Language_VoiceControl);
+                    NavigateTo("Language.VoiceControl");
                 };
-                sections.Add(MainMenuProvider.Language_VoiceControl, voiceControl);
+                sections.Add("Language.VoiceControl", voiceControl);
             }
 
             TextListItem languageTTS = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_VOICE_HEADER_TEXT_TO_SPEECH_HTTS)));
@@ -126,9 +126,9 @@ namespace Setting.Menu
             {
                 languageTTS.Clicked += (o, e) =>
                 {
-                    NavigateTo(MainMenuProvider.Language_TTS);
+                    NavigateTo("Language.TTS");
                 };
-                sections.Add(MainMenuProvider.Language_TTS, languageTTS);
+                sections.Add("Language.TTS", languageTTS);
             }
 
             TextListItem languageSTT = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_VOICE_HEADER_SPEECH_TO_TEXT_HSTT)));
@@ -136,9 +136,9 @@ namespace Setting.Menu
             {
                 languageSTT.Clicked += (o, e) =>
                 {
-                    NavigateTo(MainMenuProvider.Language_STT);
+                    NavigateTo("Language.STT");
                 };
-                sections.Add(MainMenuProvider.Language_STT, languageSTT);
+                sections.Add("Language.STT", languageSTT);
             }
 
             var customization = GetCustomization().OrderBy(c => c.Order);

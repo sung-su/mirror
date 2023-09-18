@@ -68,13 +68,6 @@ namespace SettingMainGadget
         public static string Storage_DefaultSettings = "Storage.DefaultSettings";
         public static string Storage_Apps = "Storage.Apps";
 
-        //external
-        public static string Language_InputMethod = "Language.InputMethod";
-        public static string Language_AutoFill = "Language.AutoFill";
-        public static string Language_VoiceControl = "Language.VoiceControl";
-        public static string Language_TTS = "Language.TTS";
-        public static string Language_STT = "Language.STT";
-
         public override SettingMenu[] Provide()
         {
             return new SettingMenu[]
@@ -102,13 +95,7 @@ namespace SettingMainGadget
                 new SettingMenu(path: Language, defaultOrder: 60, type: typeof(Setting.Menu.LanguageInputGadget)),
                 new SettingMenu(path: Language_Display, defaultOrder: 61, type: typeof(Setting.Menu.LanguageInput.LanguageInputDisplayLanguageGadget)),
                 new SettingMenu(path: Language_KeyboardHeader, defaultOrder: 62),
-                new SettingMenu(path: Language_InputMethod, defaultOrder: 63),
                 new SettingMenu(path: Language_InputAssistanceHeader, defaultOrder: 64),
-                new SettingMenu(path: Language_AutoFill, defaultOrder: 65),
-                new SettingMenu(path: Language_BodySpeech, defaultOrder: 66),
-                new SettingMenu(path: Language_VoiceControl, defaultOrder: 67),
-                new SettingMenu(path: Language_TTS, defaultOrder: 68),
-                new SettingMenu(path: Language_STT, defaultOrder: 69),
                 new SettingMenu(path: About, defaultOrder: 70, type: typeof(Setting.Menu.AboutGadget)),
                 new SettingMenu(path: About_ManageCertificates, defaultOrder: 10, type: typeof(Setting.Menu.About.AboutManageCertificatesGadget)),
                 new SettingMenu(path: About_RootCertificates, defaultOrder: 15, type: typeof(Setting.Menu.About.AboutRootCertificatesGadget)),
