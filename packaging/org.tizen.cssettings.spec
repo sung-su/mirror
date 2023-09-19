@@ -47,4 +47,5 @@ DEFAULT_LOCK="%{TZ_SYS_SHARE}/Wallpapers/home_003.png"
 %{preload_tpk_path}/*
 %{preload_rpk_path}/*
 %{TZ_SYS_GLOBALUSER_DATA}/settings/*
+%manifest org.tizen.cssettings.manifest
 %license LICENSE
