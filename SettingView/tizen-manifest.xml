@@ -20,15 +20,18 @@
       <res-control resource-type="org.tizen.appfw.gadget.setting-stt" min-res-version="1.0.0" max-res-version="2.0.0" auto-close="true"></res-control>
       <res-control resource-type="org.tizen.appfw.gadget.setting-accessibility" min-res-version="1.0.0" max-res-version="2.0.0" auto-close="true"></res-control>
       <res-control resource-type="org.tizen.appfw.gadget.setting-certificates" min-res-version="1.0.0" max-res-version="2.0.0" auto-close="true"></res-control>
-    </ui-application>
+	</ui-application>
     <shortcut-list />
     <privileges>
 		<privilege>http://tizen.org/privilege/apphistory.read</privilege>
 		<privilege>http://tizen.org/privilege/appmanager.launch</privilege>
+		<privilege>http://tizen.org/privilege/appmanager.kill.bgapp</privilege>
+		<privilege>http://tizen.org/privilege/autofillmanager</privilege>
 		<privilege>http://tizen.org/privilege/bluetooth</privilege>
 		<privilege>http://tizen.org/privilege/bluetooth.admin</privilege>
 		<privilege>http://tizen.org/privilege/datasharing</privilege>
 		<privilege>http://tizen.org/privilege/display</privilege>
+		<privilege>http://tizen.org/privilege/imemanager</privilege>
 		<privilege>http://tizen.org/privilege/mediastorage</privilege>
 		<privilege>http://tizen.org/privilege/network.get</privilege>
 		<privilege>http://tizen.org/privilege/network.set</privilege>
@@ -36,15 +39,12 @@
 		<privilege>http://tizen.org/privilege/packagemanager.admin</privilege>
 		<privilege>http://tizen.org/privilege/packagemanager.clearcache</privilege>
 		<privilege>http://tizen.org/privilege/packagemanager.info</privilege>
+		<privilege>http://tizen.org/privilege/recorder</privilege>
 		<privilege>http://tizen.org/privilege/systemsettings.admin</privilege>
+		<privilege>http://tizen.org/privilege/systemmonitor</privilege>
 		<privilege>http://tizen.org/privilege/telephony</privilege>
 		<privilege>http://tizen.org/privilege/volume.set</privilege>
 		<privilege>http://tizen.org/privilege/window.priority.set</privilege>
-		<privilege>http://tizen.org/privilege/appmanager.kill.bgapp</privilege>
-		<privilege>http://tizen.org/privilege/appmanager.launch</privilege>
-		<privilege>http://tizen.org/privilege/window.priority.set</privilege>
-		<privilege>http://tizen.org/privilege/systemmonitor</privilege>
-		<privilege>http://tizen.org/privilege/appmanager.launch</privilege>
 	</privileges>
     <dependencies />
     <provides-appdefined-privileges />
