@@ -96,6 +96,7 @@ namespace SettingMainGadget
                 new SettingMenu(path: Language_Display, defaultOrder: 61, type: typeof(Setting.Menu.LanguageInput.LanguageInputDisplayLanguageGadget)),
                 new SettingMenu(path: Language_KeyboardHeader, defaultOrder: 62),
                 new SettingMenu(path: Language_InputAssistanceHeader, defaultOrder: 64),
+                new SettingMenu(path: Language_BodySpeech, defaultOrder: 66),
                 new SettingMenu(path: About, defaultOrder: 70, type: typeof(Setting.Menu.AboutGadget)),
                 new SettingMenu(path: About_ManageCertificates, defaultOrder: 10, type: typeof(Setting.Menu.About.AboutManageCertificatesGadget)),
                 new SettingMenu(path: About_RootCertificates, defaultOrder: 15, type: typeof(Setting.Menu.About.AboutRootCertificatesGadget)),
