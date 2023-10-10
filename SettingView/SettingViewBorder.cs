@@ -49,7 +49,7 @@ namespace SettingView
         public SettingViewBorder() : base()
         {
             ResizePolicy = Window.BorderResizePolicyType.Free;
-            MinSize = new Size2D(500, 300);
+            MinSize = new Size2D(712, 488);
 
             ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
         }
