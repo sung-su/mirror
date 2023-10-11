@@ -1,6 +1,6 @@
 Name:       org.tizen.cssettings
 Summary:    org.tizen.cssettings
-Version:    1.1.13
+Version:    1.1.14
 Release:    1
 Group:      N/A
 License:    Apache-2.0
