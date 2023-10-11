@@ -85,8 +85,21 @@ namespace SettingView
                     appCustomBorder.BorderWindow.Maximize(false);
                 }
             };
+            GetDefaultWindow().OrientationChanged += OnWindowOrientationChangedEvent;
+
+            GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.Portrait);
+            GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.Landscape);
+            GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.PortraitInverse);
+            GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.LandscapeInverse);
+
 
             LogScalableInfo();
+        }
+
+        private void OnWindowOrientationChangedEvent(object sender, WindowOrientationChangedEventArgs e)
+        {
+            Window.WindowOrientation orientation = e.WindowOrientation;
+            Logger.Debug($"OnWindowOrientationChangedEvent() called!, orientation:{orientation}");
         }
 
         private void LogScalableInfo()
@@ -112,6 +125,7 @@ namespace SettingView
         {
             Tizen.System.SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
             GadgetManager.Instance.CustomizationChanged -= CustomizationChanged;
+            GetDefaultWindow().OrientationChanged -= OnWindowOrientationChangedEvent;
             base.OnTerminate();
         }
 
