@@ -17,6 +17,7 @@
 using SettingCore;
 using SettingCore.Views;
 using SettingView.TextResources;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tizen.Applications;
@@ -182,6 +183,8 @@ namespace SettingView
         {
             if (mMainPage != null && mMainPage.AppBar != null)
             {
+                MainMenuInfo.ClearCache();
+
                 mMainPage.AppBar.Title = Resources.IDS_ST_OPT_SETTINGS;
                 mMainPage.Content = CreateContent();
             }
@@ -191,6 +194,8 @@ namespace SettingView
         {
             if (mMainPage != null && e.IsPlatformThemeChanged)
             {
+                MainMenuInfo.ClearCache();
+
                 // recreate main page content just to apply new colors from gadgets
                 mMainPage.Content = CreateContent();
             }
@@ -247,22 +252,44 @@ namespace SettingView
 
         private static System.Threading.Tasks.Task CreateContentRows(IEnumerable<SettingGadgetInfo> visibleMenus, View content)
         {
-            return System.Threading.Tasks.Task.Run(() =>
+            return System.Threading.Tasks.Task.Run(async () =>
             {
-                Post(() =>
+                var menus = new List<MainMenuInfo>();
+                System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+                stopwatch.Start();
+                foreach (var gadgetInfo in visibleMenus)
                 {
-                    foreach (var gadgetInfo in visibleMenus)
+                    await Post(() =>
                     {
-                        var info = MainMenuInfo.Create(gadgetInfo);
-                        if (info != null)
+                        if (MainMenuInfo.Create(gadgetInfo) is MainMenuInfo menu)
                         {
-                            var row = new SettingCore.Views.MainMenuItem(info.IconPath, info.IconColor, info.Title);
-                            row.Clicked += (s, e) => { info.Action?.Invoke(); };
-
-                            content.Add(row);
+                            menus.Add(menu);
                         }
-                    }
-                });
+                        return true;
+                    });
+                }
+                stopwatch.Stop();
+                Logger.Debug($"MEASURE loaded all MainMenuInfos, total time: {stopwatch.Elapsed}");
+
+                stopwatch.Restart();
+                foreach (var menu in menus)
+                {
+                    await Post(() =>
+                    {
+                        var row = new SettingCore.Views.MainMenuItem(menu.IconPath, menu.IconColor, menu.Title);
+                        row.Clicked += (s, e) =>
+                        {
+                            Logger.Debug($"navigating to menupath {menu.Path}, title: {menu.Title}");
+                            GadgetNavigation.NavigateTo(menu.Path);
+                        };
+                        content.Add(row);
+                        return true;
+                    });
+                }
+                stopwatch.Stop();
+                Logger.Debug($"MEASURE created UI main menu rows, total time: {stopwatch.Elapsed}");
+
+                MainMenuInfo.UpdateCache(menus);
             });
         }
 
