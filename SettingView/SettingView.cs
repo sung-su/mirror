@@ -240,21 +240,30 @@ namespace SettingView
                 },
             };
 
-            foreach (var gadgetInfo in visibleMenus)
-            {
-                Logger.Debug($"{gadgetInfo}");
-
-                var info = MainMenuInfo.Create(gadgetInfo);
-                if (info != null)
-                {
-                    var row = new SettingCore.Views.MainMenuItem(info.IconPath, info.IconColor, info.Title);
-                    row.Clicked += (s, e) => { info.Action?.Invoke(); };
-
-                    content.Add(row);
-                }
-            }
+            CreateContentRows(visibleMenus, content);
 
             return content;
+        }
+
+        private static System.Threading.Tasks.Task CreateContentRows(IEnumerable<SettingGadgetInfo> visibleMenus, View content)
+        {
+            return System.Threading.Tasks.Task.Run(() =>
+            {
+                Post(() =>
+                {
+                    foreach (var gadgetInfo in visibleMenus)
+                    {
+                        var info = MainMenuInfo.Create(gadgetInfo);
+                        if (info != null)
+                        {
+                            var row = new SettingCore.Views.MainMenuItem(info.IconPath, info.IconColor, info.Title);
+                            row.Clicked += (s, e) => { info.Action?.Invoke(); };
+
+                            content.Add(row);
+                        }
+                    }
+                });
+            });
         }
 
         private static View GetTextNotice(string text, Color color)
