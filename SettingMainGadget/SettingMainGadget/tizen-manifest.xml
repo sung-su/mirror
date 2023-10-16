@@ -28,4 +28,32 @@
   <metadata key="http://tizen.org/metadata/ui-gadget/dll" value="SettingMainGadget.dll"/>
   <metadata key="http://tizen.org/metadata/ui-gadget/resource/dll" value="SettingMainGadget.resources.dll"/>
   <metadata key="http://tizen.org/metadata/ui-gadget/resource/class-name" value="SettingMainGadget.TextResources.Resources"/>
+
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/Display/icon-path" value="display.svg"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/Display/icon-color" value="#0075FF,#1A85FF"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/Display/title" value="IDS_ST_HEADER_DISPLAY"/>
+
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/Sound/icon-path" value="sound.svg"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/Sound/icon-color" value="#DB3069,#DF4679"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/Sound/title" value="IDS_ST_HEADER_SOUND"/>
+
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/DateTime/icon-path" value="datetime.svg"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/DateTime/icon-color" value="#205493,#2560A8"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/DateTime/title" value="IDS_ST_BODY_DATE_AND_TIME"/>
+
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/Language/icon-path" value="language_input.svg"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/Language/icon-color" value="#205493,#2560A8"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/Language/title" value="IDS_ST_HEADER_LANGUAGE_AND_INPUT"/>
+
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/About/icon-path" value="about.svg"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/About/icon-color" value="#301A4B,#CAB4E5"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/About/title" value="IDS_ST_BODY_ABOUT_DEVICE"/>
+
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/Apps/icon-path" value="apps.svg"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/Apps/icon-color" value="#7F2982,#922F95"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/Apps/title" value="IDS_ST_BODY_APPLICATIONS"/>
+
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/Storage/icon-path" value="storage.svg"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/Storage/icon-color" value="#7F2982,#922F95"/>
+  <metadata key="http://tizen.org/metadata/ui-gadget/menu/Storage/title" value="IDS_ST_BODY_DEVICE_STORAGE"/>
 </manifest>
