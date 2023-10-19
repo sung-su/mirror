@@ -28,7 +28,6 @@ namespace Setting.Menu
 
         private bool isLightTheme => ThemeManager.PlatformThemeId == "org.tizen.default-light-theme";
 
-        private Sections sections = new Sections();
         private View content;
         private View externalStorage;
 
@@ -39,10 +38,34 @@ namespace Setting.Menu
         private StorageIndicator storageIndicator;
 
         private double nonSystemSpace = 0;
+        private double internalTotal;
+        private int internalCount;
+        private int externalCount;
+        private double internalAvailable;
+        private double externalTotal;
+        private double externalAvailable;
+        private double sizeImage;
+        private double sizeVideo;
+        private double sizeAudio;
+        private double sizeMisc;
+        private IDictionary<string, Action> sectionViews;
 
         protected override View OnCreate()
         {
             base.OnCreate();
+
+            sectionViews = new Dictionary<string, Action>(StringComparer.OrdinalIgnoreCase)
+            {
+                { MainMenuProvider.Storage_InternalUsage, InternalUsageView},
+                { MainMenuProvider.Storage_Used, UsedView},
+                { MainMenuProvider.Storage_UsageIndicator, UsageIndicatorView},
+                { MainMenuProvider.Storage_TotalInternal, TotalInternalView},
+                { MainMenuProvider.Storage_FreeInternal, FreeInternalView},
+                { MainMenuProvider.Storage_UsageSummary, UsageSummaryView},
+                { MainMenuProvider.Storage_ExternalUsage, ExternalUsageView},
+                { MainMenuProvider.Storage_ExternalStorage, ExternalStorageView},
+                { MainMenuProvider.Storage_DefaultSettings, DefaultSettingsView},
+            };
 
             content = new ScrollableBase()
             {
@@ -56,8 +79,6 @@ namespace Setting.Menu
                 },
             };
 
-            CreateView();
-
             var calculating = StartCalculatingAppCacheSize();
 
             content.Relayout += (s, e) =>
@@ -68,6 +89,7 @@ namespace Setting.Menu
                 }
             };
 
+            CreateView();
             Vconf.Notify(VconfCardStatus, OnCardStatusChanged);
 
             return content;
@@ -80,26 +102,57 @@ namespace Setting.Menu
             base.OnDestroy();
         }
 
-        private void CreateView()
+        private void PrepareData()
         {
-            sections.RemoveAllSectionsFromView(content);
+            GetStorageStatus(out internalCount, out internalTotal, out externalCount, out internalAvailable, out externalTotal, out externalAvailable);
+            GetMediaInfo(out sizeImage, out sizeVideo, out sizeAudio);
+            GetMiscInfo(out sizeMisc);
 
+            nonSystemSpace = internalTotal - internalAvailable - sizeImage - sizeVideo - sizeAudio - sizeMisc;
+        }
+
+        private async void CreateView()
+        {
+            PrepareData();
+            _ = Task.Run(async () =>
+            {
+                var customization = GetCustomization().OrderBy(c => c.Order);
+                Logger.Debug($"customization: {customization.Count()}");
+                foreach (var cust in customization)
+                {
+                    await CoreApplication.Post(() =>
+                    {
+                        string visibility = cust.IsVisible ? "visible" : "hidden";
+                        Logger.Verbose($"Customization: {cust.MenuPath} - {visibility} - {cust.Order}");
+                        if (cust.IsVisible && sectionViews.TryGetValue(cust.MenuPath, out Action action))
+                        {
+                            action();
+                        }
+
+                        return true;
+                    });
+                }
+            });
+        }
+
+        private void InternalUsageView()
+        {
             // Internal storage
             var internalUsageItem = new TextHeaderListItem("Device storage usage"); // TODO : add translation to Resources
-            sections.Add(MainMenuProvider.Storage_InternalUsage, internalUsageItem);
+            content.Add(internalUsageItem);
+        }
 
-            GetStorageStatus(out int InternalCount, out double InternalTotal, out int ExternalCount, out double InternalAvailable, out double ExternalTotal, out double ExternalAvailable);
-            GetMediaInfo(out double sizeImage, out double sizeVideo, out double sizeAudio);
-            GetMiscInfo(out double sizeMisc);
+        private void UsedView()
+        {
+            var usedItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_USED))}", GetMediaSizeString(internalTotal - internalAvailable));
+            content.Add(usedItem);
+        }
 
-            nonSystemSpace = InternalTotal - InternalAvailable - sizeImage - sizeVideo - sizeAudio - sizeMisc;
-
-            if (InternalCount > 0)
+        private void UsageIndicatorView()
+        {
+            if (internalCount > 0)
             {
-                var usedItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_USED))}", GetMediaSizeString(InternalTotal - InternalAvailable));
-                sections.Add(MainMenuProvider.Storage_Used, usedItem);
-
-                storageIndicator = new StorageIndicator(InternalTotal);
+                storageIndicator = new StorageIndicator(internalTotal);
                 storageIndicator.AddItem("apps", new Color("#FFC700"), 0);
                 storageIndicator.AddItem("images", new Color("#FF8A00"), sizeImage);
                 storageIndicator.AddItem("video", new Color("#FF6200"), sizeVideo);
@@ -107,15 +160,30 @@ namespace Setting.Menu
                 storageIndicator.AddItem("misc", new Color("#28262B"), sizeMisc);
                 storageIndicator.AddItem("cache", new Color("#3641FA"), 0);
                 storageIndicator.AddItem("system", new Color("#17234D"), 0);
-                sections.Add(MainMenuProvider.Storage_UsageIndicator, storageIndicator);
-
-                var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_TOTAL_SPACE))}", GetMediaSizeString(InternalTotal));
-                sections.Add(MainMenuProvider.Storage_TotalInternal, totalItem);
-
-                var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText("Free space", GetMediaSizeString(InternalAvailable)); // TODO : add translation to Resources
-                sections.Add(MainMenuProvider.Storage_FreeInternal, freeItem);
+                content.Add(storageIndicator);
             }
+        }
 
+        private void TotalInternalView()
+        {
+            if (internalCount > 0)
+            {
+                var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_TOTAL_SPACE))}", GetMediaSizeString(internalTotal));
+                content.Add(totalItem);
+            }
+        }
+
+        private void FreeInternalView()
+        {
+            if (internalCount > 0)
+            {
+                var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText("Free space", GetMediaSizeString(internalAvailable)); // TODO : add translation to Resources
+                content.Add(freeItem);
+            }
+        }
+
+        private void UsageSummaryView()
+        {
             var usageSummary = new View()
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
@@ -168,17 +236,23 @@ namespace Setting.Menu
             {
                 ShowCachePopup();
             };
-            usageSummary.Add(cacheItem);            
-            
+            usageSummary.Add(cacheItem);
+
             systemItem = new TextWithIconListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SYSTEM_STORAGE)), new Color("#17234D"), subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
             usageSummary.Add(systemItem);
 
-            sections.Add(MainMenuProvider.Storage_UsageSummary, usageSummary);
+            content.Add(usageSummary);
+        }
 
+        private void ExternalUsageView()
+        {
             // External storage
             var externalUsageItem = new TextHeaderListItem("External storage usage"); // TODO : add translation to Resources
-            sections.Add(MainMenuProvider.Storage_ExternalUsage, externalUsageItem);
+            content.Add(externalUsageItem);
+        }
 
+        private void ExternalStorageView()
+        {
             externalStorage = new View()
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
@@ -189,12 +263,12 @@ namespace Setting.Menu
                 },
             };
 
-            if (ExternalCount > 0)
+            if (externalStorage)
             {
-                var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_TOTAL_SPACE))}:", GetMediaSizeString(ExternalTotal));
+                var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_TOTAL_SPACE))}:", GetMediaSizeString(externalTotal));
                 externalStorage.Add(totalItem);
 
-                var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText("Free space:", GetMediaSizeString(ExternalAvailable)); // TODO : add translation to Resources
+                var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText("Free space:", GetMediaSizeString(externalAvailable)); // TODO : add translation to Resources
                 externalStorage.Add(freeItem);
 
                 var unmount = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_UNMOUNT_SD_CARD)));
@@ -217,8 +291,11 @@ namespace Setting.Menu
                 item.IsEnabled = false;
                 externalStorage.Add(item);
             }
-            sections.Add(MainMenuProvider.Storage_ExternalStorage, externalStorage);
+            content.Add(externalStorage);
+        }
 
+        private void DefaultSettingsView()
+        {
             // Default storage
             var defaultSettings = new View()
             {
@@ -238,19 +315,7 @@ namespace Setting.Menu
             };
             defaultSettings.Add(defaultSettingsItem);
             defaultSettings.Add(storageLocationItem);
-            sections.Add(MainMenuProvider.Storage_DefaultSettings, defaultSettings);
-
-            var customization = GetCustomization().OrderBy(c => c.Order);
-            Logger.Debug($"customization: {customization.Count()}");
-            foreach (var cust in customization)
-            {
-                string visibility = cust.IsVisible ? "visible" : "hidden";
-                Logger.Verbose($"Customization: {cust.MenuPath} - {visibility} - {cust.Order}");
-                if (cust.IsVisible && sections.TryGetValue(cust.MenuPath, out View row))
-                {
-                    content.Add(row);
-                }
-            }
+            content.Add(defaultSettings);
         }
 
         private void GetStorageStatus(out int InternalCount, out double InternalTotal, out int ExternalCount, out double InternalAvailable, out double ExternalTotal, out double ExternalAvailable)
