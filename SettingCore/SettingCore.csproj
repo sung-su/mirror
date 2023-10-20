@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Tizen.NET" Version="11.0.0.17773" />
+    <PackageReference Include="Tizen.NET" Version="12.0.0.18057" />
   </ItemGroup>
 
   <ItemGroup>
