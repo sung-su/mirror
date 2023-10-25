@@ -49,6 +49,38 @@ namespace SettingCore.Views
             AddText(primaryText, subText, secondaryText, secondarySubText);
         }
 
+        public override void OnChangeSelected(bool selected)
+        {
+            if (selected)
+            {
+                base.BackgroundColor = BackgroundColors.Selected;
+
+                primary.TextColor = TextColors.Selected;
+                if (secondary != null)
+                {
+                    secondary.TextColor = TextColors.Selected;
+                }
+                if(primarySubText != null)
+                {
+                    primarySubText.TextColor = TextColors.Selected;
+                }
+            }
+            else
+            {
+                base.BackgroundColor = BackgroundColors.Normal;
+
+                primary.TextColor = TextColors.Normal;
+                if (secondary != null)
+                {
+                    secondary.TextColor = TextColors.Normal;
+                }
+                if (primarySubText != null)
+                {
+                    primarySubText.TextColor = TextColors.Normal;
+                }
+            }
+        }
+
         private void AddIcon(Color color, string iconPath)
         {
             var iconBackground = new View

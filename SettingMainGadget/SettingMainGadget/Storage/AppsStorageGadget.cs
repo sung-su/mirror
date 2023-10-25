@@ -106,10 +106,8 @@ namespace Setting.Menu.Storage
                 }
 
                 var appItem = new TextWithIconListItem(appInfo.Name, Color.Transparent, iconPath: appInfo.IconPath, subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
-                appItem.Clicked += (s, e) =>
-                {
-                    // TODO : goto app info by AppId
-                };
+                // TODO : goto app info by AppId
+                //appItem.Clicked += (s, e) => {};
 
                 content.Add(appItem);
                 listItems.Add(appInfo.AppId, appItem);
