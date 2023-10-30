@@ -42,12 +42,7 @@ namespace SettingView
         {
             base.OnCreate();
 
-            mMainPage = new BaseContentPage()
-            {
-                CornerRadius = (SettingViewBorder.WindowCornerRadius - SettingViewBorder.WindowPadding).SpToPx(),
-                ThemeChangeSensitive = true,
-                AppBar = CreateAppBar(),
-            };
+            mMainPage = CreateMainPage();
 
             bool initilized = GadgetManager.Instance.Init();
             mMainPage.Content = initilized ? CreateContent() : GetTextNotice("Failed to initialize GadgetManager.\nPlease check error logs for more information.", Color.Red);
@@ -93,8 +88,19 @@ namespace SettingView
             GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.PortraitInverse);
             GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.LandscapeInverse);
 
-
             LogScalableInfo();
+        }
+
+        private ContentPage CreateMainPage()
+        {
+            var mainPage = new BaseContentPage()
+            {
+                CornerRadius = (SettingViewBorder.WindowCornerRadius - SettingViewBorder.WindowPadding).SpToPx(),
+                ThemeChangeSensitive = true,
+            };
+
+            CreateAppBar(mainPage);
+            return mainPage;
         }
 
         private void OnWindowOrientationChangedEvent(object sender, WindowOrientationChangedEventArgs e)
@@ -201,22 +207,29 @@ namespace SettingView
             }
         }
 
-        private static AppBar CreateAppBar()
+        private static System.Threading.Tasks.Task CreateAppBar(BaseContentPage mainPage)
         {
-            // TODO: remove style customization with scalable unit, when merged to TizenFX
-            var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar") as AppBarStyle;
-            appBarStyle.TitleTextLabel.PixelSize = 24.SpToPx();
-
-            AppBar appBar = new AppBar(appBarStyle)
+            return System.Threading.Tasks.Task.Run(async () =>
             {
-                Size = new Size(-1, 64).SpToPx(),
-                Padding = new Extents(16, 16, 0, 0).SpToPx(),
-                Title = Resources.IDS_ST_OPT_SETTINGS,
-                AutoNavigationContent = false,
-                NavigationContent = new View(), // FIXME: must be set with empty View to hide default back button
-                ThemeChangeSensitive = true,
-            };
-            return appBar;
+                await Post(() =>
+                {
+                    // TODO: remove style customization with scalable unit, when merged to TizenFX
+                    var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar") as AppBarStyle;
+                    appBarStyle.TitleTextLabel.PixelSize = 24.SpToPx();
+
+                    AppBar appBar = new AppBar(appBarStyle)
+                    {
+                        Size = new Size(-1, 64).SpToPx(),
+                        Padding = new Extents(16, 16, 0, 0).SpToPx(),
+                        Title = Resources.IDS_ST_OPT_SETTINGS,
+                        AutoNavigationContent = false,
+                        NavigationContent = new View(), // FIXME: must be set with empty View to hide default back button
+                        ThemeChangeSensitive = true,
+                    };
+                    mainPage.AppBar = appBar;
+                    return true;
+                });
+            });
         }
 
         private static View CreateContent()
