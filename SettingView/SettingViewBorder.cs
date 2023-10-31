@@ -228,16 +228,15 @@ namespace SettingView
             }
 
             borderView.CornerRadiusPolicy = VisualTransformPolicyType.Absolute;
+            borderView.CornerRadius = WindowCornerRadius.SpToPx();
 
             if (BorderWindow.IsMaximized())
             {
                 maximalizeIcon.ResourceUrl = RestoreIconPath;
-                borderView.CornerRadius = 0;
             }
             else
             {
                 maximalizeIcon.ResourceUrl = MaximalizeIconPath;
-                borderView.CornerRadius = WindowCornerRadius.SpToPx();
             }
         }
     }
