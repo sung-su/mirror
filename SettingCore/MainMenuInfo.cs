@@ -140,7 +140,8 @@ namespace SettingCore
             var NUIGadgetResourceManager = new NUIGadgetResourceManager(info.Pkg);
             string titleMetadata = getMetadata(info, $"{metadataNamePrefix}/{info.Path}/{MainMenuInfo.titleMetadata}");
             string title = titleMetadata is null ? null : NUIGadgetResourceManager.GetString(titleMetadata);
-            return title;
+            Logger.Verbose($"Get gadget title from manifest file: {titleMetadata} -> {title}");
+            return string.IsNullOrEmpty(title) ? titleMetadata : title;
         }
 
         private static MainMenuInfo FromCache(SettingGadgetInfo info)
