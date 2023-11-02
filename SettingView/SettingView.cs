@@ -259,14 +259,10 @@ namespace SettingView
                 stopwatch.Start();
                 foreach (var gadgetInfo in visibleMenus)
                 {
-                    await Post(() =>
+                    if (MainMenuInfo.Create(gadgetInfo) is MainMenuInfo menu)
                     {
-                        if (MainMenuInfo.Create(gadgetInfo) is MainMenuInfo menu)
-                        {
-                            menus.Add(menu);
-                        }
-                        return true;
-                    });
+                        menus.Add(menu);
+                    }
                 }
                 stopwatch.Stop();
                 Logger.Debug($"MEASURE loaded all MainMenuInfos, total time: {stopwatch.Elapsed}");

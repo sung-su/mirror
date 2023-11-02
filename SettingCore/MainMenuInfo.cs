@@ -58,51 +58,6 @@ namespace SettingCore
             UpdateCache(new List<MainMenuInfo>());
         }
 
-        private static MainMenuInfo FromGadget(SettingGadgetInfo info)
-        {
-            string assemblyPath = System.IO.Path.Combine(info.Pkg.ResourcePath, info.Pkg.ExecutableFile);
-            System.Reflection.Assembly assembly = null;
-            try
-            {
-                assembly = Assembly.Load(System.IO.File.ReadAllBytes(assemblyPath));
-            }
-            catch (System.IO.FileLoadException)
-            {
-                Logger.Warn($"could not open assembly {assemblyPath}");
-                return null;
-            }
-            MainMenuGadget mainMenu;
-            try
-            {
-                mainMenu = NUIGadgetManager.Add(info.Pkg.ResourceType, info.ClassName) as MainMenuGadget;
-            }
-            catch (System.Exception e)
-            {
-                Logger.Warn($"could not create MainMenuGadget from {info.ClassName} at {assemblyPath}");
-                Logger.Error(e.Message);
-                return null;
-            }
-            if (mainMenu == null)
-            {
-                Logger.Warn($"could not create MainMenuGadget from {info.ClassName} at {assemblyPath}");
-                return null;
-            }
-
-            string iconPath = mainMenu.ProvideIconPath();
-            Color iconColor = mainMenu.ProvideIconColor();
-            string title = mainMenu.ProvideTitle();
-
-            NUIGadgetManager.Remove(mainMenu);
-
-            return new MainMenuInfo
-            {
-                IconPath = iconPath,
-                IconColor = iconColor,
-                Title = title,
-                Path = info.Path,
-            };
-        }
-
         private static MainMenuInfo FromManifest(SettingGadgetInfo info)
         {
             string iconPath = getResourcePath(info, getMetadata(info, $"{metadataNamePrefix}/{info.Path}/{iconPathMetadata}"));
@@ -183,16 +138,6 @@ namespace SettingCore
             if (menu != null)
             {
                 Logger.Debug($"MEASURE loaded MainMenuInfo from Manifest file, path: {info.Path}, time: {stopwatch.Elapsed}");
-                return menu;
-            }
-
-            stopwatch.Restart();
-            menu = FromGadget(info);
-            stopwatch.Stop();
-            total += stopwatch.Elapsed;
-            if (menu != null)
-            {
-                Logger.Debug($"MEASURE loaded MainMenuInfo from Gadget, path: {info.Path}, time: {stopwatch.Elapsed}");
                 return menu;
             }
 
