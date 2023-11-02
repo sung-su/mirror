@@ -35,6 +35,19 @@ namespace SettingCore
                     _ = UpdateCustomization(backupCust);
                 }
 
+                return true;
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"{e}");
+                return false;
+            }
+        }
+
+        public void SaveCustomizationToFiles()
+        {
+            try
+            {
                 // save current customization to both files (current and backup)
                 var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
                 FileStorage.WriteToFiles(menuCustItems);
@@ -43,13 +56,10 @@ namespace SettingCore
                 FileStorage.Instance.Changed += CustFileChanged;
                 FileStorage.Instance.Lost += CustFileLost;
                 FileStorage.Instance.StartMonitoring();
-
-                return true;
             }
             catch (Exception e)
             {
                 Logger.Error($"{e}");
-                return false;
             }
         }
 

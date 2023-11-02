@@ -20,6 +20,7 @@ using SettingView.TextResources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Tizen.Applications;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
@@ -32,6 +33,7 @@ namespace SettingView
     {
         private static SettingViewBorder appCustomBorder;
         private ContentPage mMainPage;
+        private static Task rowsCreated;
 
         public Program(Size2D windowSize, Position2D windowPosition, ThemeOptions themeOptions, IBorderInterface borderInterface)
             : base(windowSize, windowPosition, themeOptions, borderInterface)
@@ -46,6 +48,7 @@ namespace SettingView
 
             bool initilized = GadgetManager.Instance.Init();
             mMainPage.Content = initilized ? CreateContent() : GetTextNotice("Failed to initialize GadgetManager.\nPlease check error logs for more information.", Color.Red);
+            _ = SaveCustomization();
 
             var navigator = new SettingNavigation();
             navigator.WidthResizePolicy = ResizePolicyType.FillToParent;
@@ -89,6 +92,16 @@ namespace SettingView
             GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.LandscapeInverse);
 
             LogScalableInfo();
+        }
+
+        private async Task SaveCustomization()
+        {
+            await rowsCreated;
+            await Task.Run(() =>
+            {
+                GadgetManager.Instance.SaveCustomizationToFiles();
+                return true;
+            });
         }
 
         private ContentPage CreateMainPage()
@@ -258,7 +271,7 @@ namespace SettingView
                 },
             };
 
-            CreateContentRows(visibleMenus, content);
+            rowsCreated = CreateContentRows(visibleMenus, content);
 
             return content;
         }
