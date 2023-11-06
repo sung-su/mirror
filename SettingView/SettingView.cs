@@ -34,6 +34,7 @@ namespace SettingView
         private static SettingViewBorder appCustomBorder;
         private ContentPage mMainPage;
         private static Task rowsCreated;
+        private static Task gadgetManagerInitialized;
 
         public Program(Size2D windowSize, Position2D windowPosition, ThemeOptions themeOptions, IBorderInterface borderInterface)
             : base(windowSize, windowPosition, themeOptions, borderInterface)
@@ -46,9 +47,9 @@ namespace SettingView
 
             mMainPage = CreateMainPage();
 
-            bool initilized = GadgetManager.Instance.Init();
-            mMainPage.Content = initilized ? CreateContent() : GetTextNotice("Failed to initialize GadgetManager.\nPlease check error logs for more information.", Color.Red);
-            _ = SaveCustomization();
+            mMainPage.Content = CreateContent();
+            gadgetManagerInitialized = InitGadgetManager();
+            _ = CheckCustomization();
 
             var navigator = new SettingNavigation();
             navigator.WidthResizePolicy = ResizePolicyType.FillToParent;
@@ -94,12 +95,38 @@ namespace SettingView
             LogScalableInfo();
         }
 
-        private async Task SaveCustomization()
+        private async Task InitGadgetManager()
         {
             await rowsCreated;
             await Task.Run(() =>
             {
-                GadgetManager.Instance.SaveCustomizationToFiles();
+                GadgetManager.Instance.Init();
+                return true;
+            });
+        }
+
+        private async Task CheckCustomization()
+        {
+            await gadgetManagerInitialized;
+            await Task.Run(async () =>
+            {
+                var customizationMainMenus = GadgetManager.Instance.GetMainWithCurrentOrder();
+
+                var customizationMainMenusStr = customizationMainMenus.Where(i => i.IsVisible).Select(x => new string(x.Path));
+                var cacheMainMenuStr = MainMenuInfo.CacheMenu.Select(x => new string(x.Path));
+
+                if (!customizationMainMenusStr.SequenceEqual(cacheMainMenuStr))
+                {
+                    Logger.Verbose($"customization has changed. Reload main view.");
+                    if (mMainPage != null)
+                    {
+                        await Post(() =>
+                        {
+                            mMainPage.Content = CreateContent(true);
+                            return true;
+                        });
+                    }
+                }
                 return true;
             });
         }
@@ -162,7 +189,7 @@ namespace SettingView
 
             if (mMainPage != null && items.Any())
             {
-                mMainPage.Content = CreateContent();
+                mMainPage.Content = CreateContent(true);
             }
         }
 
@@ -245,20 +272,8 @@ namespace SettingView
             });
         }
 
-        private static View CreateContent()
+        private static View CreateContent(bool customizationChanged = false)
         {
-            var mainMenus = GadgetManager.Instance.GetMainWithCurrentOrder();
-            if (!mainMenus.Any())
-            {
-                return GetTextNotice("There is no setting menus installed.", Color.Orange);
-            }
-
-            var visibleMenus = mainMenus.Where(i => i.IsVisible);
-            if (!visibleMenus.Any())
-            {
-                return GetTextNotice("There is no setting menus visible.", Color.Gray);
-            }
-
             var content = new ScrollableBase()
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
@@ -271,25 +286,54 @@ namespace SettingView
                 },
             };
 
-            rowsCreated = CreateContentRows(visibleMenus, content);
+            rowsCreated = CreateContentRows(content, customizationChanged);
 
             return content;
         }
 
-        private static System.Threading.Tasks.Task CreateContentRows(IEnumerable<SettingGadgetInfo> visibleMenus, View content)
+        private static System.Threading.Tasks.Task CreateContentRows(View content, bool customizationChanged = false)
         {
             return System.Threading.Tasks.Task.Run(async () =>
             {
-                var menus = new List<MainMenuInfo>();
                 System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
                 stopwatch.Start();
-                foreach (var gadgetInfo in visibleMenus)
+                var menus = MainMenuInfo.CacheMenu;
+                if (menus.Count == 0 || customizationChanged)
                 {
-                    if (MainMenuInfo.Create(gadgetInfo) is MainMenuInfo menu)
+                    var mainMenus = GadgetManager.Instance.GetMainWithCurrentOrder();
+                    if (!mainMenus.Any())
                     {
-                        menus.Add(menu);
+                        await Post(() =>
+                        {
+                            var textLabel = GetTextNotice("There is no setting menus installed.", Color.Orange);
+                            content.Add(textLabel);
+                            return true;
+                        });
+                        return;
+                    }
+
+                    var visibleMenus = mainMenus.Where(i => i.IsVisible);
+                    if (!visibleMenus.Any())
+                    {
+                        await Post(() =>
+                        {
+                            var textLabel = GetTextNotice("There is no setting menus visible.", Color.Gray);
+                            content.Add(textLabel);
+                            return true;
+                        });
+                        return;
+                    }
+
+                    menus = new List<MainMenuInfo>();
+                    foreach (var gadgetInfo in visibleMenus)
+                    {
+                        if (MainMenuInfo.Create(gadgetInfo) is MainMenuInfo menu)
+                        {
+                            menus.Add(menu);
+                        }
                     }
                 }
+
                 stopwatch.Stop();
                 Logger.Debug($"MEASURE loaded all MainMenuInfos, total time: {stopwatch.Elapsed}");
 

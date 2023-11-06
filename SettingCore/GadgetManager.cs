@@ -17,8 +17,7 @@ namespace SettingCore
         {
             try
             {
-                // get all installed gadgets for Settings
-                installedGadgets = GadgetProvider.Gadgets.ToList();
+                GetInstalledGadgets();
 
                 // get initial customization from file
                 var initCust = FileStorage.ReadFromFile(FileStorage.InitialFilePath);
@@ -35,6 +34,15 @@ namespace SettingCore
                     _ = UpdateCustomization(backupCust);
                 }
 
+                // save current customization to both files (current and backup)
+                var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
+                FileStorage.WriteToFiles(menuCustItems);
+
+                // start file watching
+                FileStorage.Instance.Changed += CustFileChanged;
+                FileStorage.Instance.Lost += CustFileLost;
+                FileStorage.Instance.StartMonitoring();
+
                 return true;
             }
             catch (Exception e)
@@ -44,22 +52,12 @@ namespace SettingCore
             }
         }
 
-        public void SaveCustomizationToFiles()
+        private void GetInstalledGadgets()
         {
-            try
+            // get all installed gadgets for Settings
+            if (!installedGadgets.Any())
             {
-                // save current customization to both files (current and backup)
-                var menuCustItems = installedGadgets.Select(x => new MenuCustomizationItem(x.Path, x.Order));
-                FileStorage.WriteToFiles(menuCustItems);
-
-                // start file watching
-                FileStorage.Instance.Changed += CustFileChanged;
-                FileStorage.Instance.Lost += CustFileLost;
-                FileStorage.Instance.StartMonitoring();
-            }
-            catch (Exception e)
-            {
-                Logger.Error($"{e}");
+                installedGadgets = GadgetProvider.Gadgets.ToList();
             }
         }
 
@@ -166,6 +164,7 @@ namespace SettingCore
 
         public IEnumerable<SettingGadgetInfo> GetMainWithCurrentOrder()
         {
+            GetInstalledGadgets();
             var main = installedGadgets
                 .Where(info => info.IsMainMenu);
 

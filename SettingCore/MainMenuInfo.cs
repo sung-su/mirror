@@ -15,6 +15,7 @@ namespace SettingCore
         public string Path { get; set; }
 
         private static string CachePath => System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Data, "main-menu.cache");
+        public static List<MainMenuInfo> CacheMenu { get => cache; }
         private static List<MainMenuInfo> cache = new List<MainMenuInfo>();
         private const string metadataNamePrefix = "http://tizen.org/metadata/ui-gadget/menu";
         private const string iconPathMetadata = "icon-path";
@@ -40,6 +41,10 @@ namespace SettingCore
 
         public static void UpdateCache(IEnumerable<MainMenuInfo> infos)
         {
+            if (infos == cache)
+            {
+                return;
+            }
             try
             {
                 cache.Clear();
