@@ -93,6 +93,7 @@ namespace SettingView
             GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.LandscapeInverse);
 
             LogScalableInfo();
+
         }
 
         private async Task InitGadgetManager()
@@ -342,7 +343,7 @@ namespace SettingView
                 {
                     await Post(() =>
                     {
-                        var row = new SettingCore.Views.MainMenuItem(menu.IconPath, menu.IconColor, menu.Title);
+                        var row = new SettingCore.Views.MainMenuItem(menu.IconPath, new Color(menu.IconColorHex), menu.Title);
                         row.Clicked += (s, e) =>
                         {
                             Logger.Debug($"navigating to menupath {menu.Path}, title: {menu.Title}");

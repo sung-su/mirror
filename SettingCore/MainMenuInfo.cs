@@ -1,8 +1,9 @@
-﻿using System;
+﻿using SettingCore.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text.Json;
+using System.Text;
 using Tizen.NUI;
 
 namespace SettingCore
@@ -10,7 +11,7 @@ namespace SettingCore
     public class MainMenuInfo
     {
         public string IconPath { get; set; }
-        public Color IconColor { get; set; }
+        public string IconColorHex { get; set; }
         public string Title { get; set; }
         public string Path { get; set; }
 
@@ -30,8 +31,32 @@ namespace SettingCore
         {
             try
             {
-                string text = System.IO.File.ReadAllText(CachePath);
-                cache = JsonSerializer.Deserialize<List<MainMenuInfo>>(text);
+                string text = System.IO.File.ReadAllText(CachePath, Encoding.ASCII);
+
+                List<MainMenuInfo> fromCache = new List<MainMenuInfo>();
+
+                string[] mainMenuItems = text.Split("\n\n");
+                foreach (string menu in mainMenuItems)
+                {
+                    if (menu.Length == 0) continue;
+                    string[] keyValuePairs = menu.Split("\n");
+                    Dictionary<string, string> pairs = new Dictionary<string, string>();
+                    foreach (string keyValuePair in keyValuePairs)
+                    {
+                        var kv_split = keyValuePair.Split(':');
+                        pairs.Add(kv_split[0], kv_split[1]);
+                    }
+
+                    fromCache.Add(new MainMenuInfo()
+                    {
+                        Title = pairs["Title"],
+                        IconPath = pairs["IconPath"],
+                        IconColorHex = pairs["IconColorHex"],
+                        Path = pairs["Path"],
+                    });
+                }
+
+                cache = fromCache;
             }
             catch
             {
@@ -49,13 +74,38 @@ namespace SettingCore
             {
                 cache.Clear();
                 cache.AddRange(infos);
-                string text = JsonSerializer.Serialize(cache);
+
+                string text = getCacheString();
                 System.IO.File.WriteAllText(CachePath, text);
             }
             catch (Exception ex)
             {
                 Logger.Warn($"{ex}");
             }
+        }
+
+        private static string getCacheString()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (MainMenuInfo info in cache)
+            {
+                sb.Append($"{getCacheString(info)}\n");
+            }
+
+            return sb.ToString();
+        }
+
+        private static string getCacheString(MainMenuInfo mainMenuInfo)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (PropertyInfo prop in typeof(MainMenuInfo).GetProperties())
+            {
+                if (!prop.GetMethod.IsStatic)
+                {
+                    sb.Append($"{prop.Name}:{prop.GetValue(mainMenuInfo)}\n");
+                }
+            }
+            return sb.ToString();
         }
 
         public static void ClearCache()
@@ -72,7 +122,7 @@ namespace SettingCore
                 return null;
             }
 
-            Color iconColor = getIconColor(info);
+            string iconColor = getIconColorHex(info);
             if (iconColor == null)
             {
                 Logger.Warn($"could not create MainMenuGadget from {info.ClassName} manifest file.");
@@ -89,7 +139,7 @@ namespace SettingCore
             return new MainMenuInfo
             {
                 IconPath = iconPath,
-                IconColor = iconColor,
+                IconColorHex = iconColor,
                 Title = title,
                 Path = info.Path,
             };
@@ -116,7 +166,7 @@ namespace SettingCore
             {
                 Title = cached.Title,
                 IconPath = cached.IconPath,
-                IconColor = cached.IconColor,
+                IconColorHex = cached.IconColorHex,
                 Path = cached.Path,
             };
         }
@@ -150,7 +200,7 @@ namespace SettingCore
             return null;
         }
 
-        private static Color getIconColor(SettingGadgetInfo info)
+        private static string getIconColorHex(SettingGadgetInfo info)
         {
             string iconColorHex = getMetadata(info, $"{metadataNamePrefix}/{info.Path}/{iconColorMetadata}");
             if (iconColorHex is null)
@@ -163,7 +213,7 @@ namespace SettingCore
                 return null;
             }
             bool IsLightTheme = ThemeManager.PlatformThemeId == "org.tizen.default-light-theme";
-            Color iconColor = iconColorHex is null ? null : new Color(IsLightTheme ? themeColors[0] : themeColors[1]); ;
+            string iconColor = iconColorHex is null ? null : IsLightTheme ? themeColors[0] : themeColors[1];
             return iconColor;
         }
 
