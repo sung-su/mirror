@@ -34,7 +34,6 @@ namespace SettingView
         private static SettingViewBorder appCustomBorder;
         private ContentPage mMainPage;
         private static Task rowsCreated;
-        private static Task gadgetManagerInitialized;
 
         public Program(Size2D windowSize, Position2D windowPosition, ThemeOptions themeOptions, IBorderInterface borderInterface)
             : base(windowSize, windowPosition, themeOptions, borderInterface)
@@ -43,26 +42,53 @@ namespace SettingView
 
         protected override void OnCreate()
         {
+            String timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+            Logger.Debug($"ONCREATE start: {timeStamp}");
+
             base.OnCreate();
+            timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+            Logger.Debug($"ONCREATE base: {timeStamp}");
 
             mMainPage = CreateMainPage();
+            timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+            Logger.Debug($"ONCREATE base page: {timeStamp}");
 
             mMainPage.Content = CreateContent();
-            gadgetManagerInitialized = InitGadgetManager();
             _ = CheckCustomization();
 
-            var navigator = new SettingNavigation();
-            navigator.WidthResizePolicy = ResizePolicyType.FillToParent;
-            navigator.HeightResizePolicy = ResizePolicyType.FillToParent;
+            var navigator = new SettingNavigation()
+            {
+                WidthResizePolicy = ResizePolicyType.FillToParent,
+                HeightResizePolicy = ResizePolicyType.FillToParent
+            };
+            timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+            Logger.Debug($"ONCREATE navigator: {timeStamp}");
 
             GetDefaultWindow().Remove(GetDefaultWindow().GetDefaultNavigator());
             GetDefaultWindow().SetDefaultNavigator(navigator);
             GetDefaultWindow().GetDefaultNavigator().Push(mMainPage);
+            timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+            Logger.Debug($"ONCREATE push: {timeStamp}");
 
             Tizen.System.SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
             ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
             GadgetManager.Instance.CustomizationChanged += CustomizationChanged;
 
+            SetEventHandlers();
+
+            GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.Portrait);
+            GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.Landscape);
+            GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.PortraitInverse);
+            GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.LandscapeInverse);
+
+            LogScalableInfoAsync();
+
+            timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+            Logger.Debug($"ONCREATE end: {timeStamp}");
+        }
+
+        private void SetEventHandlers()
+        {
             GadgetNavigation.OnWindowModeChanged += (ob, fullScreenMode) =>
             {
                 if (fullScreenMode)
@@ -86,31 +112,15 @@ namespace SettingView
                 }
             };
             GetDefaultWindow().OrientationChanged += OnWindowOrientationChangedEvent;
-
-            GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.Portrait);
-            GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.Landscape);
-            GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.PortraitInverse);
-            GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.LandscapeInverse);
-
-            LogScalableInfoAsync();
-
-        }
-
-        private async Task InitGadgetManager()
-        {
-            await rowsCreated;
-            await Task.Run(() =>
-            {
-                GadgetManager.Instance.Init();
-                return true;
-            });
         }
 
         private async Task CheckCustomization()
         {
-            await gadgetManagerInitialized;
+            await rowsCreated;
             await Task.Run(async () =>
             {
+                GadgetManager.Instance.Init();
+
                 var customizationMainMenus = GadgetManager.Instance.GetMainWithCurrentOrder();
 
                 var customizationMainMenusStr = customizationMainMenus.Where(i => i.IsVisible).Select(x => new string(x.Path));
@@ -290,6 +300,8 @@ namespace SettingView
                 },
             };
 
+            string timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+            Logger.Debug($"ONCREATE scrolable base: {timeStamp}");
             rowsCreated = CreateContentRows(content, customizationChanged);
 
             return content;
@@ -352,6 +364,14 @@ namespace SettingView
                             Logger.Debug($"navigating to menupath {menu.Path}, title: {menu.Title}");
                             GadgetNavigation.NavigateTo(menu.Path);
                         };
+                        if (menus.Last() == menu)
+                        {
+                            row.Relayout += (s, e) =>
+                            {
+                                string timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+                                Logger.Debug($"UICompleted end: {timeStamp}");
+                            };
+                        }
                         content.Add(row);
                         return true;
                     });
