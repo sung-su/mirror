@@ -92,7 +92,7 @@ namespace SettingView
             GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.PortraitInverse);
             GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.LandscapeInverse);
 
-            LogScalableInfo();
+            LogScalableInfoAsync();
 
         }
 
@@ -150,23 +150,26 @@ namespace SettingView
             Logger.Debug($"OnWindowOrientationChangedEvent() called!, orientation:{orientation}");
         }
 
-        private void LogScalableInfo()
+        private static Task LogScalableInfoAsync()
         {
-            var scalable = new string[]
+            return Task.Run(() =>
             {
-                $"ScalingFactor = {GraphicsTypeManager.Instance.ScalingFactor}",
-                $"Dpi = {GraphicsTypeManager.Instance.Dpi}",
-                $"ScaledDpi = {GraphicsTypeManager.Instance.ScaledDpi}",
-                $"BaselineDpi = {GraphicsTypeManager.Instance.BaselineDpi}",
-                $"Density = {GraphicsTypeManager.Instance.Density}",
-                $"ScaledDensity = {GraphicsTypeManager.Instance.ScaledDensity}",
-                $"100dp => {GraphicsTypeManager.Instance.ConvertScriptToPixel("100dp")}px",
-                $"100sp => {GraphicsTypeManager.Instance.ConvertScriptToPixel("100sp")}px",
-            };
-            foreach (var s in scalable)
-            {
-                Logger.Debug($"Scalable Info: {s}");
-            }
+                var scalable = new string[]
+                {
+                    $"ScalingFactor = {GraphicsTypeManager.Instance.ScalingFactor}",
+                    $"Dpi = {GraphicsTypeManager.Instance.Dpi}",
+                    $"ScaledDpi = {GraphicsTypeManager.Instance.ScaledDpi}",
+                    $"BaselineDpi = {GraphicsTypeManager.Instance.BaselineDpi}",
+                    $"Density = {GraphicsTypeManager.Instance.Density}",
+                    $"ScaledDensity = {GraphicsTypeManager.Instance.ScaledDensity}",
+                    $"100dp => {GraphicsTypeManager.Instance.ConvertScriptToPixel("100dp")}px",
+                    $"100sp => {GraphicsTypeManager.Instance.ConvertScriptToPixel("100sp")}px",
+                };
+                foreach (var s in scalable)
+                {
+                    Logger.Debug($"Scalable Info: {s}");
+                }
+            });
         }
 
         protected override void OnTerminate()
