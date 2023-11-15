@@ -213,7 +213,7 @@ namespace SettingCore
                 return null;
             }
             bool IsLightTheme = ThemeManager.PlatformThemeId == "org.tizen.default-light-theme";
-            string iconColor = iconColorHex is null ? null : IsLightTheme ? themeColors[0] : themeColors[1];
+            string iconColor = IsLightTheme ? themeColors[0] : themeColors[1];
             return iconColor;
         }
 
