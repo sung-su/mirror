@@ -4,6 +4,8 @@ using SettingMainGadget;
 using SettingMainGadget.About;
 using SettingMainGadget.TextResources;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Tizen.Applications;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
@@ -35,28 +37,39 @@ namespace Setting.Menu.About
                 },
             };
 
-            rootCert = SettingCertificateManager.GetRootCertList();
-
-            CreateItems();
+            CreateView();
 
             return content;
         }
 
-        private void CreateItems()
+        private async void CreateView()
         {
             content.RemoveAllChildren(true);
 
+            rootCert = SettingCertificateManager.GetRootCertList();
             foreach (var certificate in rootCert)
             {
-                var status = certificate.status == CertStatus.DISABLED ? NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_OFF)) : NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_ON));
-                var item = TextListItem.CreatePrimaryTextItemWithSecondaryText(certificate.title, status);
-                item.Clicked += (s, e) =>
-                {
-                    SettingCertificateManager.CertificateMetadata = certificate;
-                    NavigateTo(MainMenuProvider.About_CertificateDetails);
-                };
-                content.Add(item);
+                await CreateItem(certificate);
             }
+        }
+
+        private Task CreateItem(certificateMetadata certificate)
+        {
+            return Task.Run(async () =>
+            {
+                await CoreApplication.Post(() =>
+                {
+                    var status = certificate.status == CertStatus.DISABLED ? NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_OFF)) : NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_ON));
+                    var item = TextListItem.CreatePrimaryTextItemWithSecondaryText(certificate.title, status);
+                    item.Clicked += (s, e) =>
+                    {
+                        SettingCertificateManager.CertificateMetadata = certificate;
+                        NavigateTo(MainMenuProvider.About_CertificateDetails);
+                    };
+                    content.Add(item);
+                    return true;
+                });
+            });
         }
     }
 }
