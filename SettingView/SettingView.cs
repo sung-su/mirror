@@ -53,7 +53,11 @@ namespace SettingView
             timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
             Logger.Debug($"ONCREATE base page: {timeStamp}");
 
-            mMainPage.Content = CreateContent();
+            mMainPage.Content = CreateScrollableBase();
+            timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+            Logger.Debug($"ONCREATE scrolable base: {timeStamp}");
+
+            rowsCreated = CreateContentRows(mMainPage.Content);
             _ = CheckCustomization();
 
             var navigator = new SettingNavigation()
@@ -61,11 +65,12 @@ namespace SettingView
                 WidthResizePolicy = ResizePolicyType.FillToParent,
                 HeightResizePolicy = ResizePolicyType.FillToParent
             };
-            timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-            Logger.Debug($"ONCREATE navigator: {timeStamp}");
 
             GetDefaultWindow().Remove(GetDefaultWindow().GetDefaultNavigator());
             GetDefaultWindow().SetDefaultNavigator(navigator);
+            timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+            Logger.Debug($"ONCREATE navigator: {timeStamp}");
+
             GetDefaultWindow().GetDefaultNavigator().Push(mMainPage);
             timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
             Logger.Debug($"ONCREATE push: {timeStamp}");
@@ -74,7 +79,8 @@ namespace SettingView
             ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
             GadgetManager.Instance.CustomizationChanged += CustomizationChanged;
 
-            SetEventHandlers();
+            GadgetNavigation.OnWindowModeChanged += WindowModeChanged;
+            GetDefaultWindow().OrientationChanged += OnWindowOrientationChangedEvent;
 
             GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.Portrait);
             GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.Landscape);
@@ -87,31 +93,27 @@ namespace SettingView
             Logger.Debug($"ONCREATE end: {timeStamp}");
         }
 
-        private void SetEventHandlers()
+        private void WindowModeChanged(object ob, bool fullScreenMode)
         {
-            GadgetNavigation.OnWindowModeChanged += (ob, fullScreenMode) =>
+            if (fullScreenMode)
             {
-                if (fullScreenMode)
+                if (appCustomBorder.BorderWindow is null || appCustomBorder.BorderWindow.IsMaximized())
                 {
-                    if (appCustomBorder.BorderWindow is null || appCustomBorder.BorderWindow.IsMaximized())
-                    {
-                        return;
-                    }
-
-                    appCustomBorder.OverlayMode = true;
-                    appCustomBorder.BorderWindow.Maximize(true);
+                    return;
                 }
-                else
+
+                appCustomBorder.OverlayMode = true;
+                appCustomBorder.BorderWindow.Maximize(true);
+            }
+            else
+            {
+                if (appCustomBorder.BorderWindow is null || appCustomBorder.BorderWindow.IsMinimized())
                 {
-                    if (appCustomBorder.BorderWindow is null || appCustomBorder.BorderWindow.IsMinimized())
-                    {
-                        return;
-                    }
-
-                    appCustomBorder.BorderWindow.Maximize(false);
+                    return;
                 }
-            };
-            GetDefaultWindow().OrientationChanged += OnWindowOrientationChangedEvent;
+
+                appCustomBorder.BorderWindow.Maximize(false);
+            }
         }
 
         private async Task CheckCustomization()
@@ -186,6 +188,7 @@ namespace SettingView
         {
             Tizen.System.SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
             GadgetManager.Instance.CustomizationChanged -= CustomizationChanged;
+            GadgetNavigation.OnWindowModeChanged -= WindowModeChanged;
             GetDefaultWindow().OrientationChanged -= OnWindowOrientationChangedEvent;
             base.OnTerminate();
         }
@@ -246,7 +249,7 @@ namespace SettingView
                 MainMenuInfo.ClearCache();
 
                 mMainPage.AppBar.Title = Resources.IDS_ST_OPT_SETTINGS;
-                mMainPage.Content = CreateContent();
+                mMainPage.Content = CreateScrollableBase();
             }
         }
 
@@ -257,7 +260,7 @@ namespace SettingView
                 MainMenuInfo.ClearCache();
 
                 // recreate main page content just to apply new colors from gadgets
-                mMainPage.Content = CreateContent();
+                mMainPage.Content = CreateScrollableBase();
             }
         }
 
@@ -286,7 +289,7 @@ namespace SettingView
             });
         }
 
-        private static View CreateContent(bool customizationChanged = false)
+        private static View CreateScrollableBase()
         {
             var content = new ScrollableBase()
             {
@@ -299,10 +302,6 @@ namespace SettingView
                     LinearOrientation = LinearLayout.Orientation.Vertical,
                 },
             };
-
-            string timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-            Logger.Debug($"ONCREATE scrolable base: {timeStamp}");
-            rowsCreated = CreateContentRows(content, customizationChanged);
 
             return content;
         }
@@ -381,6 +380,13 @@ namespace SettingView
 
                 MainMenuInfo.UpdateCache(menus);
             });
+        }
+
+        private static View CreateContent(bool customizationChanged = false)
+        {
+            var content = CreateScrollableBase();
+            CreateContentRows(content, customizationChanged);
+            return content;
         }
 
         private static View GetTextNotice(string text, Color color)
