@@ -249,7 +249,7 @@ namespace SettingView
                 MainMenuInfo.ClearCache();
 
                 mMainPage.AppBar.Title = Resources.IDS_ST_OPT_SETTINGS;
-                mMainPage.Content = CreateScrollableBase();
+                mMainPage.Content = CreateContent();
             }
         }
 
@@ -260,7 +260,7 @@ namespace SettingView
                 MainMenuInfo.ClearCache();
 
                 // recreate main page content just to apply new colors from gadgets
-                mMainPage.Content = CreateScrollableBase();
+                mMainPage.Content = CreateContent();
             }
         }
 
