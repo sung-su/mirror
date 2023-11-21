@@ -42,20 +42,19 @@ namespace SettingView
 
         protected override void OnCreate()
         {
-            String timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-            Logger.Debug($"ONCREATE start: {timeStamp}");
+            Logger.Performance($"ONCREATE start");
 
             base.OnCreate();
-            timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-            Logger.Debug($"ONCREATE base: {timeStamp}");
+
+            Logger.Performance($"ONCREATE base");
 
             mMainPage = CreateMainPage();
-            timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-            Logger.Debug($"ONCREATE base page: {timeStamp}");
+
+            Logger.Performance($"ONCREATE base page");
 
             mMainPage.Content = CreateScrollableBase();
-            timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-            Logger.Debug($"ONCREATE scrolable base: {timeStamp}");
+
+            Logger.Performance($"ONCREATE scrolable base");
 
             rowsCreated = CreateContentRows(mMainPage.Content);
             _ = CheckCustomization();
@@ -68,12 +67,12 @@ namespace SettingView
 
             GetDefaultWindow().Remove(GetDefaultWindow().GetDefaultNavigator());
             GetDefaultWindow().SetDefaultNavigator(navigator);
-            timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-            Logger.Debug($"ONCREATE navigator: {timeStamp}");
+
+            Logger.Performance($"ONCREATE navigator");
 
             GetDefaultWindow().GetDefaultNavigator().Push(mMainPage);
-            timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-            Logger.Debug($"ONCREATE push: {timeStamp}");
+
+            Logger.Performance($"ONCREATE push");
 
             Tizen.System.SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
             ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
@@ -89,8 +88,7 @@ namespace SettingView
 
             LogScalableInfoAsync();
 
-            timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-            Logger.Debug($"ONCREATE end: {timeStamp}");
+            Logger.Performance($"ONCREATE end");
         }
 
         private void WindowModeChanged(object ob, bool fullScreenMode)
@@ -367,8 +365,7 @@ namespace SettingView
                         {
                             row.Relayout += (s, e) =>
                             {
-                                string timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-                                Logger.Debug($"UICompleted end: {timeStamp}");
+                                Logger.Performance($"UICompleted end");
                             };
                         }
                         content.Add(row);
