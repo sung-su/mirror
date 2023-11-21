@@ -50,7 +50,7 @@ namespace SettingView
 
             mMainPage = CreateMainPage();
 
-            Logger.Performance($"ONCREATE base page");
+            Logger.Performance($"ONCREATE main page");
 
             mMainPage.Content = CreateScrollableBase();
 
@@ -59,27 +59,13 @@ namespace SettingView
             rowsCreated = CreateContentRows(mMainPage.Content);
             _ = CheckCustomization();
 
-            var navigator = new SettingNavigation()
-            {
-                WidthResizePolicy = ResizePolicyType.FillToParent,
-                HeightResizePolicy = ResizePolicyType.FillToParent
-            };
+            var navigator = new SettingNavigation();
 
             GetDefaultWindow().Remove(GetDefaultWindow().GetDefaultNavigator());
             GetDefaultWindow().SetDefaultNavigator(navigator);
-
-            Logger.Performance($"ONCREATE navigator");
-
             GetDefaultWindow().GetDefaultNavigator().Push(mMainPage);
 
-            Logger.Performance($"ONCREATE push");
-
-            Tizen.System.SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
-            ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
-            GadgetManager.Instance.CustomizationChanged += CustomizationChanged;
-
-            GadgetNavigation.OnWindowModeChanged += WindowModeChanged;
-            GetDefaultWindow().OrientationChanged += OnWindowOrientationChangedEvent;
+            RegisterEvents();
 
             GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.Portrait);
             GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.Landscape);
@@ -150,6 +136,8 @@ namespace SettingView
                 ThemeChangeSensitive = true,
             };
 
+            Logger.Performance($"ONCREATE base page");
+
             CreateAppBar(mainPage);
             return mainPage;
         }
@@ -182,12 +170,27 @@ namespace SettingView
             });
         }
 
-        protected override void OnTerminate()
+        private void RegisterEvents()
         {
-            Tizen.System.SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
+            SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
+            ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
+            GadgetManager.Instance.CustomizationChanged += CustomizationChanged;
+            GadgetNavigation.OnWindowModeChanged += WindowModeChanged;
+            GetDefaultWindow().OrientationChanged += OnWindowOrientationChangedEvent;
+        }
+
+        private void UnregisterEvents()
+        {
+            SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
+            ThemeManager.ThemeChanged -= ThemeManager_ThemeChanged;
             GadgetManager.Instance.CustomizationChanged -= CustomizationChanged;
             GadgetNavigation.OnWindowModeChanged -= WindowModeChanged;
             GetDefaultWindow().OrientationChanged -= OnWindowOrientationChangedEvent;
+        }
+
+        protected override void OnTerminate()
+        {
+            UnregisterEvents();
             base.OnTerminate();
         }
 
@@ -268,6 +271,9 @@ namespace SettingView
             {
                 await Post(() =>
                 {
+                    System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+                    stopwatch.Start();
+
                     // TODO: remove style customization with scalable unit, when merged to TizenFX
                     var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar") as AppBarStyle;
                     appBarStyle.TitleTextLabel.PixelSize = 24.SpToPx();
@@ -280,6 +286,11 @@ namespace SettingView
                         AutoNavigationContent = false,
                         NavigationContent = new View(), // FIXME: must be set with empty View to hide default back button
                         ThemeChangeSensitive = true,
+                    };
+                    appBar.Relayout += (s, e) =>
+                    {
+                        stopwatch?.Stop();
+                        Logger.Performance($"UICompleted appbar: {stopwatch.Elapsed.TotalMilliseconds}");
                     };
                     mainPage.AppBar = appBar;
                     return true;
@@ -348,7 +359,7 @@ namespace SettingView
                 }
 
                 stopwatch.Stop();
-                Logger.Debug($"MEASURE loaded all MainMenuInfos, total time: {stopwatch.Elapsed}");
+                Logger.Performance($"CONTENT get data: {stopwatch.Elapsed.TotalMilliseconds}");
 
                 stopwatch.Restart();
                 foreach (var menu in menus)
@@ -365,15 +376,14 @@ namespace SettingView
                         {
                             row.Relayout += (s, e) =>
                             {
-                                Logger.Performance($"UICompleted end");
+                                stopwatch?.Stop();
+                                Logger.Performance($"UICompleted items: {stopwatch.Elapsed.TotalMilliseconds}");
                             };
                         }
                         content.Add(row);
                         return true;
                     });
                 }
-                stopwatch.Stop();
-                Logger.Debug($"MEASURE created UI main menu rows, total time: {stopwatch.Elapsed}");
 
                 MainMenuInfo.UpdateCache(menus);
             });
@@ -404,6 +414,8 @@ namespace SettingView
 
         static void Main(string[] args)
         {
+            Logger.Performance($"MAIN start");
+
             // window size adjustments
             float bottomMargin = 0.1f;
             float widthRatio = 0.7f;
@@ -418,7 +430,10 @@ namespace SettingView
             // INFO: it looks like size of custom border is not included in total window size
             Size2D size = new Size2D(width, height);
             Position2D position = new Position2D((screenWidth - width) / 2, (screenHeight - height) / 2 - (int)(bottomMargin * screenHeight));
+
             appCustomBorder = new SettingViewBorder();
+
+            Logger.Performance($"MAIN border");
 
             var app = new Program(size, position, ThemeOptions.PlatformThemeEnabled, appCustomBorder);
 
