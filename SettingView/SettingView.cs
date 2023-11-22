@@ -418,18 +418,17 @@ namespace SettingView
 
             // window size adjustments
             float bottomMargin = 0.1f;
-            float widthRatio = 0.7f;
-            float heightRatio = 0.7f;
+            float widthRatio = 0.45f;
+            float heightRatio = 0.5f;
 
-            _ = Information.TryGetValue("http://tizen.org/feature/screen.width", out int screenWidth);
-            _ = Information.TryGetValue("http://tizen.org/feature/screen.height", out int screenHeight);
+            var screenSize = GetScreenSize();
 
-            int width = (int)(screenWidth * widthRatio);
-            int height = (int)(screenHeight * (1 - bottomMargin) * heightRatio);
+            int width = (int)(screenSize.Width * widthRatio);
+            int height = (int)(screenSize.Height * (1 - bottomMargin) * heightRatio);
 
             // INFO: it looks like size of custom border is not included in total window size
             Size2D size = new Size2D(width, height);
-            Position2D position = new Position2D((screenWidth - width) / 2, (screenHeight - height) / 2 - (int)(bottomMargin * screenHeight));
+            Position2D position = new Position2D(((int)screenSize.Width - width) / 2, ((int)screenSize.Height - height) / 2 - (int)(bottomMargin * screenSize.Height));
 
             appCustomBorder = new SettingViewBorder();
 
