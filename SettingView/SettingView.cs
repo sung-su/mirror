@@ -34,6 +34,10 @@ namespace SettingView
         private static SettingViewBorder appCustomBorder;
         private ContentPage mMainPage;
         private static Task rowsCreated;
+        private static bool noMainMenus;
+        private static bool noVisibleMainMenus;
+        private static List<MainMenuInfo> mainMenuItems;
+        private static Task itemsLoaded;
 
         public Program(Size2D windowSize, Position2D windowPosition, ThemeOptions themeOptions, IBorderInterface borderInterface)
             : base(windowSize, windowPosition, themeOptions, borderInterface)
@@ -43,6 +47,8 @@ namespace SettingView
         protected override void OnCreate()
         {
             Logger.Performance($"ONCREATE start");
+
+            itemsLoaded = LoadMainMenuItems();
 
             base.OnCreate();
 
@@ -315,54 +321,77 @@ namespace SettingView
             return content;
         }
 
-        private static System.Threading.Tasks.Task CreateContentRows(View content, bool customizationChanged = false)
+        private static Task LoadMainMenuItems(bool customizationChanged = false)
         {
-            return System.Threading.Tasks.Task.Run(async () =>
-            {
+            return Task.Run(() => {
                 System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
                 stopwatch.Start();
-                var menus = MainMenuInfo.CacheMenu;
-                if (menus.Count == 0 || customizationChanged)
+                noMainMenus = false;
+                noVisibleMainMenus = false;
+                mainMenuItems = MainMenuInfo.CacheMenu;
+                if (mainMenuItems.Count == 0 || customizationChanged)
                 {
                     var mainMenus = GadgetManager.Instance.GetMainWithCurrentOrder();
                     if (!mainMenus.Any())
                     {
-                        await Post(() =>
-                        {
-                            var textLabel = GetTextNotice("There is no setting menus installed.", Color.Orange);
-                            content.Add(textLabel);
-                            return true;
-                        });
-                        return;
+                        noMainMenus = true;
+                        return Task.CompletedTask;
                     }
 
                     var visibleMenus = mainMenus.Where(i => i.IsVisible);
                     if (!visibleMenus.Any())
                     {
-                        await Post(() =>
-                        {
-                            var textLabel = GetTextNotice("There is no setting menus visible.", Color.Gray);
-                            content.Add(textLabel);
-                            return true;
-                        });
-                        return;
+                        noVisibleMainMenus = true;
+                        return Task.CompletedTask;
                     }
 
-                    menus = new List<MainMenuInfo>();
+                    mainMenuItems = new List<MainMenuInfo>();
                     foreach (var gadgetInfo in visibleMenus)
                     {
                         if (MainMenuInfo.Create(gadgetInfo) is MainMenuInfo menu)
                         {
-                            menus.Add(menu);
+                            mainMenuItems.Add(menu);
                         }
                     }
                 }
 
                 stopwatch.Stop();
                 Logger.Performance($"CONTENT get data: {stopwatch.Elapsed.TotalMilliseconds}");
+                return Task.CompletedTask;
+            });
+        }
 
-                stopwatch.Restart();
-                foreach (var menu in menus)
+        private static async Task CreateContentRows(View content)
+        {
+            await itemsLoaded;
+            await Task.Run(async () =>
+            {
+                System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+                stopwatch.Start();
+
+                if (noMainMenus)
+                {
+                    await Post(() =>
+                    {
+                        var textLabel = GetTextNotice("There is no setting menus installed.", Color.Orange);
+                        content.Add(textLabel);
+                        return true;
+                    });
+                    return;
+                }
+
+                if (noVisibleMainMenus)
+                {
+                    await Post(() =>
+                    {
+                        var textLabel = GetTextNotice("There is no setting menus visible.", Color.Gray);
+                        content.Add(textLabel);
+                        return true;
+                    });
+                    return;
+                }
+
+                foreach (var menu in mainMenuItems)
                 {
                     await Post(() =>
                     {
@@ -372,7 +401,7 @@ namespace SettingView
                             Logger.Debug($"navigating to menupath {menu.Path}, title: {menu.Title}");
                             GadgetNavigation.NavigateTo(menu.Path);
                         };
-                        if (menus.Last() == menu)
+                        if (mainMenuItems.Last() == menu)
                         {
                             row.Relayout += (s, e) =>
                             {
@@ -385,14 +414,15 @@ namespace SettingView
                     });
                 }
 
-                MainMenuInfo.UpdateCache(menus);
+                MainMenuInfo.UpdateCache(mainMenuItems);
             });
         }
 
         private static View CreateContent(bool customizationChanged = false)
         {
             var content = CreateScrollableBase();
-            CreateContentRows(content, customizationChanged);
+            itemsLoaded = LoadMainMenuItems(customizationChanged);
+            _ = CreateContentRows(content);
             return content;
         }
 
