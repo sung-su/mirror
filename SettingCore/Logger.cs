@@ -30,7 +30,7 @@ namespace SettingCore
 
         public static void Performance(string message, [CallerFilePath] string file = "", [CallerMemberName] string func = "", [CallerLineNumber] int line = 0)
         {
-            String timeStamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+            String timeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
             Tizen.Log.Debug(PerfTag, $"{message} : {timeStamp}", file, func, line);
         }
     }
