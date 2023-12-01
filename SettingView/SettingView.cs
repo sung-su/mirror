@@ -44,10 +44,21 @@ namespace SettingView
         {
         }
 
+        private Task InitResourcesManager()
+        {
+            return Task.Run(() =>
+            {
+                // initialize ResourcesManager instance
+                var title = Resources.IDS_ST_OPT_SETTINGS;
+                return true;
+            });
+        }
+
         protected override void OnCreate()
         {
             Logger.Performance($"ONCREATE start");
 
+            _ = InitResourcesManager();
             itemsLoaded = LoadMainMenuItems();
 
             base.OnCreate();
