@@ -15,7 +15,6 @@
  */
 
 using SettingCore;
-using SettingCore.Views;
 using SettingView.TextResources;
 using System;
 using System.Collections.Generic;
@@ -32,12 +31,14 @@ namespace SettingView
     public class Program : NUIApplication
     {
         private static SettingViewBorder appCustomBorder;
-        private ContentPage mMainPage;
+        private static CustomPage page;
         private static Task rowsCreated;
         private static bool noMainMenus;
         private static bool noVisibleMainMenus;
         private static List<MainMenuInfo> mainMenuItems;
         private static Task itemsLoaded;
+        private static Task contentLoaded;
+        private bool isLightTheme => ThemeManager.PlatformThemeId == "org.tizen.default-light-theme";
 
         public Program(Size2D windowSize, Position2D windowPosition, ThemeOptions themeOptions, IBorderInterface borderInterface)
             : base(windowSize, windowPosition, themeOptions, borderInterface)
@@ -52,6 +53,50 @@ namespace SettingView
                 var title = Resources.IDS_ST_OPT_SETTINGS;
                 return true;
             });
+        }        
+        
+        private Task CreateTitleAndScroll()
+        {
+            return Task.Run(async () =>
+            {
+                await Post(() =>
+                {
+                    Logger.Performance($"CreateTitleAndScroll start");
+                    page.Title = new TextLabel()
+                    {
+                        Size = new Size(-1, 64).SpToPx(),
+                        Margin = new Extents(16, 0, 0, 0).SpToPx(),
+                        Text = Resources.IDS_ST_OPT_SETTINGS,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        PixelSize = 24.SpToPx(),
+                        ThemeChangeSensitive = true,
+                    };
+                    page.Add(page.Title);
+                    page.Title.Relayout += (s, e) =>
+                    {
+                        Logger.Performance($"CreateTitleAndScroll label");
+                    };
+
+                    page.Content = new ScrollableBase()
+                    {
+                        WidthSpecification = LayoutParamPolicies.MatchParent,
+                        HeightSpecification = LayoutParamPolicies.MatchParent,
+                        ScrollingDirection = ScrollableBase.Direction.Vertical,
+                        HideScrollbar = false,
+                        Layout = new LinearLayout()
+                        {
+                            LinearOrientation = LinearLayout.Orientation.Vertical,
+                        },
+                    };
+
+                    page.Add(page.Content);
+                    page.Content.Relayout += (s, e) =>
+                    {
+                        Logger.Performance($"CreateTitleAndScroll scroll");
+                    };
+                    return true;
+                });
+            });
         }
 
         protected override void OnCreate()
@@ -65,22 +110,28 @@ namespace SettingView
 
             Logger.Performance($"ONCREATE base");
 
-            mMainPage = CreateMainPage();
+            page = new CustomPage()
+            {
+                BackgroundColor = isLightTheme ? new Color("#FAFAFA") : new Color("#16131A"),
+            };
+
+            page.Relayout += (s, e) =>
+            {
+                Logger.Performance($"Page relayout");
+            };
 
             Logger.Performance($"ONCREATE main page");
 
-            mMainPage.Content = CreateScrollableBase();
+            contentLoaded = CreateTitleAndScroll();
+            rowsCreated = CreateContentRows();
 
-            Logger.Performance($"ONCREATE scrolable base");
-
-            rowsCreated = CreateContentRows(mMainPage.Content);
             _ = CheckCustomization();
 
             var navigator = new SettingNavigation();
 
             GetDefaultWindow().Remove(GetDefaultWindow().GetDefaultNavigator());
             GetDefaultWindow().SetDefaultNavigator(navigator);
-            GetDefaultWindow().GetDefaultNavigator().Push(mMainPage);
+            GetDefaultWindow().GetDefaultNavigator().Push(page);
 
             RegisterEvents();
 
@@ -132,31 +183,17 @@ namespace SettingView
                 if (!customizationMainMenusStr.SequenceEqual(cacheMainMenuStr))
                 {
                     Logger.Verbose($"customization has changed. Reload main view.");
-                    if (mMainPage != null)
+                    if (page != null)
                     {
                         await Post(() =>
                         {
-                            mMainPage.Content = CreateContent(true);
+                            CreateContent();
                             return true;
                         });
                     }
                 }
                 return true;
             });
-        }
-
-        private ContentPage CreateMainPage()
-        {
-            var mainPage = new BaseContentPage()
-            {
-                CornerRadius = (SettingViewBorder.WindowCornerRadius - SettingViewBorder.WindowPadding).SpToPx(),
-                ThemeChangeSensitive = true,
-            };
-
-            Logger.Performance($"ONCREATE base page");
-
-            CreateAppBar(mainPage);
-            return mainPage;
         }
 
         private void OnWindowOrientationChangedEvent(object sender, WindowOrientationChangedEventArgs e)
@@ -222,9 +259,9 @@ namespace SettingView
                 }
             }
 
-            if (mMainPage != null && items.Any())
+            if (page != null && items.Any())
             {
-                mMainPage.Content = CreateContent(true);
+                CreateContent();
             }
         }
 
@@ -262,74 +299,24 @@ namespace SettingView
 
         private void SystemSettings_LocaleLanguageChanged(object sender, Tizen.System.LocaleLanguageChangedEventArgs e)
         {
-            if (mMainPage != null && mMainPage.AppBar != null)
+            if (page != null)
             {
                 MainMenuInfo.ClearCache();
 
-                mMainPage.AppBar.Title = Resources.IDS_ST_OPT_SETTINGS;
-                mMainPage.Content = CreateContent();
+                page.Title.Text = Resources.IDS_ST_OPT_SETTINGS;
+                CreateContent();
             }
         }
 
         private void ThemeManager_ThemeChanged(object sender, ThemeChangedEventArgs e)
         {
-            if (mMainPage != null && e.IsPlatformThemeChanged)
+            if (page != null && e.IsPlatformThemeChanged)
             {
+                page.BackgroundColor = isLightTheme ? new Color("#FAFAFA") : new Color("#16131A");
+
                 MainMenuInfo.ClearCache();
-
-                // recreate main page content just to apply new colors from gadgets
-                mMainPage.Content = CreateContent();
+                CreateContent();
             }
-        }
-
-        private static System.Threading.Tasks.Task CreateAppBar(BaseContentPage mainPage)
-        {
-            return System.Threading.Tasks.Task.Run(async () =>
-            {
-                await Post(() =>
-                {
-                    System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-                    stopwatch.Start();
-
-                    // TODO: remove style customization with scalable unit, when merged to TizenFX
-                    var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar") as AppBarStyle;
-                    appBarStyle.TitleTextLabel.PixelSize = 24.SpToPx();
-
-                    AppBar appBar = new AppBar(appBarStyle)
-                    {
-                        Size = new Size(-1, 64).SpToPx(),
-                        Padding = new Extents(16, 16, 0, 0).SpToPx(),
-                        Title = Resources.IDS_ST_OPT_SETTINGS,
-                        AutoNavigationContent = false,
-                        NavigationContent = new View(), // FIXME: must be set with empty View to hide default back button
-                        ThemeChangeSensitive = true,
-                    };
-                    appBar.Relayout += (s, e) =>
-                    {
-                        stopwatch?.Stop();
-                        Logger.Performance($"UICompleted appbar: {stopwatch.Elapsed.TotalMilliseconds}");
-                    };
-                    mainPage.AppBar = appBar;
-                    return true;
-                });
-            });
-        }
-
-        private static View CreateScrollableBase()
-        {
-            var content = new ScrollableBase()
-            {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                HeightSpecification = LayoutParamPolicies.MatchParent,
-                ScrollingDirection = ScrollableBase.Direction.Vertical,
-                HideScrollbar = false,
-                Layout = new LinearLayout()
-                {
-                    LinearOrientation = LinearLayout.Orientation.Vertical,
-                },
-            };
-
-            return content;
         }
 
         private static Task LoadMainMenuItems(bool customizationChanged = false)
@@ -372,20 +359,20 @@ namespace SettingView
             });
         }
 
-        private static async Task CreateContentRows(View content)
+        private static async Task CreateContentRows()
         {
             await itemsLoaded;
+            await contentLoaded;
             await Task.Run(async () =>
             {
-                System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-                stopwatch.Start();
+                System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();  
 
                 if (noMainMenus)
                 {
                     await Post(() =>
                     {
                         var textLabel = GetTextNotice("There is no setting menus installed.", Color.Orange);
-                        content.Add(textLabel);
+                        page.Content.Add(textLabel);
                         return true;
                     });
                     return;
@@ -396,7 +383,7 @@ namespace SettingView
                     await Post(() =>
                     {
                         var textLabel = GetTextNotice("There is no setting menus visible.", Color.Gray);
-                        content.Add(textLabel);
+                        page.Content.Add(textLabel);
                         return true;
                     });
                     return;
@@ -406,6 +393,11 @@ namespace SettingView
                 {
                     await Post(() =>
                     {
+                        if(menu == mainMenuItems.First())
+                        {
+                            Logger.Performance($"CreateContentRows start");
+                            stopwatch.Start();
+                        }
                         var row = new SettingCore.Views.MainMenuItem(menu.IconPath, new Color(menu.IconColorHex), menu.Title);
                         row.Clicked += (s, e) =>
                         {
@@ -420,7 +412,7 @@ namespace SettingView
                                 Logger.Performance($"UICompleted items: {stopwatch.Elapsed.TotalMilliseconds}");
                             };
                         }
-                        content.Add(row);
+                        page.Content.Add(row);
                         return true;
                     });
                 }
@@ -429,12 +421,11 @@ namespace SettingView
             });
         }
 
-        private static View CreateContent(bool customizationChanged = false)
+        private static void CreateContent(bool customizationChanged = false)
         {
-            var content = CreateScrollableBase();
+            page.Content.RemoveAllChildren(true);
             itemsLoaded = LoadMainMenuItems(customizationChanged);
-            _ = CreateContentRows(content);
-            return content;
+            _ = CreateContentRows();
         }
 
         private static View GetTextNotice(string text, Color color)
