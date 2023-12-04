@@ -361,12 +361,9 @@ namespace SettingView
 
         private static async Task CreateContentRows()
         {
-            await itemsLoaded;
-            await contentLoaded;
+            await Task.WhenAll(new Task[] { itemsLoaded, contentLoaded });
             await Task.Run(async () =>
             {
-                System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();  
-
                 if (noMainMenus)
                 {
                     await Post(() =>
@@ -389,6 +386,7 @@ namespace SettingView
                     return;
                 }
 
+                System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
                 foreach (var menu in mainMenuItems)
                 {
                     await Post(() =>
