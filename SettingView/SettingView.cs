@@ -99,12 +99,17 @@ namespace SettingView
             });
         }
 
+        protected override void OnPreCreate()
+        {
+            Logger.Performance($"OnPreCreate");
+            _ = InitResourcesManager();
+            itemsLoaded = LoadMainMenuItems();
+            base.OnPreCreate();
+        }
+
         protected override void OnCreate()
         {
             Logger.Performance($"ONCREATE start");
-
-            _ = InitResourcesManager();
-            itemsLoaded = LoadMainMenuItems();
 
             base.OnCreate();
 
