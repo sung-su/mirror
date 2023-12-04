@@ -266,7 +266,7 @@ namespace SettingView
 
             if (page != null && items.Any())
             {
-                CreateContent();
+                CreateContent(true);
             }
         }
 
