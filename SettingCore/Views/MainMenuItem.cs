@@ -60,7 +60,7 @@ namespace SettingCore.Views
 
             AccessibilityRole = Role.MenuItem;
 
-            ThemeManager.ThemeChanged += (s, e) => { OnChangeSelected(false); };
+            ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
         }
 
         public override void OnChangeSelected(bool selected)
@@ -85,9 +85,23 @@ namespace SettingCore.Views
             }
         }
 
+        private void ThemeManager_ThemeChanged(object sender, ThemeChangedEventArgs e)
+        {
+            if (this != null) // handle exception NUI's native dali object is already disposed.
+            {
+                OnChangeSelected(false);
+            }
+        }
+
         protected override string AccessibilityGetName()
         {
             return titleTextLabel.Text;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            ThemeManager.ThemeChanged -= ThemeManager_ThemeChanged;
+            base.Dispose(disposing);
         }
     }
 }
