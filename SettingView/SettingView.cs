@@ -411,7 +411,7 @@ namespace SettingView
                         {
                             row.Relayout += (s, e) =>
                             {
-                                stopwatch?.Stop();
+                                stopwatch.Stop();
                                 Logger.Performance($"UICompleted items: {stopwatch.Elapsed.TotalMilliseconds}");
                             };
                         }
