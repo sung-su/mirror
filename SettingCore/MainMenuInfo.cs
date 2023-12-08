@@ -31,7 +31,7 @@ namespace SettingCore
         {
             try
             {
-                string text = System.IO.File.ReadAllText(CachePath, Encoding.ASCII);
+                string text = System.IO.File.ReadAllText(CachePath, Encoding.UTF8);
 
                 List<MainMenuInfo> fromCache = new List<MainMenuInfo>();
 
