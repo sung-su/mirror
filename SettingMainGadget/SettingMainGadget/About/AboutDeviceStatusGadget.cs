@@ -122,7 +122,8 @@ namespace Setting.Menu
             }
 
             var storage = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_STORAGE)),
-                $"{bytesToGB(available).ToString("0.##")}GB available (Total {bytesToGB(total).ToString("0.##")}GB)");
+                $"{bytesToGB(available).ToString("0.##")}GB {NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_STORAGE_GB_AVAILABLE))}" +
+                $" ({NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_STORAGE_GB_TOTAL))} {bytesToGB(total).ToString("0.##")}GB)");
             if (storage != null)
             {
                 sections.Add(MainMenuProvider.About_DeviceStatus_storage, storage);

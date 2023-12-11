@@ -56,13 +56,11 @@ namespace Setting.Menu.Apps
                 },
             };
 
-            // TODO : add version to the resources
-
-            var appVersion = new TextWithIconListItem(app.Label, Color.Transparent, iconPath: app.IconPath, subText: $"Version {app.Version}");
+            var appVersion = new TextWithIconListItem(app.Label, Color.Transparent, iconPath: app.IconPath, subText: $"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_VERSION))} {app.Version}");
 
             var close = new Button("Tizen.NUI.Components.Button.Outlined")
             {
-                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BUTTON_FORCE_STOP)), // TODO : add force close to the resources
+                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BUTTON_FORCE_STOP)),
                 Size = new Size(252, 48).SpToPx(),
                 WidthResizePolicy = ResizePolicyType.FitToChildren,
                 HeightResizePolicy = ResizePolicyType.FitToChildren,
@@ -131,13 +129,13 @@ namespace Setting.Menu.Apps
             var cachedSize = packageSizeInfo.CacheSize + packageSizeInfo.ExternalCacheSize;
             var totalSize = appSize + userDataSize + cachedSize;
 
-            infoView.Add(new TextHeaderListItem("Storage")); // TODO : add to the resources
-            infoView.Add(TextListItem.CreatePrimaryTextItemWithSubText("Total size", AppManager.GetSizeString(totalSize))); // TODO : add to the resources
+            infoView.Add(new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_STORAGE))));
+            infoView.Add(TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_TOTAL_SIZE)), AppManager.GetSizeString(totalSize)));
             infoView.Add(TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_APPLICATION)), AppManager.GetSizeString(appSize)));
-            infoView.Add(TextListItem.CreatePrimaryTextItemWithSubText("User data", AppManager.GetSizeString(userDataSize))); // TODO : add to the resources
+            infoView.Add(TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_USER_DATA)), AppManager.GetSizeString(userDataSize)));
 
-            infoView.Add(new TextHeaderListItem("Cache")); // TODO : add to the resources
-            infoView.Add(TextListItem.CreatePrimaryTextItemWithSubText("Cache", AppManager.GetSizeString(cachedSize))); // TODO : add to the resources
+            infoView.Add(new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_TMBODY_CACHE))));
+            infoView.Add(TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_TMBODY_CACHE)), AppManager.GetSizeString(cachedSize)));
             var clearCache = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_CLEAR_CACHE_ABB)));
 
             if (cachedSize > 0)
@@ -158,8 +156,8 @@ namespace Setting.Menu.Apps
 
             if (defaultApps != null && defaultApps.Contains(app.Id))
             {
-                infoView.Add(new TextHeaderListItem("Default app settings")); // TODO : add to the resources
-                var defaultApp = TextListItem.CreatePrimaryTextItemWithSubText("Clear default app settings", "This app is set to open by default for some actions."); // TODO : add to the resources
+                infoView.Add(new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DEFAULT_APP_SETTINGS))));
+                var defaultApp = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_CLEAR_DEFAULT_APP_SETTINGS)));
                 clearCache.Clicked += (s, e) =>
                 {
                     // TODO : clear defaults
@@ -168,8 +166,8 @@ namespace Setting.Menu.Apps
 
             if (app.PackageType == PackageType.WGT)
             {
-                infoView.Add(new TextHeaderListItem("Web app")); // TODO : add to the resources
-                var webSettings = TextListItem.CreatePrimaryTextItem("Website settings"); // TODO : add to the resources
+                infoView.Add(new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_WEB_APP))));
+                var webSettings = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_WEBSITE_SETTINGS)));
                 webSettings.Clicked += (s, e) =>
                 {
                     // TODO : web settings
@@ -226,7 +224,7 @@ namespace Setting.Menu.Apps
             content.Add(textTitle);
 
             // main text
-            var textSubTitle = new TextLabel("This app will be uninstalled.") // TODO : add to the resources
+            var textSubTitle = new TextLabel(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_APP_WILL_BE_UNINSTALLED)))
             {
                 FontFamily = "BreezeSans",
                 PixelSize = 24.SpToPx(),
@@ -274,13 +272,13 @@ namespace Setting.Menu.Apps
                     }
                     else
                     {
-                        Notification.MakeToast($"Failed to uninstall {appInfoLabel}.", Notification.ToastBottom).Post(Notification.ToastShort);
+                        Notification.MakeToast(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_POP_FAILED_TO_UNINSTALL_THE_APP)), Notification.ToastBottom).Post(Notification.ToastShort);
                     }
                 }
                 catch (System.Exception ex)
                 {
                     Logger.Warn($"Couldn't uninstall the application {appid}, {ex.Message}");
-                    Notification.MakeToast($"Failed to uninstall {appInfoLabel}.", Notification.ToastBottom).Post(Notification.ToastShort);
+                    Notification.MakeToast(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_POP_FAILED_TO_UNINSTALL_THE_APP)), Notification.ToastBottom).Post(Notification.ToastShort);
                 }
             };
 

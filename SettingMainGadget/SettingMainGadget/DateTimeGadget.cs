@@ -78,6 +78,7 @@ namespace Setting.Menu
                 Logger.Warn($"AutomaticTimeUpdate is not supported: {e.Message}");
             }
 
+            isAutomaticTimeUpdateSupported = true;
             autoUpdateItem = new SwitchListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_AUTO_UPDATE)), isSelected: isAutomaticTimeUpdateSupported ? DateTimeManager.AutoTimeUpdate : false);
             autoUpdateItem.IsEnabled = isAutomaticTimeUpdateSupported;
             autoUpdateItem.Switch.SelectedChanged += (o, e) =>

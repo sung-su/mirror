@@ -88,7 +88,7 @@ namespace Setting.Menu.Storage
             content.Add(card);
 
             // App installation
-            headerItem = new TextHeaderListItem("App installation"); // TODO : add translation to Resources
+            headerItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_APP_INSTALLATION)));
             content.Add(headerItem);
 
             headerItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_BODY_SELECT_THE_DEFAULT_LOCATION_FOR_INSTALLING_APPS_WHERE_APPS_CAN_BE_SAVED_DEPENDS_ON_THE_TYPE_OF_APP_AND_THE_AVAILABILITY_OF_THE_LOCATION)), true);

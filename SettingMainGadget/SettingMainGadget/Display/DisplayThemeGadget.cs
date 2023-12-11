@@ -28,7 +28,7 @@ namespace Setting.Menu.Display
 
             RadioButtonGroup radioButtonGroup = new RadioButtonGroup();
 
-            var themeList = DisplayThemeManager.ThemeList.Select(a => a.GetName()).ToList();
+            var themeList = DisplayThemeManager.ThemeList.Select(a => a.GetName(this)).ToList();
 
             for (int i = 0; i < themeList.Count; i++)
             {

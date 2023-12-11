@@ -339,7 +339,7 @@ namespace Setting.Menu.Apps
         {
             return new TextLabel
             {
-                Text = "App size", // TODO : add translation to Resources 
+                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_APP_SIZE)),
                 TextColor = IsLightTheme ? new Color("#83868F") : new Color("#666666"),
                 PixelSize = 24.SpToPx(),
                 Margin = new Extents(20, 0, 16, 16).SpToPx(),

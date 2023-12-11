@@ -135,7 +135,7 @@ namespace Setting.Menu
 
             // section: font
 
-            fontItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_FONT)), $"{SystemSettings.FontSize}, {SystemSettings.FontType}");
+            fontItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_FONT)), $"{Display.DisplayFontSizeGadget.FontsizeInfo.GetName(this, SystemSettings.FontSize)}, {SystemSettings.FontType}");
             if (fontItem != null)
             {
                 fontItem.Clicked += (o, e) =>

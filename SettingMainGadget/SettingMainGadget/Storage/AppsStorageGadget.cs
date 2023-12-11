@@ -52,7 +52,7 @@ namespace Setting.Menu.Storage
                 },
                 new MoreMenuItem()
                 {
-                    Text = "Frequency of use", // TODO : add translation to Resources
+                    Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_FREQUENCY_OF_USE)),
                     Action = () => { SortAppications(currentSortType != SortType.frequency_desc ? SortType.frequency_desc : SortType.frequency_asc); }
                 }
             };

@@ -138,7 +138,7 @@ namespace Setting.Menu
         private void InternalUsageView()
         {
             // Internal storage
-            var internalUsageItem = new TextHeaderListItem("Device storage usage"); // TODO : add translation to Resources
+            var internalUsageItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DEVICE_STORAGE_USAGE)));
             content.Add(internalUsageItem);
         }
 
@@ -177,7 +177,7 @@ namespace Setting.Menu
         {
             if (internalCount > 0)
             {
-                var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText("Free space", GetMediaSizeString(internalAvailable)); // TODO : add translation to Resources
+                var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_FREE_SPACE)), GetMediaSizeString(internalAvailable));
                 content.Add(freeItem);
             }
         }
@@ -247,7 +247,7 @@ namespace Setting.Menu
         private void ExternalUsageView()
         {
             // External storage
-            var externalUsageItem = new TextHeaderListItem("External storage usage"); // TODO : add translation to Resources
+            var externalUsageItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DEVICE_EXTERNAL_STORAGE_USAGE)));
             content.Add(externalUsageItem);
         }
 
@@ -268,7 +268,7 @@ namespace Setting.Menu
                 var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_TOTAL_SPACE))}:", GetMediaSizeString(externalTotal));
                 externalStorage.Add(totalItem);
 
-                var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText("Free space:", GetMediaSizeString(externalAvailable)); // TODO : add translation to Resources
+                var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_FREE_SPACE))}:", GetMediaSizeString(externalAvailable));
                 externalStorage.Add(freeItem);
 
                 var unmount = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_UNMOUNT_SD_CARD)));
@@ -287,7 +287,7 @@ namespace Setting.Menu
             }
             else
             {
-                var item = TextListItem.CreatePrimaryTextItemWithSubText("No SD card", NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_INSERT_SD_CARD))); // TODO : add translation to Resources
+                var item = TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NO_SD_CARD)), NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_INSERT_SD_CARD)));
                 item.IsEnabled = false;
                 externalStorage.Add(item);
             }
@@ -307,8 +307,8 @@ namespace Setting.Menu
                 },
             };
 
-            var defaultSettingsItem = new TextHeaderListItem("Storage usage"); // TODO : add translation to Resources
-            var storageLocationItem = TextListItem.CreatePrimaryTextItemWithSubText("Default storage settings", "Device/Storage"); // FIXME : sub text should be dynamic & add translation to Resources
+            var defaultSettingsItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_STORAGE_USAGE)));
+            var storageLocationItem = TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_HEADER_DEFAULT_STORAGE_SETTINGS_ABB)), NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_HEADER_DEVICE_STORAGE_ABB))); // FIXME : sub text should be dynamic & add translation to Resources
             storageLocationItem.Clicked += (s, e) =>
             {
                 NavigateTo(MainMenuProvider.Storage_DefaultSettings);
@@ -517,7 +517,7 @@ namespace Setting.Menu
             };
 
             //title text
-            var textTitle = new TextLabel("Clear cache data") // TODO : add translation to Resources
+            var textTitle = new TextLabel(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_CLEAR_CACHE_DATA)))
             {
                 FontFamily = "BreezeSans",
                 PixelSize = 24.SpToPx(),
@@ -528,7 +528,7 @@ namespace Setting.Menu
             content.Add(textTitle);
 
             // main text
-            var textSubTitle = new TextLabel("Cached data will be cleared for all apps.") // TODO : add translation to Resources
+            var textSubTitle = new TextLabel(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_CACHED_DATA_WILL_BE_CLEARED)))
             {
                 FontFamily = "BreezeSans",
                 PixelSize = 24.SpToPx(),
@@ -554,7 +554,7 @@ namespace Setting.Menu
             {
                 WidthResizePolicy = ResizePolicyType.FitToChildren,
                 HeightResizePolicy = ResizePolicyType.FitToChildren,
-                Text = "Clear", // TODO : add translation to Resources
+                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_CLEAR)),
                 Size = new Size(252, 48).SpToPx(),
                 Margin = new Extents(61, 32, 0, 32).SpToPx(),
             };
@@ -623,7 +623,7 @@ namespace Setting.Menu
                     var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_TOTAL_SPACE))}:", GetMediaSizeString(ExternalTotal));
                     externalStorage.Add(totalItem);
 
-                    var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText("Free space:", GetMediaSizeString(ExternalAvailable)); // TODO : add translation to Resources
+                    var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_FREE_SPACE))}:", GetMediaSizeString(ExternalAvailable));
                     externalStorage.Add(freeItem);
 
                     var unmount = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_UNMOUNT_SD_CARD)));
@@ -642,7 +642,7 @@ namespace Setting.Menu
                 }
                 else
                 {
-                    var item = TextListItem.CreatePrimaryTextItemWithSubText("No SD card", NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_INSERT_SD_CARD))); // TODO : add translation to Resources
+                    var item = TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NO_SD_CARD)), NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_INSERT_SD_CARD)));
                     item.IsEnabled = false;
                     externalStorage.Add(item);
                 }

@@ -8,3 +8,4 @@
 **/[Bb]uild/
 **/res/allowed/*.dll
 **/res/allowed/*/*.dll
+**/Resources.Designer.cs

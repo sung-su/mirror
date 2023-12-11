@@ -1,6 +1,8 @@
 ﻿using SettingCore;
+using SettingMainGadget.LanguageInput;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
 
 namespace SettingMainGadget.DateTime
@@ -28,6 +30,15 @@ namespace SettingMainGadget.DateTime
             }
         }
 
+        public static string HourFormat12
+        {
+            get
+            {
+                var isKorean = LanguageInputDisplayLanguageManager.GetDisplayLanguage() == "ko_KR";
+                return isKorean ? "tt h:mm" : "h:mm tt";
+            }
+        }
+
         public static bool AutoTimeUpdate
         {
             get
@@ -48,7 +59,8 @@ namespace SettingMainGadget.DateTime
 
         public static string FormattedTime
         {
-            get => System.DateTime.Now.ToString(Is24HourFormat ? "HH:mm" : "h:mm tt");
+            get => System.DateTime.Now.ToString(Is24HourFormat ? "HH:mm" : HourFormat12);
         }
+
     }
 }

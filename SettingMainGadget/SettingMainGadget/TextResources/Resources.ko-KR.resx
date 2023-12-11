@@ -483,6 +483,9 @@
   <data name="IDS_SM_HEADER_DEFAULT_STORAGE_SETTINGS_ABB" xml:space="preserve">
     <value>기본 저장공간 설정</value>
   </data>
+  <data name="IDS_SM_HEADER_DEVICE_STORAGE_ABB" xml:space="preserve">
+    <value>디바이스 / 저장공간</value>
+  </data>
   <data name="IDS_SM_SBODY_CALCULATING_ING" xml:space="preserve">
     <value>계산 중...</value>
   </data>
@@ -693,8 +696,17 @@
   <data name="IDS_ST_BODY_CACHE" xml:space="preserve">
     <value>캐시</value>
   </data>
+  <data name="IDS_ST_BODY_CLEAR_CACHE_DATA" xml:space="preserve">
+    <value>캐시 데이터 삭제</value>
+  </data>
+  <data name="IDS_ST_BODY_CLEAR" xml:space="preserve">
+    <value>삭제</value>
+  </data>
   <data name="IDS_ST_BODY_CACHED_DATA_ABB" xml:space="preserve">
     <value>캐시에 저장된 데이터</value>
+  </data>
+  <data name="IDS_ST_BODY_CACHED_DATA_WILL_BE_CLEARED" xml:space="preserve">
+    <value>모든 앱에 대한 캐시 데이터를 삭제합니다.</value>
   </data>
   <data name="IDS_ST_BODY_CALL" xml:space="preserve">
     <value>통화</value>
@@ -866,6 +878,12 @@
   </data>
   <data name="IDS_ST_BODY_DEVICE_STORAGE" xml:space="preserve">
     <value>기기 저장</value>
+  </data>
+  <data name="IDS_ST_BODY_DEVICE_STORAGE_USAGE" xml:space="preserve">
+    <value>디바이스 저장공간 사용량</value>
+  </data>
+  <data name="IDS_ST_BODY_DEVICE_EXTERNAL_STORAGE_USAGE" xml:space="preserve">
+    <value>외장 메모리 저장공간 사용량</value>
   </data>
   <data name="IDS_ST_BODY_DE_REGISTRATION_CODE_NOT_FOUND" xml:space="preserve">
     <value>등록해제 코드를 찾을 수 없습니다.</value>
@@ -1107,6 +1125,9 @@
   <data name="IDS_ST_BODY_INPUT_ASSISTANCE" xml:space="preserve">
     <value>입력 보조</value>
   </data>
+  <data name="IDS_ST_BODY_NO_SD_CARD" xml:space="preserve">
+    <value>SD 카드 없음</value>
+  </data>
   <data name="IDS_ST_BODY_INSERT_SD_CARD" xml:space="preserve">
     <value>SD 카드를 삽입하세요.</value>
   </data>
@@ -1256,6 +1277,9 @@
   </data>
   <data name="IDS_ST_BODY_NAME" xml:space="preserve">
     <value>이름</value>
+  </data>
+  <data name="IDS_ST_FREQUENCY_OF_USE" xml:space="preserve">
+    <value>사용 빈도</value>
   </data>
   <data name="IDS_ST_BODY_NATURAL_T_DISPLAY_EFFECT" xml:space="preserve">
     <value>내추럴 화면</value>
@@ -1659,6 +1683,27 @@
   <data name="IDS_ST_BODY_STORAGE_USAGE" xml:space="preserve">
     <value>저장공간 사용량</value>
   </data>
+  <data name="IDS_ST_BODY_TOTAL_SIZE" xml:space="preserve">
+    <value>전체 용량</value>
+  </data>
+  <data name="IDS_ST_BODY_APP_SIZE" xml:space="preserve">
+    <value>엡 용량</value>
+  </data>
+  <data name="IDS_ST_BODY_USER_DATA" xml:space="preserve">
+    <value>전체 용량</value>
+  </data>
+  <data name="IDS_ST_BODY_DEFAULT_APP_SETTINGS" xml:space="preserve">
+    <value>기본 앱 설정</value>
+  </data>
+  <data name="IDS_ST_BODY_CLEAR_DEFAULT_APP_SETTINGS" xml:space="preserve">
+    <value>기본 앱 설정 삭제</value>
+  </data>
+  <data name="IDS_ST_BODY_STORAGE_GB_AVAILABLE" xml:space="preserve">
+    <value>사용 가능</value>
+  </data>
+  <data name="IDS_ST_BODY_STORAGE_GB_TOTAL" xml:space="preserve">
+  <value>총</value>
+  </data>
   <data name="IDS_ST_BODY_SUNDAY" xml:space="preserve">
     <value>일요일</value>
   </data>
@@ -1685,6 +1730,12 @@
   </data>
   <data name="IDS_ST_BODY_THEME" xml:space="preserve">
     <value>테마</value>
+  </data>
+  <data name="IDS_ST_BODY_THEME_LIGHT" xml:space="preserve">
+    <value>라이트 테마</value>
+  </data>
+  <data name="IDS_ST_BODY_THEME_DARK" xml:space="preserve">
+    <value>다크 테마</value>
   </data>
   <data name="IDS_ST_BODY_THERE_ARE_NO_APPS_SET_AS_DEFAULTS" xml:space="preserve">
     <value>기본으로 설정된 앱이 없습니다.</value>
@@ -1872,6 +1923,15 @@
   <data name="IDS_ST_BODY_WEB_APPLICATIONS" xml:space="preserve">
     <value>웹 애플리케이션</value>
   </data>
+  <data name="IDS_ST_BODY_WEB_APP" xml:space="preserve">
+    <value>웹 앱</value>
+  </data>
+  <data name="IDS_ST_BODY_WEBSITE_SETTINGS" xml:space="preserve">
+    <value>웹사이트 설정</value>
+  </data>
+  <data name="IDS_ST_APP_WILL_BE_UNINSTALLED" xml:space="preserve">
+    <value>이 앱을 삭제합니다.</value>
+  </data>
   <data name="IDS_ST_BODY_WHEN_DATA_ROAMING_IS_DISABLED_APPLICATIONS_THAT_USE_THE_DATA_CONNECTION_MAY_NOT_WORK" xml:space="preserve">
     <value>[데이터 로밍]이 해제된 경우 데이터 연결을 사용하는 앱이 작동하지 않을 수 있습니다.</value>
   </data>
@@ -1894,7 +1954,7 @@
     <value>Wi-Fi</value>
   </data>
   <data name="IDS_ST_BODY_WI_FI_MAC_ADDRESS" xml:space="preserve">
-    <value>Wi-Fi MAC address</value>
+    <value>Wi-Fi MAC 주소</value>
   </data>
   <data name="IDS_ST_BODY_YOUR_CHANGES_ARE_BEING_MADE_T_TTS" xml:space="preserve">
     <value>변경사항을 적용하는 중입니다.</value>
@@ -2265,6 +2325,9 @@
   <data name="IDS_ST_HEADER_TOTAL_SPACE" xml:space="preserve">
     <value>총 공간</value>
   </data>
+  <data name="IDS_ST_HEADER_FREE_SPACE" xml:space="preserve">
+    <value>여유 공간</value>
+  </data>
   <data name="IDS_ST_HEADER_TOUCH_KEY_LIGHT_DURATION" xml:space="preserve">
     <value>터치 버튼 조명 시간</value>
   </data>
@@ -2363,6 +2426,21 @@
   </data>
   <data name="IDS_ST_MBODY_FONT_SIZE" xml:space="preserve">
     <value>글자 크기</value>
+  </data>
+  <data name="IDS_ST_MBODY_FONT_SIZE_GIANT" xml:space="preserve">
+    <value>가장 크게</value>
+  </data>
+  <data name="IDS_ST_MBODY_FONT_SIZE_HUGE" xml:space="preserve">
+    <value>더 크게</value>
+  </data>
+  <data name="IDS_ST_MBODY_FONT_SIZE_LARGE" xml:space="preserve">
+    <value>크게</value>
+  </data>
+  <data name="IDS_ST_MBODY_FONT_SIZE_NORMAL" xml:space="preserve">
+    <value>보통</value>
+  </data>
+  <data name="IDS_ST_MBODY_FONT_SIZE_SMALL" xml:space="preserve">
+    <value>작게</value>
   </data>
   <data name="IDS_ST_MBODY_GSM_ONLY" xml:space="preserve">
     <value>GSM만 연결</value>
@@ -2958,64 +3036,64 @@
   <data name="IDS_ST_HEADER_SMART_MANAGER" xml:space="preserve">
     <value>스마트 매니저</value>
   </data>
-	<data name="IDS_SCP_BODY_OWNER_ABB" xml:space="preserve">
+  <data name="IDS_SCP_BODY_OWNER_ABB" xml:space="preserve">
     <value>소유자</value>
   </data>
-	<data name="IDS_ST_BODY_CERTIFICATE_DETAILS" xml:space="preserve">
+  <data name="IDS_ST_BODY_CERTIFICATE_DETAILS" xml:space="preserve">
     <value>인증서 상세정보</value>
   </data>
-	<data name="IDS_ST_BODY_CERTIFICATE_INFORMATION" xml:space="preserve">
+  <data name="IDS_ST_BODY_CERTIFICATE_INFORMATION" xml:space="preserve">
     <value>인증서 정보</value>
   </data>
-	<data name="IDS_ST_BODY_CERTIFICATION_AUTHORITY_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_CERTIFICATION_AUTHORITY_C" xml:space="preserve">
     <value>인증 기관</value>
   </data>
-	<data name="IDS_ST_BODY_COMMON_NAME_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_COMMON_NAME_C" xml:space="preserve">
     <value>일반 이름</value>
   </data>
-	<data name="IDS_ST_BODY_FALSE" xml:space="preserve">
+  <data name="IDS_ST_BODY_FALSE" xml:space="preserve">
     <value>거짓</value>
   </data>
-	<data name="IDS_ST_BODY_ISSUER" xml:space="preserve">
+  <data name="IDS_ST_BODY_ISSUER" xml:space="preserve">
     <value>발급자</value>
   </data>
-	<data name="IDS_ST_BODY_ISSUER_COLON" xml:space="preserve">
+  <data name="IDS_ST_BODY_ISSUER_COLON" xml:space="preserve">
     <value>발급자</value>
   </data>
-	<data name="IDS_ST_BODY_KEY_USAGE_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_KEY_USAGE_C" xml:space="preserve">
     <value>키 용도</value>
   </data>
-	<data name="IDS_ST_BODY_ORGANISATION_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_ORGANISATION_C" xml:space="preserve">
     <value>기관</value>
   </data>
-	<data name="IDS_ST_BODY_PUBLIC_KEY_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_PUBLIC_KEY_C" xml:space="preserve">
     <value>공개키</value>
   </data>
-	<data name="IDS_ST_BODY_SERIAL_NUMBER_COLON" xml:space="preserve">
+  <data name="IDS_ST_BODY_SERIAL_NUMBER_COLON" xml:space="preserve">
     <value>시리얼 번호</value>
   </data>
-	<data name="IDS_ST_BODY_SIGNATURE_ALGORITHM_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_SIGNATURE_ALGORITHM_C" xml:space="preserve">
     <value>서명 알고리즘</value>
   </data>
-	<data name="IDS_ST_BODY_TRUE" xml:space="preserve">
+  <data name="IDS_ST_BODY_TRUE" xml:space="preserve">
     <value>진실</value>
   </data>
-	<data name="IDS_ST_BODY_TRUSTED_ROOT_CA_CERTIFICATES_ABB" xml:space="preserve">
+  <data name="IDS_ST_BODY_TRUSTED_ROOT_CA_CERTIFICATES_ABB" xml:space="preserve">
     <value>신뢰할 수 있는 루트 CA 인증서</value>
   </data>
-	<data name="IDS_ST_BODY_USER_CERTIFICATES" xml:space="preserve">
+  <data name="IDS_ST_BODY_USER_CERTIFICATES" xml:space="preserve">
     <value>사용자 인증서</value>
   </data>
-	<data name="IDS_ST_BODY_VALID_FROM_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_VALID_FROM_C" xml:space="preserve">
     <value>유효기간 시작일</value>
   </data>
-	<data name="IDS_ST_BODY_VALID_TO_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_VALID_TO_C" xml:space="preserve">
     <value>유효기간 만료일</value>
   </data>
-	<data name="IDS_ST_BODY_VERSION_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_VERSION_C" xml:space="preserve">
     <value>버전</value>
   </data>
-	<data name="IDS_ST_TPOP_NO_CERTIFICATE_FOUND_DETAIL" xml:space="preserve">
+  <data name="IDS_ST_TPOP_NO_CERTIFICATE_FOUND_DETAIL" xml:space="preserve">
     <value>인증서 추가 후에 인증서를 여기서 볼 수 있습니다.</value>
   </data>
 </root>

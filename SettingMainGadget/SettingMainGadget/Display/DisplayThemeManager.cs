@@ -20,9 +20,9 @@ namespace SettingMainGadget.Display
                 Id = id;
             }
 
-            public string GetName()
+            public string GetName(MenuGadget gadget)
             {
-                return Name;
+                return gadget.NUIGadgetResourceManager.GetString(Name);
             }
 
             public string GetId()
@@ -33,9 +33,9 @@ namespace SettingMainGadget.Display
 
         public static readonly List<ThemeInfo> ThemeList = new List<ThemeInfo>
         {
-            new ThemeInfo("Light theme", "org.tizen.default-light-theme"),
-            new ThemeInfo("Dark theme", "org.tizen.default-dark-theme"),
-        }; // TODO : add name of the theme to the Resources so it can be translated when changing the language
+            new ThemeInfo(nameof(Resources.IDS_ST_BODY_THEME_LIGHT), "org.tizen.default-light-theme"),
+            new ThemeInfo(nameof(Resources.IDS_ST_BODY_THEME_DARK), "org.tizen.default-dark-theme"),
+        };
 
         public static void SetTheme(string Id)
         {
@@ -71,11 +71,11 @@ namespace SettingMainGadget.Display
             return -1;
         }
 
-        public static string GetThemeName(NUIGadget gadget)
+        public static string GetThemeName(MainMenuGadget gadget)
         {
             int index = GetThemeIndex();
 
-            return index >= 0 ? ThemeList[index].GetName() : gadget.NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_UNAVAILABLE));
+            return index >= 0 ? ThemeList[index].GetName(gadget) : gadget.NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_UNAVAILABLE));
         }
     }
 }

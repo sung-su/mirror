@@ -14,8 +14,17 @@ namespace Setting.Menu.Display
     {
         public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_FONT_SIZE));
 
-        private class FontsizeInfo
+        internal class FontsizeInfo
         {
+            static Dictionary<SystemSettingsFontSize, string> fontSizeResourceKeys = new Dictionary<SystemSettingsFontSize, string>
+            {
+                { SystemSettingsFontSize.Small, nameof(Resources.IDS_ST_MBODY_FONT_SIZE_SMALL)},
+                { SystemSettingsFontSize.Normal, nameof(Resources.IDS_ST_MBODY_FONT_SIZE_NORMAL)},
+                { SystemSettingsFontSize.Large, nameof(Resources.IDS_ST_MBODY_FONT_SIZE_LARGE)},
+                { SystemSettingsFontSize.Huge, nameof(Resources.IDS_ST_MBODY_FONT_SIZE_HUGE)},
+                { SystemSettingsFontSize.Giant, nameof(Resources.IDS_ST_MBODY_FONT_SIZE_GIANT)}
+            };
+
             private readonly SystemSettingsFontSize Value;
 
             public FontsizeInfo(SystemSettingsFontSize value)
@@ -23,9 +32,18 @@ namespace Setting.Menu.Display
                 Value = value;
             }
 
-            public string GetName()
+            public string GetName(MenuGadget gadget)
             {
-                return Value.ToString();
+                return GetName(gadget, Value);
+            }
+
+            public static string GetName(MenuGadget gadget, SystemSettingsFontSize fontSize)
+            {
+                if (fontSizeResourceKeys.TryGetValue(fontSize, out string fontResourceKey))
+                {
+                    return gadget.NUIGadgetResourceManager.GetString(fontResourceKey);
+                }
+                return fontSize.ToString();
             }
 
             public SystemSettingsFontSize GetValue()
@@ -61,7 +79,7 @@ namespace Setting.Menu.Display
 
             for (int i = 0; i < fontsizeList.Count; i++)
             {
-                RadioButtonListItem item = new RadioButtonListItem(fontsizeList[i].GetName());
+                RadioButtonListItem item = new RadioButtonListItem(fontsizeList[i].GetName(this));
                 item.RadioButton.IsSelected = fontsizeList[i].GetValue() == SystemSettings.FontSize;
 
                 radioButtonGroup.Add(item.RadioButton);

@@ -40,7 +40,7 @@ namespace Setting.Menu.Display
                 content.Remove(fontSizeItem);
             }
 
-            fontSizeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_FONT_SIZE)), SystemSettings.FontSize.ToString());
+            fontSizeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_FONT_SIZE)), DisplayFontSizeGadget.FontsizeInfo.GetName(this, SystemSettings.FontSize));
             fontSizeItem.Clicked += (o, e) =>
             {
                 NavigateTo(MainMenuProvider.Display_FontSize);

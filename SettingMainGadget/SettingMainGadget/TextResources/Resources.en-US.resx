@@ -474,6 +474,9 @@
   <data name="IDS_SM_HEADER_DEFAULT_STORAGE_SETTINGS_ABB" xml:space="preserve">
     <value>Default storage settings</value>
   </data>
+  <data name="IDS_SM_HEADER_DEVICE_STORAGE_ABB" xml:space="preserve">
+    <value>Device/Storage</value>
+  </data>
   <data name="IDS_SM_SBODY_CALCULATING_ING" xml:space="preserve">
     <value>Calculating...</value>
   </data>
@@ -684,8 +687,17 @@
   <data name="IDS_ST_BODY_CACHE" xml:space="preserve">
     <value>Cache</value>
   </data>
+  <data name="IDS_ST_BODY_CLEAR_CACHE_DATA" xml:space="preserve">
+    <value>Clear cache data</value>
+  </data>
+  <data name="IDS_ST_BODY_CLEAR" xml:space="preserve">
+    <value>Clear</value>
+  </data>
   <data name="IDS_ST_BODY_CACHED_DATA_ABB" xml:space="preserve">
     <value>Cached data</value>
+  </data>
+  <data name="IDS_ST_BODY_CACHED_DATA_WILL_BE_CLEARED" xml:space="preserve">
+    <value>Cached data will be cleared for all apps.</value>
   </data>
   <data name="IDS_ST_BODY_CALL" xml:space="preserve">
     <value>Call</value>
@@ -858,7 +870,13 @@
   <data name="IDS_ST_BODY_DEVICE_STORAGE" xml:space="preserve">
     <value>Device storage</value>
   </data>
-  <data name="IDS_ST_BODY_DE_REGISTRATION_CODE_NOT_FOUND" xml:space="preserve">
+  <data name="IDS_ST_BODY_DEVICE_STORAGE_USAGE" xml:space="preserve">
+    <value>Device storage usage</value>
+  </data>
+  <data name="IDS_ST_BODY_DEVICE_EXTERNAL_STORAGE_USAGE" xml:space="preserve">
+    <value>External storage usage</value>
+  </data>
+   <data name="IDS_ST_BODY_DE_REGISTRATION_CODE_NOT_FOUND" xml:space="preserve">
     <value>De-registration code not found.</value>
   </data>
   <data name="IDS_ST_BODY_DISABLING_ING" xml:space="preserve">
@@ -1098,6 +1116,9 @@
   <data name="IDS_ST_BODY_INPUT_ASSISTANCE" xml:space="preserve">
     <value>Input assistance</value>
   </data>
+  <data name="IDS_ST_BODY_NO_SD_CARD" xml:space="preserve">
+    <value>No SD card</value>
+  </data>
   <data name="IDS_ST_BODY_INSERT_SD_CARD" xml:space="preserve">
     <value>Insert SD card.</value>
   </data>
@@ -1247,6 +1268,9 @@
   </data>
   <data name="IDS_ST_BODY_NAME" xml:space="preserve">
     <value>Name</value>
+  </data>
+  <data name="IDS_ST_FREQUENCY_OF_USE" xml:space="preserve">
+    <value>Frequency of use</value>
   </data>
   <data name="IDS_ST_BODY_NATURAL_T_DISPLAY_EFFECT" xml:space="preserve">
     <value>Natural</value>
@@ -1641,7 +1665,28 @@
   <data name="IDS_ST_BODY_STORAGE_USAGE" xml:space="preserve">
     <value>Storage usage</value>
   </data>
-  <data name="IDS_ST_BODY_SUNDAY" xml:space="preserve">
+  <data name="IDS_ST_BODY_TOTAL_SIZE" xml:space="preserve">
+    <value>Total Size</value>
+  </data>
+  <data name="IDS_ST_BODY_APP_SIZE" xml:space="preserve">
+    <value>App Size</value>
+  </data>
+  <data name="IDS_ST_BODY_USER_DATA" xml:space="preserve">
+    <value>User data</value>
+  </data>
+  <data name="IDS_ST_BODY_DEFAULT_APP_SETTINGS" xml:space="preserve">
+    <value>Default app settings</value>
+  </data>
+  <data name="IDS_ST_BODY_CLEAR_DEFAULT_APP_SETTINGS" xml:space="preserve">
+    <value>Clear default app settings</value>
+  </data>
+  <data name="IDS_ST_BODY_STORAGE_GB_AVAILABLE" xml:space="preserve">
+    <value>available</value>
+  </data>
+  <data name="IDS_ST_BODY_STORAGE_GB_TOTAL" xml:space="preserve">
+    <value>Total</value>
+  </data>
+	<data name="IDS_ST_BODY_SUNDAY" xml:space="preserve">
     <value>Sunday</value>
   </data>
   <data name="IDS_ST_BODY_SYSTEM" xml:space="preserve">
@@ -1667,6 +1712,12 @@
   </data>
   <data name="IDS_ST_BODY_THEME" xml:space="preserve">
     <value>Theme</value>
+  </data>
+  <data name="IDS_ST_BODY_THEME_LIGHT" xml:space="preserve">
+    <value>Light theme</value>
+  </data>
+  <data name="IDS_ST_BODY_THEME_DARK" xml:space="preserve">
+    <value>Dark theme</value>
   </data>
   <data name="IDS_ST_BODY_THERE_ARE_NO_APPS_SET_AS_DEFAULTS" xml:space="preserve">
     <value>There are no apps set as defaults.</value>
@@ -1853,6 +1904,15 @@
   </data>
   <data name="IDS_ST_BODY_WEB_APPLICATIONS" xml:space="preserve">
     <value>Web applications</value>
+  </data>
+  <data name="IDS_ST_BODY_WEB_APP" xml:space="preserve">
+    <value>Web app</value>
+  </data>
+  <data name="IDS_ST_BODY_WEBSITE_SETTINGS" xml:space="preserve">
+    <value>Website settings</value>
+  </data>
+  <data name="IDS_ST_APP_WILL_BE_UNINSTALLED" xml:space="preserve">
+    <value>This app will be uninstalled.</value>
   </data>
   <data name="IDS_ST_BODY_WHEN_DATA_ROAMING_IS_DISABLED_APPLICATIONS_THAT_USE_THE_DATA_CONNECTION_MAY_NOT_WORK" xml:space="preserve">
     <value>When data roaming is off, applications that use the data connection may not work.</value>
@@ -2247,6 +2307,9 @@
   <data name="IDS_ST_HEADER_TOTAL_SPACE" xml:space="preserve">
     <value>Total space</value>
   </data>
+  <data name="IDS_ST_HEADER_FREE_SPACE" xml:space="preserve">
+    <value>Free space</value>
+  </data>
   <data name="IDS_ST_HEADER_TOUCH_KEY_LIGHT_DURATION" xml:space="preserve">
     <value>Touch key light duration</value>
   </data>
@@ -2345,6 +2408,21 @@
   </data>
   <data name="IDS_ST_MBODY_FONT_SIZE" xml:space="preserve">
     <value>Font size</value>
+  </data>
+  <data name="IDS_ST_MBODY_FONT_SIZE_GIANT" xml:space="preserve">
+    <value>Giant</value>
+  </data>
+  <data name="IDS_ST_MBODY_FONT_SIZE_HUGE" xml:space="preserve">
+    <value>Huge</value>
+  </data>
+  <data name="IDS_ST_MBODY_FONT_SIZE_LARGE" xml:space="preserve">
+    <value>Large</value>
+  </data>
+  <data name="IDS_ST_MBODY_FONT_SIZE_NORMAL" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="IDS_ST_MBODY_FONT_SIZE_SMALL" xml:space="preserve">
+    <value>Small</value>
   </data>
   <data name="IDS_ST_MBODY_GSM_ONLY" xml:space="preserve">
     <value>GSM only</value>
