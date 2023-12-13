@@ -17,12 +17,12 @@
     <resheader name="version">2.0</resheader>
     <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
     <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+  <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+  <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+  <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
@@ -1686,7 +1686,7 @@
   <data name="IDS_ST_BODY_STORAGE_GB_TOTAL" xml:space="preserve">
     <value>Total</value>
   </data>
-	<data name="IDS_ST_BODY_SUNDAY" xml:space="preserve">
+  <data name="IDS_ST_BODY_SUNDAY" xml:space="preserve">
     <value>Sunday</value>
   </data>
   <data name="IDS_ST_BODY_SYSTEM" xml:space="preserve">
@@ -3018,64 +3018,67 @@
   <data name="IDS_ST_HEADER_SMART_MANAGER" xml:space="preserve">
     <value>Smart Manager</value>
   </data>
-    <data name="IDS_SCP_BODY_OWNER_ABB" xml:space="preserve">
+  <data name="IDS_SCP_BODY_OWNER_ABB" xml:space="preserve">
     <value>Owner</value>
   </data>
-	<data name="IDS_ST_BODY_CERTIFICATE_DETAILS" xml:space="preserve">
+  <data name="IDS_SCP_BODY_USE_CERTIFICATE" xml:space="preserve">
+    <value>Use certificate</value>
+  </data>
+  <data name="IDS_ST_BODY_CERTIFICATE_DETAILS" xml:space="preserve">
     <value>Certificate details</value>
   </data>
-	<data name="IDS_ST_BODY_CERTIFICATE_INFORMATION" xml:space="preserve">
+  <data name="IDS_ST_BODY_CERTIFICATE_INFORMATION" xml:space="preserve">
     <value>Certificate information</value>
   </data>
-	<data name="IDS_ST_BODY_CERTIFICATION_AUTHORITY_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_CERTIFICATION_AUTHORITY_C" xml:space="preserve">
     <value>Certification authority</value>
   </data>
-	<data name="IDS_ST_BODY_COMMON_NAME_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_COMMON_NAME_C" xml:space="preserve">
     <value>Common name</value>
   </data>
-	<data name="IDS_ST_BODY_FALSE" xml:space="preserve">
+  <data name="IDS_ST_BODY_FALSE" xml:space="preserve">
     <value>False</value>
   </data>
-	<data name="IDS_ST_BODY_ISSUER" xml:space="preserve">
+  <data name="IDS_ST_BODY_ISSUER" xml:space="preserve">
     <value>Issuer</value>
   </data>
-	<data name="IDS_ST_BODY_ISSUER_COLON" xml:space="preserve">
+  <data name="IDS_ST_BODY_ISSUER_COLON" xml:space="preserve">
     <value>Issuer</value>
   </data>
-	<data name="IDS_ST_BODY_KEY_USAGE_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_KEY_USAGE_C" xml:space="preserve">
     <value>Key usage</value>
   </data>
-	<data name="IDS_ST_BODY_ORGANISATION_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_ORGANISATION_C" xml:space="preserve">
     <value>Organisation</value>
   </data>
-	<data name="IDS_ST_BODY_PUBLIC_KEY_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_PUBLIC_KEY_C" xml:space="preserve">
     <value>Public key</value>
   </data>
-	<data name="IDS_ST_BODY_SERIAL_NUMBER_COLON" xml:space="preserve">
+  <data name="IDS_ST_BODY_SERIAL_NUMBER_COLON" xml:space="preserve">
     <value>Serial number</value>
   </data>
-	<data name="IDS_ST_BODY_SIGNATURE_ALGORITHM_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_SIGNATURE_ALGORITHM_C" xml:space="preserve">
     <value>Signature algorithm</value>
   </data>
-	<data name="IDS_ST_BODY_TRUE" xml:space="preserve">
+  <data name="IDS_ST_BODY_TRUE" xml:space="preserve">
     <value>True</value>
   </data>
-	<data name="IDS_ST_BODY_TRUSTED_ROOT_CA_CERTIFICATES_ABB" xml:space="preserve">
+  <data name="IDS_ST_BODY_TRUSTED_ROOT_CA_CERTIFICATES_ABB" xml:space="preserve">
     <value>Trusted root CA certificates</value>
   </data>
-	<data name="IDS_ST_BODY_USER_CERTIFICATES" xml:space="preserve">
+  <data name="IDS_ST_BODY_USER_CERTIFICATES" xml:space="preserve">
     <value>User certificates</value>
   </data>
-	<data name="IDS_ST_BODY_VALID_FROM_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_VALID_FROM_C" xml:space="preserve">
     <value>Valid from</value>
   </data>
-	<data name="IDS_ST_BODY_VALID_TO_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_VALID_TO_C" xml:space="preserve">
     <value>Valid to</value>
   </data>
-	<data name="IDS_ST_BODY_VERSION_C" xml:space="preserve">
+  <data name="IDS_ST_BODY_VERSION_C" xml:space="preserve">
     <value>Version</value>
   </data>
-	<data name="IDS_ST_TPOP_NO_CERTIFICATE_FOUND_DETAIL" xml:space="preserve">
+  <data name="IDS_ST_TPOP_NO_CERTIFICATE_FOUND_DETAIL" xml:space="preserve">
     <value>After you install certificates, they will be shown here.</value>
   </data>
 </root>

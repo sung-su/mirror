@@ -3039,6 +3039,9 @@
   <data name="IDS_SCP_BODY_OWNER_ABB" xml:space="preserve">
     <value>소유자</value>
   </data>
+  <data name="IDS_SCP_BODY_USE_CERTIFICATE" xml:space="preserve">
+    <value>인증서 사용</value>
+  </data>
   <data name="IDS_ST_BODY_CERTIFICATE_DETAILS" xml:space="preserve">
     <value>인증서 상세정보</value>
   </data>

@@ -46,7 +46,7 @@ namespace Setting.Menu.About
             var cert = SettingCertificateManager.CertificateMetadata;
 
             /* Use Certificate */
-            var useCertItem = new SwitchListItem("Use certificate", isSelected: cert.status == CertStatus.ENABLED);
+            var useCertItem = new SwitchListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SCP_BODY_USE_CERTIFICATE)), isSelected: cert.status == CertStatus.ENABLED);
             useCertItem.Clicked += (o, s) =>
             {
                 // TODO : add function to activate or deactivate the certificate 
