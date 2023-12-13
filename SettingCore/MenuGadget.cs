@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Tizen.Applications;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 
@@ -56,6 +58,35 @@ namespace SettingCore
 
         public abstract string ProvideTitle();
         public Action OnPageAppeared;
+
+        protected Sections sections = new Sections();
+
+        protected async void CreateItems()
+        {
+            sections.InitSections();
+            // add only visible sections to content view in required order
+            var customization = GetCustomization().OrderBy(c => c.Order);
+            foreach (var cust in customization)
+            {
+                string visibility = cust.IsVisible ? "visible" : "hidden";
+                Logger.Verbose($"Customization: {cust.MenuPath} - {visibility} - {cust.Order}");
+                var section = sections.GetSection(cust.MenuPath);
+
+                if (cust.IsVisible && section != null)
+                {
+                    if (section.Init != null)
+                    { 
+                        await section.InitComplete;
+                    }     
+
+                    await CoreApplication.Post(() =>
+                    {
+                        section.CreateItem.Invoke();
+                        return true;
+                    });
+                }
+            }
+        }
 
         public virtual IEnumerable<View> ProvideMoreActions() => null;
         public virtual IEnumerable<MoreMenuItem> ProvideMoreMenu() => null;
