@@ -120,4 +120,7 @@
   <data name="IDS_ST_BUTTON_BACK" xml:space="preserve">
     <value>뒤로가기</value>
   </data>
+  <data name="IDS_ST_HEADER_SPEECH_RATE_ABB" xml:space="preserve">
+    <value>읽어주는 속도</value>
+  </data>
 </root>
