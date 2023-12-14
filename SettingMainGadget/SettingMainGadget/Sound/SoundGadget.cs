@@ -1,8 +1,8 @@
-﻿using SettingMainGadget.TextResources;
-using SettingCore;
+﻿using SettingCore;
 using SettingCore.Views;
 using SettingMainGadget;
 using SettingMainGadget.Sound;
+using SettingMainGadget.TextResources;
 using System.Collections.Generic;
 using System.Linq;
 using Tizen.Multimedia;
@@ -10,7 +10,6 @@ using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 using Tizen.System;
-using Tizen.Applications;
 
 namespace Setting.Menu
 {
@@ -19,8 +18,7 @@ namespace Setting.Menu
         private const string soundSliderIconDefault = "sound/sound_slider_icon_default.svg";
         private const string soundSliderIconMute = "sound/sound_slider_icon_mute.svg";
 
-        private View content;
-        private Sections sections = new Sections();
+        private ScrollableBase content;
         private AudioVolume audioVolume = AudioManager.VolumeController;
 
         private TextListItem soundMode;
@@ -28,6 +26,9 @@ namespace Setting.Menu
         private SliderListItem mediaSlider;
         private SliderListItem notificationSlider;
         private SliderListItem systemSlider;
+
+        private bool soundsEnabled;
+        private string soundSliderIconPath;
 
         public override Color ProvideIconColor() => new Color(IsLightTheme  ? "#DB3069" : "#DF4679");
 
@@ -51,7 +52,8 @@ namespace Setting.Menu
                     LinearOrientation = LinearLayout.Orientation.Vertical,
                 },
             };
-            CreateView();
+
+            CreateContent();
 
             return content;
         }
@@ -148,96 +150,98 @@ namespace Setting.Menu
             }
         }
 
-        private void CreateView()
+        private void CreateContent()
         {
-            // remove all sections from content view
-            sections.RemoveAllSectionsFromView(content);
-
-            // section: sound mode
-
-            string soundModeName = SoundmodeManager.GetSoundmodeName(this, SoundmodeManager.GetSoundmode());
-            soundMode = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_SOUND_MODE)), soundModeName);
-            if (soundMode != null)
-            {
-                soundMode.Clicked += (o, e) =>
-                {
-                    NavigateTo(MainMenuProvider.Sound_Mode);
-                };
-            }
-            sections.Add(MainMenuProvider.Sound_Mode, soundMode);
-
-            // section: notification sound
-
-            string notificationSoundName = SoundNotificationManager.GetNotificationSoundName(this);
-            notificationSound = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NOTIFICATIONS)), notificationSoundName);
-            if (notificationSound != null)
-            {
-                notificationSound.Clicked += (o, e) =>
-                {
-                    NavigateTo(MainMenuProvider.Sound_Notification);
-                };
-            }
-            sections.Add(MainMenuProvider.Sound_Notification, notificationSound);
-
-            // section: other sounds
-
-            var otherSounds = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_OTHER_SOUNDS)));
-            if (otherSounds != null)
-            {
-                otherSounds.Clicked += (o, e) =>
-                {
-                    NavigateTo(MainMenuProvider.Sound_Other);
-                };
-            }
-            sections.Add(MainMenuProvider.Sound_Other, otherSounds);
+            content.RemoveAllChildren(true);
+            sections.Clear();
 
             Logger.Debug($"GET {AudioVolumeType.Media} Volume : {SettingAudioManager.GetVolumeLevel(AudioVolumeType.Media)}");
             Logger.Debug($"GET {AudioVolumeType.Notification} Volume : {SettingAudioManager.GetVolumeLevel(AudioVolumeType.Notification)}");
             Logger.Debug($"GET {AudioVolumeType.System} Volume : {SettingAudioManager.GetVolumeLevel(AudioVolumeType.System)}");
 
-            bool soundsEnabled = SoundmodeManager.GetSoundmode() == Soundmode.SOUND_MODE_SOUND;
-            string soundSliderIconPath = soundsEnabled ? GetResourcePath(soundSliderIconDefault) : GetResourcePath(soundSliderIconMute);
+            soundsEnabled = SoundmodeManager.GetSoundmode() == Soundmode.SOUND_MODE_SOUND;
+            soundSliderIconPath = soundsEnabled ? GetResourcePath(soundSliderIconDefault) : GetResourcePath(soundSliderIconMute);
+
+            // section: sound mode
+            sections.Add(MainMenuProvider.Sound_Mode, () =>
+            {
+                string soundModeName = SoundmodeManager.GetSoundmodeName(this, SoundmodeManager.GetSoundmode());
+                soundMode = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_SOUND_MODE)), soundModeName);
+                if (soundMode != null)
+                {
+                    soundMode.Clicked += (o, e) =>
+                    {
+                        NavigateTo(MainMenuProvider.Sound_Mode);
+                    };
+                    content.Add(soundMode);
+                }
+            });
+
+            // section: notification sound
+            sections.Add(MainMenuProvider.Sound_Notification, () =>
+            {
+                string notificationSoundName = SoundNotificationManager.GetNotificationSoundName(this);
+                notificationSound = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NOTIFICATIONS)), notificationSoundName);
+                if (notificationSound != null)
+                {
+                    notificationSound.Clicked += (o, e) =>
+                    {
+                        NavigateTo(MainMenuProvider.Sound_Notification);
+                    };
+                    content.Add(notificationSound);
+                }
+            });
+
+            // section: other sounds
+            sections.Add(MainMenuProvider.Sound_Other, () =>
+            {
+                var otherSounds = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_OTHER_SOUNDS)));
+                if (otherSounds != null)
+                {
+                    otherSounds.Clicked += (o, e) =>
+                    {
+                        NavigateTo(MainMenuProvider.Sound_Other);
+                    };
+                    content.Add(otherSounds);
+                }
+            });
 
             // section: media
-
-            mediaSlider = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_MEDIA)), GetResourcePath(soundSliderIconDefault), SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.Media));
-            mediaSlider.Slider.SlidingFinished += OnMediaSlidingFinished;
-            mediaSlider.Margin = new Extents(0, 0, 16, 0).SpToPx();
-            sections.Add(MainMenuProvider.Sound_MediaSlider, mediaSlider);
+            sections.Add(MainMenuProvider.Sound_MediaSlider, () =>
+            {
+                mediaSlider = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_MEDIA)), GetResourcePath(soundSliderIconDefault), SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.Media));
+                mediaSlider.Slider.SlidingFinished += OnMediaSlidingFinished;
+                mediaSlider.Margin = new Extents(0, 0, 16, 0).SpToPx();
+                content.Add(mediaSlider);
+            });
 
             // section: notification
-
-            notificationSlider = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NOTIFICATIONS)), soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.Notification));
-            notificationSlider.Slider.ValueChanged += OnNofificationSlider_ValueChanged;
-            notificationSlider.Slider.IsEnabled = soundsEnabled;
-            notificationSlider.Margin = new Extents(0, 0, 16, 0).SpToPx();
-            sections.Add(MainMenuProvider.Sound_NotificationSlider, notificationSlider);
+            sections.Add(MainMenuProvider.Sound_NotificationSlider, () =>
+            {
+                notificationSlider = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NOTIFICATIONS)), soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.Notification));
+                notificationSlider.Slider.ValueChanged += OnNofificationSlider_ValueChanged;
+                notificationSlider.Slider.IsEnabled = soundsEnabled;
+                notificationSlider.Margin = new Extents(0, 0, 16, 0).SpToPx();
+                content.Add(notificationSlider);
+            });
 
             // section: system
-
-            systemSlider = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SYSTEM)), soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.System));
-            systemSlider.Slider.ValueChanged += OnSystemSlider_ValueChanged;
-            systemSlider.Slider.IsEnabled = soundsEnabled;
-            systemSlider.Margin = new Extents(0, 0, 16, 0).SpToPx();
-            sections.Add(MainMenuProvider.Sound_SystemSlider, systemSlider);
-
-            // add only visible sections to content view in required order
-            var customization = GetCustomization().OrderBy(c => c.Order);
-            foreach (var cust in customization)
+            sections.Add(MainMenuProvider.Sound_SystemSlider, () =>
             {
-                string visibility = cust.IsVisible ? "visible" : "hidden";
-                Logger.Verbose($"Customization: {cust.MenuPath} - {visibility} - {cust.Order}");
-                if (cust.IsVisible && sections.TryGetValue(cust.MenuPath, out View row))
-                {
-                    content.Add(row);
-                }
-            }
+                systemSlider = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SYSTEM)), soundSliderIconPath, SettingAudioManager.GetPercentageVolumeLevel(AudioVolumeType.System));
+                systemSlider.Slider.ValueChanged += OnSystemSlider_ValueChanged;
+                systemSlider.Slider.IsEnabled = soundsEnabled;
+                systemSlider.Margin = new Extents(0, 0, 16, 0).SpToPx();
+                content.Add(systemSlider);
+            });
+
+            CreateItems();
         }
 
         protected override void OnCustomizationUpdate(IEnumerable<MenuCustomizationItem> items)
         {
             Logger.Verbose($"{nameof(SoundGadget)} got customization with {items.Count()} items. Recreating view.");
-            CreateView();
+            CreateContent();
         }
 
         private void SystemSettings_SoundSilentModeSettingChanged(object sender, SoundSilentModeSettingChangedEventArgs e)
