@@ -21,8 +21,7 @@ namespace Setting.Menu
 
         public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_DISPLAY));
 
-        private View content;
-        private Sections sections = new Sections();
+        private ScrollableBase content;
 
         private SliderListItem brightnessItem;
         private TextListItem fontItem;
@@ -63,7 +62,7 @@ namespace Setting.Menu
             SystemSettings.FontTypeChanged += SystemSettings_FontTypeChanged;
             ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
 
-            CreateView();
+            CreateContent();
 
             return content;
         }
@@ -78,115 +77,114 @@ namespace Setting.Menu
             base.OnDestroy();
         }
 
-        private void CreateView()
+        private void CreateContent()
         {
-            sections.RemoveAllSectionsFromView(content);
+            content.RemoveAllChildren(true);
+            sections.Clear();
 
-            // section: brightness
-
-            if (Tizen.System.Display.NumberOfDisplays > 0)
+            // brightness section
+            sections.Add(MainMenuProvider.Display_Brightness, () =>
             {
-                int brightness = 0;
-                int maxbrightness = 1;
-
-                try
+                if (Tizen.System.Display.NumberOfDisplays > 0)
                 {
-                    Tizen.System.Display.Displays[0].Brightness = Tizen.System.Display.Displays[0].Brightness;
-                    isBrightnessSupported = true;
-                }
-                catch (Exception)
-                {
-                    Logger.Warn($"Brightness is not supported on the device.");
-                }
+                    int brightness = 0;
+                    int maxbrightness = 1;
 
-                
-                try
-                {
-                    brightness = Tizen.System.Display.Displays[0].Brightness;
-                    maxbrightness = Tizen.System.Display.Displays[0].MaxBrightness;
-
-                    Logger.Debug($"Current-Max display brightness: {brightness}-{maxbrightness}");
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error($"Error while getting the display brightness: {ex.GetType()}, {ex.Message}");
-                }
-
-                GetBrightnessSliderIcon(brightness, out string iconpath);
-
-                brightnessItem = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING)), iconpath, (brightness * 1.0f) / maxbrightness);
-                if (brightnessItem != null)
-                {
-                    if(!isBrightnessSupported)
+                    try
                     {
-                        brightnessItem.Slider.CurrentValue = brightnessItem.Slider.MaxValue;
+                        Tizen.System.Display.Displays[0].Brightness = Tizen.System.Display.Displays[0].Brightness;
+                        isBrightnessSupported = true;
+                    }
+                    catch (Exception)
+                    {
+                        Logger.Warn($"Brightness is not supported on the device.");
                     }
 
-                    brightnessItem.Margin = new Extents(0, 0, 16, 0).SpToPx();
-                    brightnessItem.Slider.ValueChanged += MSlider_ValueChanged;
-                    brightnessItem.IsEnabled = isBrightnessSupported;
-                    sections.Add(MainMenuProvider.Display_Brightness, brightnessItem);
+                    try
+                    {
+                        brightness = Tizen.System.Display.Displays[0].Brightness;
+                        maxbrightness = Tizen.System.Display.Displays[0].MaxBrightness;
+
+                        Logger.Debug($"Current-Max display brightness: {brightness}-{maxbrightness}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error($"Error while getting the display brightness: {ex.GetType()}, {ex.Message}");
+                    }
+
+                    GetBrightnessSliderIcon(brightness, out string iconpath);
+
+                    brightnessItem = new SliderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_BRIGHTNESS_M_POWER_SAVING)), iconpath, (brightness * 1.0f) / maxbrightness);
+                    if (brightnessItem != null)
+                    {
+                        if (!isBrightnessSupported)
+                        {
+                            brightnessItem.Slider.CurrentValue = brightnessItem.Slider.MaxValue;
+                        }
+
+                        brightnessItem.Margin = new Extents(0, 0, 16, 0).SpToPx();
+                        brightnessItem.Slider.ValueChanged += MSlider_ValueChanged;
+                        brightnessItem.IsEnabled = isBrightnessSupported;
+                        content.Add(brightnessItem);
+                    }
                 }
-            }
-            else
-            {
-                Logger.Warn($"There are no available displays. The Brightness section has not been created.");
-            }
-
-            // section: font
-
-            fontItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_FONT)), $"{Display.DisplayFontSizeGadget.FontsizeInfo.GetName(this, SystemSettings.FontSize)}, {SystemSettings.FontType}");
-            if (fontItem != null)
-            {
-                fontItem.Clicked += (o, e) =>
+                else
                 {
-                    NavigateTo(MainMenuProvider.Display_Font);
-                };
-                sections.Add(MainMenuProvider.Display_Font, fontItem);
-            }
-
-            // section: TimeOut
-
-            screenTimeOutItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2)), DisplayTimeOutManager.GetScreenTimeoutName(this));
-            if (screenTimeOutItem != null)
-            {
-                screenTimeOutItem.Clicked += (o, e) =>
-                {
-                    NavigateTo(MainMenuProvider.Display_Timeout);
-                };
-                sections.Add(MainMenuProvider.Display_Timeout, screenTimeOutItem);
-            }
-
-            // section: Theme
-
-            themeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_THEME)), DisplayThemeManager.GetThemeName(this));
-            if (themeItem != null)
-            {
-                themeItem.Clicked += (o, e) =>
-                {
-                    NavigateTo(MainMenuProvider.Display_Theme);
-                };
-                sections.Add(MainMenuProvider.Display_Theme, themeItem);
-            }
-
-            var customization = GetCustomization().OrderBy(c => c.Order);
-            Logger.Debug($"customization: {customization.Count()}");
-            foreach (var cust in customization)
-            {
-                string visibility = cust.IsVisible ? "visible" : "hidden";
-                Logger.Verbose($"Customization: {cust.MenuPath} - {visibility} - {cust.Order}");
-                if (cust.IsVisible && sections.TryGetValue(cust.MenuPath, out View row))
-                {
-                    content.Add(row);
+                    Logger.Warn($"There are no available displays. The Brightness section has not been created.");
                 }
-            }
+            });
+
+            // font section
+            sections.Add(MainMenuProvider.Display_Font, () =>
+            {
+                Logger.Performance($"CreateItems Display_Font");
+                fontItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_FONT)), $"{SystemSettings.FontSize}, {SystemSettings.FontType}");
+                if (fontItem != null)
+                {
+                    fontItem.Clicked += (o, e) =>
+                    {
+                        NavigateTo(MainMenuProvider.Display_Font);
+                    };
+                    content.Add(fontItem);
+                }
+                Logger.Performance($"CreateItems Display_Font end");
+            });
+
+            // timeout section
+            sections.Add(MainMenuProvider.Display_Timeout, () =>
+            {
+                screenTimeOutItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SCREEN_TIMEOUT_ABB2)), DisplayTimeOutManager.GetScreenTimeoutName(this));
+                if (screenTimeOutItem != null)
+                {
+                    screenTimeOutItem.Clicked += (o, e) =>
+                    {
+                        NavigateTo(MainMenuProvider.Display_Timeout);
+                    };
+                    content.Add(screenTimeOutItem);
+                }
+            });
+
+            // theme section
+            sections.Add(MainMenuProvider.Display_Theme, () =>
+            {
+                themeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_THEME)), DisplayThemeManager.GetThemeName(this));
+                if (themeItem != null)
+                {
+                    themeItem.Clicked += (o, e) =>
+                    {
+                        NavigateTo(MainMenuProvider.Display_Theme);
+                    };
+                    content.Add(themeItem);
+                }
+            });
+
+            CreateItems();
         }
-
 
         protected override void OnCustomizationUpdate(IEnumerable<MenuCustomizationItem> items)
         {
             Logger.Verbose($"{nameof(DisplayGadget)} got customization with {items.Count()} items. Recreating view.");
-            CreateView();
+            CreateContent();
         }
 
         private void GetBrightnessSliderIcon(int brightness, out string iconpath)
@@ -253,7 +251,7 @@ namespace Setting.Menu
 
         private void SystemSettings_FontSizeChanged(object sender, FontSizeChangedEventArgs e)
         {
-            CreateView(); // TODO : change only secondary text instead of re-create all view
+            CreateContent(); // TODO : change only secondary text instead of re-create all view
         }
 
         private void SystemSettings_FontTypeChanged(object sender, FontTypeChangedEventArgs e)
