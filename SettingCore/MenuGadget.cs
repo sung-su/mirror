@@ -63,7 +63,6 @@ namespace SettingCore
 
         protected async void CreateItems()
         {
-            sections.InitSections();
             // add only visible sections to content view in required order
             var customization = GetCustomization().OrderBy(c => c.Order);
             foreach (var cust in customization)
@@ -74,10 +73,7 @@ namespace SettingCore
 
                 if (cust.IsVisible && section != null)
                 {
-                    if (section.Init != null)
-                    { 
-                        await section.InitComplete;
-                    }     
+                    await section.Init;
 
                     await CoreApplication.Post(() =>
                     {
