@@ -73,8 +73,6 @@ namespace SettingCore
 
                 if (cust.IsVisible && section != null)
                 {
-                    await section.Init;
-
                     await CoreApplication.Post(() =>
                     {
                         section.CreateItem.Invoke();

@@ -34,23 +34,13 @@ namespace SettingCore
             return false;
         }
 
-        public void Add(string menuPath, Action action, Task task = null)
+        public void Add(string menuPath, Action action)
         {
             menuPath = menuPath.ToLowerInvariant();
             sectionList.Add(new Section
             {
                 MenuPath = menuPath,
                 CreateItem = action,
-                Init = task is null ? Task.CompletedTask : InitAsync(task),
-            });
-        }
-
-        private Task InitAsync(Task task)
-        {
-            return Task.Run(async () =>
-            {
-                await task;
-                return true;
             });
         }
 
@@ -97,8 +87,7 @@ namespace SettingCore
         public class Section
         {
             public string MenuPath { get; set; }
-            public Action CreateItem { get; set; } 
-            public Task Init { get; set; }
+            public Action CreateItem { get; set; }
         }
     }
 }
