@@ -65,7 +65,16 @@ namespace SettingCore
             else
             {
                 SetFullScreenMode(false);
-                NUIApplication.GetDefaultWindow().GetDefaultNavigator().PopWithTransition();
+
+                try
+                {
+                    // CreateTransitions issue
+                    NUIApplication.GetDefaultWindow().GetDefaultNavigator().PopWithTransition();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Warn($"{ex.Message}");
+                }
             }
         }
 
@@ -103,7 +112,16 @@ namespace SettingCore
                         ThemeChangeSensitive = true,
                     };
 
-                    NUIApplication.GetDefaultWindow().GetDefaultNavigator().PushWithTransition(contentPage);
+                    try
+                    {
+                        // CreateTransitions issue
+                        NUIApplication.GetDefaultWindow().GetDefaultNavigator().PushWithTransition(contentPage);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Warn($"{ex.Message}");
+                    }
+
                     gadgetPages.Add(contentPage, gadget);
                     return;
                 }
