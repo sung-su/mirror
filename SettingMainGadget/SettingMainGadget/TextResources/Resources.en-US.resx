@@ -469,7 +469,7 @@
     <value>The battery usage for the past %1$d hours %2$d minutes:</value>
   </data>
   <data name="IDS_SM_HEADER_DEFAULT_STORAGE_LOC_ABB" xml:space="preserve">
-    <value>Default storage loc.</value>
+    <value>Default storage locaction</value>
   </data>
   <data name="IDS_SM_HEADER_DEFAULT_STORAGE_SETTINGS_ABB" xml:space="preserve">
     <value>Default storage settings</value>
@@ -875,6 +875,9 @@
   </data>
   <data name="IDS_ST_BODY_DEVICE_EXTERNAL_STORAGE_USAGE" xml:space="preserve">
     <value>External storage usage</value>
+  </data>
+  <data name="IDS_ST_BODY_DEVICE_SD_STORAGE_USAGE" xml:space="preserve">
+    <value>SD storage usage</value>
   </data>
    <data name="IDS_ST_BODY_DE_REGISTRATION_CODE_NOT_FOUND" xml:space="preserve">
     <value>De-registration code not found.</value>
@@ -2084,6 +2087,9 @@
   </data>
   <data name="IDS_ST_HEADER_ALLSHARE" xml:space="preserve">
     <value>AllShare</value>
+  </data>
+  <data name="IDS_ST_HEADER_APP_INSTALLATION" xml:space="preserve">
+	<value>App installation</value>
   </data>
   <data name="IDS_ST_HEADER_AUDIO" xml:space="preserve">
     <value>Audio</value>

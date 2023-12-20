@@ -2454,6 +2454,15 @@ namespace SettingMainGadget.TextResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SD storage usage.
+        /// </summary>
+        public static string IDS_ST_BODY_DEVICE_SD_STORAGE_USAGE {
+            get {
+                return ResourceManager.GetString("IDS_ST_BODY_DEVICE_SD_STORAGE_USAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Device storage.
         /// </summary>
         public static string IDS_ST_BODY_DEVICE_STORAGE {
