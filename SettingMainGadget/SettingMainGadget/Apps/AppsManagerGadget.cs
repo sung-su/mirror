@@ -105,9 +105,13 @@ namespace Setting.Menu.Apps
                 HeightSpecification = LayoutParamPolicies.MatchParent,
             };
 
+            var tabButtonStyle = ThemeManager.GetStyle("Tizen.NUI.Components.TabButton") as TabButtonStyle;
+            tabButtonStyle.Padding = new Extents(2, 2, 16, 16).SpToPx();
+            tabButtonStyle.Icon.Size = new Size(2, -1).SpToPx();
+
             // installed apps tab
 
-            var installedAppsTabButton = new TabButton()
+            var installedAppsTabButton = new TabButton(tabButtonStyle)
             {
                 Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DOWNLOADS))
             };
@@ -130,7 +134,7 @@ namespace Setting.Menu.Apps
 
             // running apps tab
 
-            var runningAppsTabButton = new TabButton()
+            var runningAppsTabButton = new TabButton(tabButtonStyle)
             {
                 Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_RUNNING))
             };
@@ -139,7 +143,7 @@ namespace Setting.Menu.Apps
 
             // all apps tab
 
-            var allAppsTabButton = new TabButton()
+            var allAppsTabButton = new TabButton(tabButtonStyle)
             {
                 Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_OPT_ALL))
             };
