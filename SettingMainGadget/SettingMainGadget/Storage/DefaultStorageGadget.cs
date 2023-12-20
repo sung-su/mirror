@@ -11,7 +11,7 @@ namespace Setting.Menu.Storage
 {
     public class DefaultStorageGadget : SettingCore.MenuGadget
     {
-        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_HEADER_DEFAULT_STORAGE_SETTINGS_ABB));
+        public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_HEADER_DEFAULT_STORAGE_LOC_ABB));
 
         private const string VconfSharedContent = "db/setting/default_memory/wifi_direct";
         private const string VconfAppInstall = "db/setting/default_memory/install_applications";

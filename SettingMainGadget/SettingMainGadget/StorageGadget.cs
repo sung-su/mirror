@@ -247,7 +247,7 @@ namespace Setting.Menu
         private void ExternalUsageView()
         {
             // External storage
-            var externalUsageItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DEVICE_EXTERNAL_STORAGE_USAGE)));
+            var externalUsageItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DEVICE_SD_STORAGE_USAGE)));
             content.Add(externalUsageItem);
         }
 
@@ -265,10 +265,10 @@ namespace Setting.Menu
 
             if (externalStorage)
             {
-                var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_TOTAL_SPACE))}:", GetMediaSizeString(externalTotal));
+                var totalItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_TOTAL_SPACE))}", GetMediaSizeString(externalTotal));
                 externalStorage.Add(totalItem);
 
-                var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_FREE_SPACE))}:", GetMediaSizeString(externalAvailable));
+                var freeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText($"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_FREE_SPACE))}", GetMediaSizeString(externalAvailable));
                 externalStorage.Add(freeItem);
 
                 var unmount = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_UNMOUNT_SD_CARD)));
@@ -307,8 +307,8 @@ namespace Setting.Menu
                 },
             };
 
-            var defaultSettingsItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_STORAGE_USAGE)));
-            var storageLocationItem = TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_HEADER_DEFAULT_STORAGE_SETTINGS_ABB)), NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_HEADER_DEVICE_STORAGE_ABB))); // FIXME : sub text should be dynamic & add translation to Resources
+            var defaultSettingsItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_HEADER_DEFAULT_STORAGE_SETTINGS_ABB)));
+            var storageLocationItem = TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_HEADER_DEFAULT_STORAGE_LOC_ABB)), NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_HEADER_DEVICE_STORAGE_ABB)));
             storageLocationItem.Clicked += (s, e) =>
             {
                 NavigateTo(MainMenuProvider.Storage_DefaultSettings);
