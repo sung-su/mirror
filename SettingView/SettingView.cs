@@ -184,15 +184,30 @@ namespace SettingView
 
                 var customizationMainMenusStr = customizationMainMenus.Where(i => i.IsVisible).Select(x => new string(x.Path));
                 var cacheMainMenuStr = MainMenuInfo.CacheMenu.Select(x => new string(x.Path));
+                var notCachedGadgets = customizationMainMenusStr.Except(cacheMainMenuStr);
+                var removedGedgets = cacheMainMenuStr.Except(customizationMainMenusStr);
 
                 if (!customizationMainMenusStr.SequenceEqual(cacheMainMenuStr))
                 {
-                    Logger.Verbose($"customization has changed. Reload main view.");
-                    if (page != null)
+                    var newMainMenus = new List<SettingGadgetInfo>();
+
+                    if (notCachedGadgets.Count() > 0)
                     {
+                        foreach (var gadgetInfo in customizationMainMenus.Where(a => notCachedGadgets.Any(e => e.Equals(a.Path))))
+                        {
+                            if (MainMenuInfo.Create(gadgetInfo) is MainMenuInfo menu)
+                            {
+                                newMainMenus.Add(gadgetInfo);
+                            }
+                        }
+                    }
+
+                    if (removedGedgets.Count() > 0 || newMainMenus.Count() > 0)
+                    {
+                        Logger.Verbose($"customization has changed. Reload main view.");
                         await Post(() =>
                         {
-                            CreateContent();
+                            CreateContent(true);
                             return true;
                         });
                     }
