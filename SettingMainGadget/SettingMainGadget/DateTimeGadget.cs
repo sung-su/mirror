@@ -3,7 +3,6 @@ using SettingCore;
 using SettingCore.Views;
 using SettingMainGadget;
 using SettingMainGadget.DateTime;
-using System.Linq;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
@@ -20,8 +19,7 @@ namespace Setting.Menu
 
         public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DATE_AND_TIME));
 
-        private Sections sections = new Sections();
-        private View content;
+        private ScrollableBase content;
 
         private TextListItem mDateItem = null;
         private TextListItem mTimeItem = null;
@@ -51,7 +49,7 @@ namespace Setting.Menu
                 },
             };
 
-            CreateView();
+            CreateContent();
 
             return content;
         }
@@ -63,9 +61,10 @@ namespace Setting.Menu
             base.OnDestroy();
         }
 
-        private void CreateView()
+        private void CreateContent()
         {
-            sections.RemoveAllSectionsFromView(content);
+            content.RemoveAllChildren(true);
+            sections.Clear();
 
             try
             {
@@ -78,66 +77,74 @@ namespace Setting.Menu
                 Logger.Warn($"AutomaticTimeUpdate is not supported: {e.Message}");
             }
 
-            isAutomaticTimeUpdateSupported = true;
-            autoUpdateItem = new SwitchListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_AUTO_UPDATE)), isSelected: isAutomaticTimeUpdateSupported ? DateTimeManager.AutoTimeUpdate : false);
-            autoUpdateItem.IsEnabled = isAutomaticTimeUpdateSupported;
-            autoUpdateItem.Switch.SelectedChanged += (o, e) =>
+            // section: auto update switch item 
+            sections.Add(MainMenuProvider.DateTime_AutoUpdate, () =>
             {
-                DateTimeManager.AutoTimeUpdate = e.IsSelected;
-                ApplyAutomaticTimeUpdate();
-            };
-            sections.Add(MainMenuProvider.DateTime_AutoUpdate, autoUpdateItem);
-
-            mDateItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SET_DATE)), System.DateTime.Now.ToString("MMM d, yyyy"));
-            if (mDateItem != null)
-            {
-                mDateItem.Clicked += (o, e) =>
+                autoUpdateItem = new SwitchListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_AUTO_UPDATE)), isSelected: isAutomaticTimeUpdateSupported ? DateTimeManager.AutoTimeUpdate : false);
+                autoUpdateItem.IsEnabled = isAutomaticTimeUpdateSupported;
+                autoUpdateItem.Switch.SelectedChanged += (o, e) =>
                 {
-                    NavigateTo(MainMenuProvider.DateTime_SetDate);
+                    DateTimeManager.AutoTimeUpdate = e.IsSelected;
+                    ApplyAutomaticTimeUpdate();
                 };
-                sections.Add(MainMenuProvider.DateTime_SetDate, mDateItem);
-            }
+                content.Add(autoUpdateItem);
+            });
 
-            mTimeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SET_TIME)), DateTimeManager.FormattedTime);
-            if (mTimeItem != null)
+            // section: set date
+            sections.Add(MainMenuProvider.DateTime_SetDate, () =>
             {
-                mTimeItem.Clicked += (o, e) =>
+                mDateItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SET_DATE)), System.DateTime.Now.ToString("MMM d, yyyy"));
+                if (mDateItem != null)
                 {
-                    NavigateTo(MainMenuProvider.DateTime_SetTime);
-                };
-                sections.Add(MainMenuProvider.DateTime_SetTime, mTimeItem);
-            }
-
-            mTimezoneItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_TIME_ZONE)), DateTimeTimezoneManager.GetTimezoneName().timezoneName);
-            if (mTimezoneItem != null)
-            {
-                mTimezoneItem.Clicked += (o, e) =>
-                {
-                    NavigateTo(MainMenuProvider.DateTime_SetTimezone);
-                };
-                sections.Add(MainMenuProvider.DateTime_SetTimezone, mTimezoneItem);
-            }
-
-            timeFormatItem = new SwitchListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_24_HOUR_CLOCK)), NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_SBODY_SHOW_THE_TIME_IN_24_HOUR_FORMAT_INSTEAD_OF_12_HOUR_HAM_PM_FORMAT)), DateTimeManager.Is24HourFormat);
-            timeFormatItem.Switch.SelectedChanged += (o, e) =>
-            {
-                DateTimeManager.Is24HourFormat = e.IsSelected;
-            };
-            sections.Add(MainMenuProvider.DateTime_TimeFormat, timeFormatItem);
-
-            ApplyAutomaticTimeUpdate();
-
-            var customization = GetCustomization().OrderBy(c => c.Order);
-            Logger.Debug($"customization: {customization.Count()}");
-            foreach (var cust in customization)
-            {
-                string visibility = cust.IsVisible ? "visible" : "hidden";
-                Logger.Verbose($"Customization: {cust.MenuPath} - {visibility} - {cust.Order}");
-                if (cust.IsVisible && sections.TryGetValue(cust.MenuPath, out View row))
-                {
-                    content.Add(row);
+                    mDateItem.Clicked += (o, e) =>
+                    {
+                        NavigateTo(MainMenuProvider.DateTime_SetDate);
+                    };
+                    content.Add(mDateItem);
                 }
-            }
+            });
+
+            // section: set time
+            sections.Add(MainMenuProvider.DateTime_SetTime, () =>
+            {
+                mTimeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SET_TIME)), DateTimeManager.FormattedTime);
+                if (mTimeItem != null)
+                {
+                    mTimeItem.Clicked += (o, e) =>
+                    {
+                        NavigateTo(MainMenuProvider.DateTime_SetTime);
+                    };
+                    content.Add(mTimeItem);
+                }
+            });
+
+            // section: time zone
+            sections.Add(MainMenuProvider.DateTime_SetTimezone, () =>
+            {
+                mTimezoneItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_TIME_ZONE)), DateTimeTimezoneManager.GetTimezoneName().timezoneName);
+                if (mTimezoneItem != null)
+                {
+                    mTimezoneItem.Clicked += (o, e) =>
+                    {
+                        NavigateTo(MainMenuProvider.DateTime_SetTimezone);
+                    };
+                    content.Add(mTimezoneItem);
+                }
+                ApplyAutomaticTimeUpdate();
+            });
+
+            // section: time format 
+            sections.Add(MainMenuProvider.DateTime_TimeFormat, () =>
+            {
+                timeFormatItem = new SwitchListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_24_HOUR_CLOCK)), NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_SBODY_SHOW_THE_TIME_IN_24_HOUR_FORMAT_INSTEAD_OF_12_HOUR_HAM_PM_FORMAT)), DateTimeManager.Is24HourFormat);
+                timeFormatItem.Switch.SelectedChanged += (o, e) =>
+                {
+                    DateTimeManager.Is24HourFormat = e.IsSelected;
+                };
+                content.Add(timeFormatItem);
+            });
+
+            CreateItems();
         }
 
         private void ApplyAutomaticTimeUpdate()
