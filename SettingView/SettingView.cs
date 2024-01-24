@@ -88,6 +88,7 @@ namespace SettingView
                             LinearOrientation = LinearLayout.Orientation.Vertical,
                         },
                     };
+                    SetScrollbar();
 
                     page.Add(page.Content);
                     page.Content.Relayout += (s, e) =>
@@ -333,6 +334,7 @@ namespace SettingView
             if (page != null && e.IsPlatformThemeChanged)
             {
                 page.BackgroundColor = isLightTheme ? new Color("#FAFAFA") : new Color("#16131A");
+                SetScrollbar();
 
                 MainMenuInfo.ClearCache();
                 CreateContent();
@@ -444,6 +446,30 @@ namespace SettingView
             page.Content.RemoveAllChildren(true);
             itemsLoaded = LoadMainMenuItems(customizationChanged);
             _ = CreateContentRows();
+        }
+
+        private void SetScrollbar()
+        {
+            var scrollbarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.Scrollbar") as ScrollbarStyle;
+            scrollbarStyle.ThumbColor = isLightTheme ? new Color("#FFFEFE") : new Color("#1D1A21");
+            scrollbarStyle.TrackPadding = 8;
+            page.Content.Scrollbar = new Scrollbar(scrollbarStyle);
+
+            try
+            {
+                // get Thumb ImageView component, since it is internal
+                var thumb = page.Content.Scrollbar.Children[1] as ImageView;
+
+                if(thumb != null ) 
+                {
+                    thumb.CornerRadius = 4;
+                    thumb.BoxShadow = isLightTheme ? new Shadow(8.0f, new Color(0.0f, 0.0f, 0.0f, 0.16f), new Vector2(0.0f, 2.0f)) : new Shadow(8.0f, new Color("#FFFFFF29"), new Vector2(0.0f, 1.0f));
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Scrollbar cannot be changed - {ex.Message}");
+            }
         }
 
         private static View GetTextNotice(string text, Color color)
