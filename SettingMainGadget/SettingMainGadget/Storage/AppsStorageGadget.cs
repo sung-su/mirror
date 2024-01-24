@@ -4,13 +4,16 @@ using SettingMainGadget.Apps;
 using SettingMainGadget.TextResources;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Tizen.Applications;
 using Tizen.Context.AppHistory;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
+using Tizen.NUI.Binding;
 using Tizen.NUI.Components;
 
 namespace Setting.Menu.Storage
@@ -22,20 +25,36 @@ namespace Setting.Menu.Storage
 
         private string defaultIcon = System.IO.Path.Combine(Application.Current.DirectoryInfo.Resource, "default_app_icon.svg");
 
-        private ScrollableBase content;
-        private MoreMenuItem sortMenuItem;
-        private PackageSizeInformation packageSizeInfo;
+        private View content;
+        private MoreMenuItem sortBySizeMenuItem;
+        private MoreMenuItem sortByNameMenuItem;
+        private MoreMenuItem sortByUseMenuItem;
+        private CollectionView collectionView;
+        private Loading appsLoading;
 
         private List<Package> packages = new List<Package>();
         private List<ApplicationInfo> applicationInfos = new List<ApplicationInfo>();
+        private List<UsageStatisticsData> usageStatisticsDatas = new List<UsageStatisticsData>();
 
         private SortType currentSortType = SortType.name_asc;
         
         private List<MoreMenuItem> MoreMenu()
         {
-            sortMenuItem = new MoreMenuItem()
+            sortBySizeMenuItem = new MoreMenuItem()
             {
                 Text = $"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SIZE))}: {NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING))}",
+            };
+
+            sortByNameMenuItem = new MoreMenuItem()
+            {
+                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NAME)),
+                Action = () => { SortAppications(currentSortType != SortType.name_asc ? SortType.name_asc : SortType.name_desc); }
+            };
+
+            sortByUseMenuItem = new MoreMenuItem()
+            {
+                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_FREQUENCY_OF_USE)),
+                Action = () => { SortAppications(currentSortType != SortType.frequency_desc ? SortType.frequency_desc : SortType.frequency_asc); }
             };
 
             return new List<MoreMenuItem>
@@ -44,17 +63,9 @@ namespace Setting.Menu.Storage
                 {
                     Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_SORT_BY)),
                 },
-                sortMenuItem,
-                new MoreMenuItem()
-                {
-                    Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NAME)),
-                    Action = () => { SortAppications(currentSortType != SortType.name_asc ? SortType.name_asc : SortType.name_desc); }
-                },
-                new MoreMenuItem()
-                {
-                    Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_FREQUENCY_OF_USE)),
-                    Action = () => { SortAppications(currentSortType != SortType.frequency_desc ? SortType.frequency_desc : SortType.frequency_asc); }
-                }
+                sortBySizeMenuItem,
+                sortByNameMenuItem,
+                sortByUseMenuItem,
             };
         }
 
@@ -62,67 +73,119 @@ namespace Setting.Menu.Storage
         {
             base.OnCreate();
 
-            content = new ScrollableBase()
+            content = new View()
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
                 HeightSpecification = LayoutParamPolicies.MatchParent,
-                ScrollingDirection = ScrollableBase.Direction.Vertical,
-                HideScrollbar = false,
                 Layout = new LinearLayout()
                 {
                     LinearOrientation = LinearLayout.Orientation.Vertical,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
                 },
             };
 
-            CreateItems();
+            appsLoading = new Loading();
+            appsLoading.Play();
+            content.Add(appsLoading);
+
+            OnPageAppeared += CreateView;
 
             return content;
         }
 
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-        }
-
-        private void CreateItems()
+        private void GetData()
         {
             var usageStatistics = new UsageStatistics(UsageStatistics.SortOrderType.LastLaunchTimeNewest);
-            var statistics = usageStatistics.Query(System.DateTime.Now.AddYears(-1), System.DateTime.Now);
-            var listItems = new Dictionary<string, TextWithIconListItem>();
+            usageStatisticsDatas = usageStatistics.Query(System.DateTime.Now.AddYears(-1), System.DateTime.Now).ToList();
 
             packages = PackageManager.GetPackages().ToList();
             packages = packages.Where(a => a.InstalledStorageType == StorageType.Internal && !String.IsNullOrEmpty(a.Label) && a.PackageType != PackageType.WGT).OrderBy(x => x.Label).ToList();
+        }
+
+        private void CreateView()
+        {
+            GetData();
+
+            collectionView = new CollectionView()
+            {
+                ItemsLayouter = new LinearLayouter(),
+                ItemTemplate = new DataTemplate(() =>
+                {
+                    CollectionViewItem item = new CollectionViewItem()
+                    {
+                        WidthSpecification = LayoutParamPolicies.MatchParent,
+                    };
+
+                    item.TextLabel.SetBinding(TextLabel.TextProperty, "Name");
+                    item.Icon.SetBinding(ImageView.ResourceUrlProperty, "IconPath");
+                    item.SubTextLabel.SetBinding(TextLabel.TextProperty, "SizeToDisplay");
+
+                    return item;
+                }),
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                HeightSpecification = LayoutParamPolicies.MatchParent,
+                ScrollingDirection = ScrollableBase.Direction.Vertical,
+                SelectionMode = ItemSelectionMode.SingleAlways,
+                BackgroundColor = Color.Transparent,
+            };
+
+            var calculating = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING));
 
             foreach (var package in packages)
             {
                 var iconPath = File.Exists(package.IconPath) ? package.IconPath : defaultIcon;
-                var appInfo = new ApplicationInfo(package.Id, package.Label, iconPath);
+                var appInfo = new ApplicationInfo(package.Id, package.Label, iconPath, calculating);
 
                 // usage info 
-                var appStatistics = statistics.FirstOrDefault(a => a.AppId == package.Id);
+                var appStatistics = usageStatisticsDatas.FirstOrDefault(a => a.AppId == package.Id);
                 if (appStatistics != null)
                 {
                     appInfo.LastLaunchTime = appStatistics.LastLaunchTime;
                 }
 
-                var appItem = new TextWithIconListItem(appInfo.Name, Color.Transparent, iconPath: appInfo.IconPath, subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
-                // TODO : goto app info by AppId
-                //appItem.Clicked += (s, e) => {};
-
-                content.Add(appItem);
-                listItems.Add(appInfo.AppId, appItem);
                 applicationInfos.Add(appInfo);
             }
+            collectionView.ItemsSource = applicationInfos;
+            collectionView.Relayout += StopLoading;
+            content.Add(collectionView);
 
-            _ = UpdateSizeInfo(listItems);
+            _ = UpdateSizeInfo();
+        }
+
+        private void StopLoading(object sender, EventArgs e)
+        {
+            collectionView.Relayout -= StopLoading;
+            if (appsLoading != null)
+            {
+                appsLoading?.Stop();
+                appsLoading?.Unparent();
+                appsLoading?.Dispose();
+            }
+        }
+
+        private async Task UpdateSizeInfo()
+        {
+            foreach (var package in packages)
+            {
+                var packageSizeInfo = await package.GetSizeInformationAsync();
+                var appInfo = applicationInfos.Where(a => a.AppId == package.Id).FirstOrDefault();
+                if (appInfo != null)
+                {
+                    appInfo.AppSize = packageSizeInfo.AppSize;
+                    appInfo.SizeToDisplay = AppManager.GetSizeString(packageSizeInfo.AppSize);
+                }
+            }
+
+            if (sortBySizeMenuItem.Action is null)
+            {
+                sortBySizeMenuItem.Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SIZE));
+                sortBySizeMenuItem.Action = () => { SortAppications(currentSortType != SortType.size_asc ? SortType.size_asc : SortType.size_desc); };
+            }
         }
 
         private void SortAppications(SortType sortType)
         {
-            content.RemoveAllChildren(true);
-
-            var listItems = new Dictionary<string, TextWithIconListItem>();
-
             switch (sortType)
             {
                 case SortType.size_asc:
@@ -145,59 +208,56 @@ namespace Setting.Menu.Storage
                     break;
             }
 
-            foreach (var app in applicationInfos)
-            {
-                var item = new TextWithIconListItem(app.Name, Color.Transparent, iconPath: app.IconPath, subText: AppManager.GetSizeString(app.AppSize));
-                content.Add(item);
-
-                if (app.AppSize == 0)
-                {
-                    listItems.Add(app.AppId, item);
-                }
-            }
-
-            if (listItems.Count > 0)
-            {
-                _ = UpdateSizeInfo(listItems);
-            }
-
             currentSortType = sortType;
-        }
 
-        private async Task UpdateSizeInfo(Dictionary<string, TextWithIconListItem> items)
-        {
-            foreach (var item in items)
+            // changing items source in post so that it does not block the closing of the more menu
+            _ = Task.Run(async () =>
             {
-                packageSizeInfo = await packages.FirstOrDefault(a => a.Id == item.Key).GetSizeInformationAsync();
-
-                var app = applicationInfos.FirstOrDefault(a => a.AppId == item.Key);
-                if (app != null)
+                await CoreApplication.Post(() =>
                 {
-                    app.AppSize = packageSizeInfo.AppSize;
-                    item.Value.SubText = AppManager.GetSizeString(packageSizeInfo.AppSize);
-                }
-            }
-
-            if (sortMenuItem.Action is null)
-            {
-                sortMenuItem.Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SIZE));
-                sortMenuItem.Action = () => { SortAppications(currentSortType != SortType.size_asc ? SortType.size_asc : SortType.size_desc); };
-            }
+                    collectionView.ItemsSource = applicationInfos;
+                    return true;
+                });
+            });
         }
 
-        private class ApplicationInfo
+        private class ApplicationInfo : INotifyPropertyChanged
         {
+            public event PropertyChangedEventHandler PropertyChanged;
             public string AppId { get; }
             public string Name { get; set; }
             public string IconPath { get; set; }
             public long AppSize { get; set; }
             public System.DateTime LastLaunchTime { get; set; }
 
-            public ApplicationInfo(string appid, string name, string iconPath)
+            private string size;
+            public string SizeToDisplay
+            {
+                get => size;
+                set 
+                {
+                    if (value != size)
+                    {
+                        size = value;
+                        RaisePropertyChanged(nameof(SizeToDisplay));
+                    }
+                }
+            }
+
+            public ApplicationInfo(string appid, string name, string iconPath, string size)
             {
                 AppId = appid;
                 Name = name;
                 IconPath = iconPath;
+                SizeToDisplay = size;
+            }
+
+            /// <summary>
+            /// Raises PropertyChanged event.
+            /// </summary>
+            protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
