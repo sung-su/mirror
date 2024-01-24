@@ -37,7 +37,7 @@ namespace Setting.Menu.Storage
         private List<UsageStatisticsData> usageStatisticsDatas = new List<UsageStatisticsData>();
 
         private SortType currentSortType = SortType.name_asc;
-        
+
         private List<MoreMenuItem> MoreMenu()
         {
             sortBySizeMenuItem = new MoreMenuItem()
@@ -150,6 +150,7 @@ namespace Setting.Menu.Storage
             collectionView.Relayout += StopLoading;
             content.Add(collectionView);
 
+            sortByNameMenuItem.IconPath = GetSortIcon(true);
             _ = UpdateSizeInfo();
         }
 
@@ -186,25 +187,32 @@ namespace Setting.Menu.Storage
 
         private void SortAppications(SortType sortType)
         {
+            ClearSortIcons();
             switch (sortType)
             {
                 case SortType.size_asc:
                     applicationInfos = applicationInfos.OrderBy(x => x.AppSize).ToList();
+                    sortBySizeMenuItem.IconPath = GetSortIcon(true);
                     break;
                 case SortType.size_desc:
                     applicationInfos = applicationInfos.OrderByDescending(x => x.AppSize).ToList();
+                    sortBySizeMenuItem.IconPath = GetSortIcon(false);
                     break;
                 case SortType.name_asc:
                     applicationInfos = applicationInfos.OrderBy(x => x.Name).ToList();
+                    sortByNameMenuItem.IconPath = GetSortIcon(true);
                     break;
                 case SortType.name_desc:
                     applicationInfos = applicationInfos.OrderByDescending(x => x.Name).ToList();
+                    sortByNameMenuItem.IconPath = GetSortIcon(false);
                     break;
                 case SortType.frequency_asc:
                     applicationInfos = applicationInfos.OrderBy(x => x.LastLaunchTime).ThenBy(a => a.Name).ToList();
+                    sortByUseMenuItem.IconPath = GetSortIcon(true);
                     break;
                 case SortType.frequency_desc:
                     applicationInfos = applicationInfos.OrderByDescending(x => x.LastLaunchTime).ToList();
+                    sortByUseMenuItem.IconPath = GetSortIcon(false);
                     break;
             }
 
@@ -221,6 +229,23 @@ namespace Setting.Menu.Storage
             });
         }
 
+        private void ClearSortIcons()
+        {
+            sortBySizeMenuItem.IconPath = string.Empty;
+            sortByNameMenuItem.IconPath = string.Empty;
+            sortByUseMenuItem.IconPath = string.Empty;
+        }
+
+        private string GetSortIcon(bool isAscending)
+        {
+            if (isAscending)
+            {
+                return IsLightTheme ? "more-menu/sort-ascending.svg" : "more-menu/dt-sort-ascending.svg";
+            }
+
+            return IsLightTheme ? "more-menu/sort-descending.svg" : "more-menu/dt-sort-descending.svg";
+        }
+
         private class ApplicationInfo : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
@@ -234,7 +259,7 @@ namespace Setting.Menu.Storage
             public string SizeToDisplay
             {
                 get => size;
-                set 
+                set
                 {
                     if (value != size)
                     {
