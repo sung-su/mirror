@@ -265,12 +265,48 @@ namespace SettingCore
                         TextColor = IsLightTheme ? new Color("#090E21") : new Color("#FDFDFD"),
                     };
 
+                    if (!String.IsNullOrEmpty(moreMenuItem.IconPath))
+                    {
+                        item.Layout = new FlexLayout()
+                        {
+                            Justification = FlexLayout.FlexJustification.SpaceBetween,
+                            Direction = FlexLayout.FlexDirection.Row,
+                            ItemsAlignment = FlexLayout.AlignmentType.Center
+                        };
+   
+                        // remove buttons icon
+                        item.Remove(item.Children[0]);
+
+                        var iconVisual = new ImageVisual
+                        {
+                            URL = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, moreMenuItem.IconPath),
+                            FittingMode = FittingModeType.ScaleToFill,
+                        };
+                        var itemIcon = new ImageView
+                        {
+                            ResourceUrl = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, moreMenuItem.IconPath),
+                            Size = new Size(32, 32).SpToPx(),
+                        };
+
+                        item.Add(itemIcon);
+                    }
+
                     if (moreMenuItem.Action is null)
                     {
                         item.TextColor = IsLightTheme ? new Color("#83868F") : new Color("#666666");
                     }
                     else
                     {
+                        item.TouchEvent += (s, e) =>
+                        {
+                            var state = e.Touch.GetState(0);
+                            if (state == PointStateType.Down)
+                            {
+                                item.TextColor = IsLightTheme ? new Color("#FF6200") : new Color("#FF8A00");
+                            }
+                            return false;
+                        };
+
                         item.Clicked += (s, e) =>
                         {
                             moreMenuItem.Action?.Invoke();
