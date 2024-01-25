@@ -1,5 +1,6 @@
 ﻿using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
+using Tizen.NUI.Components;
 
 namespace SettingCore.Views
 {
@@ -8,26 +9,26 @@ namespace SettingCore.Views
         private readonly ThemeColor BackgroundColors = new ThemeColor(Color.Transparent, Color.Transparent, new Color("#FF6400").WithAlpha(0.16f), Color.White.WithAlpha(0.16f));
         private readonly ThemeColor TextColors = new ThemeColor(new Color("#090E21"), new Color("#FDFDFD"), new Color("#FF6200"), new Color("#FF8A00"));
         private readonly ThemeColor IconColors = new ThemeColor(Color.White, Color.Black, Color.White, Color.Black);
-        private readonly ThemeColor IconBackgroundColors;
 
         private readonly ImageView icon;
+        private readonly View iconBackground;
         private readonly ImageVisual iconVisual;
         private readonly TextLabel titleTextLabel;
 
-        public MainMenuItem(string iconPath, Color iconBackgroungColor, string title) : base()
-        {
-            IconBackgroundColors = new ThemeColor(iconBackgroungColor, iconBackgroungColor, iconBackgroungColor, iconBackgroungColor);
+        public string MenuPath { get; private set; }
 
+        public MainMenuItem(string iconPath, Color iconBackgroungColor, string title, string menuPath) : base()
+        {
             Layout = new LinearLayout
             {
                 LinearOrientation = LinearLayout.Orientation.Horizontal,
                 VerticalAlignment = VerticalAlignment.Center,
             };
 
-            var iconBackground = new View
+            iconBackground = new View
             {
                 CornerRadius = 5.SpToPx(),
-                BackgroundColor = IconBackgroundColors.Normal,
+                BackgroundColor = iconBackgroungColor,
                 Size = new Size(32, 32).SpToPx(),
                 Margin = new Extents(16, 16, 16, 16).SpToPx(),
             };
@@ -60,9 +61,22 @@ namespace SettingCore.Views
 
             AccessibilityRole = Role.MenuItem;
 
+            MenuPath = menuPath;
+            Clicked += (s, e) =>
+            {
+                Logger.Debug($"navigating to menupath {MenuPath}, title: {title}");
+                GadgetNavigation.NavigateTo(MenuPath);
+            };
+
             ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
         }
 
+        public void UpdateItem(string title, Color iconBackgroungColor)
+        {
+            titleTextLabel.Text = title;
+            iconBackground.BackgroundColor = iconBackgroungColor;
+        }        
+        
         public override void OnChangeSelected(bool selected)
         {
             if (selected)
