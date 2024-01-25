@@ -81,7 +81,7 @@ namespace SettingCore.Views
                 AddPrimarySubText(primarySubText);
             }
 
-            ThemeManager.ThemeChanged += (s, e) => OnChangeSelected(false);
+            ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
         }
 
         public override void OnDisabledStateChanged(bool isEnabled)
@@ -170,6 +170,17 @@ namespace SettingCore.Views
                 sb.Append($", {secondary.Text}");
             }
             return sb.ToString();
+        }
+
+        private void ThemeManager_ThemeChanged(object sender, ThemeChangedEventArgs e)
+        {
+            OnChangeSelected(false);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            ThemeManager.ThemeChanged -= ThemeManager_ThemeChanged;
+            base.Dispose(disposing);
         }
     }
 }

@@ -113,5 +113,11 @@ namespace SettingCore.Views
         {
             return $"{primary.Text}, {(int)(Slider.CurrentValue / Slider.MaxValue * 100)} %";
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            ThemeManager.ThemeChanged -= ThemeManager_ThemeChanged;
+            base.Dispose(disposing);
+        }
     }
 }

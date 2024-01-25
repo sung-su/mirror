@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Tizen.NUI;
+﻿using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 
 namespace SettingCore.Views
@@ -33,13 +32,21 @@ namespace SettingCore.Views
 
             Add(textLabel);
 
-            ThemeManager.ThemeChanged += (s, e) =>
-            {
-                textLabel.TextColor = TextColors.Normal;
-            };
+            ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
         }
 
         protected override string AccessibilityGetName() => textLabel.Text;
+
+        private void ThemeManager_ThemeChanged(object sender, ThemeChangedEventArgs e)
+        {
+            textLabel.TextColor = TextColors.Normal;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            ThemeManager.ThemeChanged -= ThemeManager_ThemeChanged;
+            base.Dispose(disposing);
+        }
     }
 }
 

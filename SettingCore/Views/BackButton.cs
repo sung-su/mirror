@@ -33,7 +33,7 @@ namespace SettingCore.Views
             };
             Add(icon);
 
-            ThemeManager.ThemeChanged += (s, e) => { OnChangeSelected(false); };
+            ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
         }
 
         public override void OnChangeSelected(bool selected)
@@ -57,6 +57,17 @@ namespace SettingCore.Views
         protected override string AccessibilityGetName()
         {
             return Resources.IDS_ST_BUTTON_BACK;
+        }
+
+        private void ThemeManager_ThemeChanged(object sender, ThemeChangedEventArgs e)
+        {
+            OnChangeSelected(false);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            ThemeManager.ThemeChanged -= ThemeManager_ThemeChanged;
+            base.Dispose(disposing);
         }
     }
 }

@@ -13,6 +13,8 @@ namespace SettingCore.Views
         public RadioButton RadioButton { get; private set; }
 
         private bool isLightTheme => ThemeManager.PlatformThemeId == "org.tizen.default-light-theme";
+        private ButtonStyle style_light;
+        private ButtonStyle style_dark;
 
         public RadioButtonListItem(string text)
             :base()
@@ -25,7 +27,8 @@ namespace SettingCore.Views
                 VerticalAlignment = VerticalAlignment.Center,
             };
 
-            var style_light = ThemeManager.GetStyle("Tizen.NUI.Components.RadioButton") as ButtonStyle;
+            style_light = ThemeManager.GetStyle("Tizen.NUI.Components.RadioButton") as ButtonStyle;
+            style_light.Text.LineWrapMode = LineWrapMode.Mixed;
             style_light.Text.PixelSize = 24.SpToPx();
             style_light.Text.ThemeChangeSensitive = false;
             style_light.Icon.Size = new Size(48, 48).SpToPx();
@@ -37,7 +40,7 @@ namespace SettingCore.Views
                 DisabledSelected = GetIconPath("Rb_selected_disabled.svg"),
             };
 
-            var style_dark = new ButtonStyle(style_light);
+            style_dark = new ButtonStyle(style_light);
             style_dark.Icon.ResourceUrl = new Selector<string>
             {
                 Normal = GetIconPath("Rb_normal_dark.svg"),
@@ -51,7 +54,10 @@ namespace SettingCore.Views
                 Text = text,
                 AccessibilityHidden = true,
                 Margin = new Extents(24, 0, 0, 0).SpToPx(),
+                WidthResizePolicy = ResizePolicyType.FillToParent,
             };
+            RadioButton.TextLabel.WidthResizePolicy = ResizePolicyType.FillToParent;
+            RadioButton.TextLabel.HorizontalAlignment = HorizontalAlignment.Begin;
 
             RadioButton.ControlStateChangedEvent += (s, e) =>
             {
@@ -68,11 +74,7 @@ namespace SettingCore.Views
 
             Add(RadioButton);
 
-            ThemeManager.ThemeChanged += (s, e) =>
-            {
-                RadioButton.ApplyStyle(isLightTheme ? style_light : style_dark);
-                OnChangeSelected(false);
-            };
+            ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
 
             Relayout += RadioButtonListItem_Relayout;
         }
@@ -128,6 +130,18 @@ namespace SettingCore.Views
             states[AccessibilityState.Checked] = RadioButton.IsSelected;
 
             return states;
+        }
+
+        private void ThemeManager_ThemeChanged(object sender, ThemeChangedEventArgs e)
+        {
+            RadioButton.ApplyStyle(isLightTheme ? style_light : style_dark);
+            OnChangeSelected(false);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            ThemeManager.ThemeChanged -= ThemeManager_ThemeChanged;
+            base.Dispose(disposing);
         }
     }
 }
