@@ -15,6 +15,7 @@
  */
 
 using SettingCore;
+using SettingCore.Views;
 using SettingView.TextResources;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,8 @@ namespace SettingView
         private static Task rowsCreated;
         private static bool noMainMenus;
         private static bool noVisibleMainMenus;
-        private static List<MainMenuInfo> mainMenuItems;
+        private static List<MainMenuInfo> mainMenuInfos;
+        private static List<MainMenuItem> mainMenuItems = new List<MainMenuItem>();
         private static Task itemsLoaded;
         private static Task contentLoaded;
         private bool isLightTheme => ThemeManager.PlatformThemeId == "org.tizen.default-light-theme";
@@ -322,10 +324,8 @@ namespace SettingView
         {
             if (page != null)
             {
-                MainMenuInfo.ClearCache();
-
                 page.Title.Text = Resources.IDS_ST_OPT_SETTINGS;
-                CreateContent();
+                UpdateContent();
             }
         }
 
@@ -335,9 +335,7 @@ namespace SettingView
             {
                 page.BackgroundColor = isLightTheme ? new Color("#FAFAFA") : new Color("#16131A");
                 SetScrollbar();
-
-                MainMenuInfo.ClearCache();
-                CreateContent();
+                UpdateContent();
             }
         }
 
@@ -348,8 +346,8 @@ namespace SettingView
                 stopwatch.Start();
                 noMainMenus = false;
                 noVisibleMainMenus = false;
-                mainMenuItems = MainMenuInfo.CacheMenu;
-                if (mainMenuItems.Count == 0 || customizationChanged)
+                mainMenuInfos = MainMenuInfo.CacheMenu;
+                if (mainMenuInfos.Count == 0 || customizationChanged)
                 {
                     var mainMenus = GadgetManager.Instance.GetMainWithCurrentOrder();
                     if (!mainMenus.Any())
@@ -365,12 +363,12 @@ namespace SettingView
                         return Task.CompletedTask;
                     }
 
-                    mainMenuItems = new List<MainMenuInfo>();
+                    mainMenuInfos = new List<MainMenuInfo>();
                     foreach (var gadgetInfo in visibleMenus)
                     {
                         if (MainMenuInfo.Create(gadgetInfo) is MainMenuInfo menu)
                         {
-                            mainMenuItems.Add(menu);
+                            mainMenuInfos.Add(menu);
                         }
                     }
                 }
@@ -409,22 +407,18 @@ namespace SettingView
                 }
 
                 System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-                foreach (var menu in mainMenuItems)
+                foreach (var menu in mainMenuInfos)
                 {
                     await Post(() =>
                     {
-                        if(menu == mainMenuItems.First())
+                        if(menu == mainMenuInfos.First())
                         {
                             Logger.Performance($"CreateContentRows start");
                             stopwatch.Start();
                         }
-                        var row = new SettingCore.Views.MainMenuItem(menu.IconPath, new Color(menu.IconColorHex), menu.Title);
-                        row.Clicked += (s, e) =>
-                        {
-                            Logger.Debug($"navigating to menupath {menu.Path}, title: {menu.Title}");
-                            GadgetNavigation.NavigateTo(menu.Path);
-                        };
-                        if (mainMenuItems.Last() == menu)
+                        var row = new MainMenuItem(menu.IconPath, new Color(menu.IconColorHex), menu.Title, menu.Path);
+
+                        if (mainMenuInfos.Last() == menu)
                         {
                             row.Relayout += (s, e) =>
                             {
@@ -432,17 +426,19 @@ namespace SettingView
                                 Logger.Performance($"UICompleted items: {stopwatch.Elapsed.TotalMilliseconds}");
                             };
                         }
+                        mainMenuItems.Add(row);
                         page.Content.Add(row);
                         return true;
                     });
                 }
 
-                MainMenuInfo.UpdateCache(mainMenuItems);
+                MainMenuInfo.UpdateCache(mainMenuInfos);
             });
         }
 
         private static void CreateContent(bool customizationChanged = false)
         {
+            mainMenuItems.Clear();
             page.Content.RemoveAllChildren(true);
             itemsLoaded = LoadMainMenuItems(customizationChanged);
             _ = CreateContentRows();
@@ -462,6 +458,21 @@ namespace SettingView
             {
                 thumb.CornerRadius = 4;
                 thumb.BoxShadow = isLightTheme ? new Shadow(8.0f, new Color(0.0f, 0.0f, 0.0f, 0.16f), new Vector2(0.0f, 2.0f)) : new Shadow(8.0f, new Color("#FFFFFF29"), new Vector2(0.0f, 1.0f));
+            }
+        }
+
+        private static async void UpdateContent()
+        {
+            MainMenuInfo.ClearCache();
+            await LoadMainMenuItems(true);
+
+            foreach(var menu in mainMenuInfos)
+            {
+                var item = mainMenuItems.Where(a => a.MenuPath == menu.Path).FirstOrDefault();
+                if (item != null)
+                {
+                    item.UpdateItem(menu.Title, new Color(menu.IconColorHex));
+                }
             }
         }
 
