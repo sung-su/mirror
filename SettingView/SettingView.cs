@@ -455,20 +455,13 @@ namespace SettingView
             scrollbarStyle.TrackPadding = 8;
             page.Content.Scrollbar = new Scrollbar(scrollbarStyle);
 
-            try
-            {
-                // get Thumb ImageView component, since it is internal
-                var thumb = page.Content.Scrollbar.Children[1] as ImageView;
+            // get Thumb ImageView component, since it is internal
+            var thumb = page.Content.Scrollbar.Children.Skip(1).FirstOrDefault() as ImageView;
 
-                if(thumb != null ) 
-                {
-                    thumb.CornerRadius = 4;
-                    thumb.BoxShadow = isLightTheme ? new Shadow(8.0f, new Color(0.0f, 0.0f, 0.0f, 0.16f), new Vector2(0.0f, 2.0f)) : new Shadow(8.0f, new Color("#FFFFFF29"), new Vector2(0.0f, 1.0f));
-                }
-            }
-            catch (Exception ex)
+            if (thumb != null)
             {
-                Logger.Error($"Scrollbar cannot be changed - {ex.Message}");
+                thumb.CornerRadius = 4;
+                thumb.BoxShadow = isLightTheme ? new Shadow(8.0f, new Color(0.0f, 0.0f, 0.0f, 0.16f), new Vector2(0.0f, 2.0f)) : new Shadow(8.0f, new Color("#FFFFFF29"), new Vector2(0.0f, 1.0f));
             }
         }
 
