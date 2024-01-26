@@ -17,7 +17,7 @@ namespace SettingCore.Views
 
         public string MenuPath { get; private set; }
 
-        public MainMenuItem(string iconPath, Color iconBackgroungColor, string title, string menuPath) : base()
+        public MainMenuItem(string iconPath, Color iconBackgroundColor, string title, string menuPath) : base()
         {
             Layout = new LinearLayout
             {
@@ -28,7 +28,7 @@ namespace SettingCore.Views
             iconBackground = new View
             {
                 CornerRadius = 5.SpToPx(),
-                BackgroundColor = iconBackgroungColor,
+                BackgroundColor = iconBackgroundColor,
                 Size = new Size(32, 32).SpToPx(),
                 Margin = new Extents(16, 16, 16, 16).SpToPx(),
             };
@@ -71,10 +71,10 @@ namespace SettingCore.Views
             ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
         }
 
-        public void UpdateItem(string title, Color iconBackgroungColor)
+        public void UpdateItem(string title, Color iconBackgroundColor)
         {
             titleTextLabel.Text = title;
-            iconBackground.BackgroundColor = iconBackgroungColor;
+            iconBackground.BackgroundColor = iconBackgroundColor;
         }        
         
         public override void OnChangeSelected(bool selected)
