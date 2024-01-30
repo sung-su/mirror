@@ -4,10 +4,8 @@ using SettingMainGadget.Apps;
 using SettingMainGadget.TextResources;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Tizen.Applications;
 using Tizen.Context.AppHistory;
@@ -33,7 +31,7 @@ namespace Setting.Menu.Storage
         private Loading appsLoading;
 
         private List<Package> packages = new List<Package>();
-        private List<ApplicationInfo> applicationInfos = new List<ApplicationInfo>();
+        private List<AppManager.ApplicationItemInfo> applicationInfos = new List<AppManager.ApplicationItemInfo>();
         private List<UsageStatisticsData> usageStatisticsDatas = new List<UsageStatisticsData>();
 
         private SortType currentSortType = SortType.name_asc;
@@ -135,7 +133,7 @@ namespace Setting.Menu.Storage
             foreach (var package in packages)
             {
                 var iconPath = File.Exists(package.IconPath) ? package.IconPath : defaultIcon;
-                var appInfo = new ApplicationInfo(package.Id, package.Label, iconPath, calculating);
+                var appInfo = new AppManager.ApplicationItemInfo(package.Id, package.Label, iconPath, calculating);
 
                 // usage info 
                 var appStatistics = usageStatisticsDatas.FirstOrDefault(a => a.AppId == package.Id);
@@ -244,46 +242,6 @@ namespace Setting.Menu.Storage
             }
 
             return IsLightTheme ? "more-menu/sort-descending.svg" : "more-menu/dt-sort-descending.svg";
-        }
-
-        private class ApplicationInfo : INotifyPropertyChanged
-        {
-            public event PropertyChangedEventHandler PropertyChanged;
-            public string AppId { get; }
-            public string Name { get; set; }
-            public string IconPath { get; set; }
-            public long AppSize { get; set; }
-            public System.DateTime LastLaunchTime { get; set; }
-
-            private string size;
-            public string SizeToDisplay
-            {
-                get => size;
-                set
-                {
-                    if (value != size)
-                    {
-                        size = value;
-                        RaisePropertyChanged(nameof(SizeToDisplay));
-                    }
-                }
-            }
-
-            public ApplicationInfo(string appid, string name, string iconPath, string size)
-            {
-                AppId = appid;
-                Name = name;
-                IconPath = iconPath;
-                SizeToDisplay = size;
-            }
-
-            /// <summary>
-            /// Raises PropertyChanged event.
-            /// </summary>
-            protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
 
         private enum SortType
