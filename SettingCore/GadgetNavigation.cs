@@ -277,11 +277,6 @@ namespace SettingCore
                         // remove buttons icon
                         item.Remove(item.Children[0]);
 
-                        var iconVisual = new ImageVisual
-                        {
-                            URL = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, moreMenuItem.IconPath),
-                            FittingMode = FittingModeType.ScaleToFill,
-                        };
                         var itemIcon = new ImageView
                         {
                             ResourceUrl = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, moreMenuItem.IconPath),
