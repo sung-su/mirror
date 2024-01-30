@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Tizen.Applications;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
+using Tizen.NUI.Binding;
 using Tizen.NUI.Components;
 
 namespace Setting.Menu.Apps
@@ -21,18 +22,52 @@ namespace Setting.Menu.Apps
 
         private string defaultIcon = System.IO.Path.Combine(Application.Current.DirectoryInfo.Resource, "default_app_icon.svg");
 
+        public override IEnumerable<MoreMenuItem> ProvideMoreMenu() => MoreMenu();
+
         private View content;
         private View installedAppsContent;
         private View runningAppsContent;
         private View allAppsContent;
 
-        private Loading installedAppsIndicator;
-        private PackageSizeInformation packageSizeInfo;
+        private CollectionView installedAppsView;
+        private CollectionView runningAppsView;
+        private CollectionView allAppsView;
 
+        private MoreMenuItem sortBySizeMenuItem;
+        private MoreMenuItem sortByNameMenuItem;
+
+        private Loading installedAppsIndicator;
         private List<Package> allPackages = new List<Package>();
-        private Dictionary<Package, TextWithIconListItem> installedApps = new Dictionary<Package, TextWithIconListItem>();
-        private Dictionary<Package, TextWithIconListItem> allApps = new Dictionary<Package, TextWithIconListItem>();
-        private Dictionary<ApplicationInfo, TextWithIconListItem> runningApps = new Dictionary<ApplicationInfo, TextWithIconListItem>();
+
+        private List<AppManager.ApplicationItemInfo> installedAppsInfos = new List<AppManager.ApplicationItemInfo>();
+        private List<AppManager.ApplicationItemInfo> runningAppsInfos = new List<AppManager.ApplicationItemInfo>();
+        private List<AppManager.ApplicationItemInfo> allAppsInfos = new List<AppManager.ApplicationItemInfo>();
+
+        private SortType currentSortType = SortType.name_asc;
+
+        private List<MoreMenuItem> MoreMenu()
+        {
+            sortBySizeMenuItem = new MoreMenuItem()
+            {
+                Text = $"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SIZE))}: {NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING))}",
+            };
+
+            sortByNameMenuItem = new MoreMenuItem()
+            {
+                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NAME)),
+                Action = () => { SortAppications(currentSortType != SortType.name_asc ? SortType.name_asc : SortType.name_desc); }
+            };
+
+            return new List<MoreMenuItem>
+            {
+                new MoreMenuItem()
+                {
+                    Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_SORT_BY)),
+                },
+                sortBySizeMenuItem,
+                sortByNameMenuItem,
+            };
+        }
 
         protected override View OnCreate()
         {
@@ -58,45 +93,6 @@ namespace Setting.Menu.Apps
             return content;
         }
 
-        private void PackageManager_InstallProgressChanged(object sender, PackageManagerEventArgs e)
-        {
-            if (e.State == PackageEventState.Completed)
-            {
-                try
-                {
-                    RemoveChildren(content);
-                    AddTabs();
-                    AddTabsContent();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Warn($"Updating apps gadget after installation failed: {ex.Message}");
-                }
-            }
-        }
-
-        private void PackageManager_UninstallProgressChanged(object sender, PackageManagerEventArgs e)
-        {
-            if (e.State == PackageEventState.Completed)
-            {
-                try
-                {
-                    // the completed status of the uninstall process comes twice, so this protects against a second update 
-                    PackageManager.UninstallProgressChanged -= PackageManager_UninstallProgressChanged;
-
-                    RemoveChildren(content);
-                    AddTabs();
-                    AddTabsContent();
-
-                    PackageManager.UninstallProgressChanged += PackageManager_UninstallProgressChanged;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Warn($"Updating apps gadget after uninstallation failed: {ex.Message}");
-                }
-            }
-        }
-
         private void AddTabs()
         {
             var tabView = new TabView()
@@ -116,17 +112,10 @@ namespace Setting.Menu.Apps
                 Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DOWNLOADS))
             };
 
-            installedAppsContent = new View()
-            {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                HeightSpecification = LayoutParamPolicies.MatchParent,
-                Layout = new LinearLayout()
-                {
-                    LinearOrientation = LinearLayout.Orientation.Vertical,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                },
-            };
+            installedAppsContent = TabView();
+
+            var layout = installedAppsContent.Layout as LinearLayout;
+            layout.HorizontalAlignment = HorizontalAlignment.Center;
 
             installedAppsIndicator = new Loading();
             installedAppsIndicator.Play();
@@ -139,7 +128,7 @@ namespace Setting.Menu.Apps
                 Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_RUNNING))
             };
 
-            runningAppsContent = CreateScrollableBase();
+            runningAppsContent = TabView();
 
             // all apps tab
 
@@ -148,7 +137,7 @@ namespace Setting.Menu.Apps
                 Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_OPT_ALL))
             };
 
-            allAppsContent = CreateScrollableBase();
+            allAppsContent = TabView();
 
             tabView.AddTab(installedAppsTabButton, installedAppsContent);
             tabView.AddTab(runningAppsTabButton, runningAppsContent);
@@ -157,23 +146,67 @@ namespace Setting.Menu.Apps
             content.Add(tabView);
         }
 
-        private void AddTabsContent()
+        private async void AddTabsContent()
         {
             OnPageAppeared -= AddTabsContent;
-
-            allPackages.Clear();
             allPackages = PackageManager.GetPackages().ToList();
 
-            AddInstalledApps(installedAppsContent);
-            _ = AddRunningAppsAsync(runningAppsContent);
-            AddAllApps(allAppsContent);
+            await GetData();
+
+            AddInstalledApps();
+            AddRunningApps();
+            AddAllApps();
+
+            sortByNameMenuItem.IconPath = GetSortIcon(true);
+
+            _ = UpdateSizeInfo();
         }
 
-        private void AddInstalledApps(View content)
+        private async Task GetData()
         {
-            var packages = allPackages.Where(a => a.IsPreloaded == false && !string.IsNullOrEmpty(a.Label) && a.PackageType != PackageType.WGT).OrderBy(x => x.Label).ToList();
+            var installed = allPackages.Where(a => a.IsPreloaded == false && !string.IsNullOrEmpty(a.Label) && a.PackageType != PackageType.WGT).OrderBy(x => x.Label).ToList();
+            var all = allPackages.Where(x => !string.IsNullOrEmpty(x.Label) && x.PackageType != PackageType.WGT).OrderBy(x => x.Label).ToList();
+            var calculating = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING));
 
-            if (packages.Count() == 0)
+            foreach (var package in installed)
+            {
+                var iconPath = File.Exists(package.IconPath) ? package.IconPath : defaultIcon;
+                var appInfo = new AppManager.ApplicationItemInfo(package.Id, package.Label, iconPath, calculating);
+
+                installedAppsInfos.Add(appInfo);
+            }
+
+            foreach (var package in all)
+            {
+                var iconPath = File.Exists(package.IconPath) ? package.IconPath : defaultIcon;
+                var appInfo = new AppManager.ApplicationItemInfo(package.Id, package.Label, iconPath, calculating);
+
+                allAppsInfos.Add(appInfo);
+            }
+
+            var runningApplicationsContexts = await ApplicationManager.GetAllRunningApplicationsAsync();
+            var applicationInfoList = new List<ApplicationInfo>();
+
+            foreach (var application in runningApplicationsContexts)
+            {
+                applicationInfoList.Add(new ApplicationInfo(application.ApplicationId));
+            }
+
+            applicationInfoList = applicationInfoList.OrderBy(x => x.Label).ToList();
+
+            foreach (var applicationInfo in applicationInfoList)
+            {
+                var iconPath = File.Exists(applicationInfo.IconPath) ? applicationInfo.IconPath : defaultIcon;
+                var appInfo = new AppManager.ApplicationItemInfo(applicationInfo.ApplicationId, applicationInfo.Label, iconPath, calculating);
+                appInfo.PackageId = applicationInfo.PackageId;
+
+                runningAppsInfos.Add(appInfo);
+            }
+        }
+
+        private void AddInstalledApps()
+        {
+            if (installedAppsInfos.Count() == 0)
             {
                 var noAppsLabel = new TextLabel
                 {
@@ -197,8 +230,8 @@ namespace Setting.Menu.Apps
                     TextColor = IsLightTheme ? new Color("#CACACA") : new Color("#666666"),
                 };
 
-                content.Add(noAppsLabel);
-                content.Add(infoLabel);
+                installedAppsContent.Add(noAppsLabel);
+                installedAppsContent.Add(infoLabel);
 
                 installedAppsIndicator?.Stop();
                 installedAppsIndicator?.Unparent();
@@ -207,134 +240,161 @@ namespace Setting.Menu.Apps
                 return;
             }
 
-            var scrollView = CreateScrollableBase();
-            scrollView.Add(CreateAppSizeLabel());
+            var layout = installedAppsContent.Layout as LinearLayout;
+            layout.HorizontalAlignment = HorizontalAlignment.Begin;
 
-            installedApps.Clear();
+            installedAppsView = CreateCollectionView();
+            installedAppsView.ItemsSource = installedAppsInfos;
+            installedAppsView.Relayout += StopLoading;
 
-            foreach (var package in packages)
+            installedAppsContent.Add(CreateAppSizeLabel());
+            installedAppsContent.Add(installedAppsView);
+        }
+
+        private void AddRunningApps()
+        {
+            runningAppsView = CreateCollectionView();
+            runningAppsView.ItemsSource = runningAppsInfos;
+            runningAppsContent.Add(CreateAppSizeLabel());
+            runningAppsContent.Add(runningAppsView);
+        }
+
+        private void AddAllApps()
+        {
+            allAppsView = CreateCollectionView();
+            allAppsView.ItemsSource = allAppsInfos;
+            allAppsContent.Add(CreateAppSizeLabel());
+            allAppsContent.Add(allAppsView);
+        }
+
+        private async Task UpdateSizeInfo()
+        {
+            foreach (var package in allPackages)
             {
-                try
+                var packageSizeInfo = await package.GetSizeInformationAsync();
+
+                var installedAppInfo = installedAppsInfos.Where(a => a.AppId == package.Id).FirstOrDefault();
+                if (installedAppInfo != null)
                 {
-                    var iconPath = File.Exists(package.IconPath) ? package.IconPath : defaultIcon;
-                    var appItem = new TextWithIconListItem(package.Label, Color.Transparent, iconPath: iconPath, subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
-                    appItem.Clicked += (s, e) =>
-                    {
-                        Logger.Debug($"Set current package id: {package.Id}");
-                        AppManager.CurrentApp = package;
-                        NavigateTo(MainMenuProvider.Apps_AppInfo);
-                    };
-
-                    installedApps.Add(package, appItem);
-
-                    scrollView.Add(appItem);
-                    content.Add(scrollView);
+                    installedAppInfo.AppSize = packageSizeInfo.AppSize;
+                    installedAppInfo.SizeToDisplay = AppManager.GetSizeString(packageSizeInfo.AppSize);
+                }                
+ 
+                var allAppInfo = allAppsInfos.Where(a => a.AppId == package.Id).FirstOrDefault();
+                if (allAppInfo != null)
+                {
+                    allAppInfo.AppSize = packageSizeInfo.AppSize;
+                    allAppInfo.SizeToDisplay = AppManager.GetSizeString(packageSizeInfo.AppSize);
                 }
-                catch (Exception ex)
-                {
-                    Logger.Error($"{package.Id} - {ex.Message}");
-                }
             }
 
-            installedAppsIndicator?.Stop();
-            installedAppsIndicator?.Unparent();
-            installedAppsIndicator?.Dispose();
+            UpdateRAMSizeInfo();
 
-            _ = UpdateSizeInfo(installedApps);
-        }
-
-        private async Task AddRunningAppsAsync(View content)
-        {
-            runningApps.Clear();
-            var runningApplicationsContexts = await ApplicationManager.GetAllRunningApplicationsAsync();
-
-            content.Add(CreateAppSizeLabel());
-
-            var applicationInfoList = new List<ApplicationInfo>();
-
-            foreach (var application in runningApplicationsContexts)
+            if (sortBySizeMenuItem.Action is null)
             {
-                applicationInfoList.Add(new ApplicationInfo(application.ApplicationId));
-            }
-
-            applicationInfoList = applicationInfoList.OrderBy(x => x.Label).ToList();
-
-            foreach (var applicationInfo in applicationInfoList)
-            {
-                var iconPath = File.Exists(applicationInfo.IconPath) ? applicationInfo.IconPath : defaultIcon;
-
-                var appItem = new TextWithIconListItem(applicationInfo.Label, Color.Transparent, iconPath: iconPath, subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
-                appItem.Clicked += (s, e) =>
-                {
-                    AppManager.CurrentApp = PackageManager.GetPackage(applicationInfo.PackageId);
-                    NavigateTo(MainMenuProvider.Apps_AppInfo);
-                };
-
-                runningApps.Add(applicationInfo, appItem);
-                content.Add(appItem);
-            }
-
-            UpdateRAMSizeInfo(runningApps);
-        }
-
-        private void AddAllApps(View content)
-        {
-            allApps.Clear();
-
-            var packages = allPackages.Where(x => !string.IsNullOrEmpty(x.Label) && x.PackageType != PackageType.WGT).OrderBy(x => x.Label).ToList();
-
-            content.Add(CreateAppSizeLabel());
-
-            foreach (var package in packages)
-            {
-                var iconPath = File.Exists(package.IconPath) ? package.IconPath : defaultIcon;
-
-                var appItem = new TextWithIconListItem(package.Label, Color.Transparent, iconPath: iconPath, subText: NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING)));
-                appItem.Clicked += (s, e) =>
-                {
-                    AppManager.CurrentApp = package;
-                    NavigateTo(MainMenuProvider.Apps_AppInfo);
-                };
-
-                allApps.Add(package, appItem);
-                content.Add(appItem);
-            }
-
-            _ = UpdateSizeInfo(allApps);
-        }
-
-        private async Task UpdateSizeInfo(Dictionary<Package, TextWithIconListItem> packages)
-        {
-            foreach (var package in packages)
-            {
-                packageSizeInfo = await package.Key.GetSizeInformationAsync();
-                package.Value.SubText = AppManager.GetSizeString(packageSizeInfo.AppSize);
+                sortBySizeMenuItem.Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SIZE));
+                sortBySizeMenuItem.Action = () => { SortAppications(currentSortType != SortType.size_asc ? SortType.size_asc : SortType.size_desc); };
             }
         }
 
-        private void UpdateRAMSizeInfo(Dictionary<ApplicationInfo, TextWithIconListItem> infos)
+        private void UpdateRAMSizeInfo()
         {
-            foreach (var info in infos)
+            foreach (var info in runningAppsInfos)
             {
-                var appContext = new ApplicationRunningContext(info.Key.ApplicationId);
+                var appContext = new ApplicationRunningContext(info.AppId);
                 var processMemmory = new Tizen.System.ProcessMemoryUsage(new List<int> { appContext.ProcessId });
-
                 processMemmory.Update(new List<int> { appContext.ProcessId });
-                info.Value.SubText = AppManager.GetSizeString(processMemmory.GetVsz(appContext.ProcessId));
+                var vsz = processMemmory.GetVsz(appContext.ProcessId);
+
+                info.AppSize = vsz;
+                info.SizeToDisplay = AppManager.GetSizeString(vsz);
             }
         }
 
-        private ScrollableBase CreateScrollableBase()
+        private void SortAppications(SortType sortType)
         {
-            return new ScrollableBase()
+            ClearSortIcons();
+            switch (sortType)
+            {
+                case SortType.size_asc:
+                    installedAppsInfos = installedAppsInfos.OrderBy(x => x.AppSize).ToList();
+                    runningAppsInfos = runningAppsInfos.OrderBy(x => x.AppSize).ToList();
+                    allAppsInfos = allAppsInfos.OrderBy(x => x.AppSize).ToList();
+                    sortBySizeMenuItem.IconPath = GetSortIcon(true);
+                    break;
+                case SortType.size_desc:
+                    installedAppsInfos = installedAppsInfos.OrderByDescending(x => x.AppSize).ToList();
+                    runningAppsInfos = runningAppsInfos.OrderByDescending(x => x.AppSize).ToList();
+                    allAppsInfos = allAppsInfos.OrderByDescending(x => x.AppSize).ToList();
+                    sortBySizeMenuItem.IconPath = GetSortIcon(false);
+                    break;
+                case SortType.name_asc:
+                    installedAppsInfos = installedAppsInfos.OrderBy(x => x.Name).ToList();
+                    runningAppsInfos = runningAppsInfos.OrderBy(x => x.Name).ToList();
+                    allAppsInfos = allAppsInfos.OrderBy(x => x.Name).ToList();
+                    sortByNameMenuItem.IconPath = GetSortIcon(true);
+                    break;
+                case SortType.name_desc:
+                    installedAppsInfos = installedAppsInfos.OrderByDescending(x => x.Name).ToList();
+                    runningAppsInfos = runningAppsInfos.OrderByDescending(x => x.Name).ToList();
+                    allAppsInfos = allAppsInfos.OrderByDescending(x => x.Name).ToList();
+                    sortByNameMenuItem.IconPath = GetSortIcon(false);
+                    break;
+            }
+
+            currentSortType = sortType;
+
+            // changing items source in post so that it does not block the closing of the more menu
+            _ = Task.Run(async () =>
+            {
+                await CoreApplication.Post(() =>
+                {
+                    installedAppsView.ItemsSource = installedAppsInfos;
+                    runningAppsView.ItemsSource = runningAppsInfos;
+                    allAppsView.ItemsSource = allAppsInfos;
+                    return true;
+                });
+            });
+        }
+
+        private void ClearSortIcons()
+        {
+            sortBySizeMenuItem.IconPath = string.Empty;
+            sortByNameMenuItem.IconPath = string.Empty;
+        }
+
+        private string GetSortIcon(bool isAscending)
+        {
+            if (isAscending)
+            {
+                return IsLightTheme ? "more-menu/sort-ascending.svg" : "more-menu/dt-sort-ascending.svg";
+            }
+
+            return IsLightTheme ? "more-menu/sort-descending.svg" : "more-menu/dt-sort-descending.svg";
+        }
+
+        private void StopLoading(object sender, EventArgs e)
+        {
+            installedAppsView.Relayout -= StopLoading;
+
+            if (installedAppsIndicator != null)
+            {
+                installedAppsIndicator?.Stop();
+                installedAppsIndicator?.Unparent();
+                installedAppsIndicator?.Dispose();
+            }
+        }
+
+        private View TabView()
+        {
+            return new View()
             {
                 WidthSpecification = LayoutParamPolicies.MatchParent,
                 HeightSpecification = LayoutParamPolicies.MatchParent,
-                ScrollingDirection = ScrollableBase.Direction.Vertical,
-                HideScrollbar = false,
                 Layout = new LinearLayout()
                 {
                     LinearOrientation = LinearLayout.Orientation.Vertical,
+                    VerticalAlignment = VerticalAlignment.Center,
                 },
             };
         }
@@ -350,20 +410,112 @@ namespace Setting.Menu.Apps
             };
         }
 
-        private void RemoveChildren(View view)
+        private CollectionView CreateCollectionView()
         {
-            for (int i = (int)view.ChildCount - 1; i >= 0; --i)
+            var collectionView = new CollectionView()
             {
-                View child = view.GetChildAt((uint)i);
-
-                if (child == null)
+                ItemsLayouter = new LinearLayouter(),
+                ItemTemplate = new DataTemplate(() =>
                 {
-                    continue;
-                }
+                    CollectionViewItem item = new CollectionViewItem()
+                    {
+                        WidthSpecification = LayoutParamPolicies.MatchParent,
+                    };
 
-                view.Remove(child);
-                child.Dispose();
+                    item.TextLabel.SetBinding(TextLabel.TextProperty, "Name");
+                    item.Icon.SetBinding(ImageView.ResourceUrlProperty, "IconPath");
+                    item.SubTextLabel.SetBinding(TextLabel.TextProperty, "SizeToDisplay");
+
+                    item.Clicked += (s, e) =>
+                    {
+                        var context = item.BindingContext as AppManager.ApplicationItemInfo;
+                        if (context != null)
+                        {
+                            var packageId = String.IsNullOrEmpty(context.PackageId) ? context.AppId : context.PackageId;
+                            AppManager.CurrentApp = PackageManager.GetPackage(packageId);
+                            NavigateTo(MainMenuProvider.Apps_AppInfo);
+                        }
+                    };
+
+                    return item;
+                }),
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                HeightSpecification = LayoutParamPolicies.MatchParent,
+                ScrollingDirection = ScrollableBase.Direction.Vertical,
+                SelectionMode = ItemSelectionMode.SingleAlways,
+                BackgroundColor = Color.Transparent,
+            };
+
+            var calculating = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SM_SBODY_CALCULATING_ING));
+
+            return collectionView;
+        }
+
+        private async void PackageManager_InstallProgressChanged(object sender, PackageManagerEventArgs e)
+        {
+            if (e.State == PackageEventState.Completed)
+            {
+                try
+                {
+                    var package = PackageManager.GetPackage(e.PackageId);
+
+                    if(installedAppsInfos.Where(a => a.AppId == package.Id).FirstOrDefault() is null)
+                    {
+                        var packageSizeInfo = await package.GetSizeInformationAsync();
+                        var size = AppManager.GetSizeString(packageSizeInfo.AppSize);
+
+                        var iconPath = File.Exists(package.IconPath) ? package.IconPath : defaultIcon;
+                        var appInfo = new AppManager.ApplicationItemInfo(package.Id, package.Label, iconPath, size);
+                        appInfo.AppSize = packageSizeInfo.AppSize;
+
+                        installedAppsInfos.Add(appInfo);
+                        installedAppsView.ItemsSource = installedAppsInfos;
+
+                        SortAppications(currentSortType);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Warn($"Updating apps gadget after installation failed: {ex.Message}");
+                }
             }
+        }
+
+        private void PackageManager_UninstallProgressChanged(object sender, PackageManagerEventArgs e)
+        {
+            if (e.State == PackageEventState.Completed)
+            {
+                try
+                {
+                    // the completed status of the uninstall process comes twice, so this protects against a second update 
+                    PackageManager.UninstallProgressChanged -= PackageManager_UninstallProgressChanged;
+
+                    installedAppsInfos = installedAppsInfos.Where(a => a.AppId != e.PackageId).ToList();
+                    installedAppsView.ItemsSource = installedAppsInfos;
+
+                    PackageManager.UninstallProgressChanged += PackageManager_UninstallProgressChanged;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Warn($"Updating apps gadget after uninstallation failed: {ex.Message}");
+                }
+            }
+        }
+
+        private enum SortType
+        {
+            size_asc,
+            size_desc,
+            name_asc,
+            name_desc,
+        }
+
+        protected override void OnDestroy()
+        {
+            PackageManager.UninstallProgressChanged -= PackageManager_UninstallProgressChanged;
+            PackageManager.InstallProgressChanged -= PackageManager_InstallProgressChanged;
+
+            base.OnDestroy();
         }
     }
 }
