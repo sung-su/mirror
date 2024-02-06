@@ -55,7 +55,7 @@ namespace Setting.Menu.Apps
             sortByNameMenuItem = new MoreMenuItem()
             {
                 Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NAME)),
-                Action = () => { SortAppications(currentSortType != SortType.name_asc ? SortType.name_asc : SortType.name_desc); }
+                Action = () => { SortApplications(currentSortType != SortType.name_asc ? SortType.name_asc : SortType.name_desc); }
             };
 
             return new List<MoreMenuItem>
@@ -172,7 +172,6 @@ namespace Setting.Menu.Apps
             {
                 var iconPath = File.Exists(package.IconPath) ? package.IconPath : defaultIcon;
                 var appInfo = new AppManager.ApplicationItemInfo(package.Id, package.Label, iconPath, calculating);
-
                 installedAppsInfos.Add(appInfo);
             }
 
@@ -293,7 +292,7 @@ namespace Setting.Menu.Apps
             if (sortBySizeMenuItem.Action is null)
             {
                 sortBySizeMenuItem.Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SIZE));
-                sortBySizeMenuItem.Action = () => { SortAppications(currentSortType != SortType.size_asc ? SortType.size_asc : SortType.size_desc); };
+                sortBySizeMenuItem.Action = () => { SortApplications(currentSortType != SortType.size_asc ? SortType.size_asc : SortType.size_desc); };
             }
         }
 
@@ -311,7 +310,7 @@ namespace Setting.Menu.Apps
             }
         }
 
-        private void SortAppications(SortType sortType)
+        private void SortApplications(SortType sortType)
         {
             ClearSortIcons();
             switch (sortType)
@@ -377,12 +376,9 @@ namespace Setting.Menu.Apps
         {
             installedAppsView.Relayout -= StopLoading;
 
-            if (installedAppsIndicator != null)
-            {
-                installedAppsIndicator?.Stop();
-                installedAppsIndicator?.Unparent();
-                installedAppsIndicator?.Dispose();
-            }
+            installedAppsIndicator?.Stop();
+            installedAppsIndicator?.Unparent();
+            installedAppsIndicator?.Dispose();
         }
 
         private View TabView()
@@ -471,7 +467,7 @@ namespace Setting.Menu.Apps
                         installedAppsInfos.Add(appInfo);
                         installedAppsView.ItemsSource = installedAppsInfos;
 
-                        SortAppications(currentSortType);
+                        SortApplications(currentSortType);
                     }
                 }
                 catch (Exception ex)
