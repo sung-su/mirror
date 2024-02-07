@@ -20,8 +20,7 @@ namespace Setting.Menu
         private string VconfDeviceName = "db/setting/device_name";
         private string SystemModelName = "tizen.org/system/model_name";
 
-        private Sections sections = new Sections();
-        private View content;
+        private ScrollableBase content;
         private View popup;
         private TextField textField;
         private TextLabel warning;
@@ -85,95 +84,141 @@ namespace Setting.Menu
 
         private void CreateView()
         {
-            sections.RemoveAllSectionsFromView(content);
+            content.RemoveAllChildren(true);
+            sections.Clear();
 
-            var manageCertificates = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_MANAGE_CERTIFICATES_ABB)));
-            manageCertificates.Clicked += (s, e) =>
+            sections.Add(MainMenuProvider.About_ManageCertificates, () =>
             {
-                NavigateTo(MainMenuProvider.About_ManageCertificates);
-            };
-            sections.Add(MainMenuProvider.About_ManageCertificates, manageCertificates);
+                var manageCertificates = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_MANAGE_CERTIFICATES_ABB)));
+                manageCertificates.Clicked += (s, e) =>
+                {
+                    NavigateTo(MainMenuProvider.About_ManageCertificates);
+                };
+                content.Add(manageCertificates);
+            });
 
-            var openSourceLicenses = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_OPEN_SOURCE_LICENCES)));
-            openSourceLicenses.Clicked += (s, e) =>
+            sections.Add(MainMenuProvider.About_OpenSourceLicenses, () =>
             {
-                NavigateTo(MainMenuProvider.About_OpenSourceLicenses);
-            };
-            sections.Add(MainMenuProvider.About_OpenSourceLicenses, openSourceLicenses);
+                var openSourceLicenses = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_OPEN_SOURCE_LICENCES)));
+                openSourceLicenses.Clicked += (s, e) =>
+                {
+                    NavigateTo(MainMenuProvider.About_OpenSourceLicenses);
+                };
+                content.Add(openSourceLicenses);
+            });
 
-            var scalableUI = TextListItem.CreatePrimaryTextItem("Scalable UI for Developers");
-            scalableUI.Clicked += (s, e) =>
+            sections.Add(MainMenuProvider.About_ScalableUI, () =>
             {
-                NavigateTo(MainMenuProvider.About_ScalableUI);
-            };
-            sections.Add(MainMenuProvider.About_ScalableUI, scalableUI);
+                var scalableUI = TextListItem.CreatePrimaryTextItem("Scalable UI for Developers");
+                scalableUI.Clicked += (s, e) =>
+                {
+                    NavigateTo(MainMenuProvider.About_ScalableUI);
+                };
+                content.Add(scalableUI);
+            });
 
-            var deviceInfo = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DEVICE_INFO)));
-            sections.Add(MainMenuProvider.About_DeviceInfo, deviceInfo);
-
-            if (Vconf.TryGetString(VconfDeviceName, out deviceName))
+            sections.Add(MainMenuProvider.About_ScalableUI, () =>
             {
-                Logger.Warn($"Could not get vconf value: {VconfDeviceName}");
-            }
+                var scalableUI = TextListItem.CreatePrimaryTextItem("Scalable UI for Developers");
+                scalableUI.Clicked += (s, e) =>
+                {
+                    NavigateTo(MainMenuProvider.About_ScalableUI);
+                };
+                content.Add(scalableUI);
+            });
 
-            renameDevice = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NAME)), deviceName);
-            renameDevice.Clicked += (s, e) =>
+            sections.Add(MainMenuProvider.About_DeviceInfo, () =>
             {
-                ShowRenamePopup(deviceName);
-            };
-            sections.Add(MainMenuProvider.About_RenameDevice, renameDevice);
+                var deviceInfo = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DEVICE_INFO)));
+                content.Add(deviceInfo);
+            });
 
-            bool result = Tizen.System.Information.TryGetValue<string>("http://tizen.org/system/model_name", out string modelNumberText);
-            var modelNumber = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_MODEL_NUMBER)), result ? modelNumberText : NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_UNAVAILABLE)));
-            sections.Add(MainMenuProvider.About_ModelNumber, modelNumber);
-
-            result = Tizen.System.Information.TryGetValue<string>("http://tizen.org/feature/platform.version", out string platformVersionText);
-            var platformVersion = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_TIZEN_VERSION)), result ? platformVersionText : NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_UNAVAILABLE)));
-            platformVersion.MultiTap += (s, e) =>
+            sections.Add(MainMenuProvider.About_RenameDevice, () =>
             {
-                GadgetManager.Instance.ChangeMenuPathOrder(MainMenuProvider.About_ScalableUI, 30);
+                if (Vconf.TryGetString(VconfDeviceName, out deviceName))
+                {
+                    Logger.Warn($"Could not get vconf value: {VconfDeviceName}");
+                }
 
-                var toast = Notification.MakeToast("Scalable UI for Developers menu enabled", Notification.ToastCenter);
-                toast.Post(1000);
-            };
-            sections.Add(MainMenuProvider.About_TizenVersion, platformVersion);
+                renameDevice = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NAME)), deviceName);
+                renameDevice.Clicked += (s, e) =>
+                {
+                    ShowRenamePopup(deviceName);
+                };
+                content.Add(renameDevice);
+            });
 
-            result = Tizen.System.Information.TryGetValue<string>("http://tizen.org/system/platform.processor", out string platformProcessorText);
-            var cpu = TextListItem.CreatePrimaryTextItemWithSecondaryText("CPU", result ? platformProcessorText : NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_UNAVAILABLE)));
-            sections.Add(MainMenuProvider.About_Cpu, cpu);
+            sections.Add(MainMenuProvider.About_ModelNumber, () =>
+            {
+                bool result = Tizen.System.Information.TryGetValue<string>("http://tizen.org/system/model_name", out string modelNumberText);
+                var modelNumber = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_MODEL_NUMBER)), result ? modelNumberText : NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_UNAVAILABLE)));
+                content.Add(modelNumber);
+            });
 
-            var memusage = new Tizen.System.SystemMemoryUsage();
-            float ram_total_gb = memusage.Total / (float)(1024 * 1024);
-            var ram = TextListItem.CreatePrimaryTextItemWithSecondaryText("RAM", string.Format("{0:0.0} GB", ram_total_gb));
-            sections.Add(MainMenuProvider.About_Ram, ram);
+            sections.Add(MainMenuProvider.About_TizenVersion, () =>
+            {
+                bool result = Tizen.System.Information.TryGetValue<string>("http://tizen.org/feature/platform.version", out string platformVersionText);
+                var platformVersion = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_TIZEN_VERSION)), result ? platformVersionText : NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_UNAVAILABLE)));
+                platformVersion.MultiTap += (s, e) =>
+                {
+                    GadgetManager.Instance.ChangeMenuPathOrder(MainMenuProvider.About_ScalableUI, 30);
 
-            bool result1 = Tizen.System.Information.TryGetValue<int>("http://tizen.org/feature/screen.width", out int screenwidth);
-            bool result2 = Tizen.System.Information.TryGetValue<int>("http://tizen.org/feature/screen.height", out int screenheight);
+                    var toast = Notification.MakeToast("Scalable UI for Developers menu enabled", Notification.ToastCenter);
+                    toast.Post(1000);
+                };
+                content.Add(platformVersion);
+            });
 
-            var resolution = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_RESOLUTION)), result1 && result2 ? $"{screenwidth} x {screenheight}" : NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_UNAVAILABLE)));
-            sections.Add(MainMenuProvider.About_Resolution, resolution);
+            sections.Add(MainMenuProvider.About_Cpu, () =>
+            {
+                bool result = Tizen.System.Information.TryGetValue<string>("http://tizen.org/system/platform.processor", out string platformProcessorText);
+                var cpu = TextListItem.CreatePrimaryTextItemWithSecondaryText("CPU", result ? platformProcessorText : NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_UNAVAILABLE)));
+                content.Add(cpu);
+            });
+
+            sections.Add(MainMenuProvider.About_Ram, () =>
+            {
+                var memusage = new Tizen.System.SystemMemoryUsage();
+                float ram_total_gb = memusage.Total / (float)(1024 * 1024);
+                var ram = TextListItem.CreatePrimaryTextItemWithSecondaryText("RAM", string.Format("{0:0.0} GB", ram_total_gb));
+                content.Add(ram);
+            });
+
+            sections.Add(MainMenuProvider.About_Resolution, () =>
+            {
+                var screenSize = NUIApplication.GetScreenSize();
+                var resolution = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_RESOLUTION)), $"{screenSize.Width} x {screenSize.Height}");
+                content.Add(resolution);
+            });
+
+            sections.Add(MainMenuProvider.About_Resolution, () =>
+            {
+                var screenSize = NUIApplication.GetScreenSize();
+                var resolution = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_RESOLUTION)), $"{screenSize.Width} x {screenSize.Height}");
+                content.Add(resolution);
+            });
 
             if (IsEmulBin() == false)
             {
-                var showOther = TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_STATUS)), NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SHOW_NETWORK_STATUS_AND_OTHER_INFORMATION)));
-                showOther.Clicked += (s, e) =>
+                sections.Add(MainMenuProvider.About_DeviceStatus, () =>
                 {
-                    NavigateTo(MainMenuProvider.About_DeviceStatus);
-                };
-                sections.Add(MainMenuProvider.About_DeviceStatus, showOther);
+                    var showOther = TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_STATUS)), NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SHOW_NETWORK_STATUS_AND_OTHER_INFORMATION)));
+                    showOther.Clicked += (s, e) =>
+                    {
+                        NavigateTo(MainMenuProvider.About_DeviceStatus);
+                    };
+                    content.Add(showOther);
+                });
             }
 
-            // add only visible sections to content view in required order
-            var customization = GetCustomization().OrderBy(c => c.Order);
-            foreach (var cust in customization)
+            sections.Add(MainMenuProvider.About_Resolution, () =>
             {
-                string visibility = cust.IsVisible ? "visible" : "hidden";
-                Logger.Verbose($"Customization: {cust.MenuPath} - {visibility} - {cust.Order}");
-                if (cust.IsVisible && sections.TryGetValue(cust.MenuPath, out View row))
-                {
-                    content.Add(row);
-                }
-            }
+                var screenSize = NUIApplication.GetScreenSize();
+                var resolution = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_RESOLUTION)), $"{screenSize.Width} x {screenSize.Height}");
+                content.Add(resolution);
+            });
+
+            CreateItems();
         }
 
         protected override void OnCustomizationUpdate(IEnumerable<MenuCustomizationItem> items)
