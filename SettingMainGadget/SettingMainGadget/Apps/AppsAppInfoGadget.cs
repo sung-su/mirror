@@ -46,157 +46,173 @@ namespace Setting.Menu.Apps
             var appInfo = ApplicationManager.GetInstalledApplication(app.Id);
             var appContext = AppManager.GetRunningContext();
 
-            var appInfoView = new View()
+            await CoreApplication.Post(() =>
             {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                HeightSpecification = LayoutParamPolicies.WrapContent,
-                Layout = new LinearLayout()
+                var appInfoView = new View()
                 {
-                    LinearOrientation = LinearLayout.Orientation.Vertical,
-                },
-            };
-
-            var appVersion = new TextWithIconListItem(app.Label, Color.Transparent, iconPath: app.IconPath, subText: $"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_VERSION))} {app.Version}");
-
-            var close = new Button("Tizen.NUI.Components.Button.Outlined")
-            {
-                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BUTTON_FORCE_STOP)),
-                Size = new Size(252, 48).SpToPx(),
-                WidthResizePolicy = ResizePolicyType.FitToChildren,
-                HeightResizePolicy = ResizePolicyType.FitToChildren,
-                IsEnabled = appContext != null && appContext.State == ApplicationRunningContext.AppState.Background,
-            };
-
-            close.Clicked += (s, e) =>
-            {
-                try
-                {
-                    if (!appContext.IsTerminated)
+                    WidthSpecification = LayoutParamPolicies.MatchParent,
+                    HeightSpecification = LayoutParamPolicies.WrapContent,
+                    Layout = new LinearLayout()
                     {
-                        ApplicationManager.TerminateBackgroundApplication(appContext);
+                        LinearOrientation = LinearLayout.Orientation.Vertical,
+                    },
+                };
+
+                var appVersion = new TextWithIconListItem(app.Label, Color.Transparent, iconPath: app.IconPath, subText: $"{NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_VERSION))} {app.Version}");
+                appInfoView.Add(appVersion);
+                content.Add(appInfoView);
+                return true;
+            });
+
+            await CoreApplication.Post(() =>
+            {
+                var close = new Button("Tizen.NUI.Components.Button.Outlined")
+                {
+                    Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BUTTON_FORCE_STOP)),
+                    Size = new Size(252, 48).SpToPx(),
+                    WidthResizePolicy = ResizePolicyType.FitToChildren,
+                    HeightResizePolicy = ResizePolicyType.FitToChildren,
+                    IsEnabled = appContext != null && appContext.State == ApplicationRunningContext.AppState.Background,
+                };
+
+                close.Clicked += (s, e) =>
+                {
+                    try
+                    {
+                        if (!appContext.IsTerminated)
+                        {
+                            ApplicationManager.TerminateBackgroundApplication(appContext);
+                        }
                     }
-                }
-                catch (System.Exception ex)
+                    catch (System.Exception ex)
+                    {
+                        Logger.Warn($"Couldn't close the application {app.Id}, {ex.Message}");
+                    }
+                };
+
+                var uninstall = new Button("Tizen.NUI.Components.Button.Outlined")
                 {
-                    Logger.Warn($"Couldn't close the application {app.Id}, {ex.Message}");
-                }
-            };
+                    Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BUTTON_UNINSTALL)),
+                    Size = new Size(252, 48).SpToPx(),
+                    WidthResizePolicy = ResizePolicyType.FitToChildren,
+                    HeightResizePolicy = ResizePolicyType.FitToChildren,
+                    IsEnabled = app.IsRemovable
+                };
 
-            var uninstall = new Button("Tizen.NUI.Components.Button.Outlined")
-            {
-                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BUTTON_UNINSTALL)),
-                Size = new Size(252, 48).SpToPx(),
-                WidthResizePolicy = ResizePolicyType.FitToChildren,
-                HeightResizePolicy = ResizePolicyType.FitToChildren,
-                IsEnabled = app.IsRemovable
-            };
-
-            uninstall.Clicked += (s, e) =>
-            {
-                ShowUninstallPopup(app.Id);
-            };
-
-            var buttonsView = new View()
-            {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                HeightSpecification = LayoutParamPolicies.WrapContent,
-                Layout = new FlexLayout()
+                uninstall.Clicked += (s, e) =>
                 {
-                    Alignment = FlexLayout.AlignmentType.Center,
-                    Justification = FlexLayout.FlexJustification.SpaceEvenly,
-                    Direction = FlexLayout.FlexDirection.Row,
-                },
-                Margin = new Extents(0, 0, 16, 24).SpToPx(),
-            };
+                    ShowUninstallPopup(app.Id);
+                };
 
-            buttonsView.Add(close);
-            buttonsView.Add(uninstall);
-
-            var infoView = new View()
-            {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                HeightSpecification = LayoutParamPolicies.WrapContent,
-                Layout = new LinearLayout()
+                var buttonsView = new View()
                 {
-                    LinearOrientation = LinearLayout.Orientation.Vertical,
-                },
-            };
+                    WidthSpecification = LayoutParamPolicies.MatchParent,
+                    HeightSpecification = LayoutParamPolicies.WrapContent,
+                    Layout = new FlexLayout()
+                    {
+                        Alignment = FlexLayout.AlignmentType.Center,
+                        Justification = FlexLayout.FlexJustification.SpaceEvenly,
+                        Direction = FlexLayout.FlexDirection.Row,
+                    },
+                    Margin = new Extents(0, 0, 16, 24).SpToPx(),
+                };
+
+                buttonsView.Add(close);
+                buttonsView.Add(uninstall);
+                content.Add(buttonsView);
+                return true;
+            });
 
             var packageSizeInfo = await app.GetSizeInformationAsync();
-
             var appSize = packageSizeInfo.AppSize + packageSizeInfo.ExternalAppSize;
             var userDataSize = packageSizeInfo.DataSize + packageSizeInfo.ExternalDataSize;
             var cachedSize = packageSizeInfo.CacheSize + packageSizeInfo.ExternalCacheSize;
             var totalSize = appSize + userDataSize + cachedSize;
 
-            infoView.Add(new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_STORAGE))));
-            infoView.Add(TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_TOTAL_SIZE)), AppManager.GetSizeString(totalSize)));
-            infoView.Add(TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_APPLICATION)), AppManager.GetSizeString(appSize)));
-            infoView.Add(TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_USER_DATA)), AppManager.GetSizeString(userDataSize)));
-
-            infoView.Add(new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_TMBODY_CACHE))));
-            infoView.Add(TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_TMBODY_CACHE)), AppManager.GetSizeString(cachedSize)));
-            var clearCache = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_CLEAR_CACHE_ABB)));
-
-            if (cachedSize > 0)
+            await CoreApplication.Post(() =>
             {
-                clearCache.Clicked += (s, e) =>
+                content.Add(new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_STORAGE))));
+                content.Add(TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_TOTAL_SIZE)), AppManager.GetSizeString(totalSize)));
+                content.Add(TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_APPLICATION)), AppManager.GetSizeString(appSize)));
+                content.Add(TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_USER_DATA)), AppManager.GetSizeString(userDataSize)));
+
+                return true;
+            });                    
+                      
+            await CoreApplication.Post(() =>
+            {
+                content.Add(new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_TMBODY_CACHE))));
+                content.Add(TextListItem.CreatePrimaryTextItemWithSubText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_TMBODY_CACHE)), AppManager.GetSizeString(cachedSize)));
+                var clearCache = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_CLEAR_CACHE_ABB)));
+
+                if (cachedSize > 0)
                 {
-                    PackageManager.ClearCacheDirectory(app.Id);
-                };
-            }
-            else
-            {
-                clearCache.IsEnabled = false;
-            }
-
-            infoView.Add(clearCache);
-
-            var defaultApps = AppControl.GetDefaultApplicationIds();
-
-            if (defaultApps != null && defaultApps.Contains(app.Id))
-            {
-                infoView.Add(new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DEFAULT_APP_SETTINGS))));
-                var defaultApp = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_CLEAR_DEFAULT_APP_SETTINGS)));
-                clearCache.Clicked += (s, e) =>
+                    clearCache.Clicked += (s, e) =>
+                    {
+                        PackageManager.ClearCacheDirectory(app.Id);
+                    };
+                }
+                else
                 {
-                    // TODO : clear defaults
-                };
-            }
+                    clearCache.IsEnabled = false;
+                }
 
-            if (app.PackageType == PackageType.WGT)
+                content.Add(clearCache);
+
+                return true;
+            });            
+            
+            await CoreApplication.Post(() =>
             {
-                infoView.Add(new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_WEB_APP))));
-                var webSettings = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_WEBSITE_SETTINGS)));
-                webSettings.Clicked += (s, e) =>
+                var defaultApps = AppControl.GetDefaultApplicationIds();
+
+                if (defaultApps != null && defaultApps.Contains(app.Id))
                 {
-                    // TODO : web settings
-                };
-            }
+                    content.Add(new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DEFAULT_APP_SETTINGS))));
+                    var defaultApp = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_CLEAR_DEFAULT_APP_SETTINGS)));
+                    defaultApp.Clicked += (s, e) =>
+                    {
+                        // TODO : clear defaults
+                    };
+                }
+
+                if (app.PackageType == PackageType.WGT)
+                {
+                    content.Add(new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_WEB_APP))));
+                    var webSettings = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_WEBSITE_SETTINGS)));
+                    webSettings.Clicked += (s, e) =>
+                    {
+                        // TODO : web settings
+                    };
+                }
+
+                return true;
+            });
+
 
             if (app.Privileges.Count() > 0)
             {
-                infoView.Add(new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_PRIVILEGES))));
+                content.Add(new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_PRIVILEGES))));
 
                 foreach (var privilege in app.Privileges)
                 {
-                    try
+                    await CoreApplication.Post(() =>
                     {
-                        // TODO : how to get api version
-                        var privilegeItem = TextListItem.CreatePrimaryTextItemWithSubText(Privilege.GetDisplayName("9", privilege), Privilege.GetDescription("9", privilege));
-                        infoView.Add(privilegeItem);
-                    }
-                    catch (System.Exception ex)
-                    {
-                        Logger.Warn($"{ex.Message}");
-                    }
+                        try
+                        {
+                            // TODO : how to get api version
+                            var privilegeItem = TextListItem.CreatePrimaryTextItemWithSubText(Privilege.GetDisplayName("9", privilege), Privilege.GetDescription("9", privilege));
+                            content.Add(privilegeItem);
+                        }
+                        catch (System.Exception ex)
+                        {
+                            Logger.Warn($"{ex.Message}");
+                        }
+
+                        return true;
+                    });
                 }
             }
-
-            appInfoView.Add(appVersion);
-            content.Add(appInfoView);
-            content.Add(buttonsView);
-            content.Add(infoView);
         }
 
         private void ShowUninstallPopup(string appid)
