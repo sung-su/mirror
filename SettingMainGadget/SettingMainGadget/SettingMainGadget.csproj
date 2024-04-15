@@ -32,8 +32,12 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <PropertyGroup>
+    <GadgetResourceType>org.tizen.appfw.gadget.Settings</GadgetResourceType>
+  </PropertyGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command=":: Copy resource dll&#xD;&#xA;rmdir /S /Q res\allowed\locale&#xD;&#xA;mkdir res\allowed\locale&#xD;&#xA;dir $(OutDir)\&#xD;&#xA;xcopy /S /K /D /H /Y $(OutDir)\ res\allowed\locale&#xD;&#xA;del /q res\allowed\locale\*.*&#xD;&#xA;xcopy /S /K /D /H /Y res\allowed\locale\* res\allowed&#xD;&#xA;rmdir /S /Q res\allowed\locale&#xD;&#xA;" />
+    <Exec Command=":: Copy resource dll&#xD;&#xA;rmdir /S /Q res\allowed\$(GadgetResourceType)&#xD;&#xA;mkdir res\allowed\$(GadgetResourceType)&#xD;&#xA;rmdir /S /Q res\allowed\locale&#xD;&#xA;mkdir res\allowed\locale&#xD;&#xA;dir $(OutDir)\&#xD;&#xA;xcopy /S /K /D /H /Y $(OutDir)\ res\allowed\locale&#xD;&#xA;del /Q res\allowed\locale\*.*&#xD;&#xA;xcopy /S /K /D /H /Y res\allowed\locale\* res\allowed\$(GadgetResourceType)&#xD;&#xA;rmdir /S /Q res\allowed\locale&#xD;&#xA;" />
   </Target>
 
 </Project>
