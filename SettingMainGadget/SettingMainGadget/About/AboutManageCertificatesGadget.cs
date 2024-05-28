@@ -48,7 +48,7 @@ namespace Setting.Menu.About
             var userCertItem = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_USER_CERTIFICATES)));
             userCertItem.Clicked += (o, e) =>
             {
-                // TODO : NavigateTo(UserCert);
+                NavigateTo(MainMenuProvider.About_UserCertificates);
             };
             content.Add(userCertItem);
         }

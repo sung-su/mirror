@@ -174,7 +174,7 @@ internal static partial class Interop
                 }
                 return GetCertFieldDescription(field);
             }
-            public void GetMetadata()
+            public void PrintMetadata()
             {
                 if (gotMetadata == true)
                 {

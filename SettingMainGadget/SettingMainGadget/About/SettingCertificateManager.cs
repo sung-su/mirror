@@ -8,7 +8,7 @@ namespace SettingMainGadget.About
 {
     class SettingCertificateManager
     {
-        public static certificateMetadata CertificateMetadata { get; set; }
+        public static certificateMetadata EnteredCertificateMetadata { get; set; }
 
         public static List<certificateMetadata> GetRootCertList()
         {

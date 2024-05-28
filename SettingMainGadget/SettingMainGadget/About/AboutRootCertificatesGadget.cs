@@ -63,7 +63,7 @@ namespace Setting.Menu.About
                     var item = TextListItem.CreatePrimaryTextItemWithSecondaryText(certificate.title, status);
                     item.Clicked += (s, e) =>
                     {
-                        SettingCertificateManager.CertificateMetadata = certificate;
+                        SettingCertificateManager.EnteredCertificateMetadata = certificate;
                         NavigateTo(MainMenuProvider.About_CertificateDetails);
                     };
                     content.Add(item);

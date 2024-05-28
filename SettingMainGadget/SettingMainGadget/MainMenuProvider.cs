@@ -4,6 +4,7 @@ namespace SettingMainGadget
 {
     public class MainMenuProvider : SettingMenuProvider
     {
+        // display
         public static string Display = "Display";
         public static string Display_Brightness = "Display.Brightness";
         public static string Display_Font = "Display.Font";
@@ -11,6 +12,8 @@ namespace SettingMainGadget
         public static string Display_FontType = "Display.Font.FontType";
         public static string Display_Timeout = "Display.Timeout";
         public static string Display_Theme = "Display.Theme";
+
+        // sound
         public static string Sound = "Sound";
         public static string Sound_Mode = "Sound.Mode";
         public static string Sound_Notification = "Sound.Notification";
@@ -18,20 +21,27 @@ namespace SettingMainGadget
         public static string Sound_MediaSlider = "Sound.MediaSlider";
         public static string Sound_NotificationSlider = "Sound.NotificationSlider";
         public static string Sound_SystemSlider = "Sound.SystemSlider";
+
+        // datetime
         public static string DateTime = "DateTime";
         public static string DateTime_AutoUpdate = "DateTime.AutoUpdate";
         public static string DateTime_SetDate = "DateTime.SetDate";
         public static string DateTime_SetTime = "DateTime.SetTime";
         public static string DateTime_SetTimezone = "DateTime.SetTimezone";
         public static string DateTime_TimeFormat = "DateTime.TimeFormat";
+
+        // language
         public static string Language = "Language";
         public static string Language_Display = "Language.DisplayLanguage";
         public static string Language_KeyboardHeader = "Language.KeyboardHeader";
         public static string Language_InputAssistanceHeader = "Language.InputAssistanceHeader";
         public static string Language_BodySpeech = "Language.BodySpeech";
+
+        // about
         public static string About = "About";
         public static string About_ManageCertificates = "About.ManageCertificates";
         public static string About_RootCertificates = "About.RootCertificates";
+        public static string About_UserCertificates = "About.UserCertificates";
         public static string About_CertificateDetails = "About.CertificateDetails";
         public static string About_OpenSourceLicenses = "About.OpenSourceLicenses";
         public static string About_ScalableUI = "About.ScalableUI";
@@ -72,6 +82,7 @@ namespace SettingMainGadget
         {
             return new SettingMenu[]
             {
+                // Display
                 new SettingMenu(path: Display, defaultOrder: 30, type: typeof(Setting.Menu.DisplayGadget)),
                 new SettingMenu(path: Display_Brightness, defaultOrder: 31),
                 new SettingMenu(path: Display_Font, defaultOrder: 32, type: typeof(Setting.Menu.Display.DisplayFontGadget)),
@@ -79,6 +90,7 @@ namespace SettingMainGadget
                 new SettingMenu(path: Display_FontType, defaultOrder: 34, type: typeof(Setting.Menu.Display.DisplayFontTypeGadget)),
                 new SettingMenu(path: Display_Timeout, defaultOrder: 35, type: typeof(Setting.Menu.Display.DisplayTimeOutGadget)),
                 new SettingMenu(path: Display_Theme, defaultOrder: 36, type: typeof(Setting.Menu.Display.DisplayThemeGadget)),
+                // Sound
                 new SettingMenu(path: Sound, defaultOrder: 40, type: typeof(Setting.Menu.SoundGadget)),
                 new SettingMenu(path: Sound_Mode, defaultOrder: 41, type: typeof(Setting.Menu.Sound.SoundmodeGadget)),
                 new SettingMenu(path: Sound_Notification, defaultOrder: 42, type: typeof(Setting.Menu.Sound.SoundnotificationGadget)),
@@ -86,20 +98,24 @@ namespace SettingMainGadget
                 new SettingMenu(path: Sound_MediaSlider, defaultOrder: 44),
                 new SettingMenu(path: Sound_NotificationSlider, defaultOrder: 45),
                 new SettingMenu(path: Sound_SystemSlider, defaultOrder: 46),
+                // DateTime
                 new SettingMenu(path: DateTime, defaultOrder: 50, type: typeof(Setting.Menu.DateTimeGadget)),
                 new SettingMenu(path: DateTime_AutoUpdate, defaultOrder: 51),
                 new SettingMenu(path: DateTime_SetDate, defaultOrder: 52, type: typeof(Setting.Menu.DateTime.DateTimeSetDateGadget)),
                 new SettingMenu(path: DateTime_SetTime, defaultOrder: 53, type: typeof(Setting.Menu.DateTime.DateTimeSetTimeGadget)),
                 new SettingMenu(path: DateTime_SetTimezone, defaultOrder: 54, type: typeof(Setting.Menu.DateTime.DateTimeSetTimezoneGadget)),
                 new SettingMenu(path: DateTime_TimeFormat, defaultOrder: 55),
+                // Language
                 new SettingMenu(path: Language, defaultOrder: 60, type: typeof(Setting.Menu.LanguageInputGadget)),
                 new SettingMenu(path: Language_Display, defaultOrder: 61, type: typeof(Setting.Menu.LanguageInput.LanguageInputDisplayLanguageGadget)),
                 new SettingMenu(path: Language_KeyboardHeader, defaultOrder: 62),
                 new SettingMenu(path: Language_InputAssistanceHeader, defaultOrder: 64),
                 new SettingMenu(path: Language_BodySpeech, defaultOrder: 66),
+                // AboutDevice
                 new SettingMenu(path: About, defaultOrder: 70, type: typeof(Setting.Menu.AboutGadget)),
                 new SettingMenu(path: About_ManageCertificates, defaultOrder: 10, type: typeof(Setting.Menu.About.AboutManageCertificatesGadget)),
                 new SettingMenu(path: About_RootCertificates, defaultOrder: 15, type: typeof(Setting.Menu.About.AboutRootCertificatesGadget)),
+                new SettingMenu(path: About_UserCertificates, defaultOrder: 16, type: typeof(Setting.Menu.About.AboutUserCertificatesGadget)),
                 new SettingMenu(path: About_CertificateDetails, defaultOrder: 10, type: typeof(Setting.Menu.About.AboutCertificateDetailsGadget)),
                 new SettingMenu(path: About_OpenSourceLicenses, defaultOrder: 20, type: typeof(Setting.Menu.AboutLegalInfoGadget)),
                 new SettingMenu(path: About_ScalableUI, defaultOrder: -30, type: typeof(SettingMainGadget.About.AboutScalableGadget)),
@@ -115,14 +131,13 @@ namespace SettingMainGadget
                 new SettingMenu(path: About_DeviceStatus_wifi_mac_address, defaultOrder: 20),
                 new SettingMenu(path: About_DeviceStatus_storage, defaultOrder: 30),
                 new SettingMenu(path: About_DeviceStatus_cpu_usage, defaultOrder: 40),
-                // apps
+                // Apps
                 new SettingMenu(path: Apps, defaultOrder: 80, type: typeof(Setting.Menu.AppsGadget)),
                 new SettingMenu(path: Apps_AppsManager, defaultOrder: 10, typeof(Setting.Menu.Apps.AppsManagerGadget)),
                 new SettingMenu(path: Apps_DefaultApps, defaultOrder: 20, typeof(Setting.Menu.Apps.AppsDefaultGadget)),
                 new SettingMenu(path: Apps_DefaultHome, defaultOrder: 40, typeof(Setting.Menu.Apps.AppsDefaultHomeGadget)),
                 new SettingMenu(path: Apps_AppInfo, defaultOrder: 50, typeof(Setting.Menu.Apps.AppsAppInfoGadget)),
-
-                //storage
+                // DeviceStorage
                 new SettingMenu(path: Storage, defaultOrder: 120, type: typeof(Setting.Menu.StorageGadget)),
                 new SettingMenu(path: Storage_InternalUsage, defaultOrder: 10),
                 new SettingMenu(path: Storage_Used, defaultOrder: 15),

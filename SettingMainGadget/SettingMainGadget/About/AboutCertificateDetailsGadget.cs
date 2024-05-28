@@ -33,17 +33,18 @@ namespace Setting.Menu.About
                 },
             };
 
-            CreateItems();
+            CreateDetailItems();
 
             return content;
         }
 
-        private void CreateItems()
+        private void CreateDetailItems()
         {
             content.RemoveAllChildren(true);
 
-            SettingCertificateManager.CertificateMetadata.GetMetadata();
-            var cert = SettingCertificateManager.CertificateMetadata;
+            SettingCertificateManager.EnteredCertificateMetadata.PrintMetadata();
+
+            var cert = SettingCertificateManager.EnteredCertificateMetadata;
 
             /* Use Certificate */
             var useCertItem = new SwitchListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_SCP_BODY_USE_CERTIFICATE)), isSelected: cert.status == CertStatus.ENABLED);
