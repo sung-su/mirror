@@ -38,8 +38,6 @@ namespace SettingView
         private static bool noVisibleMainMenus;
         private static List<MainMenuInfo> mainMenuInfos;
         private static List<MainMenuItem> mainMenuItems = new List<MainMenuItem>();
-        private static Task itemsLoaded;
-        private static Task contentLoaded;
         private bool isLightTheme => ThemeManager.PlatformThemeId == "org.tizen.default-light-theme";
 
         public Program(Size2D windowSize, Position2D windowPosition, ThemeOptions themeOptions, IBorderInterface borderInterface)
@@ -47,67 +45,44 @@ namespace SettingView
         {
         }
 
-        private Task InitResourcesManager()
+        private void CreateTitleAndScroll()
         {
-            return Task.Run(() =>
+            Logger.Performance($"CreateTitleAndScroll start");
+            page.Title = new TextLabel()
             {
-                // initialize ResourcesManager instance
-                var title = Resources.IDS_ST_OPT_SETTINGS;
-                return true;
-            });
-        }        
-        
-        private Task CreateTitleAndScroll()
-        {
-            return Task.Run(async () =>
+                Size = new Size(-1, 64).SpToPx(),
+                Margin = new Extents(16, 0, 0, 0).SpToPx(),
+                Text = Resources.IDS_ST_OPT_SETTINGS,
+                VerticalAlignment = VerticalAlignment.Center,
+                PixelSize = 24.SpToPx(),
+                ThemeChangeSensitive = true,
+            };
+
+            page.Add(page.Title);
+            page.Title.Relayout += (s, e) =>
             {
-                await Post(() =>
+                Logger.Performance($"CreateTitleAndScroll label");
+            };
+
+            page.Content = new ScrollableBase()
+            {
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                HeightSpecification = LayoutParamPolicies.MatchParent,
+                ScrollingDirection = ScrollableBase.Direction.Vertical,
+                HideScrollbar = false,
+                Layout = new LinearLayout()
                 {
-                    Logger.Performance($"CreateTitleAndScroll start");
-                    page.Title = new TextLabel()
-                    {
-                        Size = new Size(-1, 64).SpToPx(),
-                        Margin = new Extents(16, 0, 0, 0).SpToPx(),
-                        Text = Resources.IDS_ST_OPT_SETTINGS,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        PixelSize = 24.SpToPx(),
-                        ThemeChangeSensitive = true,
-                    };
-                    page.Add(page.Title);
-                    page.Title.Relayout += (s, e) =>
-                    {
-                        Logger.Performance($"CreateTitleAndScroll label");
-                    };
+                    LinearOrientation = LinearLayout.Orientation.Vertical,
+                },
+            };
 
-                    page.Content = new ScrollableBase()
-                    {
-                        WidthSpecification = LayoutParamPolicies.MatchParent,
-                        HeightSpecification = LayoutParamPolicies.MatchParent,
-                        ScrollingDirection = ScrollableBase.Direction.Vertical,
-                        HideScrollbar = false,
-                        Layout = new LinearLayout()
-                        {
-                            LinearOrientation = LinearLayout.Orientation.Vertical,
-                        },
-                    };
-                    SetScrollbar();
+            SetScrollbar();
 
-                    page.Add(page.Content);
-                    page.Content.Relayout += (s, e) =>
-                    {
-                        Logger.Performance($"CreateTitleAndScroll scroll");
-                    };
-                    return true;
-                });
-            });
-        }
-
-        protected override void OnPreCreate()
-        {
-            Logger.Performance($"OnPreCreate");
-            _ = InitResourcesManager();
-            itemsLoaded = LoadMainMenuItems();
-            base.OnPreCreate();
+            page.Add(page.Content);
+            page.Content.Relayout += (s, e) =>
+            {
+                Logger.Performance($"CreateTitleAndScroll scroll");
+            };
         }
 
         protected override void OnCreate()
@@ -130,8 +105,9 @@ namespace SettingView
 
             Logger.Performance($"ONCREATE main page");
 
-            contentLoaded = CreateTitleAndScroll();
-            rowsCreated = CreateContentRows();
+            LoadMainMenuItems();
+            CreateTitleAndScroll();
+            CreateContentRows();
 
             _ = CheckCustomization();
 
@@ -339,109 +315,64 @@ namespace SettingView
             }
         }
 
-        private static Task LoadMainMenuItems(bool customizationChanged = false)
+        private static void LoadMainMenuItems(bool customizationChanged = false)
         {
-            return Task.Run(() => {
-                System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-                stopwatch.Start();
-                noMainMenus = false;
-                noVisibleMainMenus = false;
-                mainMenuInfos = MainMenuInfo.CacheMenu;
-                if (mainMenuInfos.Count == 0 || customizationChanged)
+            noMainMenus = false;
+            noVisibleMainMenus = false;
+            var mainMenus = GadgetManager.Instance.GetMainWithCurrentOrder();
+            if (!mainMenus.Any())
+            {
+                noMainMenus = true;
+                return;
+            }
+
+            var visibleMenus = mainMenus.Where(i => i.IsVisible);
+            if (!visibleMenus.Any())
+            {
+                noVisibleMainMenus = true;
+                return;
+            }
+
+            mainMenuInfos = new List<MainMenuInfo>();
+            foreach (var gadgetInfo in visibleMenus)
+            {
+                if (MainMenuInfo.Create(gadgetInfo) is MainMenuInfo menu)
                 {
-                    var mainMenus = GadgetManager.Instance.GetMainWithCurrentOrder();
-                    if (!mainMenus.Any())
-                    {
-                        noMainMenus = true;
-                        return Task.CompletedTask;
-                    }
-
-                    var visibleMenus = mainMenus.Where(i => i.IsVisible);
-                    if (!visibleMenus.Any())
-                    {
-                        noVisibleMainMenus = true;
-                        return Task.CompletedTask;
-                    }
-
-                    mainMenuInfos = new List<MainMenuInfo>();
-                    foreach (var gadgetInfo in visibleMenus)
-                    {
-                        if (MainMenuInfo.Create(gadgetInfo) is MainMenuInfo menu)
-                        {
-                            mainMenuInfos.Add(menu);
-                        }
-                    }
+                    mainMenuInfos.Add(menu);
                 }
-
-                stopwatch.Stop();
-                Logger.Performance($"CONTENT get data: {stopwatch.Elapsed.TotalMilliseconds}");
-                return Task.CompletedTask;
-            });
+            }
         }
 
-        private static async Task CreateContentRows()
+        private static void CreateContentRows()
         {
-            await Task.WhenAll(new Task[] { itemsLoaded, contentLoaded });
-            await Task.Run(async () =>
+            if (noMainMenus)
             {
-                if (noMainMenus)
-                {
-                    await Post(() =>
-                    {
-                        var textLabel = GetTextNotice("There is no setting menus installed.", Color.Orange);
-                        page.Content.Add(textLabel);
-                        return true;
-                    });
-                    return;
-                }
+                var textLabel = GetTextNotice("There is no setting menus installed.", Color.Orange);
+                page.Content.Add(textLabel);
+                return;
+            }
 
-                if (noVisibleMainMenus)
-                {
-                    await Post(() =>
-                    {
-                        var textLabel = GetTextNotice("There is no setting menus visible.", Color.Gray);
-                        page.Content.Add(textLabel);
-                        return true;
-                    });
-                    return;
-                }
+            if (noVisibleMainMenus)
+            {
+                var textLabel = GetTextNotice("There is no setting menus visible.", Color.Gray);
+                page.Content.Add(textLabel);
+                return;
+            }
 
-                System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-                foreach (var menu in mainMenuInfos)
-                {
-                    await Post(() =>
-                    {
-                        if(menu == mainMenuInfos.First())
-                        {
-                            Logger.Performance($"CreateContentRows start");
-                            stopwatch.Start();
-                        }
-                        var row = new MainMenuItem(menu.IconPath, new Color(menu.IconColorHex), menu.Title, menu.Path);
-
-                        if (mainMenuInfos.Last() == menu)
-                        {
-                            row.Relayout += (s, e) =>
-                            {
-                                stopwatch.Stop();
-                                Logger.Performance($"UICompleted items: {stopwatch.Elapsed.TotalMilliseconds}");
-                            };
-                        }
-                        mainMenuItems.Add(row);
-                        page.Content.Add(row);
-                        return true;
-                    });
-                }
-
-                MainMenuInfo.UpdateCache(mainMenuInfos);
-            });
+            foreach (var menu in mainMenuInfos)
+            {
+                var row = new MainMenuItem(menu.IconPath, new Color(menu.IconColorHex), menu.Title, menu.Path);
+                mainMenuItems.Add(row);
+                page.Content.Add(row);
+            }
         }
 
         private static void CreateContent(bool customizationChanged = false)
         {
             mainMenuItems.Clear();
             page.Content.RemoveAllChildren(true);
-            itemsLoaded = LoadMainMenuItems(customizationChanged);
-            _ = CreateContentRows();
+            LoadMainMenuItems(customizationChanged);
+            CreateContentRows();
         }
 
         private void SetScrollbar()
@@ -464,9 +395,9 @@ namespace SettingView
         private static async void UpdateContent()
         {
             MainMenuInfo.ClearCache();
-            await LoadMainMenuItems(true);
+            LoadMainMenuItems();
 
-            foreach(var menu in mainMenuInfos)
+            foreach (var menu in mainMenuInfos)
             {
                 var item = mainMenuItems.Where(a => a.MenuPath == menu.Path).FirstOrDefault();
                 if (item != null)
