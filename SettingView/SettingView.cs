@@ -442,7 +442,7 @@ namespace SettingView
             Size2D size = new Size2D(width, height);
             Position2D position = new Position2D((screenWidth - width) / 2, (screenHeight - height) / 2 - (int)(bottomMargin * screenHeight));
 
-            appCustomBorder = new SettingViewBorder();
+            appCustomBorder = new SettingViewBorder(new Size2D(screenWidth, screenHeight));
 
             Logger.Performance($"MAIN border");
 

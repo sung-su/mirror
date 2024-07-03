@@ -54,6 +54,17 @@ namespace SettingView
             ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
         }
 
+        public SettingViewBorder(Size2D screenSize) : base()
+        {
+            ResizePolicy = Window.BorderResizePolicyType.Free;
+            float minWidthRatio = 712.0f / 1920;
+            float minHeightRatio = 488.0f / 1080;
+            int minWidth = (int)(screenSize.Width * minWidthRatio);
+            int minHeight = (int)(screenSize.Height * minHeightRatio);
+            MinSize = new Size2D(minWidth, minHeight);
+            ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
+        }
+
         private void ThemeManager_ThemeChanged(object sender, ThemeChangedEventArgs e)
         {
             if (borderView == null)
