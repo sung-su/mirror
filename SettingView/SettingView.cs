@@ -16,6 +16,7 @@
 
 using SettingCore;
 using SettingCore.Views;
+using SettingView.Core;
 using SettingView.TextResources;
 using System;
 using System.Collections.Generic;
@@ -123,7 +124,8 @@ namespace SettingView
             GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.Landscape);
             GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.PortraitInverse);
             GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.LandscapeInverse);
-
+            WindowManager.UpdateWindowPositionSize();
+            appCustomBorder.UpdateMinSize(GetScreenSize());
             LogScalableInfoAsync();
 
             Logger.Performance($"ONCREATE end");
@@ -426,37 +428,8 @@ namespace SettingView
         static void Main(string[] args)
         {
             Logger.Performance($"MAIN start");
-
-            // window size adjustments
-            float bottomMargin = 0.1f;
-            float widthRatio = 0.45f;
-            float heightRatio = 0.5f;
-
-            _ = Information.TryGetValue("http://tizen.org/feature/screen.width", out int screenWidth);
-            _ = Information.TryGetValue("http://tizen.org/feature/screen.height", out int screenHeight);
-
-
-            Logger.Debug("screen width : " + screenWidth);
-            Logger.Debug("screen height : "+ screenHeight);
-
-            int width = (int)(screenWidth * widthRatio);
-            int height = (int)(screenHeight * (1 - bottomMargin) * heightRatio);
-
-            Logger.Debug("Window width : " + width);
-            Logger.Debug("Window height : " + height);
-
-            // INFO: it looks like size of custom border is not included in total window size
-            Size2D size = new Size2D(width, height);
-            Position2D position = new Position2D((screenWidth - width) / 2, (screenHeight - height) / 2 - (int)(bottomMargin * screenHeight));
-
-            Logger.Debug("Window position X: " + position.X);
-            Logger.Debug("Window position Y: " + position.Y);
-
-            appCustomBorder = new SettingViewBorder(new Size2D(screenWidth, screenHeight));
-
-            Logger.Performance($"MAIN border");
-
-            var app = new Program(size, position, ThemeOptions.PlatformThemeEnabled, appCustomBorder);
+            appCustomBorder =  new SettingViewBorder(new Size2D(800, 480));
+            var app = new Program(new Size(10, 10), new Position2D(0,0), ThemeOptions.PlatformThemeEnabled, appCustomBorder);
 
             app.Run(args);
         }
