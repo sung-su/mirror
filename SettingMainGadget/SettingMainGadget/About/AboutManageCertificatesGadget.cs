@@ -4,6 +4,7 @@ using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 using SettingCore.Views;
 using SettingMainGadget;
+using SettingMainGadget.About;
 
 namespace Setting.Menu.About
 {
@@ -29,12 +30,14 @@ namespace Setting.Menu.About
                 },
             };
 
-            CreateItems();
+            SettingCertificateManager.LoadCertificateData();
+
+            CreateContentItems();
 
             return content;
         }
 
-        private void CreateItems()
+        private void CreateContentItems()
         {
             content.RemoveAllChildren(true);
 

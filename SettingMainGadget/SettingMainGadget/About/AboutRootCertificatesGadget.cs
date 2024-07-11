@@ -46,7 +46,7 @@ namespace Setting.Menu.About
         {
             content.RemoveAllChildren(true);
 
-            rootCert = SettingCertificateManager.GetRootCertList();
+            rootCert = SettingCertificateManager.GetAllRootCertList();
             foreach (var certificate in rootCert)
             {
                 await CreateItem(certificate);

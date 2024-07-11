@@ -1,17 +1,24 @@
 ﻿using SettingCore;
+using SettingCore.Views;
+using SettingMainGadget;
+using SettingMainGadget.About;
+using SettingMainGadget.TextResources;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Tizen.Applications;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
+using Tizen.Security.SecureRepository;
+using static Interop.CertSvc;
 
 namespace Setting.Menu.About
 {
     internal class AboutUserCertificatesGadget : MenuGadget
     {
         private View content;
-        ScrollableBase vpnTabContent, wifiTabContent, emailTabContent;
+        private ScrollableBase vpnTabContent, wifiTabContent, emailTabContent;
 
         private MoreMenuItem installMenuItem, uninstallMenuItem;
 
@@ -111,17 +118,6 @@ namespace Setting.Menu.About
             content.Add(tabView);
         }
 
-        private async void AddTabsContent()
-        {
-            Logger.Debug("AddTabsContent()");
-
-            OnPageAppeared -= AddTabsContent;
-
-            AddVpnCertifiates();
-            AddWiFiCertificates();
-            AddEmailCertifiates();
-        }
-
         private ScrollableBase TabView()
         {
             return new ScrollableBase()
@@ -139,19 +135,95 @@ namespace Setting.Menu.About
              };
         }
 
-        private void AddVpnCertifiates()
+        private void AddTabsContent()
         {
-            // TODO: Add implementation
+            Logger.Debug("AddTabsContent()");
+
+            OnPageAppeared -= AddTabsContent;
+
+            // Add VPN Cert Tab content
+            AddTabContent(SettingCertificateManager.GetVPNUserCertList(), tabContent: vpnTabContent);
+
+            // Add Wi-Fi Cert Tab content
+            AddTabContent(SettingCertificateManager.GetWiFiUserCertList(), tabContent: wifiTabContent);
+
+            // Add Email Cert Tab content
+            AddTabContent(SettingCertificateManager.GetEmailUserCertList(), tabContent: emailTabContent);
         }
 
-        private void AddWiFiCertificates()
+        private async void AddTabContent(List<certificateMetadata> certList, ScrollableBase tabContent)
         {
-            // TODO: Add implementation
+            tabContent.RemoveAllChildren(true);
+
+            if (certList.Count == 0)
+            {
+                await AddEmptyTabContent(content: tabContent);
+                return;
+            }
+
+            foreach (var certificate in certList)
+            {
+                await AddCertificateItem(certificate, content: tabContent);
+            }
         }
 
-        private void AddEmailCertifiates()
+        private Task AddEmptyTabContent(ScrollableBase content)
         {
-            // TODO: Add implementation
+            return Task.Run(async () =>
+            {
+                await CoreApplication.Post(() =>
+                {
+                    var noCertLabel = new TextLabel
+                    {
+                        WidthSpecification = LayoutParamPolicies.MatchParent,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        Text = "No certificates", // TODO: Add DID
+                        PixelSize = 24.SpToPx(),
+                        Margin = new Extents(16, 16, 0, 0).SpToPx(),
+                        TextColor = Color.Black,
+                    };
+
+                    var infoLabel = new TextLabel
+                    {
+                        WidthSpecification = LayoutParamPolicies.MatchParent,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        MultiLine = true,
+                        Ellipsis = true,
+                        Text = "After you install certificates, they will be shown here.",
+                        PixelSize = 24.SpToPx(),
+                        Margin = new Extents(16, 16, 0, 0).SpToPx(),
+                        TextColor = Color.Black,
+                    };
+
+                    content.Add(noCertLabel);
+                    content.Add(infoLabel);
+
+                    return true;
+                });
+            });
+        }
+
+        private Task AddCertificateItem(certificateMetadata certificate, ScrollableBase content)
+        {
+            return Task.Run(async () =>
+            {
+                await CoreApplication.Post(() =>
+                {
+                    var status = certificate.status == CertStatus.DISABLED ? NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_OFF)) 
+                    : NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_ON));
+
+                    var item = TextListItem.CreatePrimaryTextItemWithSecondaryText(certificate.title, status);
+                    item.Clicked += (s, e) =>
+                    {
+                        SettingCertificateManager.EnteredCertificateMetadata = certificate;
+                        NavigateTo(MainMenuProvider.About_CertificateDetails);
+                    };
+                    content.Add(item);
+                    return true;
+                });
+            });
         }
 
         protected override void OnDestroy()
