@@ -21,6 +21,8 @@ namespace SettingCore
 
         private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
 
+        private static Stack<View> gadgetViews = new Stack<View>();
+
         static GadgetNavigation()
         {
             SystemSettings.LocaleLanguageChanged += (object sender, LocaleLanguageChangedEventArgs e) => {
@@ -60,7 +62,7 @@ namespace SettingCore
 
             if (baseContentPage is BaseContentPage)
             {
-                NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop();
+                RemoveGadgetView();
             }
             else
             {
@@ -68,8 +70,7 @@ namespace SettingCore
 
                 try
                 {
-                    // CreateTransitions issue
-                    NUIApplication.GetDefaultWindow().GetDefaultNavigator().PopWithTransition();
+                    RemoveGadgetView();
                 }
                 catch (Exception ex)
                 {
@@ -88,12 +89,7 @@ namespace SettingCore
                 if (info == null)
                 {
                     Logger.Warn($"could not find gadget for menupath: {menuPath}");
-                    return;
-                }
-
-                if (gadgetPages.Values.Select(x => x.ClassName).Contains(info.ClassName))
-                {
-                    Logger.Verbose($"Already navigated to menupath: {menuPath}");
+                    semaphore.Release();
                     return;
                 }
 
@@ -114,8 +110,7 @@ namespace SettingCore
 
                     try
                     {
-                        // CreateTransitions issue
-                        NUIApplication.GetDefaultWindow().GetDefaultNavigator().PushWithTransition(contentPage);
+                        AddGadgetView(contentPage);
                     }
                     catch (Exception ex)
                     {
@@ -123,6 +118,7 @@ namespace SettingCore
                     }
 
                     gadgetPages.Add(contentPage, gadget);
+                    semaphore.Release();
                     return;
                 }
 
@@ -133,6 +129,7 @@ namespace SettingCore
                 var backButton = new BackButton();
                 backButton.Margin = new Extents(0, 8, 0, 0).SpToPx();
                 backButton.Clicked += (s, e) => NavigateBack();
+                backButton.AccessibilityActivated += (s, e) => NavigateBack();
 
                 var moreItems = new List<View>();
 
@@ -170,7 +167,7 @@ namespace SettingCore
                     gadget.OnPageAppeared?.Invoke();
                 };
 
-                NUIApplication.GetDefaultWindow().GetDefaultNavigator().Push(page);
+                AddGadgetView(page);
                 gadgetPages.Add(page, gadget);
             }
             catch (Exception e)
@@ -181,6 +178,34 @@ namespace SettingCore
             {
                 semaphore.Release();
             }
+        }
+
+        public static void AddGadgetView(View newView)
+        {
+            Logger.Debug("Adding New Gadget View");
+            View currentView = NUIApplication.GetDefaultWindow().GetDefaultNavigator().GetChildAt(0);
+            if (currentView == null)
+            {
+                Logger.Warn("CurrentView is Null.");
+                return;
+            }
+            gadgetViews.Push(currentView);
+            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Remove(currentView);
+            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Add(newView);
+        }
+
+        public static void RemoveGadgetView()
+        {
+            Logger.Debug($"Removing Gadget View");
+            View previousView = gadgetViews.Pop();
+            if (previousView == null)
+            {
+                Logger.Warn("LastPage is Null.");
+                return;
+            }
+            Page currentPage = (Page)NUIApplication.GetDefaultWindow().GetDefaultNavigator().GetChildAt(0);
+            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Remove(currentPage);
+            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Add(previousView);
         }
 
         private static Control GetMoreButton(IEnumerable<MoreMenuItem> moreMenu)
@@ -273,7 +298,7 @@ namespace SettingCore
                             Direction = FlexLayout.FlexDirection.Row,
                             ItemsAlignment = FlexLayout.AlignmentType.Center
                         };
-   
+
                         // remove buttons icon
                         item.Remove(item.Children[0]);
 

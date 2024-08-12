@@ -68,6 +68,11 @@ namespace SettingCore.Views
                 GadgetNavigation.NavigateTo(MenuPath);
             };
 
+            AccessibilityActivated += (s, e) =>
+            {
+                GadgetNavigation.NavigateTo(MenuPath);
+            };
+
             ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
         }
 
@@ -75,8 +80,8 @@ namespace SettingCore.Views
         {
             titleTextLabel.Text = title;
             iconBackground.BackgroundColor = iconBackgroundColor;
-        }        
-        
+        }
+
         public override void OnChangeSelected(bool selected)
         {
             if (selected)

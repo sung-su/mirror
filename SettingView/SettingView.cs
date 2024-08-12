@@ -116,7 +116,10 @@ namespace SettingView
 
             GetDefaultWindow().Remove(GetDefaultWindow().GetDefaultNavigator());
             GetDefaultWindow().SetDefaultNavigator(navigator);
-            GetDefaultWindow().GetDefaultNavigator().Push(page);
+
+            // Navigator().Push() disables border's accessibility.
+            // Using Navigator().Add()
+            GetDefaultWindow().GetDefaultNavigator().Add(page);
 
             RegisterEvents();
 
