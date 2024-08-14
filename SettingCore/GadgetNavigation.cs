@@ -23,6 +23,8 @@ namespace SettingCore
 
         private static Stack<View> gadgetViews = new Stack<View>();
 
+        private static bool setToFullScreen = false;
+
         static GadgetNavigation()
         {
             SystemSettings.LocaleLanguageChanged += (object sender, LocaleLanguageChangedEventArgs e) => {
@@ -53,29 +55,23 @@ namespace SettingCore
 
         public static void SetFullScreenMode(bool fullScreen)
         {
+            setToFullScreen = !NUIApplication.GetDefaultWindow().IsMaximized() && fullScreen;
             OnWindowModeChanged?.Invoke(null, fullScreen);
         }
 
         public static void NavigateBack()
         {
-            var baseContentPage = NUIApplication.GetDefaultWindow().GetDefaultNavigator().Peek();
-
-            if (baseContentPage is BaseContentPage)
+            try
             {
+                if (setToFullScreen)
+                {
+                    SetFullScreenMode(false);
+                }
                 RemoveGadgetView();
             }
-            else
+            catch (Exception ex)
             {
-                SetFullScreenMode(false);
-
-                try
-                {
-                    RemoveGadgetView();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Warn($"{ex.Message}");
-                }
+                Logger.Warn($"{ex.Message}");
             }
         }
 

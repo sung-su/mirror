@@ -15,6 +15,7 @@ namespace SettingCore.Views
         public BackButton() : base()
         {
             AccessibilityRole = Role.PushButton;
+            AccessibilityHighlightable = true;
             BackgroundColor = BackgroundColors.Normal;
             CornerRadius = 8f.SpToPx();
             Size = new Size(40, 40).SpToPx();
