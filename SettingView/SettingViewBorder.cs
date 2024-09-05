@@ -116,7 +116,14 @@ namespace SettingView
             };
 
             minimalizeIcon.TouchEvent += OnMinimizeIconTouched;
-            maximalizeIcon.TouchEvent += OnMaximizeIconTouched;
+            maximalizeIcon.TouchEvent += (s, e) =>
+            {
+                if (OverlayMode)
+                {
+                    OverlayMode = false;
+                }
+                return OnMaximizeIconTouched(s, e);
+            };
             closeIcon.TouchEvent += OnCloseIconTouched;
             leftCornerIcon.TouchEvent += OnLeftBottomCornerIconTouched;
 
@@ -126,6 +133,10 @@ namespace SettingView
             };
             maximalizeIcon.AccessibilityActivated += (s, e) =>
             {
+                if (OverlayMode)
+                {
+                    OverlayMode = false;
+                }
                 MaximizeBorderWindow();
             };
             closeIcon.AccessibilityActivated += (s, e) =>
