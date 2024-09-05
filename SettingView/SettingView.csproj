@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Tizen.NET.Sdk/1.2.1">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,14 +6,13 @@
       <AssemblyName>SettingView</AssemblyName>
 	  <DisableImplicitTizenReferences>True</DisableImplicitTizenReferences>
   </PropertyGroup>
-	
+
   <ItemGroup>
     <Folder Include="res\menu\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Tizen.NET" Version="12.0.0.18174" />
-    <PackageReference Include="Tizen.NET.Sdk" Version="1.0.9" />
+    <PackageReference Include="Tizen.NET" Version="12.0.0.18428" />
   </ItemGroup>
 
   <ItemGroup>
