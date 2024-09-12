@@ -106,7 +106,7 @@ namespace SettingCore
 
                     try
                     {
-                        AddGadgetView(contentPage);
+                        AddGadgetView(contentPage, gadget);
                     }
                     catch (Exception ex)
                     {
@@ -158,12 +158,7 @@ namespace SettingCore
                     ThemeChangeSensitive = true,
                 };
 
-                page.Appeared += (s, e) =>
-                {
-                    gadget.OnPageAppeared?.Invoke();
-                };
-
-                AddGadgetView(page);
+                AddGadgetView(page, gadget);
                 gadgetPages.Add(page, gadget);
             }
             catch (Exception e)
@@ -176,7 +171,7 @@ namespace SettingCore
             }
         }
 
-        public static void AddGadgetView(View newView)
+        public static void AddGadgetView(View newView, MenuGadget gadget)
         {
             Logger.Debug("Adding New Gadget View");
             View currentView = NUIApplication.GetDefaultWindow().GetDefaultNavigator().GetChildAt(0);
@@ -188,6 +183,7 @@ namespace SettingCore
             gadgetViews.Push(currentView);
             NUIApplication.GetDefaultWindow().GetDefaultNavigator().Remove(currentView);
             NUIApplication.GetDefaultWindow().GetDefaultNavigator().Add(newView);
+            gadget?.OnPageAppeared?.Invoke();
         }
 
         public static void RemoveGadgetView()
