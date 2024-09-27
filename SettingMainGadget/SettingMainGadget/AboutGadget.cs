@@ -10,6 +10,7 @@ using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 using Tizen.System;
 using System;
+using SettingMainGadget.Common.Views;
 
 namespace Setting.Menu
 {
@@ -21,12 +22,26 @@ namespace Setting.Menu
         private string SystemModelName = "tizen.org/system/model_name";
 
         private ScrollableBase content;
-        private View popup;
-        private TextField textField;
+        private AlertDialog renameAlertDialog;
+        private TextField renameTextField;
         private TextLabel warning;
         private Button renameButton;
         private string deviceName;
+
+        private Window window = NUIApplication.GetDefaultWindow();
+
         private bool isLightTheme => ThemeManager.PlatformThemeId == "org.tizen.default-light-theme";
+
+        private bool isPortrait => window.WindowSize.Width < window.WindowSize.Height;
+
+        private static Color CancelButtonColor = new Color("#dc3545");
+        private static Color CancelButtonTextColor = new Color("#ffffff");
+
+        private static Color EnabledRenameButtonColor = new Color("#28a745");
+        private static Color EnabledRenameButtonTextColor = new Color("#ffffff");
+
+        private static Color DisabledRenameButtonColor = new Color("#a9d5b4");
+        private static Color DisabledRenameButtonTextColor = new Color("#6c757d");
 
         public override Color ProvideIconColor() => new Color(IsLightTheme ? "#301A4B" : "#CAB4E5");
 
@@ -59,10 +74,11 @@ namespace Setting.Menu
 
         private void Content_Relayout(object sender, EventArgs e)
         {
-            if(popup != null && popup.IsOnWindow)
+            if(renameAlertDialog != null && renameAlertDialog.IsOnWindow)
             {
-                NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop();
-                ShowRenamePopup(deviceName);
+                string currentName = renameTextField.Text;
+                RemoveAlertDialog(renameAlertDialog);
+                CreateRenameDeviceAlertDialog(currentName);
             }
         }
 
@@ -143,7 +159,7 @@ namespace Setting.Menu
                 renameDevice = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NAME)), deviceName);
                 renameDevice.Clicked += (s, e) =>
                 {
-                    ShowRenamePopup(deviceName);
+                    CreateRenameDeviceAlertDialog(deviceName);
                 };
                 content.Add(renameDevice);
             });
@@ -233,155 +249,134 @@ namespace Setting.Menu
             return (model.Equals("Emulator") || model.Equals("EMULATOR"));
         }
 
-        private void ShowRenamePopup(string name)
+        private void CreateRenameDeviceAlertDialog(string name)
         {
-            popup = new View()
+            View contentArea = new View()
             {
-                BackgroundColor = isLightTheme ? new Color("#FAFAFA") : new Color("#16131A"),
-                WidthSpecification = LayoutParamPolicies.WrapContent,
+                Name = "RenameDeviceDialog",
+                WidthSpecification = LayoutParamPolicies.MatchParent,
                 HeightSpecification = LayoutParamPolicies.WrapContent,
-                Layout = new LinearLayout()
-                {
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    LinearOrientation = LinearLayout.Orientation.Vertical,
-                },
-                Padding = new Extents(16, 16, 16, 16).SpToPx(),
-            };
-            popup.BoxShadow = isLightTheme ? new Shadow(8.0f, new Color(0.0f, 0.0f, 0.0f, 0.16f), new Vector2(0.0f, 2.0f)) : new Shadow(6.0f, new Color("#FFFFFF29"), new Vector2(0.0f, 1.0f));
-
-            var content = new View()
-            {
                 BackgroundColor = Color.Transparent,
-                WidthSpecification = LayoutParamPolicies.WrapContent,
-                HeightSpecification = LayoutParamPolicies.WrapContent,
-                Layout = new LinearLayout()
-                {
-                    LinearOrientation = LinearLayout.Orientation.Vertical,
-                },
-            };
-
-            var header = new View()
-            {
-                BackgroundColor = Color.Transparent,
-                WidthSpecification = LayoutParamPolicies.WrapContent,
-                HeightSpecification = LayoutParamPolicies.WrapContent,
-                Layout = new LinearLayout()
-                {
-                    LinearOrientation = LinearLayout.Orientation.Vertical,
-                },
-            };
-
-            var textView = new View()
-            {
-                BackgroundColor = Color.Transparent,
-                WidthSpecification = LayoutParamPolicies.WrapContent,
-                HeightSpecification = LayoutParamPolicies.WrapContent,
                 Layout = new LinearLayout()
                 {
                     LinearOrientation = LinearLayout.Orientation.Vertical,
                     HorizontalAlignment = HorizontalAlignment.Center,
-                },
-                Padding = new Extents(8, 8, 8, 8).SpToPx(),
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Margin = new Extents(0, 0, 8, 16).SpToPx(),
+                }
             };
 
-            //title text
-            var textTitle = new TextLabel(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_RENAME_DEVICE)))
+            TextLabel contentMessgae = new TextLabel()
             {
-                PixelSize = 24.SpToPx(),
-                WidthResizePolicy = ResizePolicyType.FillToParent,
+                StyleName = "LabelText",
+                ThemeChangeSensitive = true,
+                PixelSize = 18.SpToPx(),
+                FontFamily = "BreezeSans",
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                HeightSpecification = LayoutParamPolicies.WrapContent,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new Extents(0, 0, 0, 8).SpToPx(),
-            };
-
-            // main text
-            var textSubTitle = new TextLabel(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DEVICE_NAMES_ARE_DISPLAYED)))
-            {
-                PixelSize = 24.SpToPx(),
+                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_DEVICE_NAMES_ARE_DISPLAYED)),
                 MultiLine = true,
-                LineWrapMode = LineWrapMode.Word,
-                SizeWidth = 634.SpToPx(),
-                Margin = new Extents(0, 0, 8, 0).SpToPx(),
             };
+            contentArea.Add(contentMessgae);
 
-            textView.Add(textTitle);
-            textView.Add(textSubTitle);
-
-            var mainView = new View()
+            View inputArea = new View()
             {
+                Name = "AlertDialogInputArea",
                 BackgroundColor = Color.Transparent,
-                WidthSpecification = LayoutParamPolicies.WrapContent,
-                HeightSpecification = LayoutParamPolicies.WrapContent,
-                Layout = new LinearLayout()
-                {
-                    LinearOrientation = LinearLayout.Orientation.Vertical,
-                },
-                Padding = new Extents(8, 8, 8, 8).SpToPx(),
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                HeightSpecification = 48.SpToPx(),
+                Margin = new Extents(0, 0, 24, 0).SpToPx(),
+                Layout = new RelativeLayout()
             };
+            contentArea.Add(inputArea);
 
-            var entryView = new View()
+            View inputBaseLine= new View()
             {
-                BackgroundColor = Color.Transparent,
-                WidthSpecification = LayoutParamPolicies.WrapContent,
-                HeightSpecification = LayoutParamPolicies.WrapContent,
-                Layout = new LinearLayout()
-                {
-                    LinearOrientation = LinearLayout.Orientation.Horizontal,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                },
+                Name = "InputLineView",
+                StyleName = "InputLine",
+                HeightSpecification = 2.SpToPx(),
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                BackgroundColor= isLightTheme ? Color.Black : Color.White,
             };
+            contentArea.Add(inputBaseLine);
 
-            var textFieldView = new View()
-            {
-                BackgroundColor = isLightTheme ? new Color("#FAFAFA") : new Color("#1D1A21"),
-                WidthSpecification = LayoutParamPolicies.WrapContent,
-                WidthResizePolicy = ResizePolicyType.FitToChildren,
-                SizeHeight = 48.SpToPx(),
-                Layout = new LinearLayout()
-                {
-                    LinearOrientation = LinearLayout.Orientation.Vertical,
-                },
-                Padding = new Extents(10, 0, 0, 0).SpToPx(),
-            };
-
-            //entry view
             PropertyMap placeholder = new PropertyMap();
             placeholder.Add("color", new PropertyValue(isLightTheme ? new Color("#CACACA") : new Color("#666666")));
             placeholder.Add("fontFamily", new PropertyValue("BreezeSans"));
             placeholder.Add("pixelSize", new PropertyValue(24.SpToPx()));
-            placeholder.Add("text", new PropertyValue("Type text"));
+            placeholder.Add("text", new PropertyValue("Enter Device Name"));
 
-            textField = new TextField
+            renameTextField = new TextField()
             {
-                FontFamily = "BreezeSans",
-                SizeWidth = 582.SpToPx(),
-                SizeHeight = 48.SpToPx(),
-                VerticalAlignment = VerticalAlignment.Center,
-                Placeholder = placeholder,
-                BackgroundColor = isLightTheme ? new Color("#FAFAFA") : new Color("#1D1A21"),
-                MaxLength = MAX_DEVICE_NAME_LEN,
-                EnableCursorBlink = true,
-                PixelSize = 24.SpToPx(),
+                Name = "AlertDialogInputField",
                 Text = name,
+                HorizontalAlignment = HorizontalAlignment.Begin,
+                PixelSize = 24.SpToPx(),
+                Placeholder = placeholder,
             };
-            textField.TextChanged += TextField_TextChanged;
+            renameTextField.TextChanged += TextField_TextChanged;
+            inputArea.Add(renameTextField);
 
-            CancelButton cancelTextButton = new CancelButton()
+            RelativeLayout.SetLeftRelativeOffset(renameTextField, 0.0f);
+            RelativeLayout.SetFillHorizontal(renameTextField, true);
+            RelativeLayout.SetHorizontalAlignment(renameTextField, RelativeLayout.Alignment.Start);
+
+            IconButton clearButton = new IconButton(GetResourcePath("cross_button.png"));
+            inputArea.Add(clearButton);
+
+            clearButton.Clicked += (object o, ClickedEventArgs e) =>
             {
-                Margin = new Extents(10, 0, 0, 0).SpToPx(),
+                renameTextField.Text = string.Empty;
             };
-            cancelTextButton.Clicked += cancelTextButton_Clicked;
 
-            textFieldView.Add(textField);
-            entryView.Add(textFieldView);
-            entryView.Add(cancelTextButton);
+            RelativeLayout.SetRightRelativeOffset(clearButton, 1.0f);
+            RelativeLayout.SetHorizontalAlignment(clearButton, RelativeLayout.Alignment.End);
+            RelativeLayout.SetRightTarget(renameTextField, clearButton);
+            RelativeLayout.SetRightRelativeOffset(renameTextField, 0.0f);
 
-            View separator = new View
+            View buttonArea = new View()
             {
-                WidthResizePolicy = ResizePolicyType.FillToParent,
-                Size = new Size(592, 1).SpToPx(),
-                BackgroundColor = isLightTheme ? new Color("#FF6200") : new Color("#FF8A00"),
+                BackgroundColor = Color.Transparent,
+                HeightSpecification = LayoutParamPolicies.WrapContent,
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                Layout = new RelativeLayout()
+                {
+                    Margin = new Extents(0, 0, 0, 0).SpToPx(),
+                    Padding = new Extents(8, 8, 8, 8).SpToPx(),
+                }
+            }; ;
+
+            Button cancelButton = new Button()
+            {
+                Size2D = new Size2D(180, 56).SpToPx(),
+                Name = "AlertDialogCreateButton",
+                PointSize = 18.SpToPx(),
+                CornerRadius = 24.SpToPx(),
+                BackgroundColor = CancelButtonColor,
+                TextColor = CancelButtonTextColor,
+                Text = "Cancel"
             };
+            buttonArea.Add(cancelButton);
+            RelativeLayout.SetLeftRelativeOffset(cancelButton, 0.0f);
+            RelativeLayout.SetHorizontalAlignment(cancelButton, RelativeLayout.Alignment.Start);
+            RelativeLayout.SetVerticalAlignment(cancelButton, RelativeLayout.Alignment.Start);
+
+            renameButton= new Button()
+            {
+                Size2D = new Size2D(180, 56).SpToPx(),
+                Name = "AlertDialogCreateButton",
+                PointSize = 18.SpToPx(),
+                CornerRadius = 24.SpToPx(),
+                Text = "Rename",
+                BackgroundColor = EnabledRenameButtonColor,
+                TextColor = EnabledRenameButtonTextColor,
+            };
+            buttonArea.Add(renameButton);
+
+            RelativeLayout.SetRightRelativeOffset(renameButton, 1.0f);
+            RelativeLayout.SetHorizontalAlignment(renameButton, RelativeLayout.Alignment.End);
+            RelativeLayout.SetVerticalAlignment(renameButton, RelativeLayout.Alignment.Start);
 
             warning = new TextLabel(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_TPOP_MAXIMUM_NUMBER_OF_CHARACTERS_REACHED)))
             {
@@ -389,57 +384,93 @@ namespace Setting.Menu
                 TextColor = new Color("#A40404"),
                 Margin = new Extents(8, 8, 8, 0).SpToPx(),
             };
+            warning.Hide();
+            contentArea.Add(warning);
 
-            mainView.Add(entryView);
-            mainView.Add(separator);
-            mainView.Add(warning);
-
-            header.Add(textView);
-            header.Add(mainView);
-
-            var buttons = new View()
+            renameAlertDialog = new AlertDialog()
             {
-                BackgroundColor = Color.Transparent,
-                SizeWidth = 658.SpToPx(),
-                Layout = new FlexLayout()
+                ThemeChangeSensitive = true,
+                StyleName = "Dialogs",
+                WidthSpecification = isPortrait ? window.Size.Width - 64.SpToPx() : (int)(window.Size.Width * 0.7f),
+                HeightSpecification = LayoutParamPolicies.WrapContent,
+                Layout = new LinearLayout()
                 {
-                    Justification = FlexLayout.FlexJustification.SpaceBetween,
-                    Direction = FlexLayout.FlexDirection.Row
+                    Padding = new Extents(80, 80, 40, 40).SpToPx(),
+                    Margin = new Extents(32, 32, 0, 0).SpToPx(),
+                    LinearOrientation = LinearLayout.Orientation.Vertical,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Top,
                 },
-                Padding = new Extents(16, 16, 16, 16).SpToPx(),
+                TitleContent = new TextLabel()
+                {
+                    Name = "AlertDialogTitle",
+                    StyleName = "LabelText",
+                    ThemeChangeSensitive = true,
+                    PixelSize = 40.SpToPx(),
+                    FontFamily = "BreezeSans",
+                    WidthSpecification = LayoutParamPolicies.MatchParent,
+                    HeightSpecification = LayoutParamPolicies.WrapContent,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_RENAME_DEVICE)),
+                },
+                Content = contentArea,
+                ActionContent = buttonArea,
+                BoxShadow = isLightTheme ? new Shadow(8.0f, new Color(0.0f, 0.0f, 0.0f, 0.16f), new Vector2(0.0f, 2.0f)) : new Shadow(6.0f, new Color("#FFFFFF29"), new Vector2(0.0f, 1.0f)),
+            };
+            if (cancelButton.SizeWidth > renameAlertDialog.SizeWidth / 2 - 40.SpToPx())
+            {
+                cancelButton.SizeWidth = renameAlertDialog.SizeWidth / 2 - 40.SpToPx();
+                renameButton.SizeWidth = renameAlertDialog.SizeWidth / 2 - 40.SpToPx();
+            }
+            window.Add(renameAlertDialog);
+
+            cancelButton.Clicked += (object o, ClickedEventArgs e) =>
+            {
+                RemoveAlertDialog(renameAlertDialog);
             };
 
-            renameButton = new Button()
-            {
-                WidthResizePolicy = ResizePolicyType.FitToChildren,
-                HeightResizePolicy = ResizePolicyType.FitToChildren,
-                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BUTTON_RENAME)),
-                Size = new Size(252, 48).SpToPx(),
-            };
             renameButton.Clicked += (object sender, ClickedEventArgs e) => {
-                Vconf.SetString(VconfDeviceName, textField.Text);
-                NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop();
+                string newDeviceName = renameTextField.Text;
+                if (newDeviceName.Length > 0)
+                {
+                    Vconf.SetString(VconfDeviceName, renameTextField.Text);
+                }
+                RemoveAlertDialog(renameAlertDialog);
             };
+        }
 
-            var cancelButton = new Button("Tizen.NUI.Components.Button.Outlined")
+        private void DeleteChildren(List<View> childrenList)
+        {
+            if (childrenList == null || childrenList.Count == 0)
             {
-                WidthResizePolicy = ResizePolicyType.FitToChildren,
-                HeightResizePolicy = ResizePolicyType.FitToChildren,
-                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BUTTON_CANCEL)),
-                Size = new Size(252, 48).SpToPx(),
-            };
+                return;
+            }
+            foreach (View child in childrenList)
+            {
+                child?.Dispose();
+            }
+        }
 
-            cancelButton.Clicked += (object sender, ClickedEventArgs e) => { NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop(); };
-            buttons.Add(cancelButton);
-            buttons.Add(renameButton);
-
-            content.Add(header);
-            content.Add(buttons);
-            popup.Add(content);
-
-            checkNameLength(textField);
-
-            RoundedDialogPage.ShowDialog(popup);
+        private void RemoveAlertDialog(AlertDialog dialog)
+        {
+            List<View> contentChilds = dialog.Content.Children.GetRange(0, dialog.Content.Children.Count);
+            List<View> actionContentChilds = dialog.ActionContent.Children.GetRange(0, dialog.ActionContent.Children.Count);
+            foreach (View child in contentChilds)
+            {
+                if (child != null)
+                {
+                    if (child.Name == "AlertDialogInputArea")
+                    {
+                        List<View> inputAreaChildrenList = child.Children.GetRange(0, child.Children.Count);
+                        DeleteChildren(inputAreaChildrenList);
+                    }
+                    child.Dispose();
+                }
+            }
+            DeleteChildren(actionContentChilds);
+            window.Remove(dialog);
+            dialog.Dispose();
         }
 
         private void TextField_TextChanged(object sender, TextField.TextChangedEventArgs e)
@@ -464,11 +495,22 @@ namespace Setting.Menu
             {
                 renameButton.IsEnabled = false;
             }
+
+            if (renameButton.IsEnabled)
+            {
+                renameButton.BackgroundColor = EnabledRenameButtonColor;
+                renameButton.TextColor = EnabledRenameButtonTextColor;
+            }
+            else
+            {
+                renameButton.BackgroundColor = DisabledRenameButtonColor;
+                renameButton.TextColor= DisabledRenameButtonTextColor;
+            }
         }
 
         private void cancelTextButton_Clicked(object sender, ClickedEventArgs e)
         {
-            textField.Text = string.Empty;
+            renameTextField.Text = string.Empty;
         }
     }
 }
