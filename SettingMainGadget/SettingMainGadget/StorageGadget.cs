@@ -49,6 +49,8 @@ namespace Setting.Menu
         private double sizeAudio;
         private double sizeMisc;
         private IDictionary<string, Action> sectionViews;
+        private Task initialSizeCalculation;
+        private PackageSizeInformation sizeInfo;
 
         protected override View OnCreate()
         {
@@ -79,11 +81,11 @@ namespace Setting.Menu
                 },
             };
 
-            var calculating = StartCalculatingAppCacheSize();
+            initialSizeCalculation = StartCalculatingAppCacheSize();
 
             content.Relayout += (s, e) =>
             {
-                if (calculating.IsCompleted)
+                if (initialSizeCalculation.IsCompleted)
                 {
                     storageIndicator.Update();
                 }
@@ -204,21 +206,21 @@ namespace Setting.Menu
             var imageItem = new TextWithIconListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_IMAGES)), new Color("#FF8A00"), subText: GetMediaSizeString(sizeImage));
             imageItem.Clicked += (s, e) =>
             {
-                // TODO : add media files info gadget 
+                // TODO : add media files info gadget
             };
             usageSummary.Add(imageItem);
 
             var videoItem = new TextWithIconListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_VIDEOS)), new Color("#FF6200"), subText: GetMediaSizeString(sizeVideo));
             videoItem.Clicked += (s, e) =>
             {
-                // TODO : add media files info gadget 
+                // TODO : add media files info gadget
             };
             usageSummary.Add(videoItem);
 
             var audioItem = new TextWithIconListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_AUDIO)), new Color("#A40404"), subText: GetMediaSizeString(sizeAudio));
             audioItem.Clicked += (s, e) =>
             {
-                // TODO : add media files info gadget 
+                // TODO : add media files info gadget
             };
             usageSummary.Add(audioItem);
 
@@ -227,7 +229,7 @@ namespace Setting.Menu
             var miscItem = new TextWithIconListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_MISCELLANEOUS_FILES)), new Color("#28262B"), subText: GetMediaSizeString(sizeMisc));
             miscItem.Clicked += (s, e) =>
             {
-                // TODO : add miscellaneous info gadget 
+                // TODO : add miscellaneous info gadget
             };
             usageSummary.Add(miscItem);
 
@@ -242,6 +244,11 @@ namespace Setting.Menu
             usageSummary.Add(systemItem);
 
             content.Add(usageSummary);
+
+            if (initialSizeCalculation.IsCompleted)
+            {
+                UpdateSizeInfo();
+            }
         }
 
         private void ExternalUsageView()
@@ -369,10 +376,15 @@ namespace Setting.Menu
 
         private async Task StartCalculatingAppCacheSize()
         {
-            var sizeInfo = await PackageManager.GetTotalSizeInformationAsync();
+            sizeInfo = await PackageManager.GetTotalSizeInformationAsync();
+            UpdateSizeInfo();
+        }
 
+        private void UpdateSizeInfo()
+        {
             long sizeApp = sizeInfo.AppSize;
             long sizeCache = sizeInfo.CacheSize;
+            bool indicatorValueChanged = false;
 
             if (appsItem != null)
             {
@@ -382,6 +394,7 @@ namespace Setting.Menu
                 if (apps != null)
                 {
                     apps.SizeInfo = sizeApp;
+                    indicatorValueChanged = true;
                 }
             }
             if (cacheItem != null)
@@ -392,6 +405,7 @@ namespace Setting.Menu
                 if (cache != null)
                 {
                     cache.SizeInfo = sizeCache;
+                    indicatorValueChanged = true;
                 }
             }
             if (systemItem != null)
@@ -402,10 +416,14 @@ namespace Setting.Menu
                 if (system != null)
                 {
                     system.SizeInfo = (float)(nonSystemSpace - sizeApp - sizeCache);
+                    indicatorValueChanged = true;
                 }
             }
 
-            storageIndicator.Update();
+            if (indicatorValueChanged)
+            {
+                storageIndicator.Update();
+            }
         }
 
         private void GetMediaInfo(out double sizeImage, out double sizeVideo, out double sizeAudio)
@@ -511,7 +529,7 @@ namespace Setting.Menu
                 Layout = new FlexLayout()
                 {
                     Justification = FlexLayout.FlexJustification.Center,
-                    Direction = FlexLayout.FlexDirection.Column, 
+                    Direction = FlexLayout.FlexDirection.Column,
                     Alignment = FlexLayout.AlignmentType.Center,
                 },
             };
@@ -558,7 +576,7 @@ namespace Setting.Menu
                 Size = new Size(252, 48).SpToPx(),
                 Margin = new Extents(61, 32, 0, 32).SpToPx(),
             };
-            clearButton.Clicked += (s, e) => 
+            clearButton.Clicked += (s, e) =>
             {
                 PackageManager.ClearAllCacheDirectory();
                 // TODO : update cache info
@@ -575,9 +593,9 @@ namespace Setting.Menu
                 Margin = new Extents(32, 61, 0, 32).SpToPx(),
             };
 
-            cancelButton.Clicked += (s, e) => 
-            { 
-                NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop(); 
+            cancelButton.Clicked += (s, e) =>
+            {
+                NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop();
             };
 
             buttons.Add(cancelButton);
