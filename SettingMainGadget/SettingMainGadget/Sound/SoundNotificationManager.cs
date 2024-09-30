@@ -4,14 +4,31 @@ using System;
 using System.Linq;
 using Tizen.Multimedia;
 using Tizen.NUI;
+using Tizen.System;
 
 namespace SettingMainGadget.Sound
 {
     public class SoundNotificationManager
     {
-        public static void SetNotificationSound(string notificationsound)
+        public static event EventHandler<SoundNotificationChangedEventArgs> SoundNotificationChanged;
+
+        public static void SetNotificationSound(string notificationSound)
         {
-            Tizen.Vconf.SetString(SettingAudioManager.VconfRingtonePath, notificationsound);
+            try
+            {
+                Tizen.Vconf.SetString(SettingAudioManager.VconfRingtonePath, notificationSound);
+                if (SoundNotificationChanged != null)
+                {
+                    SoundNotificationChanged?.Invoke(null, null);
+                }
+                else
+                {
+                    Logger.Warn("SoundNotificationChanged EventHandler is null");
+                }
+            }
+            catch {
+                Logger.Warn("Couldn't Set Notification Sound");
+            }
         }
 
         public static string GetNotificationSound()

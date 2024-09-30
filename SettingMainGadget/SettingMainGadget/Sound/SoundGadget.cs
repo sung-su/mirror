@@ -97,6 +97,15 @@ namespace Setting.Menu
 
             try
             {
+                SoundNotificationManager.SoundNotificationChanged += SystemSettings_NotificationSoundChanged;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"Cannot attach to SoundNotificationManger.SoundNotificationChanged ({e.GetType()})");
+            }
+
+            try
+            {
                 audioVolume.Changed += AudioVolume_Changed;
             }
             catch (System.Exception e)
@@ -140,6 +149,15 @@ namespace Setting.Menu
             catch (System.Exception e)
             {
                 Logger.Warn($"Cannot detach from SystemSettings.SoundNotificationChanged ({e.GetType()})");
+            }
+
+            try
+            {
+                SoundNotificationManager.SoundNotificationChanged -= SystemSettings_NotificationSoundChanged;
+            }
+            catch (System.Exception e)
+            {
+                Logger.Warn($"Cannot detach from SoundNotificationManager.SoundNotificationChanged ({e.GetType()})");
             }
 
             try
