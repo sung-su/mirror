@@ -11,6 +11,7 @@ using Tizen.NUI.Components;
 using Tizen.System;
 using System;
 using SettingMainGadget.Common.Views;
+using SettingMainGadget.Common;
 
 namespace Setting.Menu
 {
@@ -27,21 +28,6 @@ namespace Setting.Menu
         private TextLabel warning;
         private Button renameButton;
         private string deviceName;
-
-        private Window window = NUIApplication.GetDefaultWindow();
-
-        private bool isLightTheme => ThemeManager.PlatformThemeId == "org.tizen.default-light-theme";
-
-        private bool isPortrait => window.WindowSize.Width < window.WindowSize.Height;
-
-        private static Color CancelButtonColor = new Color("#dc3545");
-        private static Color CancelButtonTextColor = new Color("#ffffff");
-
-        private static Color EnabledRenameButtonColor = new Color("#28a745");
-        private static Color EnabledRenameButtonTextColor = new Color("#ffffff");
-
-        private static Color DisabledRenameButtonColor = new Color("#a9d5b4");
-        private static Color DisabledRenameButtonTextColor = new Color("#6c757d");
 
         public override Color ProvideIconColor() => new Color(IsLightTheme ? "#301A4B" : "#CAB4E5");
 
@@ -297,12 +283,12 @@ namespace Setting.Menu
                 StyleName = "InputLine",
                 HeightSpecification = 2.SpToPx(),
                 WidthSpecification = LayoutParamPolicies.MatchParent,
-                BackgroundColor= isLightTheme ? Color.Black : Color.White,
+                BackgroundColor= AppAttributes.IsLightTheme ? Color.Black : Color.White,
             };
             contentArea.Add(inputBaseLine);
 
             PropertyMap placeholder = new PropertyMap();
-            placeholder.Add("color", new PropertyValue(isLightTheme ? new Color("#CACACA") : new Color("#666666")));
+            placeholder.Add("color", new PropertyValue(AppAttributes.IsLightTheme ? new Color("#CACACA") : new Color("#666666")));
             placeholder.Add("fontFamily", new PropertyValue("BreezeSans"));
             placeholder.Add("pixelSize", new PropertyValue(24.SpToPx()));
             placeholder.Add("text", new PropertyValue("Enter Device Name"));
@@ -347,14 +333,11 @@ namespace Setting.Menu
                 }
             }; ;
 
-            Button cancelButton = new Button()
+            Button cancelButton = new Button("Tizen.NUI.Components.Button.Outlined")
             {
-                Size2D = new Size2D(180, 56).SpToPx(),
+                Size2D = AppAttributes.PopupActionButtonSize,
                 Name = "AlertDialogCreateButton",
-                PointSize = 18.SpToPx(),
-                CornerRadius = 24.SpToPx(),
-                BackgroundColor = CancelButtonColor,
-                TextColor = CancelButtonTextColor,
+                CornerRadius = AppAttributes.PopupActionButtonCornerRadius,
                 Text = "Cancel"
             };
             buttonArea.Add(cancelButton);
@@ -364,13 +347,10 @@ namespace Setting.Menu
 
             renameButton= new Button()
             {
-                Size2D = new Size2D(180, 56).SpToPx(),
+                Size2D = AppAttributes.PopupActionButtonSize,
                 Name = "AlertDialogCreateButton",
-                PointSize = 18.SpToPx(),
-                CornerRadius = 24.SpToPx(),
+                CornerRadius = AppAttributes.PopupActionButtonCornerRadius,
                 Text = "Rename",
-                BackgroundColor = EnabledRenameButtonColor,
-                TextColor = EnabledRenameButtonTextColor,
             };
             buttonArea.Add(renameButton);
 
@@ -391,7 +371,7 @@ namespace Setting.Menu
             {
                 ThemeChangeSensitive = true,
                 StyleName = "Dialogs",
-                WidthSpecification = isPortrait ? window.Size.Width - 64.SpToPx() : (int)(window.Size.Width * 0.7f),
+                WidthSpecification = AppAttributes.IsPortrait ? AppAttributes.WindowWidth - 64.SpToPx() : (int)(AppAttributes.WindowWidth * 0.7f),
                 HeightSpecification = LayoutParamPolicies.WrapContent,
                 Layout = new LinearLayout()
                 {
@@ -416,14 +396,14 @@ namespace Setting.Menu
                 },
                 Content = contentArea,
                 ActionContent = buttonArea,
-                BoxShadow = isLightTheme ? new Shadow(8.0f, new Color(0.0f, 0.0f, 0.0f, 0.16f), new Vector2(0.0f, 2.0f)) : new Shadow(6.0f, new Color("#FFFFFF29"), new Vector2(0.0f, 1.0f)),
+                BoxShadow = AppAttributes.PopupBoxShadow,
             };
             if (cancelButton.SizeWidth > renameAlertDialog.SizeWidth / 2 - 40.SpToPx())
             {
                 cancelButton.SizeWidth = renameAlertDialog.SizeWidth / 2 - 40.SpToPx();
                 renameButton.SizeWidth = renameAlertDialog.SizeWidth / 2 - 40.SpToPx();
             }
-            window.Add(renameAlertDialog);
+            AppAttributes.DefaultWindow.Add(renameAlertDialog);
 
             cancelButton.Clicked += (object o, ClickedEventArgs e) =>
             {
@@ -469,7 +449,7 @@ namespace Setting.Menu
                 }
             }
             DeleteChildren(actionContentChilds);
-            window.Remove(dialog);
+            AppAttributes.DefaultWindow.Remove(dialog);
             dialog.Dispose();
         }
 
@@ -494,17 +474,6 @@ namespace Setting.Menu
             if (textField.Text == string.Empty)
             {
                 renameButton.IsEnabled = false;
-            }
-
-            if (renameButton.IsEnabled)
-            {
-                renameButton.BackgroundColor = EnabledRenameButtonColor;
-                renameButton.TextColor = EnabledRenameButtonTextColor;
-            }
-            else
-            {
-                renameButton.BackgroundColor = DisabledRenameButtonColor;
-                renameButton.TextColor= DisabledRenameButtonTextColor;
             }
         }
 
