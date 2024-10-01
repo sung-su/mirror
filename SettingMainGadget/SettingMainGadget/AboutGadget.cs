@@ -326,37 +326,36 @@ namespace Setting.Menu
                 BackgroundColor = Color.Transparent,
                 HeightSpecification = LayoutParamPolicies.WrapContent,
                 WidthSpecification = LayoutParamPolicies.MatchParent,
-                Layout = new RelativeLayout()
+                Layout = new FlexLayout()
                 {
-                    Margin = new Extents(0, 0, 0, 0).SpToPx(),
-                    Padding = new Extents(8, 8, 8, 8).SpToPx(),
-                }
-            }; ;
+                    Direction = FlexLayout.FlexDirection.Row,
+                    Justification = FlexLayout.FlexJustification.SpaceBetween,
+                },
+            };
 
             Button cancelButton = new Button("Tizen.NUI.Components.Button.Outlined")
             {
-                Size2D = AppAttributes.PopupActionButtonSize,
                 Name = "AlertDialogCreateButton",
+                Text = "Cancel",
+                WidthResizePolicy = ResizePolicyType.FitToChildren,
+                HeightResizePolicy = ResizePolicyType.FitToChildren,
                 CornerRadius = AppAttributes.PopupActionButtonCornerRadius,
-                Text = "Cancel"
+                Size2D = AppAttributes.PopupActionButtonSize,
+                Margin = AppAttributes.PopupActionButtonMargin,
             };
             buttonArea.Add(cancelButton);
-            RelativeLayout.SetLeftRelativeOffset(cancelButton, 0.0f);
-            RelativeLayout.SetHorizontalAlignment(cancelButton, RelativeLayout.Alignment.Start);
-            RelativeLayout.SetVerticalAlignment(cancelButton, RelativeLayout.Alignment.Start);
 
             renameButton= new Button()
             {
-                Size2D = AppAttributes.PopupActionButtonSize,
                 Name = "AlertDialogCreateButton",
-                CornerRadius = AppAttributes.PopupActionButtonCornerRadius,
                 Text = "Rename",
+                WidthResizePolicy = ResizePolicyType.FitToChildren,
+                HeightResizePolicy = ResizePolicyType.FitToChildren,
+                Size2D = AppAttributes.PopupActionButtonSize,
+                CornerRadius = AppAttributes.PopupActionButtonCornerRadius,
+                Margin = AppAttributes.PopupActionButtonMargin,
             };
             buttonArea.Add(renameButton);
-
-            RelativeLayout.SetRightRelativeOffset(renameButton, 1.0f);
-            RelativeLayout.SetHorizontalAlignment(renameButton, RelativeLayout.Alignment.End);
-            RelativeLayout.SetVerticalAlignment(renameButton, RelativeLayout.Alignment.Start);
 
             warning = new TextLabel(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_TPOP_MAXIMUM_NUMBER_OF_CHARACTERS_REACHED)))
             {

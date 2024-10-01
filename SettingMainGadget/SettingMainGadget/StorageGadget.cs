@@ -13,6 +13,7 @@ using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 using Tizen.System;
 using Tizen;
+using SettingMainGadget.Common;
 
 namespace Setting.Menu
 {
@@ -30,6 +31,8 @@ namespace Setting.Menu
 
         private View content;
         private View externalStorage;
+
+        private AlertDialog cachedDataPopupDialog;
 
         private TextWithIconListItem appsItem;
         private TextWithIconListItem cacheItem;
@@ -89,12 +92,26 @@ namespace Setting.Menu
                 {
                     storageIndicator.Update();
                 }
+                ContentRelayout();
             };
 
             CreateView();
             Vconf.Notify(VconfCardStatus, OnCardStatusChanged);
 
+            AppAttributes.DefaultWindow.Resized += (o, e) =>
+            {
+                ContentRelayout();
+            };
             return content;
+        }
+
+        private void ContentRelayout()
+        {
+            if(cachedDataPopupDialog != null && cachedDataPopupDialog.IsOnWindow)
+            {
+                RemoveCachedDataPopup();
+                ShowCachePopup();
+            }
         }
 
         protected override void OnDestroy()
@@ -521,19 +538,6 @@ namespace Setting.Menu
 
         private void ShowCachePopup()
         {
-            var content = new View()
-            {
-                BackgroundColor = isLightTheme ? new Color("#FAFAFA") : new Color("#16131A"),
-                SizeWidth = 690.SpToPx(),
-                HeightSpecification = LayoutParamPolicies.WrapContent,
-                Layout = new FlexLayout()
-                {
-                    Justification = FlexLayout.FlexJustification.Center,
-                    Direction = FlexLayout.FlexDirection.Column,
-                    Alignment = FlexLayout.AlignmentType.Center,
-                },
-            };
-
             //title text
             var textTitle = new TextLabel(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_CLEAR_CACHE_DATA)))
             {
@@ -541,20 +545,36 @@ namespace Setting.Menu
                 PixelSize = 24.SpToPx(),
                 Margin = new Extents(0, 0, 24, 16).SpToPx(),
             };
-            FlexLayout.SetFlexAlignmentSelf(textTitle, FlexLayout.AlignmentType.Center);
 
-            content.Add(textTitle);
+            View contentArea = new View()
+            {
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                HeightSpecification = LayoutParamPolicies.WrapContent,
+                BackgroundColor = Color.Transparent,
+                Layout = new LinearLayout()
+                {
+                    LinearOrientation = LinearLayout.Orientation.Vertical,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Margin = new Extents(0, 0, 8, 16),
+                }
+            };
 
             // main text
-            var textSubTitle = new TextLabel(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_CACHED_DATA_WILL_BE_CLEARED)))
+            var textSubTitle = new TextLabel()
             {
+                StyleName = "LabelText",
+                ThemeChangeSensitive = true,
+                PixelSize = 18.SpToPx(),
                 FontFamily = "BreezeSans",
-                PixelSize = 24.SpToPx(),
-                Ellipsis = true,
-                Margin = new Extents(32, 32, 0, 40).SpToPx(),
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                HeightSpecification = LayoutParamPolicies.WrapContent,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_CACHED_DATA_WILL_BE_CLEARED)),
+                MultiLine = true,
             };
-            FlexLayout.SetFlexAlignmentSelf(textSubTitle, FlexLayout.AlignmentType.FlexStart);
-            content.Add(textSubTitle);
+
+            contentArea.Add(textSubTitle);
 
             // buttons
             View buttons = new View()
@@ -573,15 +593,15 @@ namespace Setting.Menu
                 WidthResizePolicy = ResizePolicyType.FitToChildren,
                 HeightResizePolicy = ResizePolicyType.FitToChildren,
                 Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_CLEAR)),
-                Size = new Size(252, 48).SpToPx(),
-                Margin = new Extents(61, 32, 0, 32).SpToPx(),
+                Size = AppAttributes.PopupActionButtonSize,
+                Margin = AppAttributes.PopupActionButtonMargin,
             };
             clearButton.Clicked += (s, e) =>
             {
                 PackageManager.ClearAllCacheDirectory();
                 // TODO : update cache info
 
-                NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop();
+                RemoveCachedDataPopup();
             };
 
             var cancelButton = new Button("Tizen.NUI.Components.Button.Outlined")
@@ -589,21 +609,49 @@ namespace Setting.Menu
                 WidthResizePolicy = ResizePolicyType.FitToChildren,
                 HeightResizePolicy = ResizePolicyType.FitToChildren,
                 Text = NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BUTTON_CANCEL)),
-                Size = new Size(252, 48).SpToPx(),
-                Margin = new Extents(32, 61, 0, 32).SpToPx(),
-            };
-
-            cancelButton.Clicked += (s, e) =>
-            {
-                NUIApplication.GetDefaultWindow().GetDefaultNavigator().Pop();
+                Size = AppAttributes.PopupActionButtonSize,
+                Margin = AppAttributes.PopupActionButtonMargin,
             };
 
             buttons.Add(cancelButton);
             buttons.Add(clearButton);
 
-            content.Add(buttons);
+            cachedDataPopupDialog = new AlertDialog()
+            {
+                ThemeChangeSensitive = true,
+                StyleName = "Dialogs",
+                WidthSpecification = AppAttributes.IsPortrait ? AppAttributes.WindowWidth - 64.SpToPx() : (int)(AppAttributes.WindowWidth * 0.7f),
+                HeightSpecification = LayoutParamPolicies.WrapContent,
+                Layout = new LinearLayout()
+                {
+                    Padding = new Extents(80, 80, 40, 40).SpToPx(),
+                    Margin = new Extents(32, 32, 0, 0).SpToPx(),
+                    LinearOrientation = LinearLayout.Orientation.Vertical,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Top,
+                },
+                TitleContent = textTitle,
+                Content = contentArea,
+                ActionContent = buttons,
+                BoxShadow = AppAttributes.PopupBoxShadow,
+            };
 
-            RoundedDialogPage.ShowDialog(content);
+            AppAttributes.DefaultWindow.Add(cachedDataPopupDialog);
+
+            cancelButton.Clicked += (o, e) =>
+            {
+                RemoveCachedDataPopup();
+            };
+        }
+
+        private void RemoveCachedDataPopup()
+        {
+            if (cachedDataPopupDialog != null)
+            {
+                AppAttributes.DefaultWindow.Remove(cachedDataPopupDialog);
+                cachedDataPopupDialog.Hide();
+                cachedDataPopupDialog.Dispose();
+            }
         }
 
         private void OnMediaInfoUpdated(object sender, MediaInfoUpdatedEventArgs args)
