@@ -21,7 +21,7 @@ namespace Setting.Menu.About
         private ScrollableBase vpnTabContent, wifiTabContent, emailTabContent;
 
         private MoreMenuItem installMenuItem, uninstallMenuItem;
-
+        private TabButtonStyle tabButtonStyle;
         public override string ProvideTitle() => "User certificates";
 
         public override IEnumerable<MoreMenuItem> ProvideMoreMenu() => Moremenu();
@@ -83,7 +83,7 @@ namespace Setting.Menu.About
                 HeightSpecification = LayoutParamPolicies.MatchParent,
             };
 
-            var tabButtonStyle = ThemeManager.GetStyle("Tizen.NUI.Components.TabButton") as TabButtonStyle;
+            tabButtonStyle = ThemeManager.GetStyle("Tizen.NUI.Components.TabButton") as TabButtonStyle;
             tabButtonStyle.Padding = new Extents(2, 2, 16, 16).SpToPx();
             tabButtonStyle.Icon.Size = new Size(2, -1).SpToPx();
 
@@ -231,6 +231,7 @@ namespace Setting.Menu.About
             Logger.Debug("OnDestroy()");
 
             base.OnDestroy();
+            tabButtonStyle.dispose();
         }
     }
 }
