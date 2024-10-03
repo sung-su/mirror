@@ -21,7 +21,6 @@ namespace Setting.Menu.About
         private ScrollableBase vpnTabContent, wifiTabContent, emailTabContent;
 
         private MoreMenuItem installMenuItem, uninstallMenuItem;
-        private TabButtonStyle tabButtonStyle;
         public override string ProvideTitle() => "User certificates";
 
         public override IEnumerable<MoreMenuItem> ProvideMoreMenu() => Moremenu();
@@ -83,31 +82,30 @@ namespace Setting.Menu.About
                 HeightSpecification = LayoutParamPolicies.MatchParent,
             };
 
-            tabButtonStyle = ThemeManager.GetStyle("Tizen.NUI.Components.TabButton") as TabButtonStyle;
-            tabButtonStyle.Padding = new Extents(2, 2, 16, 16).SpToPx();
-            tabButtonStyle.Icon.Size = new Size(2, -1).SpToPx();
-
             // VPN tab
-            var vpnTabButton = new TabButton(tabButtonStyle)
+            var vpnTabButton = new TabButton("Tizen.NUI.Components.TabButton")
             {
                 // TODO: Add string resouce
                 Text = "VPN",
+                Padding = new Extents(2, 2, 16, 16).SpToPx()
             };
             vpnTabContent = TabView();
 
             // Wi-Fi tab
-            var wifiTabButton = new TabButton(tabButtonStyle)
+            var wifiTabButton = new TabButton("Tizen.NUI.Components.TabButton")
             {
                 // TODO: Add string resouce
                 Text = "Wi-Fi",
+                Padding = new Extents(2, 2, 16, 16).SpToPx()
             };
             wifiTabContent = TabView();
 
             // Email tab
-            var emailTabButton = new TabButton(tabButtonStyle)
+            var emailTabButton = new TabButton("Tizen.NUI.Components.TabButton")
             {
                 // TODO: Add string resouce
                 Text = "Email",
+                Padding = new Extents(2, 2, 16, 16).SpToPx()
             };
             emailTabContent = TabView();
 
@@ -231,7 +229,6 @@ namespace Setting.Menu.About
             Logger.Debug("OnDestroy()");
 
             base.OnDestroy();
-            tabButtonStyle.Dispose();
         }
     }
 }
