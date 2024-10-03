@@ -64,12 +64,11 @@ namespace SettingCore
         private static IEnumerable<SettingGadgetInfo> getSettingGadgetInfos(NUIGadgetInfo gadgetInfo)
         {
             string assemblyPath = System.IO.Path.Combine(gadgetInfo.ResourcePath, gadgetInfo.ExecutableFile);
-            byte[] fileData = System.IO.File.ReadAllBytes(assemblyPath);
             Assembly assembly = null;
             try
             {
                 Logger.Verbose($"Opening assembly from {assemblyPath} ({gadgetInfo.ResourcePath}, {gadgetInfo.ExecutableFile})");
-                assembly = System.Reflection.Assembly.Load(fileData);
+                assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyPath));
             }
             catch (System.IO.FileLoadException)
             {
