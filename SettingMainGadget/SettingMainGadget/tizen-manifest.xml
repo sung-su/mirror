@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns="http://tizen.org/ns/packages" api-version="8.0"
-  package="org.tizen.settings.main" version="1.2.3"
+  package="org.tizen.settings.main" version="1.2.4"
   res-type="org.tizen.appfw.gadget.Settings" res-version="1.5.0">
   <allowed-package id="org.tizen.*">
     <required-privileges>

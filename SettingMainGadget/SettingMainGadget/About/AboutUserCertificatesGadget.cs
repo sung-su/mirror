@@ -231,7 +231,7 @@ namespace Setting.Menu.About
             Logger.Debug("OnDestroy()");
 
             base.OnDestroy();
-            tabButtonStyle.dispose();
+            tabButtonStyle.Dispose();
         }
     }
 }
