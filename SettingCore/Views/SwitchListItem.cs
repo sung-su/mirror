@@ -88,6 +88,22 @@ namespace SettingCore.Views
             FlexLayout.SetFlexAlignmentSelf(Switch, FlexLayout.AlignmentType.FlexStart);
 
             Add(Switch);
+
+            AccessibilityActivated += (s, e) =>
+            {
+                if (Switch.IsEnabled)
+                {
+                    Switch.IsSelected = !Switch.IsSelected;
+                }
+            };
+
+            Clicked += (s, e) =>
+            {
+                if (Switch.IsEnabled)
+                {
+                    Switch.IsSelected = !Switch.IsSelected;
+                }
+            };
         }
 
         public override void OnDisabledStateChanged(bool isEnabled)
