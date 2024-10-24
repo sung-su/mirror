@@ -41,7 +41,7 @@ namespace SettingCore.Views
                 WidthSpecification = LayoutParamPolicies.MatchParent,
             };
 
-            if(!String.IsNullOrEmpty(subText))
+            if (!String.IsNullOrEmpty(subText))
             {
                 var view = new View()
                 {
@@ -80,7 +80,7 @@ namespace SettingCore.Views
             Switch = new Switch(switchStyle)
             {
                 IsSelected = isSelected,
-                AccessibilityHidden = true,
+                AccessibilityHidden = false,
             };
             switchStyle.Dispose();
 
@@ -88,14 +88,6 @@ namespace SettingCore.Views
             FlexLayout.SetFlexAlignmentSelf(Switch, FlexLayout.AlignmentType.FlexStart);
 
             Add(Switch);
-
-            Clicked += (s, e) =>
-            {
-                if (Switch.IsEnabled)
-                {
-                    Switch.IsSelected = !Switch.IsSelected;
-                }
-            };
         }
 
         public override void OnDisabledStateChanged(bool isEnabled)
@@ -139,15 +131,6 @@ namespace SettingCore.Views
             }
 
             return sb.ToString();
-        }
-
-        protected override AccessibilityStates AccessibilityCalculateStates()
-        {
-            var states = base.AccessibilityCalculateStates();
-
-            states[AccessibilityState.Checked] = Switch.IsSelected;
-
-            return states;
         }
     }
 }
