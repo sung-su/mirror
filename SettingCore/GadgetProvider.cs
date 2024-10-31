@@ -68,7 +68,9 @@ namespace SettingCore
             try
             {
                 Logger.Verbose($"Opening assembly from {assemblyPath} ({gadgetInfo.ResourcePath}, {gadgetInfo.ExecutableFile})");
-                assembly = Assembly.Load(AssemblyName.GetAssemblyName(assemblyPath));
+                NUIGadgetManager.Load(gadgetInfo.ResourceType);
+                assembly = gadgetInfo.Assembly;
+                Logger.Verbose($"Assembly of {gadgetInfo.ResourceType} Received from NUIGadgetManager");
             }
             catch (System.IO.FileLoadException)
             {
