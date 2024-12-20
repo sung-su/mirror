@@ -42,15 +42,23 @@ namespace SettingCore
                 }
             };
 
-            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Popped += (s, e) =>
+            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Popped += GadgetPoppedEventHandler;
+        }
+
+
+        private static void GadgetPoppedEventHandler(object o, PoppedEventArgs e)
+        {
+            RemoveGadget(e.Page);
+        }
+
+        private static void RemoveGadget(Page page)
+        {
+            if (gadgetPages.TryGetValue(page, out MenuGadget gadget))
             {
-                if (gadgetPages.TryGetValue(e.Page, out MenuGadget gadget))
-                {
-                    NUIGadgetManager.Remove(gadget);
-                    gadgetPages.Remove(e.Page);
-                }
-                NUIApplication.GetDefaultWindow().GetDefaultNavigator().EnableBackNavigation = true;
-            };
+                NUIGadgetManager.Remove(gadget);
+                gadgetPages.Remove(page);
+            }
+            NUIApplication.GetDefaultWindow().GetDefaultNavigator().EnableBackNavigation = true;
         }
 
         public static void SetFullScreenMode(bool fullScreen)
@@ -198,6 +206,8 @@ namespace SettingCore
             Page currentPage = (Page)NUIApplication.GetDefaultWindow().GetDefaultNavigator().GetChildAt(0);
             NUIApplication.GetDefaultWindow().GetDefaultNavigator().Remove(currentPage);
             NUIApplication.GetDefaultWindow().GetDefaultNavigator().Add(previousView);
+
+            RemoveGadget(currentPage);
         }
 
         private static Control GetMoreButton(IEnumerable<MoreMenuItem> moreMenu)
