@@ -277,8 +277,8 @@ namespace Setting.Menu.Apps
                 {
                     installedAppInfo.AppSize = packageSizeInfo.AppSize;
                     installedAppInfo.SizeToDisplay = AppManager.GetSizeString(packageSizeInfo.AppSize);
-                }                
- 
+                }
+
                 var allAppInfo = allAppsInfos.Where(a => a.AppId == package.Id).FirstOrDefault();
                 if (allAppInfo != null)
                 {
@@ -348,7 +348,12 @@ namespace Setting.Menu.Apps
             {
                 await CoreApplication.Post(() =>
                 {
-                    installedAppsView.ItemsSource = installedAppsInfos;
+                    // installedAppsView.ItemsSource is null when no new installed app
+                    if (installedAppsInfos.Count() > 0)
+                    {
+                        installedAppsView.ItemsSource = installedAppsInfos;
+                    }
+
                     runningAppsView.ItemsSource = runningAppsInfos;
                     allAppsView.ItemsSource = allAppsInfos;
                     return true;
@@ -455,7 +460,7 @@ namespace Setting.Menu.Apps
                 {
                     var package = PackageManager.GetPackage(e.PackageId);
 
-                    if(installedAppsInfos.Where(a => a.AppId == package.Id).FirstOrDefault() is null)
+                    if (installedAppsInfos.Where(a => a.AppId == package.Id).FirstOrDefault() is null)
                     {
                         var packageSizeInfo = await package.GetSizeInformationAsync();
                         var size = AppManager.GetSizeString(packageSizeInfo.AppSize);
