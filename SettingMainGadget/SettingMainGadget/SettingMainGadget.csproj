@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Tizen.NET" Version="12.0.0.18428" />
+    <PackageReference Include="Tizen.NET" Version="12.0.0.18518" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,8 +37,11 @@
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command=":: Copy resource dll&#xD;&#xA;rmdir /S /Q res\allowed\$(GadgetResourceType)&#xD;&#xA;mkdir res\allowed\$(GadgetResourceType)&#xD;&#xA;rmdir /S /Q res\allowed\locale&#xD;&#xA;mkdir res\allowed\locale&#xD;&#xA;dir $(OutDir)\&#xD;&#xA;xcopy /S /K /D /H /Y $(OutDir)\ res\allowed\locale&#xD;&#xA;del /Q res\allowed\locale\*.*&#xD;&#xA;xcopy /S /K /D /H /Y res\allowed\locale\* res\allowed\$(GadgetResourceType)&#xD;&#xA;rmdir /S /Q res\allowed\locale&#xD;&#xA;" />
+    <Exec Command=":: Copy resource dll&#xD;&#xA;
+		dir $(OutDir)\&#xD;&#xA;
+		mkdir res\allowed\$(GadgetResourceType)&#xD;&#xA;
+		xcopy /S /K /D /H /Y $(OutDir)\en-US res\allowed\$(GadgetResourceType)\en-US\&#xD;&#xA;
+		xcopy /S /K /D /H /Y $(OutDir)\ko-KR res\allowed\$(GadgetResourceType)\ko-KR\&#xD;&#xA;" />
   </Target>
-
 </Project>
 
