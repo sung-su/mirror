@@ -107,7 +107,7 @@ namespace Setting.Menu
 
         private void ContentRelayout()
         {
-            if(cachedDataPopupDialog != null && cachedDataPopupDialog.IsOnWindow)
+            if (cachedDataPopupDialog != null && cachedDataPopupDialog.IsOnWindow)
             {
                 RemoveCachedDataPopup();
                 ShowCachePopup();
@@ -452,7 +452,17 @@ namespace Setting.Menu
             MediaDatabase.MediaInfoUpdated += OnMediaInfoUpdated;
             MediaDatabase.FolderUpdated += OnFolderUpdated;
 
-            MediaInfoCommand mediaInfoCmd = new MediaInfoCommand(mediaDatabase);
+            MediaInfoCommand mediaInfoCmd = null;
+
+            try
+            {
+                mediaInfoCmd = new MediaInfoCommand(mediaDatabase);
+            }
+            catch (Exception ex)
+            {
+                mediaInfoCmd = null;
+                Logger.Error($"Exception: {ex}");
+            }
 
             var selectArguments = new SelectArguments()
             {
@@ -464,40 +474,43 @@ namespace Setting.Menu
                 FilterExpression = $"{MediaInfoColumns.MediaType}={(int)Media​Type.Image} OR {MediaInfoColumns.MediaType}={(int)Media​Type.Video} OR {MediaInfoColumns.MediaType}={(int)Media​Type.Music} OR {MediaInfoColumns.MediaType}={(int)Media​Type.Sound}",
             };
 
-            using (var mediaDataReader = mediaInfoCmd.SelectMedia(selectArguments))
+            if (mediaInfoCmd != null)
             {
-                while (mediaDataReader.Read())
+                using (var mediaDataReader = mediaInfoCmd.SelectMedia(selectArguments))
                 {
-                    var mediaInfo = mediaDataReader.Current;
-
-                    switch (mediaInfo.MediaType)
+                    while (mediaDataReader.Read())
                     {
-                        case MediaType.Image:
-                            ImageInfo imageInfo = mediaInfo as ImageInfo;
-                            sizeImage += imageInfo.FileSize;
-                            break;
+                        var mediaInfo = mediaDataReader.Current;
 
-                        case MediaType.Video:
-                            VideoInfo videoInfo = mediaInfo as VideoInfo;
-                            sizeVideo += videoInfo.FileSize;
-                            break;
+                        switch (mediaInfo.MediaType)
+                        {
+                            case MediaType.Image:
+                                ImageInfo imageInfo = mediaInfo as ImageInfo;
+                                sizeImage += imageInfo.FileSize;
+                                break;
 
-                        case MediaType.Sound:
-                        case MediaType.Music:
-                            AudioInfo audioInfo = mediaInfo as AudioInfo;
-                            sizeAudio += audioInfo.FileSize;
-                            break;
+                            case MediaType.Video:
+                                VideoInfo videoInfo = mediaInfo as VideoInfo;
+                                sizeVideo += videoInfo.FileSize;
+                                break;
 
-                        default:
-                            Logger.Warn($"Invalid Type : {mediaInfo.MediaType}");
-                            break;
+                            case MediaType.Sound:
+                            case MediaType.Music:
+                                AudioInfo audioInfo = mediaInfo as AudioInfo;
+                                sizeAudio += audioInfo.FileSize;
+                                break;
+
+                            default:
+                                Logger.Warn($"Invalid Type : {mediaInfo.MediaType}");
+                                break;
+                        }
                     }
                 }
             }
 
             Logger.Debug("Total Size : ");
             Logger.Debug($"     - Image : {GetMediaSizeString(sizeImage)}");
-            Logger.Debug($"     - Video : {GetMediaSizeString(sizeVideo)}" );
+            Logger.Debug($"     - Video : {GetMediaSizeString(sizeVideo)}");
             Logger.Debug($"     - Audio : {GetMediaSizeString(sizeAudio)}");
 
             MediaDatabase.MediaInfoUpdated -= OnMediaInfoUpdated;
