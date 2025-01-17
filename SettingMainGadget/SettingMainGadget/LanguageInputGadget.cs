@@ -8,8 +8,9 @@ using System.Linq;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
-using Tizen.PhonenumberUtils;
 using Tizen.System;
+using System.Threading.Tasks;
+using Tizen.Applications;
 
 namespace Setting.Menu
 {
@@ -43,7 +44,6 @@ namespace Setting.Menu
             };
 
             CreateView();
-
             return content;
         }
 
@@ -60,98 +60,191 @@ namespace Setting.Menu
             CreateView();
         }
 
-        private void CreateView()
+        private async Task CreateDisplayLanguageItem()
         {
-            sections.RemoveAllSectionsFromView(content);
-            TextListItem displayLanguageItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_DISPLAY_LANGUAGE)), LanguageInputDisplayLanguageManager.GetDisplayLanguageName(this));
-            if (displayLanguageItem != null)
+            Logger.Debug("Start of CreateDisplayLanguageItem");
+            await CoreApplication.Post(() =>
             {
-                displayLanguageItem.Clicked += (o, e) =>
+                TextListItem displayLanguageItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_DISPLAY_LANGUAGE)), LanguageInputDisplayLanguageManager.GetDisplayLanguageName(this));
+                if (displayLanguageItem != null)
                 {
-                    NavigateTo(MainMenuProvider.Language_Display);
-                };
-                sections.Add(MainMenuProvider.Language_Display, displayLanguageItem);
-            }
-
-            TextHeaderListItem keyboardHeaderItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_KEYBOARD)));
-            if (keyboardHeaderItem != null)
-            {
-                sections.Add(MainMenuProvider.Language_KeyboardHeader, keyboardHeaderItem);
-            }
-
-            TextListItem keyboardItem = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_KEYBOARD)));
-            if (keyboardItem != null)
-            {
-                keyboardItem.Clicked += (o, e) =>
-                {
-                    NavigateTo("Language.InputMethod");
-                };
-                sections.Add("Language.InputMethod", keyboardItem);
-            }
-
-            TextHeaderListItem inputAssistanceHeaderItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_INPUT_ASSISTANCE)));
-            if (inputAssistanceHeaderItem != null)
-            {
-                sections.Add(MainMenuProvider.Language_InputAssistanceHeader, inputAssistanceHeaderItem);
-            }
-
-            TextListItem autofillServiceItem = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_AUTOFILL_SERVICE)));
-            if (autofillServiceItem != null)
-            {
-                autofillServiceItem.Clicked += (o, e) =>
-                {
-                    NavigateTo("Language.AutoFill");
-                };
-                sections.Add("Language.AutoFill", autofillServiceItem);
-            }
-
-            TextHeaderListItem bodySpeechHeaderItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SPEECH)));
-            if (bodySpeechHeaderItem != null)
-            {
-                sections.Add(MainMenuProvider.Language_BodySpeech, bodySpeechHeaderItem);
-            }
-
-            TextListItem voiceControl = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_VOICE_BODY_VOICE_CONTROL_ABB2)));
-            if (voiceControl != null)
-            {
-                voiceControl.Clicked += (o, e) =>
-                {
-                    NavigateTo("Language.VoiceControl");
-                };
-                sections.Add("Language.VoiceControl", voiceControl);
-            }
-
-            TextListItem languageTTS = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_VOICE_HEADER_TEXT_TO_SPEECH_HTTS)));
-            if (languageTTS != null)
-            {
-                languageTTS.Clicked += (o, e) =>
-                {
-                    NavigateTo("Language.TTS");
-                };
-                sections.Add("Language.TTS", languageTTS);
-            }
-
-            TextListItem languageSTT = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_VOICE_HEADER_SPEECH_TO_TEXT_HSTT)));
-            if (languageSTT != null)
-            {
-                languageSTT.Clicked += (o, e) =>
-                {
-                    NavigateTo("Language.STT");
-                };
-                sections.Add("Language.STT", languageSTT);
-            }
-
-            var customization = GetCustomization().OrderBy(c => c.Order);
-            Logger.Debug($"customization: {customization.Count()}");
-            foreach (var cust in customization)
-            {
-                string visibility = cust.IsVisible ? "visible" : "hidden";
-                Logger.Verbose($"Customization: {cust.MenuPath} - {visibility} - {cust.Order}");
-                if (cust.IsVisible && sections.TryGetValue(cust.MenuPath, out View row))
-                {
-                    content.Add(row);
+                    displayLanguageItem.Clicked += (o, e) =>
+                    {
+                        NavigateTo(MainMenuProvider.Language_Display);
+                    };
+                    sections.Add(MainMenuProvider.Language_Display, displayLanguageItem);
+                    content.Add(displayLanguageItem);
                 }
-            }
+                return true;
+            });
+
+            Logger.Debug("DisplayLanguageItem Created");
+        }
+
+        private async Task CreateKeyboardHeaderItem()
+        {
+            await CoreApplication.Post(() =>
+            {
+                TextHeaderListItem keyboardHeaderItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_KEYBOARD)));
+                if (keyboardHeaderItem != null)
+                {
+                    sections.Add(MainMenuProvider.Language_KeyboardHeader, keyboardHeaderItem);
+                    content.Add(keyboardHeaderItem);
+                }
+                return true;
+            });
+
+            Logger.Debug("KeyboardHeaderItem Created");
+        }
+
+        private async Task CreateKeyboardItem()
+        {
+            await CoreApplication.Post(() =>
+            {
+                TextListItem keyboardItem = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_KEYBOARD)));
+                if (keyboardItem != null)
+                {
+                    keyboardItem.Clicked += (o, e) =>
+                    {
+                        NavigateTo("Language.InputMethod");
+                    };
+                    sections.Add("Language.InputMethod", keyboardItem);
+                    content.Add(keyboardItem);
+                }
+                return true;
+            });
+
+            Logger.Debug("KeyboardItem Created");
+        }
+
+        private async Task CreateInputAssistanceHeaderItem()
+        {
+            await CoreApplication.Post(() =>
+            {
+                TextHeaderListItem inputAssistanceHeaderItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_INPUT_ASSISTANCE)));
+                if (inputAssistanceHeaderItem != null)
+                {
+                    sections.Add(MainMenuProvider.Language_InputAssistanceHeader, inputAssistanceHeaderItem);
+                    content.Add(inputAssistanceHeaderItem);
+                }
+                return true;
+            });
+
+            Logger.Debug("InputAssistanceHeaderItem Created");
+        }
+
+        private async Task CreateAutofillServiceItem()
+        {
+            await CoreApplication.Post(() =>
+            {
+                TextListItem autofillServiceItem = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_AUTOFILL_SERVICE)));
+                if (autofillServiceItem != null)
+                {
+                    autofillServiceItem.Clicked += (o, e) =>
+                    {
+                        NavigateTo("Language.AutoFill");
+                    };
+                    sections.Add("Language.AutoFill", autofillServiceItem);
+                    content.Add(autofillServiceItem);
+                }
+                return true;
+            });
+
+            Logger.Debug("AutofillServiceItem Created");
+        }
+
+        private async Task CreateBodySpeechHeaderItem()
+        {
+            await CoreApplication.Post(() =>
+            {
+                TextHeaderListItem bodySpeechHeaderItem = new TextHeaderListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SPEECH)));
+                if (bodySpeechHeaderItem != null)
+                {
+                    sections.Add(MainMenuProvider.Language_BodySpeech, bodySpeechHeaderItem);
+                    content.Add(bodySpeechHeaderItem);
+                }
+                return true;
+            });
+
+            Logger.Debug("BodySpeechHeaderItem Created");
+        }
+
+        private async Task CreateVoiceControl()
+        {
+            await CoreApplication.Post(() =>
+            {
+                TextListItem voiceControl = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_VOICE_BODY_VOICE_CONTROL_ABB2)));
+                if (voiceControl != null)
+                {
+                    voiceControl.Clicked += (o, e) =>
+                    {
+                        NavigateTo("Language.VoiceControl");
+                    };
+                    sections.Add("Language.VoiceControl", voiceControl);
+                    content.Add(voiceControl);
+                }
+                return true;
+            });
+
+            Logger.Debug("Voice Control Created");
+        }
+
+        private async Task CreateLanguageTTS()
+        {
+            await CoreApplication.Post(() =>
+            {
+                TextListItem languageTTS = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_VOICE_HEADER_TEXT_TO_SPEECH_HTTS)));
+                if (languageTTS != null)
+                {
+                    languageTTS.Clicked += (o, e) =>
+                    {
+                        NavigateTo("Language.TTS");
+                    };
+                    sections.Add("Language.TTS", languageTTS);
+                    content.Add(languageTTS);
+                }
+                return true;
+            });
+
+            Logger.Debug("LanguageTTS Created");
+        }
+
+        private async Task CreateLanguageSTT()
+        {
+            await CoreApplication.Post(() =>
+            {
+                TextListItem languageSTT = TextListItem.CreatePrimaryTextItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_VOICE_HEADER_SPEECH_TO_TEXT_HSTT)));
+                if (languageSTT != null)
+                {
+                    languageSTT.Clicked += (o, e) =>
+                    {
+                        NavigateTo("Language.STT");
+                    };
+                    sections.Add("Language.STT", languageSTT);
+                    content.Add(languageSTT);
+                }
+                return true;
+            });
+
+            Logger.Debug("LanguageSTT Created");
+        }
+
+        private async void CreateView()
+        {
+            Logger.Debug("CreateView Starts in LanguageInputGadget");
+            sections.RemoveAllSectionsFromView(content);
+
+            await CreateDisplayLanguageItem();
+            await CreateKeyboardHeaderItem();
+            await CreateKeyboardItem();
+            await CreateInputAssistanceHeaderItem();
+            await CreateAutofillServiceItem();
+            await CreateBodySpeechHeaderItem();
+            await CreateVoiceControl();
+            await CreateLanguageTTS();
+            await CreateLanguageSTT();
+
+            Logger.Debug("View Created");
         }
 
         private void SystemSettings_LocaleLanguageChanged(object sender, LocaleLanguageChangedEventArgs e)
