@@ -1,12 +1,128 @@
 # csproj file path
 csproj_file: SettingMainGadget.csproj
 
-# files monitored for dirty/modified status
-files:
+# Default profile, Tizen API version
+profile: tizen
+api_version: "10.0"
 
-# Enable to pack as rpk
+# Build type [Debug/ Release/ Test]
+build_type: Debug
+
+# Output path for build
+output_path:
+
+# Signing profile to be used for Tizen package signing
+# If value is empty: "", active signing profile will be used
+# Else If value is ".", default signing profile will be used
+signing_profile:
 pack_as_rpk: true
 
 # List of resource files to be packed in rpk
 resources:
   - res/
+
+# files monitored for dirty/modified status
+files:
+  - .gn
+  - AboutGadget.cs
+  - About/AboutCertificateDetailsGadget.cs
+  - About/AboutDeviceStatusGadget.cs
+  - About/AboutLegalInfoGadget.cs
+  - About/AboutManageCertificatesGadget.cs
+  - About/AboutRootCertificatesGadget.cs
+  - About/AboutScalableGadget.cs
+  - About/AboutUserCertificatesGadget.cs
+  - About/Interop.CertSvc.cs
+  - About/Interop.Libraries.cs
+  - About/SettingCertificateManager.cs
+  - AppsGadget.cs
+  - Apps/AppManager.cs
+  - Apps/AppsAppInfoGadget.cs
+  - Apps/AppsDefaultGadget.cs
+  - Apps/AppsDefaultHomeGadget.cs
+  - Apps/AppsManagerGadget.cs
+  - Build/.exportmap
+  - Build/BUILD.gn
+  - Build/BUILDCONFIG.gn
+  - Build/SettingCore/BUILD.gn
+  - Build/SettingMainGadget/BUILD.gn
+  - Common/AppAttributes.cs
+  - Common/Views/IconButton.cs
+  - DateTimeGadget.cs
+  - DateTime/DateTimeManager.cs
+  - DateTime/DateTimeSetDateGadget.cs
+  - DateTime/DateTimeSetTimeGadget.cs
+  - DateTime/DateTimeSetTimezoneGadget.cs
+  - DateTime/DateTimeTimezoneManager.cs
+  - DateTime/Interop.Alarm.cs
+  - Directory.Build.targets
+  - Display/DisplayFontGadget.cs
+  - Display/DisplayFontSizeGadget.cs
+  - Display/DisplayFontTypeGadget.cs
+  - Display/DisplayGadget.cs
+  - Display/DisplayThemeGadget.cs
+  - Display/DisplayThemeManager.cs
+  - Display/DisplayTimeOutGadget.cs
+  - Display/DisplayTimeOutManager.cs
+  - LanguageInputGadget.cs
+  - LanguageInput/LanguageInputDisplayLanguageGadget.cs
+  - LanguageInput/LanguageInputDisplayLanguageManager.cs
+  - MainMenuProvider.cs
+  - SettingMainGadget.csproj
+  - SettingMainGadget.csproj.user
+  - Sound/SettingAudioManager.cs
+  - Sound/SoundGadget.cs
+  - Sound/SoundNotificationManager.cs
+  - Sound/SoundmodeGadget.cs
+  - Sound/SoundmodeManager.cs
+  - Sound/SoundnotificationGadget.cs
+  - Sound/SoundotherGadget.cs
+  - StorageGadget.cs
+  - Storage/AppsStorageGadget.cs
+  - Storage/DefaultStorageGadget.cs
+  - TextResources/Resources.Designer.cs
+  - TextResources/Resources.en-US.resx
+  - TextResources/Resources.ko-KR.resx
+  - TextResources/Resources.resx
+  - res/allowed/SettingMainGadget/about.svg
+  - res/allowed/SettingMainGadget/apps.svg
+  - res/allowed/SettingMainGadget/cross_button.png
+  - res/allowed/SettingMainGadget/datetime.svg
+  - res/allowed/SettingMainGadget/display.svg
+  - res/allowed/SettingMainGadget/fonts/ClimateCrisis-Regular.ttf
+  - res/allowed/SettingMainGadget/fonts/DancingScript-Regular.ttf
+  - res/allowed/SettingMainGadget/fonts/Sono-Regular.ttf
+  - res/allowed/SettingMainGadget/language_input.svg
+  - res/allowed/SettingMainGadget/media/Ringtones/ringtone_sdk.mp3
+  - res/allowed/SettingMainGadget/search.svg
+  - res/allowed/SettingMainGadget/sound.svg
+  - res/allowed/SettingMainGadget/sound/dt_sound_slider_icon_default.svg
+  - res/allowed/SettingMainGadget/sound/dt_sound_slider_icon_empty.svg
+  - res/allowed/SettingMainGadget/sound/dt_sound_slider_icon_max.svg
+  - res/allowed/SettingMainGadget/sound/dt_sound_slider_icon_mute.svg
+  - res/allowed/SettingMainGadget/sound/sound_slider_icon_default.svg
+  - res/allowed/SettingMainGadget/sound/sound_slider_icon_empty.svg
+  - res/allowed/SettingMainGadget/sound/sound_slider_icon_max.svg
+  - res/allowed/SettingMainGadget/sound/sound_slider_icon_mute.svg
+  - res/allowed/SettingMainGadget/storage.svg
+  - res/allowed/org.tizen.appfw.gadget.Settings/SettingMainGadget.dll
+  - res/allowed/org.tizen.appfw.gadget.Settings/en-US/SettingCore.resources.dll
+  - res/allowed/org.tizen.appfw.gadget.Settings/en-US/SettingMainGadget.resources.dll
+  - res/allowed/org.tizen.appfw.gadget.Settings/ko-KR/SettingCore.resources.dll
+  - res/allowed/org.tizen.appfw.gadget.Settings/ko-KR/SettingMainGadget.resources.dll
+  - res/allowed/org.tizen.appfw.gadget.Settings/obj/Build/pack.stamp
+  - res/allowed/org.tizen.appfw.gadget.Settings/obj/SettingCore/hash.stamp
+  - res/allowed/org.tizen.appfw.gadget.Settings/obj/SettingMainGadget/hash.stamp
+  - res/allowed/org.tizen.appfw.gadget.Settings/projects/SettingMainGadget/res/allowed/org.tizen.appfw.gadget.Settings/SettingMainGadget.dll
+  - res/allowed/org.tizen.appfw.gadget.Settings/projects/SettingMainGadget/res/allowed/org.tizen.appfw.gadget.Settings/en-US/SettingCore.resources.dll
+  - res/allowed/org.tizen.appfw.gadget.Settings/projects/SettingMainGadget/res/allowed/org.tizen.appfw.gadget.Settings/en-US/SettingMainGadget.resources.dll
+  - res/allowed/org.tizen.appfw.gadget.Settings/projects/SettingMainGadget/res/allowed/org.tizen.appfw.gadget.Settings/ko-KR/SettingCore.resources.dll
+  - res/allowed/org.tizen.appfw.gadget.Settings/projects/SettingMainGadget/res/allowed/org.tizen.appfw.gadget.Settings/ko-KR/SettingMainGadget.resources.dll
+  - res/allowed/org.tizen.appfw.gadget.Settings/projects/SettingMainGadget/res/allowed/org.tizen.appfw.gadget.Settings/obj/Build/pack.stamp
+  - res/allowed/org.tizen.appfw.gadget.Settings/projects/SettingMainGadget/res/allowed/org.tizen.appfw.gadget.Settings/obj/SettingCore/hash.stamp
+  - res/allowed/org.tizen.appfw.gadget.Settings/projects/SettingMainGadget/res/allowed/org.tizen.appfw.gadget.Settings/obj/SettingMainGadget/hash.stamp
+  - tizen-manifest.xml
+
+# project dependencies
+deps:
+  - ../../SettingCore
