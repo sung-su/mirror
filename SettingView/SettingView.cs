@@ -16,6 +16,7 @@
 
 using SettingCore;
 using SettingCore.Views;
+using SettingView.Common;
 using SettingView.Core;
 using SettingView.TextResources;
 using System;
@@ -34,6 +35,7 @@ namespace SettingView
     {
         private static SettingViewBorder appCustomBorder;
         private static CustomPage page;
+        private static Window window;
         private static Task rowsCreated;
         private static bool noMainMenus;
         private static bool noVisibleMainMenus;
@@ -41,7 +43,7 @@ namespace SettingView
         private static List<MainMenuItem> mainMenuItems = new List<MainMenuItem>();
         private static Task itemsLoaded;
         private static Task contentLoaded;
-        private bool isLightTheme => ThemeManager.PlatformThemeId == "org.tizen.default-light-theme";
+        private bool isFirstResumed = false;
 
         public Program(Size2D windowSize, Position2D windowPosition, ThemeOptions themeOptions, IBorderInterface borderInterface)
             : base(windowSize, windowPosition, themeOptions, borderInterface)
@@ -111,37 +113,49 @@ namespace SettingView
             Logger.Debug("OnCreate start");
             base.OnCreate();
 
+            window = GetDefaultWindow();
+
+            var navigator = new SettingNavigation();
+            window.Remove(window.GetDefaultNavigator());
+            window.SetDefaultNavigator(navigator);
+
             page = new CustomPage()
             {
-                BackgroundColor = isLightTheme ? new Color("#FAFAFA") : new Color("#16131A"),
+                BackgroundColor = AppConstants.BackgroundColor,
             };
+            // Navigator().Push() disables border's accessibility. So, using Navigator().Add()
+            window.GetDefaultNavigator().Add(page);
+            window.Hide();
 
             contentLoaded = CreateTitleAndScroll();
             rowsCreated = CreateContentRows();
-
-            _ = CheckCustomization();
-
-            var navigator = new SettingNavigation();
-
-            GetDefaultWindow().Remove(GetDefaultWindow().GetDefaultNavigator());
-            GetDefaultWindow().SetDefaultNavigator(navigator);
-
-            // Navigator().Push() disables border's accessibility.
-            // Using Navigator().Add()
-            GetDefaultWindow().GetDefaultNavigator().Add(page);
-
-            RegisterEvents();
-
-            GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.Portrait);
-            GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.Landscape);
-            GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.PortraitInverse);
-            GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.LandscapeInverse);
-            WindowManager.UpdateWindowPositionSize();
             appCustomBorder.UpdateMinSize(GetScreenSize());
-
-            GetDefaultWindow().Hide();
+            WindowManager.UpdateWindowPositionSize();
 
             Logger.Debug("OnCreate end");
+        }
+
+        protected override void OnResume()
+        {
+            Logger.Debug("OnResume");
+            base.OnResume();
+
+            if (!isFirstResumed)
+            {
+                isFirstResumed = true;
+
+                RegisterEvents();
+                _ = CheckCustomization();
+
+                List<Window.WindowOrientation> list = new List<Window.WindowOrientation>
+                {
+                    Window.WindowOrientation.Portrait,
+                    Window.WindowOrientation.Landscape,
+                    Window.WindowOrientation.PortraitInverse,
+                    Window.WindowOrientation.LandscapeInverse,
+                };
+                window.SetAvailableOrientations(list);
+            }
         }
 
         private void WindowModeChanged(object ob, bool fullScreenMode)
@@ -222,7 +236,7 @@ namespace SettingView
             ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
             GadgetManager.Instance.CustomizationChanged += CustomizationChanged;
             GadgetNavigation.OnWindowModeChanged += WindowModeChanged;
-            GetDefaultWindow().OrientationChanged += OnWindowOrientationChangedEvent;
+            window.OrientationChanged += OnWindowOrientationChangedEvent;
         }
 
         private void UnregisterEvents()
@@ -231,7 +245,7 @@ namespace SettingView
             ThemeManager.ThemeChanged -= ThemeManager_ThemeChanged;
             GadgetManager.Instance.CustomizationChanged -= CustomizationChanged;
             GadgetNavigation.OnWindowModeChanged -= WindowModeChanged;
-            GetDefaultWindow().OrientationChanged -= OnWindowOrientationChangedEvent;
+            window.OrientationChanged -= OnWindowOrientationChangedEvent;
         }
 
         protected override void OnTerminate()
@@ -302,7 +316,7 @@ namespace SettingView
         {
             if (page != null && e.IsPlatformThemeChanged)
             {
-                page.BackgroundColor = isLightTheme ? new Color("#FAFAFA") : new Color("#16131A");
+                page.BackgroundColor = AppConstants.BackgroundColor;
                 SetScrollbar();
                 UpdateContent();
             }
@@ -347,7 +361,6 @@ namespace SettingView
 
                 return Task.CompletedTask;
             });
-
         }
 
         private static async Task CreateContentRows()
@@ -389,7 +402,7 @@ namespace SettingView
                         page.Content.Add(row);
                         if (count == (mainMenuInfos.Count >> 1))
                         {
-                            GetDefaultWindow().Show();
+                            window.Show();
                         }
                         return true;
                     });
@@ -409,7 +422,7 @@ namespace SettingView
         private void SetScrollbar()
         {
             var scrollbarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.Scrollbar") as ScrollbarStyle;
-            scrollbarStyle.ThumbColor = isLightTheme ? new Color("#FFFEFE") : new Color("#1D1A21");
+            scrollbarStyle.ThumbColor = AppConstants.ThumbColor;
             scrollbarStyle.TrackPadding = 8;
             page.Content.Scrollbar = new Scrollbar(scrollbarStyle);
 
@@ -419,7 +432,7 @@ namespace SettingView
             if (thumb != null)
             {
                 thumb.CornerRadius = 4;
-                thumb.BoxShadow = isLightTheme ? new Shadow(8.0f, new Color(0.0f, 0.0f, 0.0f, 0.16f), new Vector2(0.0f, 2.0f)) : new Shadow(8.0f, new Color("#FFFFFF29"), new Vector2(0.0f, 1.0f));
+                thumb.BoxShadow = AppConstants.ThumbBoxShadow;
             }
         }
 

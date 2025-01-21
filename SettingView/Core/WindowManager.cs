@@ -27,7 +27,7 @@ namespace SettingView.Core
 
         static WindowManager()
         {
-            window = Window.Instance;
+            window = NUIApplication.GetDefaultWindow();
         }
 
         public static void UpdateWindowPositionSize()
