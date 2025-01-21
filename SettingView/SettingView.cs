@@ -67,7 +67,6 @@ namespace SettingView
 
         private Task CreateTitleAndScroll()
         {
-            Logger.Performance($"CreateTitleAndScroll start");
             return Task.Run(async () =>
             {
                 await CoreApplication.Post(() =>
@@ -83,10 +82,6 @@ namespace SettingView
                     };
 
                     page.Add(page.Title);
-                    page.Title.Relayout += (s, e) =>
-                    {
-                        Logger.Performance($"CreateTitleAndScroll label");
-                    };
 
                     page.Content = new ScrollableBase()
                     {
@@ -103,36 +98,23 @@ namespace SettingView
                     SetScrollbar();
 
                     page.Add(page.Content);
-                    page.Content.Relayout += (s, e) =>
-                    {
-                        Logger.Performance($"CreateTitleAndScroll scroll");
-                    };
+
+                    Logger.Debug("Title and scroller added");
+
                     return true;
                 });
             });
-
-
         }
 
         protected override void OnCreate()
         {
-            Logger.Performance($"ONCREATE start");
-
+            Logger.Debug("OnCreate start");
             base.OnCreate();
-
-            Logger.Performance($"ONCREATE base");
 
             page = new CustomPage()
             {
                 BackgroundColor = isLightTheme ? new Color("#FAFAFA") : new Color("#16131A"),
             };
-
-            page.Relayout += (s, e) =>
-            {
-                Logger.Performance($"Page relayout");
-            };
-
-            Logger.Performance($"ONCREATE main page");
 
             contentLoaded = CreateTitleAndScroll();
             rowsCreated = CreateContentRows();
@@ -156,9 +138,10 @@ namespace SettingView
             GetDefaultWindow().AddAvailableOrientation(Window.WindowOrientation.LandscapeInverse);
             WindowManager.UpdateWindowPositionSize();
             appCustomBorder.UpdateMinSize(GetScreenSize());
-            LogScalableInfoAsync();
+
             GetDefaultWindow().Hide();
-            Logger.Performance($"ONCREATE end");
+
+            Logger.Debug("OnCreate end");
         }
 
         private void WindowModeChanged(object ob, bool fullScreenMode)
@@ -231,28 +214,6 @@ namespace SettingView
         {
             Window.WindowOrientation orientation = e.WindowOrientation;
             Logger.Debug($"OnWindowOrientationChangedEvent() called!, orientation:{orientation}");
-        }
-
-        private static Task LogScalableInfoAsync()
-        {
-            return Task.Run(() =>
-            {
-                var scalable = new string[]
-                {
-                    $"ScalingFactor = {GraphicsTypeManager.Instance.ScalingFactor}",
-                    $"Dpi = {GraphicsTypeManager.Instance.Dpi}",
-                    $"ScaledDpi = {GraphicsTypeManager.Instance.ScaledDpi}",
-                    $"BaselineDpi = {GraphicsTypeManager.Instance.BaselineDpi}",
-                    $"Density = {GraphicsTypeManager.Instance.Density}",
-                    $"ScaledDensity = {GraphicsTypeManager.Instance.ScaledDensity}",
-                    $"100dp => {GraphicsTypeManager.Instance.ConvertScriptToPixel("100dp")}px",
-                    $"100sp => {GraphicsTypeManager.Instance.ConvertScriptToPixel("100sp")}px",
-                };
-                foreach (var s in scalable)
-                {
-                    Logger.Debug($"Scalable Info: {s}");
-                }
-            });
         }
 
         private void RegisterEvents()
@@ -354,7 +315,7 @@ namespace SettingView
                 noMainMenus = false;
                 noVisibleMainMenus = false;
                 mainMenuInfos = MainMenuInfo.CacheMenu;
-                if(mainMenuInfos.Count == 0 || customizationChanged)
+                if (mainMenuInfos.Count == 0 || customizationChanged)
                 {
                     var mainMenus = GadgetManager.Instance.GetMainWithCurrentOrder();
                     if (!mainMenus.Any())
@@ -379,6 +340,11 @@ namespace SettingView
                         }
                     }
                 }
+                else
+                {
+                    Logger.Debug("Loaded Main Menu from cache");
+                }
+
                 return Task.CompletedTask;
             });
 
@@ -424,7 +390,6 @@ namespace SettingView
                         if (count == (mainMenuInfos.Count >> 1))
                         {
                             GetDefaultWindow().Show();
-                            Logger.Performance("Half of the gadgets are shown");
                         }
                         return true;
                     });
@@ -491,7 +456,6 @@ namespace SettingView
 
         static void Main(string[] args)
         {
-            Logger.Performance($"MAIN start");
             appCustomBorder = new SettingViewBorder();
             var app = new Program(new Size(10, 10), new Position2D(0, 0), ThemeOptions.PlatformThemeEnabled, appCustomBorder);
 
