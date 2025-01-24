@@ -11,7 +11,7 @@ namespace SettingCore
 
         public event EventHandler<CustomizationChangedEventArgs> CustomizationChanged;
 
-        private IEnumerable<SettingGadgetInfo> installedGadgets = new SettingGadgetInfo[0];
+        private IEnumerable<SettingGadgetInfo> installedGadgets = Array.Empty<SettingGadgetInfo>();
 
         public bool Init()
         {
@@ -211,6 +211,11 @@ namespace SettingCore
 
         internal SettingGadgetInfo GetGadgetInfoFromPath(string menuPath)
         {
+            if (installedGadgets == null || !installedGadgets.Any())
+            {
+                return null;
+            }
+
             var menus = installedGadgets.Where(x => x.Path.Equals(menuPath, StringComparison.InvariantCultureIgnoreCase));
             if (menus.Count() == 1)
             {

@@ -27,7 +27,8 @@ namespace SettingCore
 
         static GadgetNavigation()
         {
-            SystemSettings.LocaleLanguageChanged += (object sender, LocaleLanguageChangedEventArgs e) => {
+            SystemSettings.LocaleLanguageChanged += (object sender, LocaleLanguageChangedEventArgs e) =>
+            {
                 foreach (var pair in gadgetPages)
                 {
                     if (pair.Key is ContentPage page)
@@ -85,98 +86,82 @@ namespace SettingCore
 
         public static void NavigateTo(string menuPath)
         {
-            try
+            if (string.IsNullOrEmpty(menuPath))
             {
-                semaphore.Wait();
+                return;
+            }
+            semaphore.Wait();
 
-                var info = GadgetManager.Instance.GetGadgetInfoFromPath(menuPath);
-                if (info == null)
+            var info = GadgetManager.Instance.GetGadgetInfoFromPath(menuPath);
+            if (info == null)
+            {
+                Logger.Warn($"could not find gadget for menupath: {menuPath}");
+                semaphore.Release();
+                return;
+            }
+
+            var gadget = NUIGadgetManager.Add(info.Pkg.ResourceType, info.ClassName) as MenuGadget;
+            var content = gadget.MainView;
+
+            if (info.IsFullScreenMode)
+            {
+                Logger.Debug("Gadget full screen mode enabled.");
+                SetFullScreenMode(true);
+                var contentPage = new ContentPage
                 {
-                    Logger.Warn($"could not find gadget for menupath: {menuPath}");
-                    semaphore.Release();
-                    return;
-                }
-
-                var gadget = NUIGadgetManager.Add(info.Pkg.ResourceType, info.ClassName) as MenuGadget;
-                var title = gadget.ProvideTitle();
-                var content = gadget.MainView;
-
-                if (info.IsFullScreenMode)
-                {
-                    SetFullScreenMode(true);
-
-                    var contentPage = new ContentPage
-                    {
-                        CornerRadius = 0.SpToPx(),
-                        Content = content,
-                        ThemeChangeSensitive = true,
-                    };
-
-                    try
-                    {
-                        AddGadgetView(contentPage, gadget);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Warn($"{ex.Message}");
-                    }
-
-                    gadgetPages.Add(contentPage, gadget);
-                    semaphore.Release();
-                    return;
-                }
-
-                // TODO: remove style customization with scalable unit, when merged to TizenFX
-                var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar") as AppBarStyle;
-                appBarStyle.TitleTextLabel.PixelSize = 24f.SpToPx();
-
-                var backButton = new BackButton();
-                backButton.Margin = new Extents(0, 8, 0, 0).SpToPx();
-                backButton.Clicked += (s, e) => NavigateBack();
-                backButton.AccessibilityActivated += (s, e) => NavigateBack();
-
-                var moreItems = new List<View>();
-
-                var moreActions = gadget.ProvideMoreActions();
-                if (moreActions != null)
-                {
-                    moreItems.AddRange(moreActions);
-                }
-
-                var moreButton = GetMoreButton(gadget.ProvideMoreMenu());
-                if (moreButton != null)
-                {
-                    moreItems.Add(moreButton);
-                }
-
-                var page = new BaseContentPage
-                {
-                    // TODO: CornerRadius depends on SettingViewBorder.CornerRadius - SettingViewBorder.BorderLineThickness, which is defined at SettingView project.
-                    CornerRadius = (26.0f - 6.0f).SpToPx(),
-                    ClippingMode = ClippingModeType.ClipChildren,
-                    AppBar = new AppBar(appBarStyle)
-                    {
-                        Size = new Size(-1, 64).SpToPx(),
-                        Title = title,
-                        NavigationContent = backButton,
-                        ThemeChangeSensitive = true,
-                        Actions = moreItems,
-                    },
+                    CornerRadius = 0.SpToPx(),
                     Content = content,
                     ThemeChangeSensitive = true,
                 };
-
-                AddGadgetView(page, gadget);
-                gadgetPages.Add(page, gadget);
-            }
-            catch (Exception e)
-            {
-                Logger.Error($"could not create gadget for menu path: {menuPath} => {e}");
-            }
-            finally
-            {
+                AddGadgetView(contentPage, gadget);
+                gadgetPages.Add(contentPage, gadget);
                 semaphore.Release();
+                return;
             }
+
+            // TODO: remove style customization with scalable unit, when merged to TizenFX
+            var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar") as AppBarStyle;
+            appBarStyle.TitleTextLabel.PixelSize = 24f.SpToPx();
+
+            var backButton = new BackButton();
+            backButton.Margin = new Extents(0, 8, 0, 0).SpToPx();
+            backButton.Clicked += (s, e) => NavigateBack();
+            backButton.AccessibilityActivated += (s, e) => NavigateBack();
+
+            var moreItems = new List<View>();
+
+            var moreActions = gadget.ProvideMoreActions();
+            if (moreActions != null)
+            {
+                moreItems.AddRange(moreActions);
+            }
+
+            var moreButton = GetMoreButton(gadget.ProvideMoreMenu());
+            if (moreButton != null)
+            {
+                moreItems.Add(moreButton);
+            }
+
+            var page = new BaseContentPage
+            {
+                // TODO: CornerRadius depends on SettingViewBorder.CornerRadius - SettingViewBorder.BorderLineThickness, which is defined at SettingView project.
+                CornerRadius = (26.0f - 6.0f).SpToPx(),
+                ClippingMode = ClippingModeType.ClipChildren,
+                AppBar = new AppBar(appBarStyle)
+                {
+                    Size = new Size(-1, 64).SpToPx(),
+                    Title = gadget.ProvideTitle(),
+                    NavigationContent = backButton,
+                    ThemeChangeSensitive = true,
+                    Actions = moreItems,
+                },
+                Content = content,
+                ThemeChangeSensitive = true,
+            };
+            Logger.Debug("Gadget page loading..");
+            AddGadgetView(page, gadget);
+            gadgetPages.Add(page, gadget);
+            semaphore.Release();
         }
 
         public static void AddGadgetView(View newView, MenuGadget gadget)
