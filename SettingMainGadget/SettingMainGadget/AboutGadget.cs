@@ -193,13 +193,6 @@ namespace Setting.Menu
                 content.Add(resolution);
             });
 
-            sections.Add(MainMenuProvider.About_Resolution, () =>
-            {
-                var screenSize = NUIApplication.GetScreenSize();
-                var resolution = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_RESOLUTION)), $"{screenSize.Width} x {screenSize.Height}");
-                content.Add(resolution);
-            });
-
             if (IsEmulBin() == false)
             {
                 sections.Add(MainMenuProvider.About_DeviceStatus, () =>
@@ -212,13 +205,6 @@ namespace Setting.Menu
                     content.Add(showOther);
                 });
             }
-
-            sections.Add(MainMenuProvider.About_Resolution, () =>
-            {
-                var screenSize = NUIApplication.GetScreenSize();
-                var resolution = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_RESOLUTION)), $"{screenSize.Width} x {screenSize.Height}");
-                content.Add(resolution);
-            });
 
             CreateItems();
         }
