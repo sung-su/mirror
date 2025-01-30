@@ -42,7 +42,6 @@ namespace SettingView
         private static List<MainMenuInfo> mainMenuInfos;
         private static List<MainMenuItem> mainMenuItems = new List<MainMenuItem>();
         private static Task itemsLoaded;
-        private static Task contentLoaded;
         private static bool isFirstResumed = false;
 
         public Program() : base(new Size2D(1, 1), new Position2D(0, 0), ThemeOptions.PlatformThemeEnabled, new SettingViewBorder())
@@ -65,45 +64,37 @@ namespace SettingView
             base.OnPreCreate();
         }
 
-        private Task CreateTitleAndScroll()
+        private void CreateTitleAndScroll()
         {
-            return Task.Run(async () =>
+            page.Title = new TextLabel()
             {
-                await CoreApplication.Post(() =>
+                Size = new Size(-1, 64).SpToPx(),
+                Margin = new Extents(16, 0, 0, 0).SpToPx(),
+                Text = Resources.IDS_ST_OPT_SETTINGS,
+                VerticalAlignment = VerticalAlignment.Center,
+                PixelSize = 24.SpToPx(),
+                ThemeChangeSensitive = true,
+            };
+
+            page.Add(page.Title);
+
+            page.Content = new ScrollableBase()
+            {
+                WidthSpecification = LayoutParamPolicies.MatchParent,
+                HeightSpecification = LayoutParamPolicies.MatchParent,
+                ScrollingDirection = ScrollableBase.Direction.Vertical,
+                HideScrollbar = false,
+                Layout = new LinearLayout()
                 {
-                    page.Title = new TextLabel()
-                    {
-                        Size = new Size(-1, 64).SpToPx(),
-                        Margin = new Extents(16, 0, 0, 0).SpToPx(),
-                        Text = Resources.IDS_ST_OPT_SETTINGS,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        PixelSize = 24.SpToPx(),
-                        ThemeChangeSensitive = true,
-                    };
+                    LinearOrientation = LinearLayout.Orientation.Vertical,
+                },
+            };
 
-                    page.Add(page.Title);
+            SetScrollbar();
 
-                    page.Content = new ScrollableBase()
-                    {
-                        WidthSpecification = LayoutParamPolicies.MatchParent,
-                        HeightSpecification = LayoutParamPolicies.MatchParent,
-                        ScrollingDirection = ScrollableBase.Direction.Vertical,
-                        HideScrollbar = false,
-                        Layout = new LinearLayout()
-                        {
-                            LinearOrientation = LinearLayout.Orientation.Vertical,
-                        },
-                    };
+            page.Add(page.Content);
 
-                    SetScrollbar();
-
-                    page.Add(page.Content);
-
-                    Logger.Debug("Title and scroller added");
-
-                    return true;
-                });
-            });
+            Logger.Debug("Title and scroller added");
         }
 
         protected override void OnCreate()
@@ -123,9 +114,8 @@ namespace SettingView
             };
             // Navigator().Push() disables border's accessibility. So, using Navigator().Add()
             window.GetDefaultNavigator().Add(page);
-            window.Hide();
 
-            contentLoaded = CreateTitleAndScroll();
+            CreateTitleAndScroll();
             rowsCreated = CreateContentRows();
             WindowManager.UpdateWindowPositionSize();
 
@@ -362,7 +352,7 @@ namespace SettingView
 
         private static async Task CreateContentRows()
         {
-            await Task.WhenAll(new Task[] { itemsLoaded, contentLoaded });
+            await Task.WhenAll(new Task[] { itemsLoaded});
             await Task.Run(async () =>
             {
                 if (noMainMenus)
@@ -397,10 +387,6 @@ namespace SettingView
                         var row = new MainMenuItem(menu.IconPath, new Color(menu.IconColorHex), menu.Title, menu.Path);
                         mainMenuItems.Add(row);
                         page.Content.Add(row);
-                        if (count == (mainMenuInfos.Count >> 1))
-                        {
-                            window.Show();
-                        }
                         return true;
                     });
                 }
