@@ -43,10 +43,9 @@ namespace SettingView
         private static List<MainMenuItem> mainMenuItems = new List<MainMenuItem>();
         private static Task itemsLoaded;
         private static Task contentLoaded;
-        private bool isFirstResumed = false;
+        private static bool isFirstResumed = false;
 
-        public Program(Size2D windowSize, Position2D windowPosition, ThemeOptions themeOptions, IBorderInterface borderInterface)
-            : base(windowSize, windowPosition, themeOptions, borderInterface)
+        public Program() : base(new Size2D(1, 1), new Position2D(0, 0), ThemeOptions.PlatformThemeEnabled, new SettingViewBorder())
         {
         }
 
@@ -54,7 +53,6 @@ namespace SettingView
         {
             return Task.Run(() =>
             {
-                // initialize ResourcesManager instance
                 var title = Resources.IDS_ST_OPT_SETTINGS;
                 return true;
             });
@@ -129,7 +127,6 @@ namespace SettingView
 
             contentLoaded = CreateTitleAndScroll();
             rowsCreated = CreateContentRows();
-            appCustomBorder.UpdateMinSize(GetScreenSize());
             WindowManager.UpdateWindowPositionSize();
 
             Logger.Debug("OnCreate end");
@@ -469,9 +466,7 @@ namespace SettingView
 
         static void Main(string[] args)
         {
-            appCustomBorder = new SettingViewBorder();
-            var app = new Program(new Size(10, 10), new Position2D(0, 0), ThemeOptions.PlatformThemeEnabled, appCustomBorder);
-
+            Program app = new Program();
             app.Run(args);
         }
     }
