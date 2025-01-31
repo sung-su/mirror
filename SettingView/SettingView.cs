@@ -44,7 +44,7 @@ namespace SettingView
         private static Task itemsLoaded;
         private static bool isFirstResumed = false;
 
-        public Program() : base(new Size2D(1, 1), new Position2D(0, 0), ThemeOptions.PlatformThemeEnabled, new SettingViewBorder())
+        public Program() : base(new Size2D(1, 1), new Position2D(0, 0), ThemeOptions.PlatformThemeEnabled, appCustomBorder)
         {
         }
 
@@ -453,6 +453,7 @@ namespace SettingView
 
         static void Main(string[] args)
         {
+            appCustomBorder = new SettingViewBorder();
             Program app = new Program();
             app.Run(args);
         }
