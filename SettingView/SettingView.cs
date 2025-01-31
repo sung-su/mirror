@@ -288,6 +288,7 @@ namespace SettingView
                     GadgetManager.Instance.ChangeMenuPathOrder(menupath, orderValue);
                 }
             }
+            Logger.Debug("End");
         }
 
         private void SystemSettings_LocaleLanguageChanged(object sender, Tizen.System.LocaleLanguageChangedEventArgs e)

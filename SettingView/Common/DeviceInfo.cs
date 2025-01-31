@@ -31,13 +31,13 @@ namespace SettingView.Common
             width = (int)displaySize.Width;
             height = (int)displaySize.Height;
 
-            orientation = Window.Instance.GetCurrentOrientation();
+            orientation = NUIApplication.GetDefaultWindow().GetCurrentOrientation();
             IsPortrait = orientation == Window.WindowOrientation.Portrait || orientation == Window.WindowOrientation.PortraitInverse;
         }
 
         public static void UpdateDeviceInfo()
         {
-            Window.WindowOrientation currentOrientation = Window.Instance.GetCurrentOrientation();
+            Window.WindowOrientation currentOrientation = NUIApplication.GetDefaultWindow().GetCurrentOrientation();
             if (orientation == Window.WindowOrientation.Portrait || orientation == Window.WindowOrientation.PortraitInverse)
             {
                 if(currentOrientation == Window.WindowOrientation.Landscape || currentOrientation == Window.WindowOrientation.LandscapeInverse)
