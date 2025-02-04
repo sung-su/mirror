@@ -3,8 +3,6 @@ using Tizen.NUI.Components;
 using Tizen.NUI;
 using Tizen.System;
 using Tizen.NUI.BaseComponents;
-using System.Linq;
-using System.Threading;
 using SettingCore.Views;
 using System;
 
@@ -18,8 +16,6 @@ namespace SettingCore
         private static Dictionary<Page, MenuGadget> gadgetPages = new Dictionary<Page, MenuGadget>();
 
         public static event EventHandler<bool> OnWindowModeChanged;
-
-        private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
 
         private static Stack<View> gadgetViews = new Stack<View>();
 
@@ -90,13 +86,11 @@ namespace SettingCore
             {
                 return;
             }
-            semaphore.Wait();
 
             var info = GadgetManager.Instance.GetGadgetInfoFromPath(menuPath);
             if (info == null)
             {
                 Logger.Warn($"could not find gadget for menupath: {menuPath}");
-                semaphore.Release();
                 return;
             }
 
@@ -115,7 +109,6 @@ namespace SettingCore
                 };
                 AddGadgetView(contentPage, gadget);
                 gadgetPages.Add(contentPage, gadget);
-                semaphore.Release();
                 return;
             }
 
@@ -161,7 +154,6 @@ namespace SettingCore
             Logger.Debug("Gadget page loading..");
             AddGadgetView(page, gadget);
             gadgetPages.Add(page, gadget);
-            semaphore.Release();
         }
 
         public static void AddGadgetView(View newView, MenuGadget gadget)
