@@ -48,18 +48,8 @@ namespace SettingView
         {
         }
 
-        private Task InitResourcesManager()
-        {
-            return Task.Run(() =>
-            {
-                var title = Resources.IDS_ST_OPT_SETTINGS;
-                return true;
-            });
-        }
-
         protected override void OnPreCreate()
         {
-            _ = InitResourcesManager();
             itemsLoaded = LoadMainMenuItems();
             base.OnPreCreate();
         }
@@ -116,7 +106,6 @@ namespace SettingView
             window.GetDefaultNavigator().Add(page);
 
             CreateTitleAndScroll();
-            rowsCreated = CreateContentRows();
             WindowManager.UpdateWindowPositionSize();
 
             Logger.Debug("OnCreate end");
@@ -130,6 +119,7 @@ namespace SettingView
             if (!isFirstResumed)
             {
                 isFirstResumed = true;
+                rowsCreated = CreateContentRows();
 
                 RegisterEvents();
                 _ = CheckCustomization();
@@ -353,7 +343,7 @@ namespace SettingView
 
         private static async Task CreateContentRows()
         {
-            await Task.WhenAll(new Task[] { itemsLoaded});
+            await itemsLoaded;
             await Task.Run(async () =>
             {
                 if (noMainMenus)
