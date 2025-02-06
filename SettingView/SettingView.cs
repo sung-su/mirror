@@ -36,12 +36,12 @@ namespace SettingView
         private static SettingViewBorder appCustomBorder;
         private static CustomPage page;
         private static Window window;
-        private static Task rowsCreated;
         private static bool noMainMenus;
         private static bool noVisibleMainMenus;
         private static List<MainMenuInfo> mainMenuInfos;
         private static List<MainMenuItem> mainMenuItems = new List<MainMenuItem>();
         private static Task itemsLoaded;
+        private static Task rowsCreated;
         private static bool isFirstResumed = false;
 
         public Program() : base(new Size2D(1, 1), new Position2D(0, 0), ThemeOptions.PlatformThemeEnabled, appCustomBorder)
@@ -369,18 +369,18 @@ namespace SettingView
 
                     return;
                 }
-                int count = 0;
-                foreach (var menu in mainMenuInfos)
+
+                await Post(() =>
                 {
-                    count++;
-                    await Post(() =>
+                    foreach (var menu in mainMenuInfos)
                     {
                         var row = new MainMenuItem(menu.IconPath, new Color(menu.IconColorHex), menu.Title, menu.Path);
                         mainMenuItems.Add(row);
                         page.Content.Add(row);
-                        return true;
-                    });
-                }
+                    }
+                    return true;
+                });
+
                 MainMenuInfo.UpdateCache(mainMenuInfos);
             });
         }
