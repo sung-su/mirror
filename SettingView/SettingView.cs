@@ -14,77 +14,37 @@
  *  limitations under the License
  */
 
-using SettingCore;
-using SettingCore.Views;
-using SettingView.Common;
-using SettingView.Core;
-using SettingView.TextResources;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using Tizen.Applications;
 using Tizen.NUI;
-using Tizen.NUI.BaseComponents;
-using Tizen.NUI.Components;
-using Tizen.System;
+using SettingCore;
+using SettingView.Core;
+using SettingView.Views;
+using System.Globalization;
+using System.Threading.Tasks;
 
 namespace SettingView
 {
     public class Program : NUIApplication
     {
         private static SettingViewBorder appCustomBorder;
-        private static CustomPage page;
         private static Window window;
-        private static bool noMainMenus;
-        private static bool noVisibleMainMenus;
-        private static List<MainMenuInfo> mainMenuInfos;
-        private static List<MainMenuItem> mainMenuItems = new List<MainMenuItem>();
-        private static Task itemsLoaded;
-        private static Task rowsCreated;
-        private static bool isFirstResumed = false;
+
+        private ViewManager viewManager;
+        private bool resumedBefore;
+        private static Task initTask;
 
         public Program() : base(new Size2D(1, 1), new Position2D(0, 0), ThemeOptions.PlatformThemeEnabled, appCustomBorder)
         {
+            resumedBefore = false;
         }
 
         protected override void OnPreCreate()
         {
-            itemsLoaded = LoadMainMenuItems();
             base.OnPreCreate();
-        }
-
-        private void CreateTitleAndScroll()
-        {
-            page.Title = new TextLabel()
-            {
-                Size = new Size(-1, 64).SpToPx(),
-                Margin = new Extents(16, 0, 0, 0).SpToPx(),
-                Text = Resources.IDS_ST_OPT_SETTINGS,
-                VerticalAlignment = VerticalAlignment.Center,
-                PixelSize = 24.SpToPx(),
-                ThemeChangeSensitive = true,
-            };
-
-            page.Add(page.Title);
-
-            page.Content = new ScrollableBase()
-            {
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                HeightSpecification = LayoutParamPolicies.MatchParent,
-                ScrollingDirection = ScrollableBase.Direction.Vertical,
-                HideScrollbar = false,
-                Layout = new LinearLayout()
-                {
-                    LinearOrientation = LinearLayout.Orientation.Vertical,
-                },
-            };
-
-            SetScrollbar();
-
-            page.Add(page.Content);
-
-            Logger.Debug("Title and scroller added");
+            initTask = Init();
         }
 
         protected override void OnCreate()
@@ -94,19 +54,12 @@ namespace SettingView
 
             window = GetDefaultWindow();
 
-            var navigator = new SettingNavigation();
-            window.Remove(window.GetDefaultNavigator());
-            window.SetDefaultNavigator(navigator);
-
-            page = new CustomPage()
+            Post(async () =>
             {
-                BackgroundColor = AppConstants.BackgroundColor,
-            };
-            // Navigator().Push() disables border's accessibility. So, using Navigator().Add()
-            window.GetDefaultNavigator().Add(page);
-
-            CreateTitleAndScroll();
-            WindowManager.UpdateWindowPositionSize();
+                await initTask;
+                viewManager.SetupView();
+                WindowManager.UpdateWindowPositionSize();
+            });
 
             Logger.Debug("OnCreate end");
         }
@@ -116,13 +69,13 @@ namespace SettingView
             Logger.Debug("OnResume");
             base.OnResume();
 
-            if (!isFirstResumed)
+            if (!resumedBefore)
             {
-                isFirstResumed = true;
-                rowsCreated = CreateContentRows();
+                resumedBefore = true;
 
-                RegisterEvents();
-                _ = CheckCustomization();
+                viewManager.UpdateViewModel();
+
+                GadgetManager.Instance.Init();
 
                 List<Window.WindowOrientation> list = new List<Window.WindowOrientation>
                 {
@@ -132,119 +85,8 @@ namespace SettingView
                     Window.WindowOrientation.LandscapeInverse,
                 };
                 window.SetAvailableOrientations(list);
-            }
-        }
 
-        private void WindowModeChanged(object ob, bool fullScreenMode)
-        {
-            if (fullScreenMode)
-            {
-                if (appCustomBorder.BorderWindow is null || appCustomBorder.BorderWindow.IsMaximized())
-                {
-                    return;
-                }
-
-                appCustomBorder.OverlayMode = true;
-                appCustomBorder.BorderWindow.Maximize(true);
-            }
-            else
-            {
-                if (appCustomBorder.BorderWindow is null || appCustomBorder.BorderWindow.IsMinimized())
-                {
-                    return;
-                }
-
-                appCustomBorder.BorderWindow.Maximize(false);
-            }
-        }
-
-        private async Task CheckCustomization()
-        {
-            await rowsCreated;
-            await Task.Run(async () =>
-            {
-                GadgetManager.Instance.Init();
-
-                var customizationMainMenus = GadgetManager.Instance.GetMainWithCurrentOrder();
-
-                var customizationMainMenusStr = customizationMainMenus.Where(i => i.IsVisible).Select(x => new string(x.Path));
-                var cacheMainMenuStr = MainMenuInfo.CacheMenu.Select(x => new string(x.Path));
-                var notCachedGadgets = customizationMainMenusStr.Except(cacheMainMenuStr);
-                var removedGedgets = cacheMainMenuStr.Except(customizationMainMenusStr);
-
-                if (!customizationMainMenusStr.SequenceEqual(cacheMainMenuStr))
-                {
-                    var newMainMenus = new List<SettingGadgetInfo>();
-
-                    if (notCachedGadgets.Count() > 0)
-                    {
-                        foreach (var gadgetInfo in customizationMainMenus.Where(a => notCachedGadgets.Any(e => e.Equals(a.Path))))
-                        {
-                            if (MainMenuInfo.Create(gadgetInfo) is MainMenuInfo menu)
-                            {
-                                newMainMenus.Add(gadgetInfo);
-                            }
-                        }
-                    }
-
-                    if (removedGedgets.Count() > 0 || newMainMenus.Count() > 0)
-                    {
-                        Logger.Verbose($"customization has changed. Reload main view.");
-                        await Post(() =>
-                        {
-                            CreateContent(true);
-                            return true;
-                        });
-                    }
-                }
-                return true;
-            });
-        }
-
-        private void OnWindowOrientationChangedEvent(object sender, WindowOrientationChangedEventArgs e)
-        {
-            Window.WindowOrientation orientation = e.WindowOrientation;
-            Logger.Debug($"OnWindowOrientationChangedEvent() called!, orientation:{orientation}");
-        }
-
-        private void RegisterEvents()
-        {
-            SystemSettings.LocaleLanguageChanged += SystemSettings_LocaleLanguageChanged;
-            ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
-            GadgetManager.Instance.CustomizationChanged += CustomizationChanged;
-            GadgetNavigation.OnWindowModeChanged += WindowModeChanged;
-            window.OrientationChanged += OnWindowOrientationChangedEvent;
-        }
-
-        private void UnregisterEvents()
-        {
-            SystemSettings.LocaleLanguageChanged -= SystemSettings_LocaleLanguageChanged;
-            ThemeManager.ThemeChanged -= ThemeManager_ThemeChanged;
-            GadgetManager.Instance.CustomizationChanged -= CustomizationChanged;
-            GadgetNavigation.OnWindowModeChanged -= WindowModeChanged;
-            window.OrientationChanged -= OnWindowOrientationChangedEvent;
-        }
-
-        protected override void OnTerminate()
-        {
-            UnregisterEvents();
-            base.OnTerminate();
-        }
-
-        private void CustomizationChanged(object sender, CustomizationChangedEventArgs e)
-        {
-            List<MenuCustomizationItem> items = new List<MenuCustomizationItem>();
-            foreach (var c in e.CustomizationItems)
-            {
-                if (GadgetManager.Instance.IsMainMenuPath(c.MenuPath))
-                {
-                    items.Add(c);
-                }
-            }
-
-            if (page != null && items.Any())
-            {
-                CreateContent(true);
+                RegisterEvents();
             }
         }
 
@@ -281,168 +123,72 @@ namespace SettingView
             Logger.Debug("End");
         }
 
-        private void SystemSettings_LocaleLanguageChanged(object sender, Tizen.System.LocaleLanguageChangedEventArgs e)
+        protected override void OnTerminate()
         {
-            if (page != null)
-            {
-                page.Title.Text = Resources.IDS_ST_OPT_SETTINGS;
-                UpdateContent();
-            }
+            UnRegisterEvents();
+
+            base.OnTerminate();
         }
 
-        private void ThemeManager_ThemeChanged(object sender, ThemeChangedEventArgs e)
+        private Task Init()
         {
-            if (page != null && e.IsPlatformThemeChanged)
-            {
-                page.BackgroundColor = AppConstants.BackgroundColor;
-                SetScrollbar();
-                UpdateContent();
-            }
-        }
-
-        private static Task LoadMainMenuItems(bool customizationChanged = false)
-        {
+            Logger.Debug("Init start");
             return Task.Run(() =>
             {
-                noMainMenus = false;
-                noVisibleMainMenus = false;
-                mainMenuInfos = MainMenuInfo.CacheMenu;
-                if (mainMenuInfos.Count == 0 || customizationChanged)
-                {
-                    var mainMenus = GadgetManager.Instance.GetMainWithCurrentOrder();
-                    if (!mainMenus.Any())
-                    {
-                        noMainMenus = true;
-                        return Task.CompletedTask;
-                    }
-
-                    var visibleMenus = mainMenus.Where(i => i.IsVisible);
-                    if (!visibleMenus.Any())
-                    {
-                        noVisibleMainMenus = true;
-                        return Task.CompletedTask;
-                    }
-
-                    mainMenuInfos = new List<MainMenuInfo>();
-                    foreach (var gadgetInfo in visibleMenus)
-                    {
-                        if (MainMenuInfo.Create(gadgetInfo) is MainMenuInfo menu)
-                        {
-                            mainMenuInfos.Add(menu);
-                        }
-                    }
-                }
-                else
-                {
-                    Logger.Debug("Loaded Main Menu from cache");
-                }
-
-                return Task.CompletedTask;
+                SetupLanguage();
+                viewManager = new ViewManager();
             });
         }
 
-        private static async Task CreateContentRows()
+        private static void SetupLanguage()
         {
-            await itemsLoaded;
-            await Task.Run(async () =>
+            MultilingualResourceManager = TextResources.Resources.ResourceManager;
+            Tizen.System.SystemSettings.LocaleLanguageChanged += (s, e) =>
             {
-                if (noMainMenus)
+                try
                 {
-                    await Post(() =>
-                    {
-                        var textLabel = GetTextNotice("There is no setting menus installed.", Color.Orange);
-                        page.Content.Add(textLabel);
-                        return true;
-                    });
-
-                    return;
+                    string language = Tizen.System.SystemSettings.LocaleLanguage.Replace("_", "-");
+                    var culture = CultureInfo.CreateSpecificCulture(language);
+                    CultureInfo.CurrentCulture = culture;
+                    TextResources.Resources.Culture = culture;
                 }
-
-                if (noVisibleMainMenus)
+                catch (Exception ex)
                 {
-                    await Post(() =>
-                    {
-                        var textLabel = GetTextNotice("There is no setting menus visible.", Color.Gray);
-                        page.Content.Add(textLabel);
-                        return true;
-                    });
-
-                    return;
+                    Logger.Error("Setting Language failed" + ex.Message);
                 }
-
-                await Post(() =>
-                {
-                    foreach (var menu in mainMenuInfos)
-                    {
-                        var row = new MainMenuItem(menu.IconPath, new Color(menu.IconColorHex), menu.Title, menu.Path);
-                        mainMenuItems.Add(row);
-                        page.Content.Add(row);
-                    }
-                    return true;
-                });
-
-                MainMenuInfo.UpdateCache(mainMenuInfos);
-            });
-        }
-
-        private static void CreateContent(bool customizationChanged = false)
-        {
-            mainMenuItems.Clear();
-            page.Content.RemoveAllChildren(true);
-            itemsLoaded = LoadMainMenuItems(customizationChanged);
-            _ = CreateContentRows();
-        }
-
-        private void SetScrollbar()
-        {
-            var scrollbarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.Scrollbar") as ScrollbarStyle;
-            scrollbarStyle.ThumbColor = AppConstants.ThumbColor;
-            scrollbarStyle.TrackPadding = 8;
-            page.Content.Scrollbar = new Scrollbar(scrollbarStyle);
-
-            // get Thumb ImageView component, since it is internal
-            var thumb = page.Content.Scrollbar.Children.Skip(1).FirstOrDefault() as ImageView;
-
-            if (thumb != null)
-            {
-                thumb.CornerRadius = 4;
-                thumb.BoxShadow = AppConstants.ThumbBoxShadow;
-            }
-        }
-
-        private static async void UpdateContent()
-        {
-            MainMenuInfo.ClearCache();
-            await LoadMainMenuItems();
-
-            foreach (var menu in mainMenuInfos)
-            {
-                var item = mainMenuItems.Where(a => a.MenuPath == menu.Path).FirstOrDefault();
-                if (item != null)
-                {
-                    item.UpdateItem(menu.Title, new Color(menu.IconColorHex));
-                }
-            }
-        }
-
-        private static View GetTextNotice(string text, Color color)
-        {
-            return new TextLabel
-            {
-                MultiLine = true,
-                Text = text,
-                TextColor = color,
-                PixelSize = 30.SpToPx(),
-                Margin = new Extents(50, 50, 50, 50).SpToPx(),
-                WidthSpecification = LayoutParamPolicies.MatchParent,
-                HeightSpecification = LayoutParamPolicies.MatchParent,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
             };
+        }
+
+        private void RegisterEvents()
+        {
+            window.KeyEvent += OnKeyEvent;
+            window.OrientationChanged += WindowOrientationChanged;
+        }
+
+        private void UnRegisterEvents()
+        {
+            window.KeyEvent -= OnKeyEvent;
+            window.OrientationChanged -= WindowOrientationChanged;
+        }
+
+        public void OnKeyEvent(object sender, Window.KeyEventArgs e)
+        {
+            if (e.Key.State == Key.StateType.Down && (e.Key.KeyPressedName == "XF86Back" || e.Key.KeyPressedName == "Escape"))
+            {
+                Exit();
+            }
+        }
+
+        private void WindowOrientationChanged(object sender, WindowOrientationChangedEventArgs e)
+        {
+            Window.WindowOrientation orientation = e.WindowOrientation;
+            Logger.Debug($"OnWindowOrientationChangedEvent() called!, orientation:{orientation}");
         }
 
         static void Main(string[] args)
         {
+            Logger.Debug("SettingView Main() Started");
+
             appCustomBorder = new SettingViewBorder();
             Program app = new Program();
             app.Run(args);

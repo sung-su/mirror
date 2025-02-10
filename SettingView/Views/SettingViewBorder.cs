@@ -18,7 +18,7 @@ using SettingCore;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 
-namespace SettingView
+namespace SettingView.Views
 {
     public class SettingViewBorder : DefaultBorder
     {
@@ -155,10 +155,10 @@ namespace SettingView
                 e.Name = "Resize";
             };
 
-            minimalizeIcon.SetAccessibilityReadingInfoTypes(Tizen.NUI.BaseComponents.AccessibilityReadingInfoTypes.Name);
-            maximalizeIcon.SetAccessibilityReadingInfoTypes(Tizen.NUI.BaseComponents.AccessibilityReadingInfoTypes.Name);
-            closeIcon.SetAccessibilityReadingInfoTypes(Tizen.NUI.BaseComponents.AccessibilityReadingInfoTypes.Name);
-            leftCornerIcon.SetAccessibilityReadingInfoTypes(Tizen.NUI.BaseComponents.AccessibilityReadingInfoTypes.Name);
+            minimalizeIcon.SetAccessibilityReadingInfoTypes(AccessibilityReadingInfoTypes.Name);
+            maximalizeIcon.SetAccessibilityReadingInfoTypes(AccessibilityReadingInfoTypes.Name);
+            closeIcon.SetAccessibilityReadingInfoTypes(AccessibilityReadingInfoTypes.Name);
+            leftCornerIcon.SetAccessibilityReadingInfoTypes(AccessibilityReadingInfoTypes.Name);
 
             RelativeLayout.SetRightTarget(minimalizeIcon, maximalizeIcon);
             RelativeLayout.SetRightRelativeOffset(minimalizeIcon, 0.0f);
