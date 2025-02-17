@@ -1,5 +1,4 @@
-﻿using Tizen.Content.MediaContent;
-using Tizen.NUI;
+﻿using Tizen.NUI;
 
 namespace SettingCore
 {

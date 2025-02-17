@@ -44,8 +44,8 @@ namespace SettingView.Core
             width = (int)(DeviceInfo.DisplayWidth * widthRatio);
             height = (int)(DeviceInfo.DisplayHeight * (1-bottomMargin) * heightRatio);
 
-            positionX = ((DeviceInfo.IsPortrait? DeviceInfo.DisplayHeight : DeviceInfo.DisplayWidth) - width) / 2;
-            positionY = ((DeviceInfo.IsPortrait? DeviceInfo.DisplayWidth : DeviceInfo.DisplayHeight) - height) / 2;
+            positionX = ((DeviceInfo.IsPortrait? DeviceInfo.DisplayHeight : DeviceInfo.DisplayWidth) - width) >> 1;
+            positionY = ((DeviceInfo.IsPortrait? DeviceInfo.DisplayWidth : DeviceInfo.DisplayHeight) - height) >> 1;
             positionY -= (int)((DeviceInfo.IsPortrait ? DeviceInfo.DisplayWidth : DeviceInfo.DisplayHeight) * bottomMargin);
 
             if (DeviceInfo.IsPortrait)

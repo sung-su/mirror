@@ -8,8 +8,6 @@ namespace SettingView.ViewModels
 {
     internal class SettingMainViewModel
     {
-        private bool noMainMenus;
-        private bool noVisibleMainMenus;
         private List<MainMenuInfo> catchedMenuItems;
         private IEnumerable<SettingGadgetInfo> visibleMenuItems;
         public ObservableCollection<GadgetInfoModel> MainMenuGadgetInfos { get; set; }
@@ -24,26 +22,17 @@ namespace SettingView.ViewModels
         {
             Logger.Debug("Gadget items load started");
 
-            noMainMenus = false;
-            noVisibleMainMenus = false;
-
             catchedMenuItems = MainMenuInfo.CacheMenu;
 
             if (catchedMenuItems.Count == 0 || customizationChanged)
             {
                 var mainMenus = GadgetManager.Instance.GetMainWithCurrentOrder();
                 if (!mainMenus.Any())
-                {
-                    noMainMenus = true;
                     return;
-                }
 
                 visibleMenuItems = mainMenus.Where(i => i.IsVisible);
                 if (!visibleMenuItems.Any())
-                {
-                    noVisibleMainMenus = true;
                     return;
-                }
             }
             else
             {

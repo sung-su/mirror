@@ -15,7 +15,6 @@
  */
 
 using Tizen.NUI;
-using Tizen.System;
 
 namespace SettingView.Common
 {
