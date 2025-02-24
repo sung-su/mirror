@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Tizen.Applications;
 using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
@@ -93,7 +92,7 @@ namespace SettingCore
         protected string GetResourcePath(string relativeFilePath)
         {
             string callingAssemblyName = System.Reflection.Assembly.GetCallingAssembly().GetName().Name;
-            string absoluteDirPath = System.IO.Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, "mount/allowed/", callingAssemblyName);
+            string absoluteDirPath = System.IO.Path.Combine(Application.Current.DirectoryInfo.Resource, "mount/allowed/", callingAssemblyName);
 
             // remove leading slash
             relativeFilePath = relativeFilePath.TrimStart('/');

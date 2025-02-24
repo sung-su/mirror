@@ -169,30 +169,21 @@ namespace SettingCore
 
         public static MainMenuInfo Create(SettingGadgetInfo info)
         {
-            TimeSpan total = TimeSpan.Zero;
-            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-
-            stopwatch.Start();
             var menu = FromCache(info);
-            stopwatch.Stop();
-            total += stopwatch.Elapsed;
             if (menu != null)
             {
-                Logger.Debug($"MEASURE loaded MainMenuInfo from Cache, path: {info.Path}, time: {stopwatch.Elapsed}");
+                Logger.Debug($"Loaded MainMenuInfo from Cache");
                 return menu;
             }
 
-            stopwatch.Restart();
             menu = FromManifest(info);
-            stopwatch.Stop();
-            total += stopwatch.Elapsed;
             if (menu != null)
             {
-                Logger.Debug($"MEASURE loaded MainMenuInfo from Manifest file, path: {info.Path}, time: {stopwatch.Elapsed}");
+                Logger.Debug($"Loaded MainMenuInfo from Manifest file");
                 return menu;
             }
 
-            Logger.Debug($"MEASURE could NOT load MainMenuInfo, path: {info.Path}, time: {total}");
+            Logger.Debug($"Could NOT load MainMenuInfo, path: {info.Path}");
             return null;
         }
 
