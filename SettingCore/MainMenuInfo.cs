@@ -1,5 +1,4 @@
-﻿using SettingCore.Views;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -32,19 +31,17 @@ namespace SettingCore
             try
             {
                 string text = System.IO.File.ReadAllText(CachePath, Encoding.UTF8);
+                string[] mainMenuItems = text.Split("\n\n", StringSplitOptions.RemoveEmptyEntries);
+                var fromCache = new List<MainMenuInfo>(mainMenuItems.Length);
 
-                List<MainMenuInfo> fromCache = new List<MainMenuInfo>();
-
-                string[] mainMenuItems = text.Split("\n\n");
                 foreach (string menu in mainMenuItems)
                 {
-                    if (menu.Length == 0) continue;
                     string[] keyValuePairs = menu.Split("\n");
-                    Dictionary<string, string> pairs = new Dictionary<string, string>();
+                    var pairs = new Dictionary<string, string>(keyValuePairs.Length);
                     foreach (string keyValuePair in keyValuePairs)
                     {
                         var kv_split = keyValuePair.Split(':');
-                        pairs.Add(kv_split[0], kv_split[1]);
+                        pairs[kv_split[0]] = kv_split[1];
                     }
 
                     fromCache.Add(new MainMenuInfo()
@@ -55,7 +52,6 @@ namespace SettingCore
                         Path = pairs["Path"],
                     });
                 }
-
                 cache = fromCache;
             }
             catch
