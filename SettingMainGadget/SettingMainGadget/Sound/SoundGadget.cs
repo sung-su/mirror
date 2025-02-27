@@ -70,7 +70,7 @@ namespace Setting.Menu
         {
             try
             {
-                Tizen.System.SystemSettings.SoundSilentModeSettingChanged += SystemSettings_SoundSilentModeSettingChanged;
+                SystemSettings.SoundSilentModeSettingChanged += SystemSettings_SoundSilentModeSettingChanged;
             }
             catch (System.Exception e)
             {
@@ -79,7 +79,7 @@ namespace Setting.Menu
 
             try
             {
-                Tizen.System.SystemSettings.VibrationChanged += SystemSettings_VibrationChanged;
+                SystemSettings.VibrationChanged += SystemSettings_VibrationChanged;
             }
             catch (System.Exception e)
             {
@@ -88,7 +88,7 @@ namespace Setting.Menu
 
             try
             {
-                Tizen.System.SystemSettings.SoundNotificationChanged += SystemSettings_NotificationSoundChanged;
+                SystemSettings.SoundNotificationChanged += SystemSettings_NotificationSoundChanged;
             }
             catch (System.Exception e)
             {
@@ -175,17 +175,18 @@ namespace Setting.Menu
             content.RemoveAllChildren(true);
             sections.Clear();
 
+            var currentSoundMode = SoundmodeManager.GetSoundmode();
+            soundsEnabled = currentSoundMode == Soundmode.SOUND_MODE_SOUND;
+            soundSliderIconPath = GetResourcePath(soundsEnabled? soundSliderIconDefault:soundSliderIconMute);
+
             Logger.Debug($"GET {AudioVolumeType.Media} Volume : {SettingAudioManager.GetVolumeLevel(AudioVolumeType.Media)}");
             Logger.Debug($"GET {AudioVolumeType.Notification} Volume : {SettingAudioManager.GetVolumeLevel(AudioVolumeType.Notification)}");
             Logger.Debug($"GET {AudioVolumeType.System} Volume : {SettingAudioManager.GetVolumeLevel(AudioVolumeType.System)}");
 
-            soundsEnabled = SoundmodeManager.GetSoundmode() == Soundmode.SOUND_MODE_SOUND;
-            soundSliderIconPath = soundsEnabled ? GetResourcePath(soundSliderIconDefault) : GetResourcePath(soundSliderIconMute);
-
             // section: sound mode
             sections.Add(MainMenuProvider.Sound_Mode, () =>
             {
-                string soundModeName = SoundmodeManager.GetSoundmodeName(this, SoundmodeManager.GetSoundmode());
+                string soundModeName = SoundmodeManager.GetSoundmodeName(this, currentSoundMode);
                 soundMode = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_SOUND_MODE)), soundModeName);
                 if (soundMode != null)
                 {

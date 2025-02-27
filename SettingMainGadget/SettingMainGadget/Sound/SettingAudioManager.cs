@@ -39,7 +39,7 @@ namespace SettingMainGadget.Sound
 
         public static void PlayAudio(AudioStreamType type)
         {
-            string path = String.Empty;
+            string path = null;
 
             switch (type)
             {

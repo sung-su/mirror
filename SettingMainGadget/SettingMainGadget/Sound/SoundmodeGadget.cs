@@ -12,7 +12,7 @@ namespace Setting.Menu.Sound
     {
         public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_HEADER_SOUND_MODE));
 
-        private SettingMainGadget.Sound.Soundmode[] sounds = new[] {
+        private Soundmode[] sounds = new[] {
             Soundmode.SOUND_MODE_SOUND,
             Soundmode.SOUND_MODE_VIBRATE,
             Soundmode.SOUND_MODE_MUTE,
