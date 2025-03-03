@@ -13,7 +13,7 @@ using Tizen.System;
 
 namespace Setting.Menu
 {
-    public class SoundGadget : SettingCore.MainMenuGadget
+    public class SoundGadget : MainMenuGadget
     {
         private const string soundSliderIconDefault = "sound_slider_icon_default.svg";
         private const string soundSliderIconMute = "sound_slider_icon_mute.svg";
@@ -126,7 +126,7 @@ namespace Setting.Menu
         {
             try
             {
-                Tizen.System.SystemSettings.SoundSilentModeSettingChanged -= SystemSettings_SoundSilentModeSettingChanged;
+                SystemSettings.SoundSilentModeSettingChanged -= SystemSettings_SoundSilentModeSettingChanged;
             }
             catch (System.Exception e)
             {
@@ -135,7 +135,7 @@ namespace Setting.Menu
 
             try
             {
-                Tizen.System.SystemSettings.VibrationChanged -= SystemSettings_VibrationChanged;
+                SystemSettings.VibrationChanged -= SystemSettings_VibrationChanged;
             }
             catch (System.Exception e)
             {
@@ -144,7 +144,7 @@ namespace Setting.Menu
 
             try
             {
-                Tizen.System.SystemSettings.SoundNotificationChanged -= SystemSettings_NotificationSoundChanged;
+                SystemSettings.SoundNotificationChanged -= SystemSettings_NotificationSoundChanged;
             }
             catch (System.Exception e)
             {
@@ -295,12 +295,13 @@ namespace Setting.Menu
 
         private void SystemSettings_SoundSilentModeSettingChanged(object sender, SoundSilentModeSettingChangedEventArgs e)
         {
+            var currentSoundMode = SoundmodeManager.GetSoundmode();
             if (soundMode != null)
             {
-                soundMode.Secondary = SoundmodeManager.GetSoundmodeName(this, SoundmodeManager.GetSoundmode());
+                soundMode.Secondary = SoundmodeManager.GetSoundmodeName(this, currentSoundMode);
             }
         
-            bool soundsEnabled = SoundmodeManager.GetSoundmode() == Soundmode.SOUND_MODE_SOUND;
+            bool soundsEnabled = currentSoundMode == Soundmode.SOUND_MODE_SOUND;
 
             if (notificationSlider != null)
             {

@@ -7,7 +7,7 @@ using Tizen.NUI.Components;
 
 namespace Setting.Menu.Sound
 {
-    public class SoundotherGadget : SettingCore.MenuGadget
+    public class SoundotherGadget : MenuGadget
     {
         public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_OTHER_SOUNDS));
 
