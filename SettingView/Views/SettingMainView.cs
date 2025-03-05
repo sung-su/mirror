@@ -23,12 +23,8 @@ namespace SettingView.Views
             SelectionMode = ItemSelectionMode.Single;
             BackgroundColor = Color.White;
 
-            ItemTemplate = GetItemTemplate();
-        }
-
-        public void SetHeader()
-        {
             Header = GetHeader();
+            ItemTemplate = GetItemTemplate();
         }
 
         private RecyclerViewItem GetHeader()

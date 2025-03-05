@@ -11,26 +11,43 @@ namespace SettingView
     {
         private SettingMainView mainView;
         private SettingMainViewModel mainViewModel;
+        private Loading loadingIndicator;
 
         private Window window;
 
         public ViewManager()
         {
+            window = NUIApplication.GetDefaultWindow();
             mainViewModel = new SettingMainViewModel();
         }
 
-        public void SetupView()
+        public void SetSplashScreen()
+        {
+            loadingIndicator = new Loading
+            {
+                Size2D = new Size2D(window.WindowSize.Width, window.WindowSize.Height),
+                CornerRadius = 26.SpToPx(),
+                BackgroundColor = Color.White,
+                Layout = new LinearLayout
+                {
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                },
+            };
+
+            loadingIndicator.Play();
+            window.Add(loadingIndicator);
+        }
+
+        public void SetupMainView()
         {
             Logger.Debug("View setup started");
 
-            window = NUIApplication.GetDefaultWindow();
             window.Resized += OnWindowResized;
 
             mainView = new SettingMainView();
             mainView.BindingContext = mainViewModel;
             mainView.SetBinding(RecyclerView.ItemsSourceProperty, "MainMenuGadgetInfos");
-
-            window.GetDefaultNavigator().Add(mainView);
 
             Logger.Debug("View setup ended");
         }
@@ -41,10 +58,15 @@ namespace SettingView
             mainView?.UpdateWindowSize();
         }
 
-        public void UpdateViewModel()
+        public void UpdateMainViewModel()
         {
             mainViewModel.UpdateViewModel();
-            mainView.SetHeader();
+
+            window.Remove(loadingIndicator);
+            window.GetDefaultNavigator().Add(mainView);
+
+            loadingIndicator?.Stop();
+            loadingIndicator?.Dispose();
         }
     }
 }

@@ -53,12 +53,14 @@ namespace SettingView
             base.OnCreate();
 
             window = GetDefaultWindow();
+            WindowManager.UpdateWindowPositionSize();
+
+            viewManager.SetSplashScreen();
 
             Post(async () =>
             {
                 await initTask;
-                viewManager.SetupView();
-                WindowManager.UpdateWindowPositionSize();
+                viewManager.SetupMainView();
             });
 
             Logger.Debug("OnCreate end");
@@ -73,7 +75,7 @@ namespace SettingView
             {
                 resumedBefore = true;
 
-                viewManager.UpdateViewModel();
+                viewManager.UpdateMainViewModel();
 
                 GadgetManager.Instance.Init();
 
