@@ -32,10 +32,13 @@ namespace SettingMainGadget.Sound
             }
 
             if (isSoundOn)
+            {
                 return Soundmode.SOUND_MODE_SOUND;
+            }
             else if (isVibrationOn)
+            {
                 return Soundmode.SOUND_MODE_VIBRATE;
-
+            }
             return Soundmode.SOUND_MODE_MUTE;
         }
 

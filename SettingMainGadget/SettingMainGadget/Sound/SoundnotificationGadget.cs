@@ -11,11 +11,11 @@ using SettingCore.Views;
 
 namespace Setting.Menu.Sound
 {
-    public class SoundnotificationGadget : SettingCore.MenuGadget
+    public class SoundnotificationGadget : MenuGadget
     {
         public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_NOTIFICATIONS));
 
-        private string soundpath = Directory.GetParent(Tizen.System.SystemSettings.EmailAlertRingtone).FullName;
+        private readonly string soundpath = Directory.GetParent(Tizen.System.SystemSettings.EmailAlertRingtone).FullName;
 
         protected override View OnCreate()
         {
@@ -36,11 +36,19 @@ namespace Setting.Menu.Sound
             RadioButtonGroup radioButtonGroup = new RadioButtonGroup();
 
             var soundList = CreateSoundList();
+            int selectedIndex = GetNotificationSoundIndex(soundList);
+
 
             for (int i = 0; i < soundList.Count; i++)
             {
-                RadioButtonListItem item = new RadioButtonListItem(SoundNotificationManager.SettingMediaBasename(this, soundList[i].ToString()));
-                item.RadioButton.IsSelected = i.Equals(GetNotificationSoundIndex(soundList));
+                string displayName = SoundNotificationManager.SettingMediaBasename(this, soundList[i].ToString());
+                var item = new RadioButtonListItem(displayName)
+                {
+                    RadioButton =
+                        {
+                            IsSelected = i == selectedIndex
+                        }
+                };
 
                 radioButtonGroup.Add(item.RadioButton);
                 content.Add(item);
@@ -72,10 +80,9 @@ namespace Setting.Menu.Sound
             return soundList;
         }
 
-        private int GetNotificationSoundIndex(IList<string> soundlist)
+        private static int GetNotificationSoundIndex(IList<string> soundlist)
         {
             string sound = SoundNotificationManager.GetNotificationSound();
-
             return soundlist.IndexOf(sound);
         }
     }
