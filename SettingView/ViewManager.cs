@@ -1,7 +1,10 @@
 ﻿using SettingCore;
+using SettingView.Common;
 using SettingView.ViewModels;
 using SettingView.Views;
+using Tizen.Applications;
 using Tizen.NUI;
+using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Binding;
 using Tizen.NUI.Components;
 
@@ -11,7 +14,7 @@ namespace SettingView
     {
         private SettingMainView mainView;
         private SettingMainViewModel mainViewModel;
-        private Loading loadingIndicator;
+        private View splashScreen;
 
         private Window window;
 
@@ -23,20 +26,29 @@ namespace SettingView
 
         public void SetSplashScreen()
         {
-            loadingIndicator = new Loading
+            splashScreen = new View
             {
                 Size2D = new Size2D(window.WindowSize.Width, window.WindowSize.Height),
                 CornerRadius = 26.SpToPx(),
                 BackgroundColor = Color.White,
-                Layout = new LinearLayout
-                {
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
-                },
+                Layout = new RelativeLayout(),
             };
 
-            loadingIndicator.Play();
-            window.Add(loadingIndicator);
+            int iconLen = (int) (119 * AppConstants.ScreenWidthRatio);
+
+            ImageView tizenIcon = new ImageView
+            {
+                ResourceUrl = Application.Current.DirectoryInfo.Resource + "images/tizen-logo.png",
+                CellHorizontalAlignment = HorizontalAlignmentType.Center,
+                CellVerticalAlignment = VerticalAlignmentType.Center,
+                Size2D = new Size2D(iconLen, iconLen),
+            };
+
+            RelativeLayout.SetHorizontalAlignment(tizenIcon, RelativeLayout.Alignment.Center);
+            RelativeLayout.SetVerticalAlignment(tizenIcon, RelativeLayout.Alignment.Center);
+            splashScreen.Add(tizenIcon);
+
+            window.Add(splashScreen);
         }
 
         public void SetupMainView()
@@ -62,11 +74,8 @@ namespace SettingView
         {
             mainViewModel.UpdateViewModel();
 
-            window.Remove(loadingIndicator);
+            window.Remove(splashScreen);
             window.GetDefaultNavigator().Add(mainView);
-
-            loadingIndicator?.Stop();
-            loadingIndicator?.Dispose();
         }
     }
 }
