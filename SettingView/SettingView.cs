@@ -44,6 +44,8 @@ namespace SettingView
         protected override void OnPreCreate()
         {
             base.OnPreCreate();
+
+            viewManager = new ViewManager();
             initTask = Init();
         }
 
@@ -138,7 +140,7 @@ namespace SettingView
             return Task.Run(() =>
             {
                 SetupLanguage();
-                viewManager = new ViewManager();
+                viewManager.InitViewModel();
             });
         }
 

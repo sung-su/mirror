@@ -21,6 +21,10 @@ namespace SettingView
         public ViewManager()
         {
             window = NUIApplication.GetDefaultWindow();
+        }
+
+        public void InitViewModel()
+        {
             mainViewModel = new SettingMainViewModel();
         }
 
