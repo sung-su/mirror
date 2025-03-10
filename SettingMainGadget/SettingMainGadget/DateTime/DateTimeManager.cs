@@ -1,9 +1,6 @@
 ﻿using SettingCore;
 using SettingMainGadget.LanguageInput;
 using System;
-using System.Collections.Generic;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
 
 namespace SettingMainGadget.DateTime
 {
@@ -21,7 +18,7 @@ namespace SettingMainGadget.DateTime
                     Logger.Warn($"could not get value for {VconfTimeFormat}");
                 }
 
-                return timeformat.Equals(2) ? true : false;
+                return timeformat == 2;
             }
             set
             {
@@ -30,14 +27,8 @@ namespace SettingMainGadget.DateTime
             }
         }
 
-        public static string HourFormat12
-        {
-            get
-            {
-                var isKorean = LanguageInputDisplayLanguageManager.GetDisplayLanguage() == "ko_KR";
-                return isKorean ? "tt h:mm" : "h:mm tt";
-            }
-        }
+        public static string HourFormat12 =>
+            LanguageInputDisplayLanguageManager.GetDisplayLanguage() == "ko_KR" ? "tt h:mm" : "h:mm tt";
 
         public static bool AutoTimeUpdate
         {
@@ -57,10 +48,7 @@ namespace SettingMainGadget.DateTime
             }
         }
 
-        public static string FormattedTime
-        {
-            get => System.DateTime.Now.ToString(Is24HourFormat ? "HH:mm" : HourFormat12);
-        }
-
+        public static string FormattedTime =>
+            System.DateTime.Now.ToString(Is24HourFormat ? "HH:mm" : HourFormat12);
     }
 }

@@ -11,7 +11,7 @@ using Tizen;
 
 namespace Setting.Menu
 {
-    public class DateTimeGadget : SettingCore.MainMenuGadget
+    public class DateTimeGadget : MainMenuGadget
     {
         public override Color ProvideIconColor() => new Color(IsLightTheme ? "#205493" : "#2560A8");
 
@@ -77,7 +77,6 @@ namespace Setting.Menu
                 Logger.Warn($"AutomaticTimeUpdate is not supported: {e.Message}");
             }
 
-            // section: auto update switch item 
             sections.Add(MainMenuProvider.DateTime_AutoUpdate, () =>
             {
                 autoUpdateItem = new SwitchListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_AUTO_UPDATE)), isSelected: isAutomaticTimeUpdateSupported ? DateTimeManager.AutoTimeUpdate : false);
@@ -90,7 +89,6 @@ namespace Setting.Menu
                 content.Add(autoUpdateItem);
             });
 
-            // section: set date
             sections.Add(MainMenuProvider.DateTime_SetDate, () =>
             {
                 mDateItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SET_DATE)), System.DateTime.Now.ToString("MMM d, yyyy"));
@@ -104,7 +102,6 @@ namespace Setting.Menu
                 }
             });
 
-            // section: set time
             sections.Add(MainMenuProvider.DateTime_SetTime, () =>
             {
                 mTimeItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SET_TIME)), DateTimeManager.FormattedTime);
@@ -118,7 +115,6 @@ namespace Setting.Menu
                 }
             });
 
-            // section: time zone
             sections.Add(MainMenuProvider.DateTime_SetTimezone, () =>
             {
                 mTimezoneItem = TextListItem.CreatePrimaryTextItemWithSecondaryText(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_TIME_ZONE)), DateTimeTimezoneManager.GetTimezoneName().timezoneName);
@@ -133,7 +129,6 @@ namespace Setting.Menu
                 ApplyAutomaticTimeUpdate();
             });
 
-            // section: time format 
             sections.Add(MainMenuProvider.DateTime_TimeFormat, () =>
             {
                 timeFormatItem = new SwitchListItem(NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_MBODY_24_HOUR_CLOCK)), NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_SBODY_SHOW_THE_TIME_IN_24_HOUR_FORMAT_INSTEAD_OF_12_HOUR_HAM_PM_FORMAT)), DateTimeManager.Is24HourFormat);

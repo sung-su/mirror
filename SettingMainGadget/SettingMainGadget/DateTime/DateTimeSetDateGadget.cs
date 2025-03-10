@@ -7,7 +7,7 @@ using Tizen.NUI.Components;
 
 namespace Setting.Menu.DateTime
 {
-    public class DateTimeSetDateGadget : SettingCore.MenuGadget
+    public class DateTimeSetDateGadget : MenuGadget
     {
         public override string ProvideTitle() => NUIGadgetResourceManager.GetString(nameof(Resources.IDS_ST_BODY_SET_DATE));
 

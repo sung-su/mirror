@@ -55,7 +55,7 @@ namespace Setting.Menu.DateTime
             return content;
         }
 
-        private void SetSystemTime(System.DateTime time)
+        private static void SetSystemTime(System.DateTime time)
         {
             System.DateTime setTime = time;
             System.DateTime curTime = System.DateTime.Now;
