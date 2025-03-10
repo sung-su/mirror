@@ -3,6 +3,7 @@ using Tizen.NUI.Components;
 using SettingView.TextResources;
 using Tizen.NUI.Binding;
 using Tizen.NUI.BaseComponents;
+using SettingView.Common;
 
 namespace SettingView.Views
 {
@@ -21,7 +22,7 @@ namespace SettingView.Views
             ItemsLayouter = new LinearLayouter();
             ScrollingDirection = Direction.Vertical;
             SelectionMode = ItemSelectionMode.Single;
-            BackgroundColor = Color.White;
+            BackgroundColor = AppConstants.BackgroundColor;
 
             Header = GetHeader();
             ItemTemplate = GetItemTemplate();
@@ -40,7 +41,7 @@ namespace SettingView.Views
             allAppTitle.Label.PixelSize = 24.SpToPx();
             allAppTitle.Label.FontFamily = "BreezeSans";
             allAppTitle.Label.Text = Resources.IDS_ST_OPT_SETTINGS;
-            allAppTitle.Label.TextColor = Color.Black;
+            allAppTitle.Label.TextColor = AppConstants.TextColor;
             return allAppTitle;
         }
 
