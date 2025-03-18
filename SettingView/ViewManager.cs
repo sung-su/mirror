@@ -15,12 +15,17 @@ namespace SettingView
         private SettingMainView mainView;
         private SettingMainViewModel mainViewModel;
         private View splashScreen;
+        private bool viewSetupCompleted;
+        private bool pendingUpdate;
 
         private Window window;
 
         public ViewManager()
         {
             window = NUIApplication.GetDefaultWindow();
+
+            viewSetupCompleted = false;
+            pendingUpdate = false;
         }
 
         public void InitViewModel()
@@ -57,7 +62,7 @@ namespace SettingView
 
         public void SetupMainView()
         {
-            Logger.Debug("View setup started");
+            Logger.Debug("SetupMainView started");
 
             window.Resized += OnWindowResized;
 
@@ -65,7 +70,14 @@ namespace SettingView
             mainView.BindingContext = mainViewModel;
             mainView.SetBinding(RecyclerView.ItemsSourceProperty, "MainMenuGadgetInfos");
 
-            Logger.Debug("View setup ended");
+            viewSetupCompleted  = true;
+            if (pendingUpdate)
+            {
+                pendingUpdate = false;
+                UpdateMainViewModel();
+            }
+
+            Logger.Debug("SetupMainView ended");
         }
 
         private void OnWindowResized(object sender, Window.ResizedEventArgs e)
@@ -76,6 +88,14 @@ namespace SettingView
 
         public void UpdateMainViewModel()
         {
+            Logger.Debug("UpdateMainViewModel started");
+
+            if (!viewSetupCompleted)
+            {
+                pendingUpdate = true;
+                return;
+            }
+
             mainViewModel.UpdateViewModel();
 
             window.Remove(splashScreen);
