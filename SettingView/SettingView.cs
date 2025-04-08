@@ -43,6 +43,7 @@ namespace SettingView
 
         protected override void OnPreCreate()
         {
+            IsUsingXaml = false;
             base.OnPreCreate();
 
             viewManager = new ViewManager();

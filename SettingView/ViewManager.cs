@@ -7,6 +7,7 @@ using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Binding;
 using Tizen.NUI.Components;
+using System.Collections;
 
 namespace SettingView
 {
@@ -19,6 +20,14 @@ namespace SettingView
         private bool pendingUpdate;
 
         private Window window;
+
+        static class RecyclerViewBindings
+        {
+            public static BindingProperty<RecyclerView, IEnumerable> ItemsSourceProperty { get; } = new BindingProperty<RecyclerView, IEnumerable>
+            {
+                Setter = (v, value) => v.ItemsSource = value,
+            };
+        }
 
         public ViewManager()
         {
@@ -66,9 +75,18 @@ namespace SettingView
 
             window.Resized += OnWindowResized;
 
+            var session = new BindingSession<SettingMainViewModel>();
             mainView = new SettingMainView();
+            mainView.BindingContextChanged += (sender, e) =>
+            {
+                if (mainView.BindingContext is SettingMainViewModel model)
+                {
+                    session.ViewModel = model;
+                }
+            };
+
+            mainView.SetBinding(session, RecyclerViewBindings.ItemsSourceProperty, "MainMenuGadgetInfos");
             mainView.BindingContext = mainViewModel;
-            mainView.SetBinding(RecyclerView.ItemsSourceProperty, "MainMenuGadgetInfos");
 
             viewSetupCompleted  = true;
             if (pendingUpdate)

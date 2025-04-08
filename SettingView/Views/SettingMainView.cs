@@ -4,9 +4,61 @@ using SettingView.TextResources;
 using Tizen.NUI.Binding;
 using Tizen.NUI.BaseComponents;
 using SettingView.Common;
+using SettingView.ViewModels;
+using SettingView.Models;
+using System.Windows.Input;
+using Tizen;
+using System;
+using SettingCore;
 
 namespace SettingView.Views
 {
+
+
+    static class ImageViewBindings
+    {
+        public static BindingProperty<ImageView, string> ResourceUrlProperty { get; } = new BindingProperty<ImageView, string>
+        {
+            Setter = (v, value) => v.ResourceUrl = value,
+        };
+    }
+
+    static class BackgroundColorPropertyBindings
+    {
+        public static BindingProperty<View, string> BackgroundColorProperty { get; } = new BindingProperty<View, string>
+        {
+            Setter = (v, value) =>
+            {
+                try
+                {
+                    Color color = new Color(value);
+                    v.BackgroundColor = color;
+                }
+                catch(Exception ex)
+                {
+                    Logger.Debug("Error setting BackgroundColor: {ex.Message}");
+                }
+            },
+        };
+    }
+    static class ButtonBindings
+    {
+        public static BindingProperty<Button, bool> IsSelectedProperty { get; } = new BindingProperty<Button, bool>
+        {
+            Setter = (v, value) => v.IsSelected = value,
+        };
+
+        public static BindingProperty<Button, ICommand> CommandProperty { get; } = new BindingProperty<Button, ICommand>
+        {
+            Setter = (v, value) => v.Command = value,
+        };
+
+        public static BindingProperty<Button, bool> IsEnabledProperty { get; } = new BindingProperty<Button, bool>
+        {
+            Setter = (v, value) => v.IsEnabled = value,
+        };
+    }
+
     class SettingMainView : CollectionView
     {
         private static Extents HeaderPadding = new Extents(16, 16, 8, 8);
@@ -50,10 +102,35 @@ namespace SettingView.Views
             return new DataTemplate(() =>
             {
                 MainMenuItemLayout item = new MainMenuItemLayout();
-                item.TitleLabel.SetBinding(TextLabel.TextProperty, "Title");
-                item.IconView.SetBinding(ImageView.ResourceUrlProperty, "IconPath");
-                item.IconBackground.SetBinding(View.BackgroundColorProperty, "IconColorHex");
-                item.SetBinding(MainMenuItemLayout.ItemSelectCommandProperty, "GadgetSelectCommand");
+
+                var itemSession = new BindingSession<GadgetInfoModel>();
+                item.BindingContextChanged += (sender, e) =>
+                {
+                    if (item.BindingContext is GadgetInfoModel model)
+                    {
+                        try
+                        {
+                            itemSession.ViewModel = model;
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Debug(ex.Message);
+                        }
+                    }
+                };
+                try
+                {
+                    item.TitleLabel.SetBinding(itemSession, TextLabelBindings.TextProperty, "Title");
+                    item.IconView.SetBinding(itemSession, ImageViewBindings.ResourceUrlProperty, "IconPath");
+                    item.IconBackground.SetBinding(itemSession, BackgroundColorPropertyBindings.BackgroundColorProperty, "IconColorHex");
+
+                    item.SetBinding(itemSession, MainMenuItemLayoutBindings.ItemSelectCommandProperty, "GadgetSelectCommand");
+                }
+
+                catch (Exception ex)
+                {
+                    Logger.Debug(ex.Message);
+                }
                 return item;
             });
         }

@@ -7,6 +7,17 @@ using SettingCore.Views;
 
 namespace SettingView.Views
 {
+    static class MainMenuItemLayoutBindings
+    {
+        public static BindingProperty<MainMenuItemLayout, ICommand> ItemSelectCommandProperty { get; } = new BindingProperty<MainMenuItemLayout, ICommand>
+        {
+            Setter = (v, value) =>
+            {
+                    v.MainMenuItemSelectCommand = value;
+            },
+        };
+    }
+
     public class MainMenuItemLayout : RecyclerViewItem
     {
         private readonly ThemeColor TextColors = new ThemeColor(new Color("#090E21"), new Color("#FDFDFD"), new Color("#FF6200"), new Color("#FF8A00"));
@@ -30,8 +41,29 @@ namespace SettingView.Views
         private ICommand mainMenuItemSelectCommand;
         public ICommand MainMenuItemSelectCommand
         {
-            get => (ICommand)GetValue(ItemSelectCommandProperty);
-            set => SetValue(ItemSelectCommandProperty, value);
+            get
+            {
+                if (NUIApplication.IsUsingXaml)
+                {
+                    return (ICommand)GetValue(ItemSelectCommandProperty);
+                }
+                else
+                {
+                    return mainMenuItemSelectCommand;
+
+                }
+            }
+            set
+            {
+                if (NUIApplication.IsUsingXaml)
+                {
+                    SetValue(ItemSelectCommandProperty, value);
+                }
+                else
+                {
+                    mainMenuItemSelectCommand = value;
+                }
+            }
         }
 
         public MainMenuItemLayout() : base()

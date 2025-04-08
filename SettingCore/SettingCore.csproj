@@ -9,9 +9,9 @@
 		<DisableImplicitTizenReferences>True</DisableImplicitTizenReferences>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Tizen.NET" Version="12.0.0.18518" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Tizen.NET.API13" Version="13.0.0.18710" />
+  </ItemGroup>
 
 	<ItemGroup>
 		<Compile Update="TextResources\Resources.Designer.cs">
