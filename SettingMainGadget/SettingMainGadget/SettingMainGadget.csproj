@@ -1,47 +1,43 @@
 ﻿<Project Sdk="Tizen.NET.Sdk/1.2.1">
 
-  <PropertyGroup>
-     <TargetFramework>net6.0</TargetFramework>
-     <TizenCreateTpkOnBuild>false</TizenCreateTpkOnBuild>
-  <DisableImplicitTizenReferences>True</DisableImplicitTizenReferences>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<TizenCreateTpkOnBuild>false</TizenCreateTpkOnBuild>
+		<DisableImplicitTizenReferences>True</DisableImplicitTizenReferences>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Tizen.NET" Version="12.0.0.18518" />
+		<ProjectReference Include="..\..\SettingCore\SettingCore.csproj" />
+	</ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Tizen.NET" Version="12.0.0.18518" />
-  </ItemGroup>
+		<Compile Update="TextResources\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\SettingCore\SettingCore.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="TextResources\Resources.en-US.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+		</EmbeddedResource>
+		<EmbeddedResource Update="TextResources\Resources.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="TextResources\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+	<PropertyGroup>
+		<GadgetResourceType>org.tizen.appfw.gadget.Settings</GadgetResourceType>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="TextResources\Resources.en-US.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="TextResources\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <PropertyGroup>
-    <GadgetResourceType>org.tizen.appfw.gadget.Settings</GadgetResourceType>
-  </PropertyGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command=":: Copy resource dll&#xD;&#xA;
-		dir $(OutDir)\&#xD;&#xA;
-		mkdir res\allowed\$(GadgetResourceType)&#xD;&#xA;
-		xcopy /S /K /D /H /Y $(OutDir)\en-US res\allowed\$(GadgetResourceType)\en-US\&#xD;&#xA;
-		xcopy /S /K /D /H /Y $(OutDir)\ko-KR res\allowed\$(GadgetResourceType)\ko-KR\&#xD;&#xA;" />
-  </Target>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command=":: Copy resource dll&#xD;&#xA;
+			dir $(OutDir)\&#xD;&#xA;
+			mkdir res\allowed\$(GadgetResourceType)&#xD;&#xA;
+			xcopy /S /K /D /H /Y $(OutDir)\en-US res\allowed\$(GadgetResourceType)\en-US\&#xD;&#xA;
+			xcopy /S /K /D /H /Y $(OutDir)\ko-KR res\allowed\$(GadgetResourceType)\ko-KR\&#xD;&#xA;" />
+	</Target>
 </Project>
-

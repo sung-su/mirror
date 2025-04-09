@@ -1,41 +1,38 @@
 ﻿<Project Sdk="Tizen.NET.Sdk/1.2.1">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-	  <TargetFramework>net6.0</TargetFramework>
-      <AssemblyName>SettingView</AssemblyName>
-	  <DisableImplicitTizenReferences>True</DisableImplicitTizenReferences>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<AssemblyName>SettingView</AssemblyName>
+		<DisableImplicitTizenReferences>True</DisableImplicitTizenReferences>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="res\menu\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="res\menu\" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Tizen.NET" Version="12.0.0.18518" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Tizen.NET" Version="12.0.0.18518" />
+		<ProjectReference Include="..\SettingCore\SettingCore.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SettingCore\SettingCore.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="TextResources\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="TextResources\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="TextResources\Resources.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="TextResources\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <PropertyGroup>
-    <NeedInjection>True</NeedInjection>
-  </PropertyGroup>
+	<PropertyGroup>
+		<NeedInjection>True</NeedInjection>
+	</PropertyGroup>
 
 </Project>
