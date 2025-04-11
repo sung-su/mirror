@@ -204,6 +204,8 @@ namespace Setting.Menu.DateTime
             searchView.Add(textFieldView);
             searchView.Add(separator);
 
+            iconVisual.Dispose();
+
             return searchView;
         }
     }

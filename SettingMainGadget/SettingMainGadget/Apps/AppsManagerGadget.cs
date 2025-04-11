@@ -101,7 +101,9 @@ namespace Setting.Menu.Apps
                 HeightSpecification = LayoutParamPolicies.MatchParent,
             };
 
-            var tabButtonStyle = ThemeManager.GetStyle("Tizen.NUI.Components.TabButton") as TabButtonStyle;
+            var viewStyle = ThemeManager.GetStyle("Tizen.NUI.Components.TabButton");
+            var tabButtonStyle = viewStyle as TabButtonStyle;
+
             tabButtonStyle.Padding = new Extents(2, 2, 16, 16).SpToPx();
             tabButtonStyle.Icon.Size = new Size(2, -1).SpToPx();
 
@@ -144,6 +146,8 @@ namespace Setting.Menu.Apps
             tabView.AddTab(allAppsTabButton, allAppsContent);
 
             content.Add(tabView);
+
+            viewStyle.Dispose();
         }
 
         private async void AddTabsContent()
