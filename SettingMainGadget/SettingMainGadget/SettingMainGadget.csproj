@@ -11,7 +11,7 @@
 		<ProjectReference Include="..\..\SettingCore\SettingCore.csproj" />
 	</ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup>
 		<Compile Update="TextResources\Resources.Designer.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
@@ -34,10 +34,6 @@
 	</PropertyGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command=":: Copy resource dll&#xD;&#xA;
-			dir $(OutDir)\&#xD;&#xA;
-			mkdir res\allowed\$(GadgetResourceType)&#xD;&#xA;
-			xcopy /S /K /D /H /Y $(OutDir)\en-US res\allowed\$(GadgetResourceType)\en-US\&#xD;&#xA;
-			xcopy /S /K /D /H /Y $(OutDir)\ko-KR res\allowed\$(GadgetResourceType)\ko-KR\&#xD;&#xA;" />
+		<Exec Command=":: Copy resource dll&#xD;&#xA; dir $(OutDir)\&#xD;&#xA; mkdir res\allowed\$(GadgetResourceType)&#xD;&#xA; xcopy /S /K /D /H /Y $(OutDir)\en-US res\allowed\$(GadgetResourceType)\en-US\&#xD;&#xA; xcopy /S /K /D /H /Y $(OutDir)\ko-KR res\allowed\$(GadgetResourceType)\ko-KR\&#xD;&#xA;" />
 	</Target>
 </Project>
