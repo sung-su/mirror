@@ -113,7 +113,9 @@ namespace SettingCore
             }
 
             // TODO: remove style customization with scalable unit, when merged to TizenFX
-            var appBarStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar") as AppBarStyle;
+            var appBarViewStyle = ThemeManager.GetStyle("Tizen.NUI.Components.AppBar");
+            var appBarStyle = appBarViewStyle as AppBarStyle;
+
             appBarStyle.TitleTextLabel.PixelSize = 24f.SpToPx();
 
             var backButton = new BackButton();
@@ -154,6 +156,8 @@ namespace SettingCore
             Logger.Debug("Gadget page loading..");
             AddGadgetView(page, gadget);
             gadgetPages.Add(page, gadget);
+
+            appBarViewStyle.Dispose();
         }
 
         public static void AddGadgetView(View newView, MenuGadget gadget)
@@ -181,10 +185,14 @@ namespace SettingCore
                 return;
             }
             Page currentPage = (Page)NUIApplication.GetDefaultWindow().GetDefaultNavigator().GetChildAt(0);
-            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Remove(currentPage);
-            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Add(previousView);
 
-            RemoveGadget(currentPage);
+            if (currentPage != null)
+            {
+                NUIApplication.GetDefaultWindow().GetDefaultNavigator().Remove(currentPage);
+                RemoveGadget(currentPage);
+            }
+
+            NUIApplication.GetDefaultWindow().GetDefaultNavigator().Add(previousView);
         }
 
         private static Control GetMoreButton(IEnumerable<MoreMenuItem> moreMenu)
@@ -218,11 +226,13 @@ namespace SettingCore
 
             moreButton.Add(icon);
 
-            var menuStyle = ThemeManager.GetStyle("Tizen.NUI.Components.Menu") as MenuStyle;
+            var menuViewStyle = ThemeManager.GetStyle("Tizen.NUI.Components.Menu");
+            var menuStyle = menuViewStyle as MenuStyle;
             menuStyle.Content.BackgroundColor = IsLightTheme ? new Color("#FAFAFA") : new Color("#1D1A21");
             menuStyle.Content.CornerRadius = 12.SpToPx();
 
-            var menuItemStyle = ThemeManager.GetStyle("Tizen.NUI.Components.MenuItem") as ButtonStyle;
+            var menuItemViewStyle = ThemeManager.GetStyle("Tizen.NUI.Components.MenuItem");
+            var menuItemStyle = menuItemViewStyle as ButtonStyle;
             menuItemStyle.BackgroundColor = IsLightTheme ? new Color("#FAFAFA") : new Color("#1D1A21");
             menuItemStyle.Size = new Size(324, 64).SpToPx();
 
@@ -303,6 +313,11 @@ namespace SettingCore
                             {
                                 item.TextColor = IsLightTheme ? new Color("#FF6200") : new Color("#FF8A00");
                             }
+
+                            iconVisual.Dispose();
+                            menuViewStyle.Dispose();
+                            menuItemViewStyle.Dispose();
+
                             return false;
                         };
 
@@ -318,6 +333,10 @@ namespace SettingCore
                 menu.Items = items;
                 menu.Post();
             };
+
+            iconVisual.Dispose();
+            menuViewStyle.Dispose();
+            menuItemViewStyle.Dispose();
 
             return moreButton;
         }

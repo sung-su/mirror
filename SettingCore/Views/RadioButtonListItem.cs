@@ -27,7 +27,8 @@ namespace SettingCore.Views
                 VerticalAlignment = VerticalAlignment.Center,
             };
 
-            style_light = ThemeManager.GetStyle("Tizen.NUI.Components.RadioButton") as ButtonStyle;
+            var viewStyle = ThemeManager.GetStyle("Tizen.NUI.Components.RadioButton");
+            style_light = viewStyle as ButtonStyle;
             style_light.Text.LineWrapMode = LineWrapMode.Mixed;
             style_light.Text.PixelSize = 24.SpToPx();
             style_light.Text.ThemeChangeSensitive = false;
@@ -77,6 +78,8 @@ namespace SettingCore.Views
             ThemeManager.ThemeChanged += ThemeManager_ThemeChanged;
 
             Relayout += RadioButtonListItem_Relayout;
+
+            viewStyle.Dispose();
         }
 
         private void RadioButtonListItem_Relayout(object sender, EventArgs e)

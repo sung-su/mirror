@@ -73,7 +73,8 @@ namespace SettingCore.Views
                 Add(primary);
             }
 
-            var switchStyle = ThemeManager.GetStyle("Tizen.NUI.Components.Switch") as SwitchStyle;
+            var viewStyle = ThemeManager.GetStyle("Tizen.NUI.Components.Switch");
+            var switchStyle = viewStyle as SwitchStyle;
             switchStyle.Track.Size = new Size(84, 44).SpToPx();
             switchStyle.Thumb.Size = new Size(44, 44).SpToPx();
 
@@ -82,7 +83,6 @@ namespace SettingCore.Views
                 IsSelected = isSelected,
                 AccessibilityHidden = false,
             };
-            switchStyle.Dispose();
 
             FlexLayout.SetFlexShrink(Switch, 0f);
             FlexLayout.SetFlexAlignmentSelf(Switch, FlexLayout.AlignmentType.FlexStart);
@@ -104,6 +104,8 @@ namespace SettingCore.Views
                     Switch.IsSelected = !Switch.IsSelected;
                 }
             };
+
+            viewStyle.Dispose();
         }
 
         public override void OnDisabledStateChanged(bool isEnabled)
