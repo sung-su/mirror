@@ -104,9 +104,7 @@ class _ImmersiveListState extends State<ImmersiveList> {
       List.generate(_itemCount, (index) => GlobalKey());
 
   bool hasFocus = false;
-
   int selectedIndex = 0;
-
   double leftPadding = 58;
 
   @override
@@ -240,26 +238,59 @@ class _ImmersiveListState extends State<ImmersiveList> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(
-                              widget.contents[selectedIndex].title,
-                              style: TextStyle(
-                                fontSize: 50,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 300),
+                              transitionBuilder: (Widget child,
+                                  Animation<double> animation) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                              child: Text(
+                                widget.contents[selectedIndex].title,
+                                key: ValueKey(selectedIndex),
+                                style: TextStyle(
+                                  fontSize: 50,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                             SizedBox(height: 10),
-                            Text(
-                              widget.contents[selectedIndex].subtitle,
-                              style:
-                                  TextStyle(fontSize: 25, color: Colors.grey),
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 300),
+                              transitionBuilder: (Widget child,
+                                  Animation<double> animation) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                              child: Text(
+                                widget.contents[selectedIndex].subtitle,
+                                key: ValueKey(selectedIndex),
+                                style:
+                                    TextStyle(fontSize: 25, color: Colors.grey),
+                              ),
                             ),
                             SizedBox(height: 5),
-                            Text(
-                              widget.contents[selectedIndex].description,
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.grey),
-                              softWrap: true,
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 300),
+                              transitionBuilder: (Widget child,
+                                  Animation<double> animation) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                              child: Text(
+                                widget.contents[selectedIndex].description,
+                                key: ValueKey(selectedIndex),
+                                style:
+                                    TextStyle(fontSize: 20, color: Colors.grey),
+                                softWrap: true,
+                              ),
                             ),
                           ],
                         )),

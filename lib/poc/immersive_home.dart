@@ -22,7 +22,7 @@ class ImmersiveHome extends StatelessWidget {
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
             transitionBuilder: (child, animation) =>
-                FadeTransition(opacity: animation, child: child),
+                ScaleTransition(scale: Tween<double>(begin: 0.95, end:1.1).animate(animation), child: FadeTransition(opacity: animation, child: child)),
             child: (backdrop != null) ? backdrop : SizedBox.shrink(),
           ),
 
