@@ -134,9 +134,7 @@ class _ImmersiveListState extends State<ImmersiveList> {
           .updateBackdrop(getSelectedBackdrop());
     } else {
       print('Focus lost and update backdrop to empty widget');
-      // Future.delayed(Duration(milliseconds: 1500), () {
-      //   Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(Container(color: Color(0xff1a110f)));
-      // });
+      Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(Container(color: Color(0xff1a110f)));
     }
   }
 

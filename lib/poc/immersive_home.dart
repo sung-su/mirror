@@ -21,8 +21,9 @@ class ImmersiveHome extends StatelessWidget {
           // Backdrop
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
-            transitionBuilder: (child, animation) =>
-                ScaleTransition(scale: Tween<double>(begin: 0.95, end:1.1).animate(animation), child: FadeTransition(opacity: animation, child: child)),
+            transitionBuilder: (child, animation) => ScaleTransition(
+                scale: Tween<double>(begin: 0.95, end: 1.1).animate(animation),
+                child: FadeTransition(opacity: animation, child: child)),
             child: (backdrop != null) ? backdrop : SizedBox.shrink(),
           ),
 
@@ -56,15 +57,18 @@ class MainContent extends StatelessWidget {
                curve: Curves.easeIn,
              );
           }),
-    
-          ImmersiveList(ImmersiveContent.generateMockContent(), onFocused: () {
-            print('ImmersiveList focused');
-            _scrollController.animateTo(
-              400,
-              duration: const Duration(milliseconds: 100),
-              curve: Curves.easeIn,
-            );
-          },),
+
+          ImmersiveList(
+            ImmersiveContent.generateMockContent(),
+            onFocused: () {
+              print('ImmersiveList focused');
+              _scrollController.animateTo(
+                400,
+                duration: const Duration(milliseconds: 100),
+                curve: Curves.easeIn,
+              );
+            },
+          ),
           MockItem(),
           MockItem(),
           MockItem(),
@@ -125,28 +129,41 @@ class MockFocusableTabbar extends StatelessWidget {
               duration: const Duration(milliseconds: 100),
               height: 100,
               decoration: BoxDecoration(
-                color:
-                    Focus.of(buildContext).hasFocus ? Colors.blue : Colors.white.withAlpha(30),
+                color: Focus.of(buildContext).hasFocus
+                    ? Colors.blue
+                    : Colors.white.withAlpha(30),
               ),
-              child: Center(child: const Text('Header', style: TextStyle(fontSize: 30, color: Colors.white))));
+              child: Center(
+                  child: const Text('Header',
+                      style: TextStyle(fontSize: 30, color: Colors.white))));
         }));
   }
 }
 
-class MockCarousel extends StatelessWidget {
-  final FocusNode focusNode = FocusNode();
-  MockCarousel(
+class MockCarousel extends StatefulWidget {
+  const MockCarousel(
     this.onFocused, {
     super.key,
-  }) {
-    focusNode.addListener(_focusChanged);
-  }
+  });
 
   final VoidCallback onFocused;
 
+  @override
+  State<MockCarousel> createState() => _MockCarouselState();
+}
+
+class _MockCarouselState extends State<MockCarousel> {
+  final FocusNode focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    focusNode.addListener(_focusChanged);
+  }
+
   void _focusChanged() {
     if (focusNode.hasFocus) {
-      onFocused.call();
+      widget.onFocused.call();
     }
   }
 
