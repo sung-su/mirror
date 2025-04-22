@@ -204,7 +204,7 @@ class _ImmersiveListState extends State<ImmersiveList> {
       onKeyEvent: _onKeyEvent,
       child: AnimatedContainer(
           height: hasFocus ? 620 : 230,
-          duration: const Duration(milliseconds: 150),
+          duration: const Duration(milliseconds: 100),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             hasFocus
