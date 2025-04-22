@@ -63,7 +63,7 @@ class MainContent extends StatelessWidget {
             onFocused: () {
               print('ImmersiveList focused');
               _scrollController.animateTo(
-                350,
+                280,
                 duration: const Duration(milliseconds: 100),
                 curve: Curves.easeIn,
               );
@@ -127,7 +127,7 @@ class MockFocusableTabbar extends StatelessWidget {
         child: Builder(builder: (buildContext) {
           return AnimatedContainer(
               duration: const Duration(milliseconds: 100),
-              height: 100,
+              height: 80,
               decoration: BoxDecoration(
                 color: Focus.of(buildContext).hasFocus
                     ? Colors.blue
@@ -176,7 +176,7 @@ class _MockCarouselState extends State<MockCarousel> {
           child: Builder(builder: (buildContext) {
             return AnimatedContainer(
                 duration: const Duration(milliseconds: 100),
-                height: Focus.of(buildContext).hasFocus ? 430 : 250,
+                height: Focus.of(buildContext).hasFocus ? 344 : 200,
                 decoration: BoxDecoration(
                   color: Focus.of(buildContext).hasFocus
                       ? Colors.blue.withAlpha(100)

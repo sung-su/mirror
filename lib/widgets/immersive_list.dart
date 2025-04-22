@@ -203,7 +203,7 @@ class _ImmersiveListState extends State<ImmersiveList> {
       focusNode: _focusNode,
       onKeyEvent: _onKeyEvent,
       child: AnimatedContainer(
-          height: hasFocus ? 620 : 230,
+          height: hasFocus ? 500 : 184,
           duration: const Duration(milliseconds: 100),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -218,7 +218,7 @@ class _ImmersiveListState extends State<ImmersiveList> {
               padding: EdgeInsets.only(left: leftPadding, top: 10, bottom: 10),
               child: AnimatedDefaultTextStyle(
                 style: TextStyle(
-                  fontSize: hasFocus ? 30 : 20,
+                  fontSize: hasFocus ? 24 : 16,
                   color: Colors.grey,
                 ),
                 duration: const Duration(milliseconds: 150),
@@ -231,7 +231,7 @@ class _ImmersiveListState extends State<ImmersiveList> {
                 ? Padding(
                     padding: EdgeInsets.only(left: leftPadding),
                     child: SizedBox(
-                        width: 600,
+                        width: 480,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -249,13 +249,12 @@ class _ImmersiveListState extends State<ImmersiveList> {
                                 widget.contents[selectedIndex].title,
                                 key: ValueKey(selectedIndex),
                                 style: TextStyle(
-                                  fontSize: 50,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 40,
                                   color: Colors.white,
                                 ),
                               ),
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 8),
                             AnimatedSwitcher(
                               duration: const Duration(milliseconds: 300),
                               transitionBuilder: (Widget child,
@@ -269,7 +268,7 @@ class _ImmersiveListState extends State<ImmersiveList> {
                                 widget.contents[selectedIndex].subtitle,
                                 key: ValueKey(selectedIndex),
                                 style:
-                                    TextStyle(fontSize: 25, color: Colors.grey),
+                                    TextStyle(fontSize: 18, color: Colors.grey),
                               ),
                             ),
                             SizedBox(height: 5),
@@ -286,7 +285,7 @@ class _ImmersiveListState extends State<ImmersiveList> {
                                 widget.contents[selectedIndex].description,
                                 key: ValueKey(selectedIndex),
                                 style:
-                                    TextStyle(fontSize: 20, color: Colors.grey),
+                                    TextStyle(fontSize: 16, color: Colors.grey),
                                 softWrap: true,
                               ),
                             ),
@@ -294,9 +293,9 @@ class _ImmersiveListState extends State<ImmersiveList> {
                         )),
                   )
                 : SizedBox.shrink(),
-            hasFocus ? SizedBox(height: 20) : SizedBox.shrink(),
+            hasFocus ? SizedBox(height: 25) : SizedBox.shrink(),
             SizedBox(
-              height: 150,
+              height: 115,
               child: ScrollConfiguration(
                   behavior: ScrollBehavior().copyWith(scrollbars: false),
                   child: ListView.builder(
@@ -326,8 +325,7 @@ class _ImmersiveListState extends State<ImmersiveList> {
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.blue,
                               ),
-                              width: 250,
-                              //height: 200,
+                              width: 190,
                               child: Center(child: Text(widget.contents[index].title)),
                             ),
                           ));
