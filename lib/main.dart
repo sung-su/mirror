@@ -57,7 +57,7 @@ class PocGalleryPage extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ImmersiveHome(),
+                      builder: (context) => const ImmersiveHomeSizeWrapper(),
                     ));
               },
             ),

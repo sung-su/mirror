@@ -3,6 +3,24 @@ import 'package:provider/provider.dart';
 import 'package:tizen_fs/services/backdrop_provider.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
 
+
+class ImmersiveHomeSizeWrapper extends StatelessWidget {
+  const ImmersiveHomeSizeWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+    return (screenWidth != 960) ? FractionallySizedBox(
+      widthFactor: 960 / screenWidth,
+      heightFactor: 960 / screenWidth,
+      child: Transform.scale(
+          scale: screenWidth / 960,
+          child: const ImmersiveHome(),
+        ),
+    ) : const ImmersiveHome();
+  }
+}
+
 class ImmersiveHome extends StatelessWidget {
   const ImmersiveHome({super.key});
 
