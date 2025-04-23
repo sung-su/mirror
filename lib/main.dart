@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/poc/immersive_home.dart';
+import 'package:tizen_fs/poc/home_list.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -15,7 +17,6 @@ class MouseDraggableScrollBehavior extends ScrollBehavior {
   }
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -28,8 +29,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: ScrollConfiguration(
-        behavior: MouseDraggableScrollBehavior(),
-        child: const PocGalleryPage(title: 'Poc gallery')),
+          behavior: MouseDraggableScrollBehavior(),
+          child: const PocGalleryPage(title: 'Poc gallery')),
     );
   }
 }
@@ -58,6 +59,18 @@ class PocGalleryPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const ImmersiveHomeSizeWrapper(),
+                    ));
+              },
+            ),
+            ListTile(
+              title: const Text('Poc 2'),
+              subtitle: const Text('Home List POC'),
+              leading: const Icon(Icons.accessibility),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HomePage(),
                     ));
               },
             ),
