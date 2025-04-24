@@ -189,6 +189,7 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
           duration: const Duration(milliseconds: 100),
           height: expand ? 344 : 210,
           child: PageView(
+            physics: const NeverScrollableScrollPhysics(),
             controller: _pageController,
             scrollDirection: Axis.vertical,
             children: [
