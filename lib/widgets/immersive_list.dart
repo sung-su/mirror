@@ -135,75 +135,50 @@ class ImmersiveContentArea extends StatelessWidget {
       Expanded(child: SizedBox.shrink()),
       Padding(
         padding: EdgeInsets.only(left: leftPadding),
-        child: SizedBox(
-            width: 480,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 150),
-                  transitionBuilder:
-                      (Widget child, Animation<double> animation) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: child,
-                    );
-                  },
-                  child: Text(
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 150),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+          child: SizedBox(
+              key: ValueKey(
+                  Provider.of<ImmersiveListModel>(context).selectedIndex),
+              width: 480,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
                     Provider.of<ImmersiveListModel>(context)
                         .getSelectedContent()
                         .title,
-                    key: ValueKey(
-                        Provider.of<ImmersiveListModel>(context).selectedIndex),
                     style: TextStyle(
                       fontSize: 40,
                       color: Colors.white,
                     ),
                     textAlign: TextAlign.left,
                   ),
-                ),
-                SizedBox(height: 8),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 150),
-                  transitionBuilder:
-                      (Widget child, Animation<double> animation) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: child,
-                    );
-                  },
-                  child: Text(
+                  SizedBox(height: 8),
+                  Text(
                     Provider.of<ImmersiveListModel>(context)
                         .getSelectedContent()
                         .subtitle,
-                    key: ValueKey(
-                        Provider.of<ImmersiveListModel>(context).selectedIndex),
                     style: TextStyle(fontSize: 18, color: Colors.grey),
                   ),
-                ),
-                SizedBox(height: 5),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 150),
-                  transitionBuilder:
-                      (Widget child, Animation<double> animation) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: child,
-                    );
-                  },
-                  child: Text(
+                  SizedBox(height: 5),
+                  Text(
                     Provider.of<ImmersiveListModel>(context)
                         .getSelectedContent()
                         .description,
-                    key: ValueKey(
-                        Provider.of<ImmersiveListModel>(context).selectedIndex),
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                     softWrap: true,
                   ),
-                ),
-              ],
-            )),
+                ],
+              )),
+        ),
       )
     ]);
   }
@@ -394,8 +369,10 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
                                     colors: [
-                                      Colors.black.withAlpha((255 * 0.5).toInt()),
-                                      Colors.black.withAlpha((255*0.8).toInt()),
+                                      Colors.black
+                                          .withAlpha((255 * 0.5).toInt()),
+                                      Colors.black
+                                          .withAlpha((255 * 0.8).toInt()),
                                     ],
                                   ),
                                   borderRadius: BorderRadius.circular(10),
