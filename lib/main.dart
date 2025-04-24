@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:tizen_fs/poc/immersive_home.dart';
-import 'package:tizen_fs/poc/home_list.dart';
+import 'package:tizen_fs/widgets/home_screen_size_wrapper.dart';
+import 'package:tizen_fs/poc/immersive_list_poc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -51,26 +51,14 @@ class PocGalleryPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ListTile(
-              title: const Text('Poc 1'),
-              subtitle: const Text('Description of poc 1'),
-              leading: const Icon(Icons.podcasts),
+              title: const Text('ImmersiveList Poc'),
+              subtitle: const Text('google tv home screen'),
+              leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ImmersiveHomeSizeWrapper(),
-                    ));
-              },
-            ),
-            ListTile(
-              title: const Text('Poc 2'),
-              subtitle: const Text('Home List POC'),
-              leading: const Icon(Icons.accessibility),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HomePage(),
+                      builder: (context) => HomeScreenSizeWrapper(const ImmersiveListPocPage()),
                     ));
               },
             ),
