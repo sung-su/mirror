@@ -25,6 +25,7 @@ class _HomeContentState extends State<HomeContent> {
   final ImmersiveAreaController _immersiveAreaController =
       ImmersiveAreaController();
 
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(

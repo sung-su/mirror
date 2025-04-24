@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -8,39 +10,41 @@ class ImmersiveContent {
   final String description;
   final String subtitle;
   final String backdrop;
-  final String contentPath;
+  final String card;
 
   ImmersiveContent({
     required this.title,
     required this.description,
     required this.subtitle,
     required this.backdrop,
-    required this.contentPath,
+    required this.card,
   });
 
   factory ImmersiveContent.fromJson(Map<String, dynamic> json) {
     return ImmersiveContent(
       title: json['title'] as String,
-      description: json['description'] as String,
-      subtitle: json['subtitle'] as String,
+      description: (json['description'] as String).length > 100
+          ? '${json['description'].substring(0, 100)}...'
+          : json['description'] as String,
+      subtitle: json['metadata'] as String,
       backdrop: json['backdrop'] as String,
-      contentPath: json['contentPath'] as String,
+      card: json['card'] as String,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'description': description,
-      'subtitle': subtitle,
-      'backdrop': backdrop,
-      'contentPath': contentPath,
-    };
+  static Future<List<ImmersiveContent>> loadFromJson() async {
+    final jsonString =
+        await rootBundle.loadString('assets/mock/mock_content.json');
+    final List<dynamic> jsonList = jsonDecode(jsonString);
+    final List<ImmersiveContent> contents =
+        jsonList.map((json) => ImmersiveContent.fromJson(json)).toList();
+
+    return contents;
   }
 
   @override
   String toString() {
-    return 'MediaContent(title: $title, description: $description, subtitle: $subtitle, backdrop: $backdrop, contentPath: $contentPath)';
+    return 'MediaContent(title: $title, description: $description, subtitle: $subtitle, backdrop: $backdrop, card: $card)';
   }
 
   static List<ImmersiveContent> generateMockContent() {
@@ -51,19 +55,28 @@ class ImmersiveContent {
         description:
             'A dynmaic duo of superhero siblings join forces to save their city from a sinister vailain, redefining sisterhood in action. $index',
         subtitle: 'Subtitle $index',
-        backdrop: 'assets/mock/images/backdrop${(index % 3) + 1}.png',
-        contentPath: 'ContentPath $index',
+        backdrop: 'backdrop${(index % 3) + 1}.png',
+        card: 'ContentPath $index',
       ),
     );
   }
 }
 
 class ImmersiveListModel extends ChangeNotifier {
-  final List<ImmersiveContent> contents;
+  late List<ImmersiveContent> contents;
+  bool _isLoading = false;
   int _selectedIndex = 0;
 
   ImmersiveListModel(this.contents);
-  ImmersiveListModel.fromMock() : this(ImmersiveContent.generateMockContent());
+
+  ImmersiveListModel.fromMock() {
+    _isLoading = true;
+    ImmersiveContent.loadFromJson().then((value) {
+      _isLoading = false;
+      contents = value;
+      notifyListeners();
+    });
+  }
 
   int get selectedIndex => _selectedIndex;
   set selectedIndex(int index) {
@@ -71,12 +84,30 @@ class ImmersiveListModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  int get itemCount => contents.length;
+  int get itemCount => _isLoading ? 0 : contents.length;
   ImmersiveContent getContent(int index) {
+    if (_isLoading) {
+      return ImmersiveContent(
+        title: 'Loading...',
+        description: 'Loading...',
+        subtitle: 'Loading...',
+        backdrop: 'Loading...',
+        card: 'Loading...',
+      );
+    }
     return contents[index];
   }
 
   ImmersiveContent getSelectedContent() {
+    if (_isLoading) {
+      return ImmersiveContent(
+        title: 'Loading...',
+        description: 'Loading...',
+        subtitle: 'Loading...',
+        backdrop: 'Loading...',
+        card: 'Loading...',
+      );
+    }
     return contents[_selectedIndex];
   }
 }
@@ -111,7 +142,7 @@ class ImmersiveContentArea extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 150),
                   transitionBuilder:
                       (Widget child, Animation<double> animation) {
                     return FadeTransition(
@@ -129,11 +160,12 @@ class ImmersiveContentArea extends StatelessWidget {
                       fontSize: 40,
                       color: Colors.white,
                     ),
+                    textAlign: TextAlign.left,
                   ),
                 ),
                 SizedBox(height: 8),
                 AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 150),
                   transitionBuilder:
                       (Widget child, Animation<double> animation) {
                     return FadeTransition(
@@ -152,7 +184,7 @@ class ImmersiveContentArea extends StatelessWidget {
                 ),
                 SizedBox(height: 5),
                 AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 150),
                   transitionBuilder:
                       (Widget child, Animation<double> animation) {
                     return FadeTransition(
@@ -226,9 +258,11 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
 
     if (_hasFocus) {
       widget.onFocused?.call();
-      Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(getSelectedBackdrop());
+      Provider.of<BackdropProvider>(context, listen: false)
+          .updateBackdrop(getSelectedBackdrop());
     } else {
-      Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(null);
+      Provider.of<BackdropProvider>(context, listen: false)
+          .updateBackdrop(null);
     }
   }
 
@@ -267,7 +301,8 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
       );
       await Future.delayed(Duration(milliseconds: 300));
       if (current == _selectedIndex && _hasFocus) {
-        Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(getSelectedBackdrop());
+        Provider.of<BackdropProvider>(context, listen: false)
+            .updateBackdrop(getSelectedBackdrop());
       }
     } else {
       print("Item $_selectedIndex is not in the widget tree");
@@ -283,7 +318,7 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
           height: 426,
           child: CinematicScrim(
             image: Image.asset(
-                Provider.of<ImmersiveListModel>(context, listen: false).getSelectedContent().backdrop,
+                'assets/mock/images/${Provider.of<ImmersiveListModel>(context, listen: false).getSelectedContent().backdrop}',
                 width: 758,
                 height: 426,
                 fit: BoxFit.fill),
@@ -345,11 +380,37 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
                               color: Colors.blue,
                             ),
                             width: 190,
-                            child: Center(
-                                child: Text(
-                                    Provider.of<ImmersiveListModel>(context)
-                                        .getContent(index)
-                                        .title)),
+                            child: Stack(fit: StackFit.expand, children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.asset(
+                                  'assets/mock/images/${Provider.of<ImmersiveListModel>(context).getContent(index).card}',
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Colors.black.withAlpha((255 * 0.5).toInt()),
+                                      Colors.black.withAlpha((255*0.8).toInt()),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              Center(
+                                  child: Text(
+                                      Provider.of<ImmersiveListModel>(context)
+                                          .getContent(index)
+                                          .title,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold))),
+                            ]),
                           ),
                         ));
                   },
