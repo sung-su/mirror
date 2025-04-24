@@ -431,7 +431,10 @@ class CinematicScrim extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        image,
+        Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: image,
+        ),
         Container(
           decoration: BoxDecoration(
             gradient: RadialGradient(
