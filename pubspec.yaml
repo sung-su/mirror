@@ -67,6 +67,29 @@ flutter:
      - assets/mock/images/backdrop1.png
      - assets/mock/images/backdrop2.png
      - assets/mock/images/backdrop3.png
+     - assets/mock/mock_content.json
+     - assets/mock/images/1_backdrop.jpg
+     - assets/mock/images/2_backdrop.jpg
+     - assets/mock/images/3_backdrop.jpg
+     - assets/mock/images/4_backdrop.jpg
+     - assets/mock/images/5_backdrop.jpg
+     - assets/mock/images/6_backdrop.jpg
+     - assets/mock/images/7_backdrop.jpg
+     - assets/mock/images/8_backdrop.jpg
+     - assets/mock/images/9_backdrop.jpg
+     - assets/mock/images/10_backdrop.jpg
+     - assets/mock/images/1_card.jpg
+     - assets/mock/images/2_card.jpg
+     - assets/mock/images/3_card.jpg
+     - assets/mock/images/4_card.jpg
+     - assets/mock/images/5_card.jpg
+     - assets/mock/images/6_card.jpg
+     - assets/mock/images/7_card.jpg
+     - assets/mock/images/8_card.jpg
+     - assets/mock/images/9_card.jpg
+     - assets/mock/images/10_card.jpg
+
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

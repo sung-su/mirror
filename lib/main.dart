@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:tizen_fs/poc/immersive_home.dart';
+import 'package:tizen_fs/widgets/home_screen_size_wrapper.dart';
+import 'package:tizen_fs/poc/immersive_list_poc.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -15,7 +17,6 @@ class MouseDraggableScrollBehavior extends ScrollBehavior {
   }
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -28,8 +29,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: ScrollConfiguration(
-        behavior: MouseDraggableScrollBehavior(),
-        child: const PocGalleryPage(title: 'Poc gallery')),
+          behavior: MouseDraggableScrollBehavior(),
+          child: const PocGalleryPage(title: 'Poc gallery')),
     );
   }
 }
@@ -50,14 +51,14 @@ class PocGalleryPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ListTile(
-              title: const Text('Poc 1'),
-              subtitle: const Text('Description of poc 1'),
-              leading: const Icon(Icons.podcasts),
+              title: const Text('ImmersiveList Poc'),
+              subtitle: const Text('google tv home screen'),
+              leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ImmersiveHomeSizeWrapper(),
+                      builder: (context) => HomeScreenSizeWrapper(const ImmersiveListPocPage()),
                     ));
               },
             ),
