@@ -1,11 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:tizen_fs/poc/setting_panel_poc.dart';
-import 'package:tizen_fs/widgets/home_screen_size_wrapper.dart';
-import 'package:tizen_fs/poc/immersive_list_poc.dart';
+import 'router.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const TizenFS());
+
+  // for testing purposes
+  bool showPoc = true;
+  if (showPoc) {
+    AppRouter.router.go(ScreenPaths.poc);
+  }
 }
 
 class MouseDraggableScrollBehavior extends ScrollBehavior {
@@ -18,67 +22,16 @@ class MouseDraggableScrollBehavior extends ScrollBehavior {
   }
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class TizenFS extends StatelessWidget {
+  const TizenFS({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: ScrollConfiguration(
-          behavior: MouseDraggableScrollBehavior(),
-          child: const PocGalleryPage(title: 'Poc gallery')),
-    );
-  }
-}
-
-class PocGalleryPage extends StatelessWidget {
-  const PocGalleryPage({super.key, required this.title});
-
-  final String title;
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ListTile(
-              title: const Text('ImmersiveList Poc'),
-              subtitle: const Text('google tv home screen'),
-              leading: const Icon(Icons.subscriptions),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomeScreenSizeWrapper(const ImmersiveListPocPage()),
-                    ));
-              },
-            ),
-            ListTile(
-              title: const Text('Setting panel drawer Poc'),
-              subtitle: const Text('Left side setting panel'),
-              leading: const Icon(Icons.subscriptions),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomeScreenSizeWrapper(const SettingPanelPocPage()),
-                    ));
-              },
-            ),
-
-          ],
-        ),
-      ),
+    return MaterialApp.router(
+      title: 'Tizen First Screen',
+      theme: ThemeData.dark(useMaterial3: true),
+      scrollBehavior: MouseDraggableScrollBehavior(),
+      routerConfig: AppRouter.router,
     );
   }
 }
