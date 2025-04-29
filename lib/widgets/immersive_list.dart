@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
+import 'package:tizen_fs/styles/app_style.dart';
 
 class ImmersiveContent {
   final String title;
@@ -124,13 +125,13 @@ class ImmersiveContentArea extends StatelessWidget {
           child: Padding(
               padding: EdgeInsets.only(top: 10),
               child:
-                  Icon(Icons.keyboard_arrow_up, size: 35, color: Colors.grey))),
+                  Icon(Icons.keyboard_arrow_up, size: 35, color: Theme.of(context).indicatorColor.withAlphaF(0.5)))),
       Padding(
           padding: EdgeInsets.only(left: leftPadding, top: 10, bottom: 10),
-          child: const Text(
+          child: Text(
             'Top picks for you',
             textAlign: TextAlign.left,
-            style: TextStyle(fontSize: 24, color: Colors.grey),
+            style: TextStyle(fontSize: 24, color: Theme.of(context).colorScheme.onSurface.withAlphaF(0.5)),
           )),
       Expanded(child: SizedBox.shrink()),
       Padding(

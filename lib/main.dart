@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:tizen_fs/styles/app_style.dart';
 import 'router.dart';
 
 void main() {
@@ -29,9 +30,11 @@ class TizenFS extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Tizen First Screen',
-      theme: ThemeData.dark(useMaterial3: true),
+      theme: $style.colors.toThemeData(),
       scrollBehavior: MouseDraggableScrollBehavior(),
       routerConfig: AppRouter.router,
     );
   }
 }
+
+AppStyle get $style => AppStyle.instance;
