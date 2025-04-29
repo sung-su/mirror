@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tizen_fs/services/backdrop_provider.dart';
+import 'package:tizen_fs/providers/backdrop_provider.dart';
 
 class BackdropScaffold extends StatelessWidget {
   final Widget child;
@@ -21,7 +21,8 @@ class BackdropScaffold extends StatelessWidget {
           // Background
           SizedBox.expand(
               child: DecoratedBox(
-                  decoration: BoxDecoration(color: const Color.fromARGB(255, 18, 18, 18)))),
+                  decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 18, 18, 18)))),
           // Backdrop
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
@@ -37,5 +38,4 @@ class BackdropScaffold extends StatelessWidget {
       }),
     );
   }
-
 }

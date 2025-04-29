@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:tizen_fs/services/backdrop_provider.dart';
+import 'package:tizen_fs/providers/backdrop_provider.dart';
 
 class ImmersiveContent {
   final String title;
