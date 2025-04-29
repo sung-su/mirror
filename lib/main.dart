@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:tizen_fs/poc/setting_panel_poc.dart';
 import 'package:tizen_fs/widgets/home_screen_size_wrapper.dart';
 import 'package:tizen_fs/poc/immersive_list_poc.dart';
 
@@ -62,6 +63,19 @@ class PocGalleryPage extends StatelessWidget {
                     ));
               },
             ),
+            ListTile(
+              title: const Text('Setting panel drawer Poc'),
+              subtitle: const Text('Left side setting panel'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomeScreenSizeWrapper(const SettingPanelPocPage()),
+                    ));
+              },
+            ),
+
           ],
         ),
       ),
