@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
@@ -128,6 +129,7 @@ class ImmersiveArea extends StatefulWidget {
 }
 
 class _ImmersiveAreaState extends State<ImmersiveArea> {
+  final _carouselKey = GlobalKey<ImmersiveCarouselState>();
   final FocusNode _focusNode = FocusNode();
   final PageController _pageController = PageController();
 
@@ -184,6 +186,20 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
   @override
   Widget build(BuildContext context) {
     return Focus(
+      onKeyEvent: (node, event) {
+        if (event is KeyDownEvent) {
+          if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+            _carouselKey.currentState?.moveCarousel(1);
+            return KeyEventResult.handled;
+          } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+            _carouselKey.currentState?.moveCarousel(-1);
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        }
+        return KeyEventResult.ignored;
+      },
+      focusNode: _focusNode,
       child: Builder(builder: (context) {
         return AnimatedContainer(
           duration: const Duration(milliseconds: 100),
@@ -195,6 +211,8 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
             children: [
               ImmersiveCarousel(
                 items: ImmersiveCarouselContent.generateMockContent(),
+                key: _carouselKey,
+                isExpanded: expand,
               ),
               ImmersiveContentArea(),
             ],

@@ -64,17 +64,19 @@ class CinematicScrim extends StatelessWidget {
 
 class ImmersiveCarousel extends StatefulWidget {
   final List<ImmersiveCarouselContent> items;
+  final bool isExpanded;
 
   const ImmersiveCarousel({
     super.key,
     required this.items,
+    this.isExpanded = false,
   });
 
   @override
-  State<ImmersiveCarousel> createState() => _ImmersiveCarouselState();
+  State<ImmersiveCarousel> createState() => ImmersiveCarouselState();
 }
 
-class _ImmersiveCarouselState extends State<ImmersiveCarousel> with TickerProviderStateMixin {
+class ImmersiveCarouselState extends State<ImmersiveCarousel> with TickerProviderStateMixin {
   int currentIndex = 0;
   bool isFocused = false;
   Timer? autoScrollTimer;
@@ -82,17 +84,22 @@ class _ImmersiveCarouselState extends State<ImmersiveCarousel> with TickerProvid
   @override
   void initState() {
     super.initState();
-    Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(getSelectedBackdrop());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(getSelectedBackdrop());
+    });
+
     startAutoScroll();
   }
 
   void startAutoScroll() {
     autoScrollTimer?.cancel();
     autoScrollTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
-      final next = (currentIndex + 1) % widget.items.length;
-      setState(() {
-        currentIndex = next;
-      });
+      if (widget.items.isNotEmpty) {
+        final next = (currentIndex + 1) % widget.items.length;
+        setState(() => currentIndex = next );
+      }
+
       Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(getSelectedBackdrop());
     });
   }
@@ -103,6 +110,9 @@ class _ImmersiveCarouselState extends State<ImmersiveCarousel> with TickerProvid
   }
 
   void moveCarousel(int delta) {
+    if (widget.items.isEmpty) {
+      return;
+    }
     final nextIndex = (currentIndex + delta + widget.items.length) % widget.items.length;
     setState(() => currentIndex = nextIndex);
     Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(getSelectedBackdrop());
@@ -131,49 +141,15 @@ class _ImmersiveCarouselState extends State<ImmersiveCarousel> with TickerProvid
 
   @override
   Widget build(BuildContext context) {
-    final double collapsedHeight = 320.0;
-    final double expandedHeight = 380.0;
+    if (widget.items.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     final double leftOffset = 58;
     final double rightOffset = 58;
     final double bottomOffset = 24.0;
 
-    final double contentHeight = isFocused ? expandedHeight : collapsedHeight;
-
-    return FocusableActionDetector(
-      onFocusChange: (focused) => setState(() {
-        isFocused = focused;
-        if (focused) {
-          Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(getSelectedBackdrop());
-        }
-      }),
-      shortcuts: {
-        LogicalKeySet(LogicalKeyboardKey.arrowLeft): DirectionalFocusIntent(TraversalDirection.left),
-        LogicalKeySet(LogicalKeyboardKey.arrowRight): DirectionalFocusIntent(TraversalDirection.right),
-        LogicalKeySet(LogicalKeyboardKey.arrowUp): const DirectionalFocusIntent(TraversalDirection.up),
-        LogicalKeySet(LogicalKeyboardKey.arrowDown): const DirectionalFocusIntent(TraversalDirection.down),
-      },
-      actions: {
-        DirectionalFocusIntent: CallbackAction<DirectionalFocusIntent>(
-          onInvoke: (intent) {
-            if (!isFocused) {
-              return null;
-            }
-            if (intent.direction == TraversalDirection.left || intent.direction == TraversalDirection.right) {
-              moveCarousel(intent.direction == TraversalDirection.left ? -1 : 1);
-            } else if (intent.direction == TraversalDirection.up) {
-              FocusScope.of(context).previousFocus();
-            } else if (intent.direction == TraversalDirection.down) {
-              FocusScope.of(context).nextFocus();
-            }
-            return null;
-          },
-        ),
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeInOut,
-        height: contentHeight,
-        child: Stack(
+    return Stack(
         children: [
           // Content Block
           Align(
@@ -205,7 +181,7 @@ class _ImmersiveCarouselState extends State<ImmersiveCarousel> with TickerProvid
                     key: ValueKey(widget.items[currentIndex].title),
                     child: ContentBlock(
                       item: widget.items[currentIndex],
-                      isFocused: isFocused,
+                      isFocused: widget.isExpanded,
                     ),
                   )
                 ),
@@ -225,7 +201,6 @@ class _ImmersiveCarouselState extends State<ImmersiveCarousel> with TickerProvid
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: currentIndex == index ? Colors.white : Colors.grey,
-                          borderRadius: BorderRadius.circular(4),
                         ),
                       );
                   }),
@@ -233,9 +208,7 @@ class _ImmersiveCarouselState extends State<ImmersiveCarousel> with TickerProvid
                 )
               ),
         ],
-      ),
-      )
-    );
+      );
   }
 }
 
