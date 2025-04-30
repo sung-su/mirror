@@ -69,7 +69,7 @@ class AppColors {
         outline: border,
     );
     
-    var t = ThemeData.from(textTheme: txtTheme, colorScheme: colorScheme).copyWith(
+    var t = ThemeData.from(textTheme: txtTheme, colorScheme: colorScheme, useMaterial3: true).copyWith(
       textSelectionTheme: TextSelectionThemeData(cursorColor: primary),
       highlightColor: primary,
     );
