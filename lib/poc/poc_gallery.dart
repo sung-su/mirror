@@ -3,6 +3,8 @@ import 'package:tizen_fs/poc/immersive_carousel_poc.dart';
 import 'package:tizen_fs/widgets/home_screen_size_wrapper.dart';
 import 'setting_panel_poc.dart';
 import 'immersive_list_poc.dart';
+import 'package:tizen_fs/poc/media_list_poc.dart';
+import 'package:provider/provider.dart';
 
 class PocGalleryPage extends StatelessWidget {
   const PocGalleryPage({super.key, required this.title});
@@ -53,8 +55,20 @@ class PocGalleryPage extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
+                      builder: (context) => HomeScreenSizeWrapper(
+                          const ImmersiveCarouselPocPage()),
+                    ));
+              },
+            ),
+            ListTile(
+              title: const Text('Media List Poc'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
                       builder: (context) =>
-                          HomeScreenSizeWrapper(const ImmersiveCarouselPocPage()),
+                          HomeScreenSizeWrapper(const MediaListPocPage()),
                     ));
               },
             ),
