@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tizen_fs/poc/immersive_carousel_poc.dart';
 import 'package:tizen_fs/widgets/home_screen_size_wrapper.dart';
+import 'package:provider/provider.dart';
+import 'media_list_poc.dart';
 import 'setting_panel_poc.dart';
 import 'immersive_list_poc.dart';
 import 'home_poc.dart';
@@ -55,6 +58,31 @@ class PocGalleryPage extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) =>
                           HomeScreenSizeWrapper(const SettingPanelPocPage()),
+                    ));
+              },
+            ),
+            ListTile(
+              title: const Text('ImmersiveCarousel Poc'),
+              subtitle: const Text('Immersive Carousel'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomeScreenSizeWrapper(
+                          const ImmersiveCarouselPocPage()),
+                    ));
+              },
+            ),
+            ListTile(
+              title: const Text('Media List Poc'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreenSizeWrapper(const MediaListPocPage()),
                     ));
               },
             ),
