@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tizen_fs/widgets/home_screen_size_wrapper.dart';
 import 'setting_panel_poc.dart';
 import 'immersive_list_poc.dart';
+import 'home_poc.dart';
 
 class PocGalleryPage extends StatelessWidget {
   const PocGalleryPage({super.key, required this.title});
@@ -18,6 +19,19 @@ class PocGalleryPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            ListTile(
+              title: const Text('Home Poc'),
+              subtitle: const Text('Appbar and lists'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreenSizeWrapper(const HomePocPage()),
+                    ));
+              },
+            ),
             ListTile(
               title: const Text('ImmersiveList Poc'),
               subtitle: const Text('google tv home screen'),
