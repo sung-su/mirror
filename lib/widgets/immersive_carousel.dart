@@ -26,7 +26,7 @@ class ImmersiveCarouselContent {
       (index) => ImmersiveCarouselContent(
         overline: 'Overline $index',
         title: 'Movie Title $index',
-        description: 'Description of the movie goes here. This is a sample description for item $index.',
+        description: 'Description of the movie goes here.\n This is a sample description for item $index.',
         image: 'assets/mock/images/backdrop${(index % 3) + 1}.png',
         buttonText: 'Watch Now',
       ),
