@@ -9,14 +9,25 @@ import 'package:tizen_fs/models/tile.dart';
 class MediaDBParser {
   static const String dbPath = 'assets/sqlite.db';
   //'/home/owner/apps_rw/com.samsung.tv.home.media/shared/trusted/sqlite.db';
-  Database? _db;
+  final Map<String, Category> categoryMap = {};
   final List<String> excludedCategories = [
     'Anchor Row',
     'Genre Bookmark',
     'Explore More',
   ];
+  Database? _db;
+  bool _initialized = false;
 
-  Future<void> _ensureOpen() async {
+  Future<void> initialize() async {
+    if (_initialized) return;
+
+    await _ensureDBOpen();
+    await _loadCategories();
+    await close();
+    _initialized = true;
+  }
+
+  Future<void> _ensureDBOpen() async {
     if (_db == null || !_db!.isOpen) {
       final databasesPath = await getDatabasesPath();
       final path = join(databasesPath, 'sqlite.db');
@@ -40,8 +51,7 @@ class MediaDBParser {
     }
   }
 
-  Future<List<Category>> loadCategories() async {
-    await _ensureOpen();
+  Future<void> _loadCategories() async {
     final db = _db!;
     final List<Map<String, dynamic>> rows = await db.query(
       'TableEntity',
@@ -52,8 +62,6 @@ class MediaDBParser {
     final Map<int, Map<String, dynamic>> entryMap = {
       for (var row in rows) row['UID'] as int: row,
     };
-
-    final Map<String, Category> categoryMap = {};
 
     for (var row in rows) {
       final String elementID = row['elementID'];
@@ -86,15 +94,12 @@ class MediaDBParser {
         }
       }
     }
-    return categoryMap.values.toList();
   }
 
   Future<void> printCategories() async {
-    final categories = await loadCategories();
+    print('=== Categories loaded: ${categoryMap.length} ===');
 
-    print('=== Categories loaded: ${categories.length} ===');
-
-    for (var category in categories) {
+    for (var category in categoryMap.values) {
       print('Category: ${category.name} (UID: ${category.uid})');
       print('   Contains tiles: ${category.tiles.length}');
       for (var tile in category.tiles) {

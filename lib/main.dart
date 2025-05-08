@@ -1,10 +1,17 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tizen_fs/styles/app_style.dart';
+import 'package:tizen_fs/utils/media_db_parser.dart';
 import 'router.dart';
 
-void main() {
-  runApp(const TizenFS());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final mediaDBParser = MediaDBParser();
+  await mediaDBParser.initialize();
+
+  runApp(Provider<MediaDBParser>.value(value: mediaDBParser, child: TizenFS()));
 
   // for testing purposes
   bool showPoc = true;

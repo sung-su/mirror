@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/category.dart';
 import 'package:tizen_fs/utils/media_db_parser.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
@@ -30,21 +31,19 @@ class _MediaDBParserPocState extends State<MediaDBParserPoc> {
   @override
   void initState() {
     super.initState();
-    _loadData();
+    categories = Provider.of<MediaDBParser>(context, listen: false)
+        .categoryMap
+        .values
+        .toList();
+    setState(() {
+      categories = categories;
+    });
   }
 
   @override
   void dispose() {
     _focusNode.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadData() async {
-    final mediaDBParser = MediaDBParser();
-    categories = await mediaDBParser.loadCategories();
-    setState(() {
-      categories = categories;
-    });
   }
 
   @override
