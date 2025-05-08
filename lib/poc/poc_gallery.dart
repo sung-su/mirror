@@ -31,7 +31,7 @@ class PocGalleryPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          HomeScreenSizeWrapper(const HomePocPage()),
+                          HomeScreenSizeWrapper(const TabPocPage()),
                     ));
               },
             ),

@@ -3,8 +3,8 @@ import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
 import 'package:tizen_fs/widgets/tab_bar.dart';
 import 'package:tizen_fs/widgets/tab_pageview.dart';
 
-class HomePocPage extends StatelessWidget {
-  const HomePocPage({super.key});
+class TabPocPage extends StatelessWidget {
+  const TabPocPage({super.key});
 
   @override
   Widget build(BuildContext context) {
