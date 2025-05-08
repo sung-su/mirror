@@ -19,15 +19,15 @@ class _TvTabbarState extends State<TvTabbar> {
   final double _tabbarHeight = 80.0;
   final int _itemCount = 6;
 
-  int _lastSelected = 0;
-  int _selected = 0;
+  int _lastSelected = 1;
+  int _selected = 1;
   
   @override
   void initState() {
     super.initState();
   }
 
-  void movePage(int pageIndex) {
+  void _movePage(int pageIndex) {
     debugPrint('_TvPageViewState._movePage: $_selected $pageIndex');
     widget.pageController.animateToPage(
       pageIndex,
@@ -49,7 +49,7 @@ class _TvTabbarState extends State<TvTabbar> {
         _lastSelected = _selected;
 
         if(_selected > 0 && _selected < 4){
-          movePage(_selected - 1);
+          _movePage(_selected - 1);
         }
       }
     }
@@ -143,7 +143,6 @@ class _TvTabbarState extends State<TvTabbar> {
                   icon: const Icon(Icons.settings_outlined, size: 18),
                   isSelected: 5 == _selected,
                 ),
-
                 Text('TizenTV')
               ]
             ),
