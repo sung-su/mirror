@@ -36,6 +36,12 @@ dependencies:
   cupertino_icons: ^1.0.8
   go_router: ^13.0.0
   provider:
+  sqflite: ^2.3.0
+  sqflite_common:
+  sqflite_tizen: ^0.1.3
+  path_provider: ^2.1.4
+  path_provider_tizen: ^2.2.0
+  path: ^1.8.2
 
 dev_dependencies:
   flutter_test:
@@ -88,6 +94,7 @@ flutter:
      - assets/mock/images/8_card.jpg
      - assets/mock/images/9_card.jpg
      - assets/mock/images/10_card.jpg
+     - assets/sqlite.db
 
 
 
