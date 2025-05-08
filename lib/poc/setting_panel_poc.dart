@@ -39,7 +39,7 @@ class _SettingPanelState extends State<SettingPanel> {
   @override
   void initState() {
     super.initState();
-    _settingFocusNode.requestFocus();
+    // _settingFocusNode.requestFocus();
   }
 
   @override
