@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -53,6 +56,7 @@ class _MediaDBParserPocState extends State<MediaDBParserPoc> {
       itemCount: categories.length,
       itemBuilder: (context, index) {
         final category = categories[index];
+        final isLauncher = category.name == 'Launcher';
         return Column(
           children: [
             Container(
@@ -81,40 +85,45 @@ class _MediaDBParserPocState extends State<MediaDBParserPoc> {
                       itemBuilder: (context, index) {
                         final tile = category.tiles[index];
                         return Container(
-                          width: 190,
+                          width: isLauncher ? 120 : 190,
                           margin: const EdgeInsets.only(right: 12),
                           decoration: BoxDecoration(
                             color: Colors.grey.shade900,
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: isLauncher
+                                ? BorderRadius.circular(100)
+                                : BorderRadius.circular(10),
                           ),
                           child: Stack(
                             fit: StackFit.expand,
                             children: [
                               ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: isLauncher
+                                    ? BorderRadius.circular(100)
+                                    : BorderRadius.circular(10),
                                 child: _buildTileImage(tile.iconUrl!),
                               ),
-                              Positioned(
-                                bottom: 0,
-                                left: 8,
-                                right: 8,
-                                child: Text(
-                                  tile.title,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    shadows: [
-                                      Shadow(
-                                        color: Colors.black,
-                                        blurRadius: 2,
-                                      )
-                                    ],
+                              if (!isLauncher)
+                                Positioned(
+                                  bottom: 0,
+                                  left: 8,
+                                  right: 8,
+                                  child: Text(
+                                    tile.title,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black,
+                                          blurRadius: 2,
+                                        )
+                                      ],
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
+                                )
                             ],
                           ),
                         );
@@ -135,6 +144,13 @@ class _MediaDBParserPocState extends State<MediaDBParserPoc> {
         imageUrl: iconUrl,
         placeholder: (context, url) => const CircularProgressIndicator(),
         errorWidget: (context, url, error) => const Icon(Icons.error),
+        fit: BoxFit.fill,
+      );
+    } else if (iconUrl.startsWith('/')) {
+      return Image.file(
+        File(iconUrl),
+        errorBuilder: (context, error, stackTrace) =>
+            const Icon(Icons.broken_image),
         fit: BoxFit.fill,
       );
     } else {

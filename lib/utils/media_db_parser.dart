@@ -78,6 +78,8 @@ class MediaDBParser {
         final parentUIJson =
             parentRow != null ? _parseJson(parentRow['UIJson']) : {};
         title = parentUIJson['title'];
+      } else if (elementID == 'd/launcher.layer') {
+        title = uiJson['title'];
       }
 
       if (title != null &&
