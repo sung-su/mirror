@@ -10,6 +10,11 @@ class MediaDBParser {
   static const String dbPath = 'assets/sqlite.db';
   //'/home/owner/apps_rw/com.samsung.tv.home.media/shared/trusted/sqlite.db';
   Database? _db;
+  final List<String> excludedCategories = [
+    'Anchor Row',
+    'Genre Bookmark',
+    'Explore More',
+  ];
 
   Future<void> _ensureOpen() async {
     if (_db == null || !_db!.isOpen) {
@@ -67,7 +72,9 @@ class MediaDBParser {
         title = parentUIJson['title'];
       }
 
-      if (title != null && title.trim().isNotEmpty) {
+      if (title != null &&
+          title.trim().isNotEmpty &&
+          !excludedCategories.contains(title)) {
         final childUIDs = _parseChildEntityList(childEntityList);
         final tiles = _loadTiles(childUIDs, entryMap);
         if (tiles.isNotEmpty) {
