@@ -6,6 +6,7 @@ namespace Runner
     {
         protected override void OnCreate()
         {
+            UserPixelRatio = 2.0;
             base.OnCreate();
 
             GeneratedPluginRegistrant.RegisterPlugins(this);
