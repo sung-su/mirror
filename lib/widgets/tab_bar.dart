@@ -1,60 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:tizen_fs/poc/setting_panel_poc.dart';
-
-class PageModel with ChangeNotifier {
-  List<String> pages;
-  int _index = 0;
-
-  int get currentIndex => _index;
-  int get pageCount => pages.length;
-
-  PageModel(this.pages);
-
-  String getPageName(int index) {
-    return pages[index];
-  }
-
-  void select(int value) {
-    _index = value;
-    notifyListeners();
-  }
-}
 
 class TvTabbar extends StatefulWidget {
   const TvTabbar({
     super.key,
+    required this.pageController,
   });
+
+  final PageController pageController;
 
   @override
   State<TvTabbar> createState() => _TvTabbarState();
 }
 
 class _TvTabbarState extends State<TvTabbar> {
+  final List<String> pages = ['QA', 'Home', 'Apps', 'Library'];
   final double _tabbarHeight = 80.0;
+  final int _itemCount = 6;
 
+  int _lastSelected = 0;
   int _selected = 0;
-  int _focused = 0;
-  int _itemCount = 0;
-
+  
   @override
   void initState() {
     super.initState();
-    _itemCount = context.read<PageModel>().pageCount;
+  }
 
+  void movePage(int pageIndex) {
+    debugPrint('_TvPageViewState._movePage: $_selected $pageIndex');
+    widget.pageController.animateToPage(
+      pageIndex,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   void setSelected(int index) {
-    debugPrint('[setSelected] selected=$_selected, focused=$_focused, index=$index');
+    debugPrint('[setSelected] selected=$_selected, _lastSelected=$_lastSelected, index=$index');
     if (_selected != index) {
-      setState(() {
-        _selected = index;
-      });
-      _focused = (_selected >= 0) ? _selected : _focused;
+      if(index == 5) {
+        showSettingPanel(context);
+      }
+      else {
+        setState(() {
+          _selected = index;
+        });
+        _lastSelected = _selected;
 
-      if(_selected > -1)
-        context.read<PageModel>().select(_selected);
+        if(_selected > 0 && _selected < 4){
+          movePage(_selected - 1);
+        }
+      }
     }
   }
 
@@ -86,33 +83,30 @@ class _TvTabbarState extends State<TvTabbar> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('_TvTabbarState.build() selected=$_selected, focused=$_focused');
+    debugPrint('_TvTabbarState.build() selected=$_selected, _lastSelected=$_lastSelected');
     return SizedBox(
       height: _tabbarHeight,
       child: Focus(
         autofocus: true,
         onFocusChange: (hasFocus) {
-          debugPrint('[onFocusChange] selected=$_selected, focused=$_focused');
+          debugPrint('[onFocusChange] selected=$_selected, _lastSelected=$_lastSelected');
           if(hasFocus) {
-            setSelected(_focused);
+            setSelected(_lastSelected);
           } else{
-            setSelected(-1);
+            setState(() {
+              _selected = -1;
+            });
           }
         },
         onKeyEvent: (_, onKeyEvent) {
           if (onKeyEvent is KeyDownEvent) {
             if (onKeyEvent.logicalKey == LogicalKeyboardKey.arrowLeft) {
-              debugPrint('[onKeyEvent] LogicalKeyboardKey.arrowLeft');
+              debugPrint('[onKeyEvent] LogicalKeyboardKey.arrowLeft: $_selected');
               setSelected((_selected > 0 ) ? (_selected - 1) : _selected);
               return KeyEventResult.handled;
             }else if (onKeyEvent.logicalKey == LogicalKeyboardKey.arrowRight) {
-              debugPrint('[onKeyEvent] LogicalKeyboardKey.arrowRight');
-              if(_selected == _itemCount - 1) {
-                debugPrint('[onKeyEvent] show setting panel');
-                showSettingPanel(context);
-              } else {
-                setSelected((_selected < _itemCount - 1) ? (_selected + 1) : _selected);
-              }
+              debugPrint('[onKeyEvent] LogicalKeyboardKey.arrowRight: $_selected');
+              setSelected((_selected < _itemCount - 1) ? (_selected + 1) : _selected);
               return KeyEventResult.handled;
             } 
           }
@@ -122,16 +116,73 @@ class _TvTabbarState extends State<TvTabbar> {
           padding: const EdgeInsets.fromLTRB(16, 16, 0, 16),
             child: Row(
               spacing: 20,
-              children: List.generate(_itemCount, (index) => Row(children: [
-                TvTab(
-                  text: context.read<PageModel>().getPageName(index),
-                  isSelected: index == _selected,
+              children: [
+                TvAvatar(
+                  imageUrl: null,
+                  text: pages[0],
+                  isSelected: 0 == _selected,
                 ),
-              ])),
+                TvTab(
+                  text: pages[1],
+                  isSelected: 1 == _selected,
+                ),
+                TvTab(
+                  text: pages[2],
+                  isSelected: 2 == _selected,
+                ),
+                TvTab(
+                  text: pages[3],
+                  isSelected: 3 == _selected,
+                ),
+                const Spacer(),
+                TvTabIcon(
+                  icon: const Icon(Icons.search, size: 18),
+                  isSelected: 4 == _selected,
+                ),
+                TvTabIcon(
+                  icon: const Icon(Icons.settings_outlined, size: 18),
+                  isSelected: 5 == _selected,
+                ),
+
+                Text('TizenTV')
+              ]
             ),
           ),
         )
       );
+  }
+}
+
+class TvAvatar extends StatelessWidget {
+  const TvAvatar({super.key, this.imageUrl, this.isSelected = false, this.text}); 
+  final bool isSelected;
+  final String? imageUrl;
+  final String? text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: isSelected ? Color.fromARGB(255, 125, 125, 125): Colors.transparent,
+          width: 2.0,
+        ),
+      ),
+      child : GestureDetector(
+        onTap: () {
+          // This will be executed when the CircleAvatar is pressed
+          print('CircleAvatar was pressed!');
+        },
+        child: CircleAvatar(
+          backgroundColor: Colors.brown.shade800,
+          backgroundImage: imageUrl != null ? NetworkImage(imageUrl!) : null,
+          child: (imageUrl == null && text != null) ? Text(text!) : null,
+        )
+      )
+    );
   }
 }
 
@@ -161,6 +212,26 @@ class TvTab extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(fontSize: 16),
+      ),
+    );
+  }
+}
+
+class TvTabIcon extends StatelessWidget {
+  const TvTabIcon({super.key, required this.icon, required this.isSelected}); 
+  final bool isSelected;
+  final Widget icon;
+
+  @override
+  Widget build(BuildContext context) {
+    debugPrint('_TabButtonState.build()');
+    return IconButton(
+      icon: icon,
+      onPressed: () {
+        debugPrint('IconButton pressed');
+      },
+      style: IconButton.styleFrom(
+        backgroundColor: isSelected ? Color.fromARGB(255, 125, 125, 125) : Colors.transparent
       ),
     );
   }

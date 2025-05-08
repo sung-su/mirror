@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
-import 'tab_bar.dart';
+import 'package:tizen_fs/widgets/immersive_carousel.dart';
 
 class TvPageView extends StatefulWidget {
   const TvPageView({
     super.key,
+    required this.pageController,
     required this.scrollController,
   });
 
+  final PageController pageController;
   final ScrollController scrollController;
 
   @override
@@ -17,80 +20,40 @@ class TvPageView extends StatefulWidget {
 }
 
 class _TvPageViewState extends State<TvPageView> {
-  late PageController _pageViewController;
-  int _pageCount = 0;
-  int _currentPageIndex = 0;
 
   @override
   void initState() {
     super.initState();
 
-    _pageCount = context.read<PageModel>().pageCount;
-    _currentPageIndex = context.read<PageModel>().currentIndex;
-
-    debugPrint('initState _currentPageIndex=$_currentPageIndex');
-    _pageViewController = PageController(
-      initialPage: _currentPageIndex,
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _pageViewController.dispose();
-  }
-
-  @override
-  void didUpdateWidget(covariant TvPageView oldWidget) {
-    debugPrint('_TvPageViewState.didUpdateWidget()');
-    super.didUpdateWidget(oldWidget);
-
-    if (_currentPageIndex != context.read<PageModel>().currentIndex) {
-      _movePage(context.read<PageModel>().currentIndex);
-    }
+    widget.pageController.addListener(() {
+      //TODO: to add opacity change animation when the page is changed
+      debugPrint('[_TvPageViewState][pageController.addListener] widget.pageController.page=${widget.pageController.page}');
+      
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('_TvPageViewState.build() pageIndex=${_pageCount}, currentIndex=$_currentPageIndex');
-
-    //TODO : page builder
-    int index = 0;
     return ExpandablePageView(
-      controller: _pageViewController,
-      physics: const NeverScrollableScrollPhysics(),
+      controller: widget.pageController,
+      // physics: const NeverScrollableScrollPhysics(),
       children: [
         AnimatedPage(
-          isVisible: _currentPageIndex == index++,
           child: HomeContent(scrollController: widget.scrollController)
         ),
         AnimatedPage(
-          isVisible: _currentPageIndex == index++,
           child: ColoredPage(scrollController: widget.scrollController)
         ),
         AnimatedPage(
-          isVisible: _currentPageIndex == index++,
           child: EmptyPage()
         ),
       ]
     );
   }
-
-  void _movePage(int currentPageIndex) {
-    debugPrint('_TvPageViewState._movePage: $currentPageIndex');
-    if (_currentPageIndex != currentPageIndex) {
-      _pageViewController.animateToPage(
-        currentPageIndex,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-      _currentPageIndex = currentPageIndex;
-    }
-  }
 }
 
 class AnimatedPage extends StatelessWidget {
-  const AnimatedPage({super.key, required this.child, required this.isVisible});
+  const AnimatedPage({super.key, required this.child, this.isVisible = true});
 
   final Widget child;
   final bool isVisible;
@@ -198,12 +161,22 @@ class _HomeContentState extends State<HomeContent> {
               _immersiveAreaController
                   .setState(ImmersiveAreaController.carouselFocused);
               },
+              onUnFocused: (){
+                print('Header focused');
+                _scrollController.animateTo(
+                  0,
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.easeIn,
+                );
+              _immersiveAreaController
+                  .setState(ImmersiveAreaController.headerFocused);
+              },
             ),
             ImmersiveListArea(
               onFocused: () {
                 print('item 1 focused');
                 _scrollController.animateTo(
-                  80,
+                  70,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.easeIn,
                 );
@@ -259,12 +232,14 @@ class ImmersiveAreaController {
 
 class ImmersiveArea extends StatefulWidget {
   final VoidCallback? onFocused;
+  final VoidCallback? onUnFocused;
   final ImmersiveAreaController? controller;
 
   const ImmersiveArea(
     this.controller, {
     super.key,
     this.onFocused,
+    this.onUnFocused,
   });
 
   @override
@@ -272,6 +247,7 @@ class ImmersiveArea extends StatefulWidget {
 }
 
 class _ImmersiveAreaState extends State<ImmersiveArea> {
+  final _carouselKey = GlobalKey<ImmersiveCarouselState>();
   final FocusNode _focusNode = FocusNode();
   final PageController _pageController = PageController();
 
@@ -323,61 +299,49 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
           duration: const Duration(milliseconds: 100), curve: Curves.ease);
       widget.onFocused?.call();
     }
+    else {
+      widget.onUnFocused?.call();
+    }
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Focus(
+      onKeyEvent: (node, event) {
+        if (event is KeyDownEvent) {
+          if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+            _carouselKey.currentState?.moveCarousel(1);
+            return KeyEventResult.handled;
+          } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+            _carouselKey.currentState?.moveCarousel(-1);
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        }
+        return KeyEventResult.ignored;
+      },
       focusNode: _focusNode,
       child: Builder(builder: (context) {
         return AnimatedContainer(
           duration: const Duration(milliseconds: 100),
-          height: expand ? 344 : 210,
+          height: expand ? 354 : 210,
           child: PageView(
             physics: const NeverScrollableScrollPhysics(),
             controller: _pageController,
             scrollDirection: Axis.vertical,
             children: [
-              MockHorizontalCarousel(expand),
+              ImmersiveCarousel(
+                items: ImmersiveCarouselContent.generateMockContent(),
+                key: _carouselKey,
+                isExpanded: expand,
+              ),
               ImmersiveContentArea(),
             ],
           ),
         );
       }),
     );
-  }
-}
-
-class MockHorizontalCarousel extends StatelessWidget {
-  const MockHorizontalCarousel(this.expand, {super.key});
-
-  final bool expand;
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
-        duration: const Duration(milliseconds: 100),
-        height: expand ? 300 : 200,
-        decoration: BoxDecoration(
-          color: expand ? Colors.blue : Colors.white.withAlpha(30),
-        ),
-        child: PageView(
-          scrollDirection: Axis.horizontal,
-          children: [
-            Card(
-              color: Colors.lightBlue,
-              child: const Center(
-                child: Text('Page 1'),
-              ),
-            ),
-            Card(
-              color: Colors.yellow,
-              child: const Center(
-                child: Text('Page 2'),
-              ),
-            ),
-          ],
-        ));
   }
 }
 

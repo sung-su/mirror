@@ -5,7 +5,7 @@ import 'package:tizen_fs/widgets/home_screen_size_wrapper.dart';
 import 'media_list_poc.dart';
 import 'setting_panel_poc.dart';
 import 'immersive_list_poc.dart';
-import 'home_poc.dart';
+import 'tab_poc.dart';
 
 class PocGalleryPage extends StatelessWidget {
   const PocGalleryPage({super.key, required this.title});
