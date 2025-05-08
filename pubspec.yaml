@@ -42,6 +42,7 @@ dependencies:
   path_provider: ^2.1.4
   path_provider_tizen: ^2.2.0
   path: ^1.8.2
+  expandable_page_view: ^1.0.17
 
 dev_dependencies:
   flutter_test:

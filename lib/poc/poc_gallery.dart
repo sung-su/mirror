@@ -23,8 +23,8 @@ class PocGalleryPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ListTile(
-              title: const Text('Home Poc'),
-              subtitle: const Text('Appbar and lists'),
+              title: const Text('Tab Poc'),
+              subtitle: const Text('Appbar and Pages'),
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(

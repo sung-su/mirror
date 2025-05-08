@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
 import 'tab_bar.dart';
 
@@ -55,7 +56,7 @@ class _TvPageViewState extends State<TvPageView> {
 
     //TODO : page builder
     int index = 0;
-    return PageView(
+    return ExpandablePageView(
       controller: _pageViewController,
       physics: const NeverScrollableScrollPhysics(),
       children: [
