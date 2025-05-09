@@ -70,15 +70,20 @@ class _HomePageState extends State<HomePage> {
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.easeIn,
                 );
+<<<<<<< HEAD
                 _immersiveAreaController
                     .setState(ImmersiveAreaController.headerFocused);
+=======
+              _immersiveAreaController
+                  .setState(ImmersiveAreaController.carouselFocused);
+>>>>>>> bdafc1d (Update home screen)
               },
             ),
             ImmersiveListArea(
               onFocused: () {
                 print('item 1 focused');
                 _scrollController.animateTo(
-                  70,
+                  80,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.easeIn,
                 );
@@ -104,7 +109,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-      ),
+      )
     );
   }
 }

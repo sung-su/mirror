@@ -44,6 +44,7 @@ class _HomeContentState extends State<HomeContent> {
           pinned: false,
           floating: false,
           automaticallyImplyLeading: false,
+          toolbarHeight: 80,
           backgroundColor: Colors.transparent,
           title: TvTabbar(
             pageController: _pageController,
