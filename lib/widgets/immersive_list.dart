@@ -419,8 +419,8 @@ class CinematicScrim extends StatelessWidget {
               center: Alignment(0.8, -0.8),
               radius: 2,
               colors: [
-                Color(0xff1a110f).withAlpha((0.1 * 255).toInt()),
-                Color(0xff1a110f),
+                const Color.fromARGB(255, 18, 18, 18).withAlpha((0.1 * 255).toInt()),
+                const Color.fromARGB(255, 18, 18, 18),
               ],
               stops: const [0, 0.7],
             ),
