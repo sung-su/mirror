@@ -27,6 +27,14 @@ class _HomeContentState extends State<HomeContent> {
       ImmersiveAreaController();
 
   @override
+  void initState() {
+    super.initState();
+    _immersiveListModel.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => _immersiveListModel,
@@ -261,7 +269,6 @@ class _MockItemState extends State<MockItem> {
   void initState() {
     super.initState();
     _focusNode.addListener(_focusChanged);
-    setState(() {});
   }
 
   void _focusChanged() {
