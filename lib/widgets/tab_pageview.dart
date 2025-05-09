@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
+import 'package:tizen_fs/models/category.dart';
+import 'package:tizen_fs/utils/media_db_parser.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
 import 'package:tizen_fs/widgets/immersive_carousel.dart';
 
@@ -20,35 +22,29 @@ class TvPageView extends StatefulWidget {
 }
 
 class _TvPageViewState extends State<TvPageView> {
-
   @override
   void initState() {
     super.initState();
 
     widget.pageController.addListener(() {
       //TODO: to add opacity change animation when the page is changed
-      debugPrint('[_TvPageViewState][pageController.addListener] widget.pageController.page=${widget.pageController.page}');
-      
+      debugPrint(
+          '[_TvPageViewState][pageController.addListener] widget.pageController.page=${widget.pageController.page}');
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return ExpandablePageView(
-      controller: widget.pageController,
-      // physics: const NeverScrollableScrollPhysics(),
-      children: [
-        AnimatedPage(
-          child: HomeContent(scrollController: widget.scrollController)
-        ),
-        AnimatedPage(
-          child: ColoredPage(scrollController: widget.scrollController)
-        ),
-        AnimatedPage(
-          child: EmptyPage()
-        ),
-      ]
-    );
+        controller: widget.pageController,
+        // physics: const NeverScrollableScrollPhysics(),
+        children: [
+          AnimatedPage(
+              child: HomeContent(scrollController: widget.scrollController)),
+          AnimatedPage(
+              child: ColoredPage(scrollController: widget.scrollController)),
+          AnimatedPage(child: EmptyPage()),
+        ]);
   }
 }
 
@@ -61,13 +57,11 @@ class AnimatedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedOpacity(
-      opacity: isVisible ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 300),
-      child: this.child
-    );
+        opacity: isVisible ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 300),
+        child: this.child);
   }
 }
-
 
 //----------------------------------------------------------------------- sample pages
 class ColoredPage extends StatefulWidget {
@@ -80,31 +74,26 @@ class ColoredPage extends StatefulWidget {
 }
 
 class _ColoredPageState extends State<ColoredPage> {
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: SingleChildScrollView (
-        controller: widget.scrollController,
-        child: Column(
-          children: [
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-          ]
-        )
-      )
-    );
+        child: SingleChildScrollView(
+            controller: widget.scrollController,
+            child: Column(children: [
+              MockItem(),
+              MockItem(),
+              MockItem(),
+              MockItem(),
+              MockItem(),
+              MockItem(),
+              MockItem(),
+              MockItem(),
+              MockItem(),
+              MockItem(),
+              MockItem(),
+              MockItem(),
+              MockItem(),
+            ])));
   }
 }
 
@@ -114,11 +103,8 @@ class EmptyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Text(
-          'Empty Page',
-          style: const TextStyle(color: Colors.white, fontSize: 24)
-        )
-      );
+        child: Text('Empty Page',
+            style: const TextStyle(color: Colors.white, fontSize: 24)));
   }
 }
 
@@ -133,8 +119,10 @@ class HomeContent extends StatefulWidget {
 
 class _HomeContentState extends State<HomeContent> {
   late ScrollController _scrollController;
+  late List<Category> _categories;
   final ImmersiveListModel _immersiveListModel = ImmersiveListModel.fromMock();
-  final ImmersiveCarouselModel _immersiveCarouselModel = ImmersiveCarouselModel.fromMock();
+  final ImmersiveCarouselModel _immersiveCarouselModel =
+      ImmersiveCarouselModel.fromMock();
   final ImmersiveAreaController _immersiveAreaController =
       ImmersiveAreaController();
 
@@ -142,8 +130,12 @@ class _HomeContentState extends State<HomeContent> {
   void initState() {
     super.initState();
     _scrollController = widget.scrollController;
+    _categories = Provider.of<MediaDBParser>(context, listen: false)
+        .categoryMap
+        .values
+        .toList();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -159,25 +151,27 @@ class _HomeContentState extends State<HomeContent> {
         controller: _scrollController,
         child: Column(
           children: [
-            ImmersiveArea(_immersiveAreaController, onFocused: () {
-              print('ImmersiveArea focused');
-              _scrollController.animateTo(
-                0,
-                duration: const Duration(milliseconds: 100),
-                curve: Curves.easeIn,
-              );
-              _immersiveAreaController
-                  .setState(ImmersiveAreaController.carouselFocused);
+            ImmersiveArea(
+              _immersiveAreaController,
+              onFocused: () {
+                print('ImmersiveArea focused');
+                _scrollController.animateTo(
+                  0,
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.easeIn,
+                );
+                _immersiveAreaController
+                    .setState(ImmersiveAreaController.carouselFocused);
               },
-              onUnFocused: (){
+              onUnFocused: () {
                 print('Header focused');
                 _scrollController.animateTo(
                   0,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.easeIn,
                 );
-              _immersiveAreaController
-                  .setState(ImmersiveAreaController.headerFocused);
+                _immersiveAreaController
+                    .setState(ImmersiveAreaController.headerFocused);
               },
             ),
             ImmersiveListArea(
@@ -192,23 +186,22 @@ class _HomeContentState extends State<HomeContent> {
                     .setState(ImmersiveAreaController.immersiveListFocused);
               },
             ),
-            MockItem(
-              onFocus: () {
-                print('item 2 focused');
-                _scrollController.animateTo(
-                  550,
-                  duration: const Duration(milliseconds: 100),
-                  curve: Curves.easeInQuad,
-                );
-              },
+            ...List.generate(
+              _categories.length,
+              (index) => MockItem(
+                onFocus: () {
+                  print(
+                      'item $index focused - Category: ${_categories[index].name}');
+                  if (index == 0) {
+                    _scrollController.animateTo(
+                      550,
+                      duration: const Duration(milliseconds: 100),
+                      curve: Curves.easeInQuad,
+                    );
+                  }
+                },
+              ),
             ),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
           ],
         ),
       ),
@@ -306,8 +299,7 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
       _pageController.animateToPage(0,
           duration: const Duration(milliseconds: 100), curve: Curves.ease);
       widget.onFocused?.call();
-    }
-    else {
+    } else {
       widget.onUnFocused?.call();
     }
   }
@@ -401,4 +393,3 @@ class _MockItemState extends State<MockItem> {
     );
   }
 }
-
