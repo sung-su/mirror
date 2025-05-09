@@ -261,6 +261,7 @@ class _MockItemState extends State<MockItem> {
   void initState() {
     super.initState();
     _focusNode.addListener(_focusChanged);
+    setState(() {});
   }
 
   void _focusChanged() {
