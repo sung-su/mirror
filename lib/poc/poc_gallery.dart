@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/poc/immersive_carousel_poc.dart';
 import 'package:tizen_fs/poc/media_db_parser_poc.dart';
+import 'package:tizen_fs/router.dart';
 import 'package:tizen_fs/widgets/home_screen_size_wrapper.dart';
 import 'media_list_poc.dart';
 import 'setting_panel_poc.dart';
@@ -19,9 +20,16 @@ class PocGalleryPage extends StatelessWidget {
         title: Text(title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: ListView(
           children: <Widget>[
+            ListTile(
+              title: const Text('Go to Home'),
+              subtitle: const Text('Appbar and Pages'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                AppRouter.router.go(ScreenPaths.home);
+              },
+            ),
             ListTile(
               title: const Text('Tab Poc'),
               subtitle: const Text('Appbar and Pages'),
