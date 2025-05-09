@@ -37,7 +37,7 @@ class _TvPageViewState extends State<TvPageView> {
       physics: const NeverScrollableScrollPhysics(),
       children: [
         AnimatedPage(
-          child: HomePage(scrollController: widget.scrollController)
+          child: HomePage(scrollController: widget.scrollController, headerFocusNode: FocusNode(),)
         ),
         AnimatedPage(
           child: ListPage(scrollController: widget.scrollController)

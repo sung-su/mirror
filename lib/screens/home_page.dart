@@ -10,9 +10,10 @@ import 'package:tizen_fs/widgets/immersive_carousel.dart';
 import 'mock_item.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.scrollController});
-
+  const HomePage({super.key, required this.scrollController, required this.headerFocusNode});
   final ScrollController scrollController;
+  final FocusNode headerFocusNode;
+
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -40,30 +41,19 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => _immersiveListModel,
-        ),
-        ChangeNotifierProvider(
-          create: (context) => _immersiveCarouselModel,
-        ),
-      ],
-      child: Column(
-        children: [
-          ImmersiveArea(
-            _immersiveAreaController,
-            onFocused: () {
-              print('ImmersiveArea focused');
-              _scrollController.animateTo(
-                0,
-                duration: const Duration(milliseconds: 100),
-                curve: Curves.easeIn,
-              );
-              _immersiveAreaController
-                  .setState(ImmersiveAreaController.carouselFocused);
-            },
-            onUnFocused: () {
-              print('Header focused');
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => _immersiveListModel,
+          ),
+          ChangeNotifierProvider(
+            create: (context) => _immersiveCarouselModel,
+          ),
+        ],
+        child: FocusScope(
+          onKeyEvent: (_, keyEvent) {
+            if (keyEvent is KeyUpEvent &&
+                (keyEvent.logicalKey == LogicalKeyboardKey.goBack || keyEvent.logicalKey == LogicalKeyboardKey.escape)) {
+              widget.headerFocusNode.requestFocus();
               _scrollController.animateTo(
                 0,
                 duration: const Duration(milliseconds: 100),
@@ -71,39 +61,67 @@ class _HomePageState extends State<HomePage> {
               );
               _immersiveAreaController
                   .setState(ImmersiveAreaController.headerFocused);
-            },
-          ),
-          ImmersiveListArea(
-            onFocused: () {
-              print('item 1 focused');
-              _scrollController.animateTo(
-                80,
-                duration: const Duration(milliseconds: 100),
-                curve: Curves.easeIn,
-              );
-              _immersiveAreaController
-                  .setState(ImmersiveAreaController.immersiveListFocused);
-            },
-          ),
-          ...List.generate(
-            _categories.length,
-            (index) => MockItem(
-              onFocus: () {
-                print(
-                    'item $index focused - Category: ${_categories[index].name}');
-                if (index == 0) {
+
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          },
+          child: Column(
+            children: [
+              ImmersiveArea(
+                _immersiveAreaController,
+                onFocused: () {
+                  print('ImmersiveArea focused');
                   _scrollController.animateTo(
-                    550,
+                    0,
                     duration: const Duration(milliseconds: 100),
-                    curve: Curves.easeInQuad,
+                    curve: Curves.easeIn,
                   );
-                }
-              },
-            ),
+                  _immersiveAreaController
+                      .setState(ImmersiveAreaController.carouselFocused);
+                },
+                onUnFocused: () {
+                  print('Header focused');
+                  _scrollController.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 100),
+                    curve: Curves.easeIn,
+                  );
+                  _immersiveAreaController
+                      .setState(ImmersiveAreaController.headerFocused);
+                },
+              ),
+              ImmersiveListArea(
+                onFocused: () {
+                  print('item 1 focused');
+                  _scrollController.animateTo(
+                    80,
+                    duration: const Duration(milliseconds: 100),
+                    curve: Curves.easeIn,
+                  );
+                  _immersiveAreaController
+                      .setState(ImmersiveAreaController.immersiveListFocused);
+                },
+              ),
+              ...List.generate(
+                _categories.length,
+                (index) => MockItem(
+                  onFocus: () {
+                    print(
+                        'item $index focused - Category: ${_categories[index].name}');
+                    if (index == 0) {
+                      _scrollController.animateTo(
+                        550,
+                        duration: const Duration(milliseconds: 100),
+                        curve: Curves.easeInQuad,
+                      );
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
-      )
-    );
+        ));
   }
 }
 

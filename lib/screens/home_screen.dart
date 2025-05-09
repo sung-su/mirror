@@ -22,6 +22,7 @@ class HomeContent extends StatefulWidget {
 class _HomeContentState extends State<HomeContent> {
   final ScrollController _scrollController = ScrollController();
   final PageController _pageController = PageController(initialPage: 0);
+  final FocusNode _headerFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -48,12 +49,14 @@ class _HomeContentState extends State<HomeContent> {
           backgroundColor: Colors.transparent,
           title: TvTabbar(
             pageController: _pageController,
+            focusNode: _headerFocusNode,
           ),
         ),
         SliverToBoxAdapter(
           child: TvPageView(
               pageController: _pageController,
               scrollController: _scrollController,
+              headerFocusNode: _headerFocusNode,
           )
         )
       ],

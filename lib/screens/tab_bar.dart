@@ -5,12 +5,15 @@ import 'package:tizen_fs/poc/setting_panel_poc.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
 class TvTabbar extends StatefulWidget {
+  final PageController pageController;
+  final FocusNode focusNode;
+
   const TvTabbar({
     super.key,
     required this.pageController,
+    required this.focusNode,
   });
 
-  final PageController pageController;
 
   @override
   State<TvTabbar> createState() => _TvTabbarState();
@@ -84,6 +87,7 @@ class _TvTabbarState extends State<TvTabbar> {
     debugPrint('_TvTabbarState.build() selected=$_selected');
     return Focus(
       autofocus: true,
+      focusNode: widget.focusNode,
       onFocusChange: (hasFocus) {
         debugPrint('[onFocusChange] selected=$_selected');
       },

@@ -48,6 +48,7 @@ class _HomeContentState extends State<HomeContent> {
           backgroundColor: Colors.transparent,
           title: TvTabbar(
             pageController: _pageController,
+            focusNode: FocusNode(),
           ),
         ),
         SliverToBoxAdapter(
