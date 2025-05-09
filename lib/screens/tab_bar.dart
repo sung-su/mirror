@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_fs/main.dart';
 import 'package:tizen_fs/poc/setting_panel_poc.dart';
+import 'package:tizen_fs/router.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
 class TvTabbar extends StatefulWidget {
@@ -100,6 +101,12 @@ class _TvTabbarState extends State<TvTabbar> {
                 '[onKeyEvent] LogicalKeyboardKey.arrowRight: $_selected');
             setSelected(
                 (_selected < _itemCount - 1) ? (_selected + 1) : _selected);
+            return KeyEventResult.handled;
+          } else if (onKeyEvent.logicalKey == LogicalKeyboardKey.enter) {
+            debugPrint('[onKeyEvent] LogicalKeyboardKey.enter: $_selected');
+            if (_selected == 0) {
+              AppRouter.router.go(ScreenPaths.poc);
+            }
             return KeyEventResult.handled;
           }
         }
@@ -231,7 +238,11 @@ class TvTab extends StatelessWidget {
 }
 
 class TvTabIcon extends StatelessWidget {
-  const TvTabIcon({super.key, required this.icon, required this.isSelected, required this.hasFocus});
+  const TvTabIcon(
+      {super.key,
+      required this.icon,
+      required this.isSelected,
+      required this.hasFocus});
   final bool isSelected;
   final Widget icon;
   final bool hasFocus;
@@ -249,12 +260,11 @@ class TvTabIcon extends StatelessWidget {
           debugPrint('IconButton pressed');
         },
         style: IconButton.styleFrom(
-          backgroundColor: isSelected
-              ? (hasFocus
-                  ? $style.colors.onPrimaryContainer.withAlphaF(0.8)
-                  : $style.colors.onPrimaryContainer.withAlphaF(0.3))
-              : $style.colors.onPrimaryContainer.withAlphaF(0.3)
-        ),
+            backgroundColor: isSelected
+                ? (hasFocus
+                    ? $style.colors.onPrimaryContainer.withAlphaF(0.8)
+                    : $style.colors.onPrimaryContainer.withAlphaF(0.3))
+                : $style.colors.onPrimaryContainer.withAlphaF(0.3)),
       ),
     );
   }

@@ -24,8 +24,8 @@ class PocGalleryPage extends StatelessWidget {
           children: <Widget>[
             ListTile(
               title: const Text('Go to Home'),
-              subtitle: const Text('Appbar and Pages'),
-              leading: const Icon(Icons.subscriptions),
+              subtitle: const Text('Back to the main screen'),
+              leading: const Icon(Icons.home),
               onTap: () {
                 AppRouter.router.go(ScreenPaths.home);
               },

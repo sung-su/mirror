@@ -12,12 +12,6 @@ void main() async {
   await mediaDBParser.initialize();
 
   runApp(Provider<MediaDBParser>.value(value: mediaDBParser, child: TizenFS()));
-
-  // for testing purposes
-  bool showPoc = true;
-  if (showPoc) {
-    AppRouter.router.go(ScreenPaths.poc);
-  }
 }
 
 class MouseDraggableScrollBehavior extends ScrollBehavior {
