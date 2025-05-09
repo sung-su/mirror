@@ -216,7 +216,7 @@ class ImmersiveCarouselState extends State<ImmersiveCarousel> {
               child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
                   transitionBuilder: (Widget child, Animation<double> animation) {
-                    final inOffset = const Offset(0.5, 0.0);
+                    final inOffset = const Offset(0.7, 0.0);
                     final outOffset = const Offset(1.0, 0.0);
                     return SlideTransition(
                       position: Tween<Offset>(

@@ -194,16 +194,22 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
     }
   }
 
+  Timer? _initialDelayTimer;
   Timer? _repeatingTimer;
   void _startRepeating(VoidCallback action) {
     action();
-    _repeatingTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
-      action();
+    _initialDelayTimer?.cancel();
+    _initialDelayTimer = Timer(const Duration(milliseconds: 300), () {
+      _repeatingTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+        action();
+      });
     });
   }
 
   void _stopRepeating() {
+    _initialDelayTimer?.cancel();
     _repeatingTimer?.cancel();
+    _initialDelayTimer = null;
     _repeatingTimer = null;
   }
 
