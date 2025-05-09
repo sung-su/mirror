@@ -121,7 +121,7 @@ class ImmersiveCarousel extends StatefulWidget {
   State<ImmersiveCarousel> createState() => ImmersiveCarouselState();
 }
 
-class ImmersiveCarouselState extends State<ImmersiveCarousel> with TickerProviderStateMixin {
+class ImmersiveCarouselState extends State<ImmersiveCarousel> {
   int _selectedIndex = 0;
   int _itemCount = 0;
   bool isFocused = false;
