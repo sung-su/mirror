@@ -108,6 +108,7 @@ class _SettingPanelState extends State<SettingPanel> {
                     ),
                     const Spacer(),
                     IconButton(
+                      autofocus: true,
                       focusNode: _settingFocusNode,
                       icon: const Icon(Icons.settings_outlined, size: 18),
                       color: Colors.grey,
