@@ -6,118 +6,18 @@ import 'package:tizen_fs/models/category.dart';
 import 'package:tizen_fs/utils/media_db_parser.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
 import 'package:tizen_fs/widgets/immersive_carousel.dart';
+import 'mock_item.dart';
 
-class TvPageView extends StatefulWidget {
-  const TvPageView({
-    super.key,
-    required this.pageController,
-    required this.scrollController,
-  });
-
-  final PageController pageController;
-  final ScrollController scrollController;
-
-  @override
-  State<TvPageView> createState() => _TvPageViewState();
-}
-
-class _TvPageViewState extends State<TvPageView> {
-  @override
-  void initState() {
-    super.initState();
-
-    widget.pageController.addListener(() {
-      //TODO: to add opacity change animation when the page is changed
-      debugPrint(
-          '[_TvPageViewState][pageController.addListener] widget.pageController.page=${widget.pageController.page}');
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ExpandablePageView(
-        controller: widget.pageController,
-        // physics: const NeverScrollableScrollPhysics(),
-        children: [
-          AnimatedPage(
-              child: HomeContent(scrollController: widget.scrollController)),
-          AnimatedPage(
-              child: ColoredPage(scrollController: widget.scrollController)),
-          AnimatedPage(child: EmptyPage()),
-        ]);
-  }
-}
-
-class AnimatedPage extends StatelessWidget {
-  const AnimatedPage({super.key, required this.child, this.isVisible = true});
-
-  final Widget child;
-  final bool isVisible;
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedOpacity(
-        opacity: isVisible ? 1.0 : 0.0,
-        duration: const Duration(milliseconds: 300),
-        child: this.child);
-  }
-}
-
-//----------------------------------------------------------------------- sample pages
-class ColoredPage extends StatefulWidget {
-  const ColoredPage({super.key, required this.scrollController});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key, required this.scrollController});
 
   final ScrollController scrollController;
 
   @override
-  State<ColoredPage> createState() => _ColoredPageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _ColoredPageState extends State<ColoredPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        child: SingleChildScrollView(
-            controller: widget.scrollController,
-            child: Column(children: [
-              MockItem(),
-              MockItem(),
-              MockItem(),
-              MockItem(),
-              MockItem(),
-              MockItem(),
-              MockItem(),
-              MockItem(),
-              MockItem(),
-              MockItem(),
-              MockItem(),
-              MockItem(),
-              MockItem(),
-            ])));
-  }
-}
-
-class EmptyPage extends StatelessWidget {
-  const EmptyPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        child: Text('Empty Page',
-            style: const TextStyle(color: Colors.white, fontSize: 24)));
-  }
-}
-
-class HomeContent extends StatefulWidget {
-  const HomeContent({super.key, required this.scrollController});
-
-  final ScrollController scrollController;
-
-  @override
-  State<HomeContent> createState() => _HomeContentState();
-}
-
-class _HomeContentState extends State<HomeContent> {
+class _HomePageState extends State<HomePage> {
   late ScrollController _scrollController;
   late List<Category> _categories;
   final ImmersiveListModel _immersiveListModel = ImmersiveListModel.fromMock();
@@ -170,15 +70,20 @@ class _HomeContentState extends State<HomeContent> {
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.easeIn,
                 );
+<<<<<<< HEAD
                 _immersiveAreaController
                     .setState(ImmersiveAreaController.headerFocused);
+=======
+              _immersiveAreaController
+                  .setState(ImmersiveAreaController.carouselFocused);
+>>>>>>> bdafc1d (Update home screen)
               },
             ),
             ImmersiveListArea(
               onFocused: () {
                 print('item 1 focused');
                 _scrollController.animateTo(
-                  70,
+                  80,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.easeIn,
                 );
@@ -204,7 +109,7 @@ class _HomeContentState extends State<HomeContent> {
             ),
           ],
         ),
-      ),
+      )
     );
   }
 }
@@ -340,56 +245,6 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
           ),
         );
       }),
-    );
-  }
-}
-
-class MockItem extends StatefulWidget {
-  const MockItem({
-    super.key,
-    this.onFocus,
-  });
-
-  final VoidCallback? onFocus;
-
-  @override
-  State<MockItem> createState() => _MockItemState();
-}
-
-class _MockItemState extends State<MockItem> {
-  final FocusNode _focusNode = FocusNode();
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode.addListener(_focusChanged);
-  }
-
-  void _focusChanged() {
-    if (_focusNode.hasFocus) {
-      widget.onFocus?.call();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(55, 10, 55, 10),
-      child: Focus(
-          focusNode: _focusNode,
-          child: Builder(builder: (buildContext) {
-            // create size animation for the container
-            return AnimatedContainer(
-                duration: const Duration(milliseconds: 100),
-                height: Focus.of(buildContext).hasFocus ? 150 : 100,
-                decoration: BoxDecoration(
-                  color: Focus.of(buildContext).hasFocus
-                      ? Colors.purple
-                      : Colors.yellow,
-                  border: Border.all(color: Colors.black),
-                  borderRadius: BorderRadius.circular(10),
-                ));
-          })),
     );
   }
 }
