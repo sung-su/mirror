@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -175,6 +177,7 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
 
   @override
   void dispose() {
+    _repeatingTimer?.cancel();
     _focusNode.removeListener(_focusChanged);
     _focusNode.dispose();
     super.dispose();
@@ -191,19 +194,39 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
     }
   }
 
+  Timer? _repeatingTimer;
+  void _startRepeating(VoidCallback action) {
+    action();
+    _repeatingTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      action();
+    });
+  }
+
+  void _stopRepeating() {
+    _repeatingTimer?.cancel();
+    _repeatingTimer = null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Focus(
       onKeyEvent: (node, event) {
         if (event is KeyDownEvent) {
           if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-            _carouselKey.currentState?.moveCarousel(1);
+            _startRepeating(() {
+              _carouselKey.currentState?.moveCarousel(1);
+            });
             return KeyEventResult.handled;
           } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-            _carouselKey.currentState?.moveCarousel(-1);
+            _startRepeating(() {
+              _carouselKey.currentState?.moveCarousel(-1);
+            });
             return KeyEventResult.handled;
           }
-          return KeyEventResult.ignored;
+        }
+        else if (event is KeyUpEvent) {
+          _stopRepeating();
+          return KeyEventResult.handled;
         }
         return KeyEventResult.ignored;
       },
