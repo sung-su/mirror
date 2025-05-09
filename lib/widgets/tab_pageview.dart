@@ -134,6 +134,7 @@ class HomeContent extends StatefulWidget {
 class _HomeContentState extends State<HomeContent> {
   late ScrollController _scrollController;
   final ImmersiveListModel _immersiveListModel = ImmersiveListModel.fromMock();
+  final ImmersiveCarouselModel _immersiveCarouselModel = ImmersiveCarouselModel.fromMock();
   final ImmersiveAreaController _immersiveAreaController =
       ImmersiveAreaController();
 
@@ -145,8 +146,15 @@ class _HomeContentState extends State<HomeContent> {
   
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => _immersiveListModel,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => _immersiveListModel,
+        ),
+        ChangeNotifierProvider(
+          create: (context) => _immersiveCarouselModel,
+        ),
+      ],
       child: SingleChildScrollView(
         controller: _scrollController,
         child: Column(
@@ -332,7 +340,6 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
             scrollDirection: Axis.vertical,
             children: [
               ImmersiveCarousel(
-                items: ImmersiveCarouselContent.generateMockContent(),
                 key: _carouselKey,
                 isExpanded: expand,
               ),
