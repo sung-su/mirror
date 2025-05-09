@@ -124,15 +124,15 @@ class _TvTabbarState extends State<TvTabbar> {
             TvTab(
                 text: pages[1],
                 isSelected: 1 == _selected,
-                hasFocus: Focus.of(context).hasFocus),
+                isFocused: Focus.of(context).hasFocus),
             TvTab(
                 text: pages[2],
                 isSelected: 2 == _selected,
-                hasFocus: Focus.of(context).hasFocus),
+                isFocused: Focus.of(context).hasFocus),
             TvTab(
                 text: pages[3],
                 isSelected: 3 == _selected,
-                hasFocus: Focus.of(context).hasFocus),
+                isFocused: Focus.of(context).hasFocus),
             const Spacer(),
             Row(
               spacing: 10,
@@ -196,42 +196,32 @@ class TvAvatar extends StatelessWidget {
 }
 
 class TvTab extends StatelessWidget {
-  const TvTab(
-      {super.key,
+  const TvTab({super.key,
       required this.text,
       required this.isSelected,
-      required this.hasFocus});
+      required this.isFocused});
   final bool isSelected;
-  final bool hasFocus;
+  final bool isFocused;
   final String text;
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('_TabButtonState.build()');
-    return TextButton(
-      onFocusChange: (hasFocus) {
-        debugPrint('${text} focus changed to $hasFocus');
-      },
-      onPressed: () {
-        debugPrint('TextButton pressed: ${text}');
-      },
-      style: TextButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-        foregroundColor: isSelected && hasFocus
-            ? Colors.black
-            : const Color.fromARGB(255, 220, 220, 220),
-        backgroundColor: isSelected
-            ? (hasFocus
-                ? $style.colors.onSecondaryContainer.withAlphaF(0.8)
-                : $style.colors.onSecondaryContainer.withAlphaF(0.3))
+    return Container(
+      decoration: BoxDecoration(
+        color: isSelected
+            ? (isFocused
+                ? Colors.white.withAlphaF(0.9)
+                : Colors.white.withAlphaF(0.15))
             : Colors.transparent,
+        borderRadius: isSelected ? BorderRadius.circular(30) : BorderRadius.zero,
       ),
-      child: Text(
-        text,
-        style: TextStyle(fontSize: 16),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        child: Text(
+          text,
+          style: TextStyle(
+              color: (isSelected && isFocused) ? Colors.black : Colors.white.withAlphaF(.9), fontSize: 16),
+        ),
       ),
     );
   }
