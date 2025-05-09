@@ -76,6 +76,7 @@ flutter:
      - assets/mock/images/backdrop2.png
      - assets/mock/images/backdrop3.png
      - assets/mock/mock_content.json
+     - assets/mock/mock_carousel_content.json
      - assets/mock/images/1_backdrop.jpg
      - assets/mock/images/2_backdrop.jpg
      - assets/mock/images/3_backdrop.jpg
