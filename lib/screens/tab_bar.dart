@@ -107,7 +107,7 @@ class _TvTabbarState extends State<TvTabbar> {
       },
       child: Builder(builder: (context) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 48),
+          padding: const EdgeInsets.fromLTRB(48, 20, 48, 0),
           child: Row(spacing: 20, children: [
             TvAvatar(
               imageUrl: null,
@@ -210,16 +210,16 @@ class TvTab extends StatelessWidget {
       },
       style: TextButton.styleFrom(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(20),
         ),
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
         foregroundColor: isSelected && hasFocus
             ? Colors.black
             : const Color.fromARGB(255, 220, 220, 220),
         backgroundColor: isSelected
             ? (hasFocus
-                ? $style.colors.onPrimaryContainer.withAlphaF(0.8)
-                : $style.colors.onPrimaryContainer.withAlphaF(0.3))
+                ? $style.colors.onSecondaryContainer.withAlphaF(0.8)
+                : $style.colors.onSecondaryContainer.withAlphaF(0.3))
             : Colors.transparent,
       ),
       child: Text(
