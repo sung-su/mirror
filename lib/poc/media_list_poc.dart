@@ -59,7 +59,7 @@ class _HomeContentState extends State<HomeContent> {
                 print('item 1 focused');
                 _scrollController.animateTo(
                   80,
-                  duration: const Duration(milliseconds: 100),
+                  duration: const Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                 );
                 _immersiveAreaController
@@ -67,12 +67,14 @@ class _HomeContentState extends State<HomeContent> {
               },
             ),
             MediaList(
-              title: 'asdf1',
+              contents: _immersiveListModel?.contents ?? [],
+              title: 'Your apps',
+              columns: ColumnCount.six,
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
                   370,
-                  duration: const Duration(milliseconds: 100),
+                  duration: const Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                 );
                 _immersiveAreaController
@@ -80,20 +82,35 @@ class _HomeContentState extends State<HomeContent> {
               },
             ),
             MediaList(
-              title: 'asdf2',
-              columns: ColumnCount.three,
+              contents: _immersiveListModel?.contents ?? [],
+              title: 'Top selling movies',
+              columns: ColumnCount.four,
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
-                  370,
-                  duration: const Duration(milliseconds: 100),
+                  620,
+                  duration: const Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                 );
                 _immersiveAreaController
                     .setState(ImmersiveAreaController.mediaListFocused);
               },
             ),
-            MockItem(),
+            MediaList(
+              contents: _immersiveListModel?.contents ?? [],
+              title: 'Recomended videos',
+              columns: ColumnCount.three,
+              onFocused: () {
+                print('item 3 focused');
+                _scrollController.animateTo(
+                  870,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeIn,
+                );
+                _immersiveAreaController
+                    .setState(ImmersiveAreaController.mediaListFocused);
+              },
+            ),
             MockItem(),
             MockItem(),
             MockItem(),
