@@ -8,12 +8,10 @@ class TvPageView extends StatefulWidget {
     super.key,
     required this.pageController,
     required this.scrollController,
-    required this.headerFocusNode,
   });
 
   final PageController pageController;
   final ScrollController scrollController;
-  final FocusNode headerFocusNode;
 
   @override
   State<TvPageView> createState() => _TvPageViewState();
@@ -27,7 +25,7 @@ class _TvPageViewState extends State<TvPageView> {
       controller: widget.pageController,
       physics: const NeverScrollableScrollPhysics(),
       children: [
-        HomePage(scrollController: widget.scrollController, headerFocusNode: widget.headerFocusNode),
+        HomePage(scrollController: widget.scrollController),
         ListPage(scrollController: widget.scrollController),
         EmptyPage()
       ]
