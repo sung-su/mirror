@@ -84,6 +84,7 @@ class PocGalleryPage extends StatelessWidget {
             ),
             ListTile(
               title: const Text('Media List Poc'),
+              subtitle: const Text('Media List Views'),
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
