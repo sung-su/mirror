@@ -40,25 +40,22 @@ class _ListPageState extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: SingleChildScrollView (
-        controller: widget.scrollController,
-        child: Column(
-          children: [
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-            MockItem(),
-          ]
-        )
+      child: Column(
+        children: [
+          MockItem(),
+          MockItem(),
+          MockItem(),
+          MockItem(),
+          MockItem(),
+          MockItem(),
+          MockItem(),
+          MockItem(),
+          MockItem(),
+          MockItem(),
+          MockItem(),
+          MockItem(),
+          MockItem(),
+        ]
       )
     );
   }

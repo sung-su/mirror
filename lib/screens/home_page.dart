@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:tizen_fs/models/category.dart';
 import 'package:tizen_fs/utils/media_db_parser.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
@@ -47,63 +46,60 @@ class _HomePageState extends State<HomePage> {
           create: (context) => _immersiveCarouselModel,
         ),
       ],
-      child: SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          children: [
-            ImmersiveArea(
-              _immersiveAreaController,
-              onFocused: () {
-                print('ImmersiveArea focused');
-                _scrollController.animateTo(
-                  0,
-                  duration: const Duration(milliseconds: 100),
-                  curve: Curves.easeIn,
-                );
-                _immersiveAreaController
-                    .setState(ImmersiveAreaController.carouselFocused);
-              },
-              onUnFocused: () {
-                print('Header focused');
-                _scrollController.animateTo(
-                  0,
-                  duration: const Duration(milliseconds: 100),
-                  curve: Curves.easeIn,
-                );
-                _immersiveAreaController
-                    .setState(ImmersiveAreaController.headerFocused);
+      child: Column(
+        children: [
+          ImmersiveArea(
+            _immersiveAreaController,
+            onFocused: () {
+              print('ImmersiveArea focused');
+              _scrollController.animateTo(
+                0,
+                duration: const Duration(milliseconds: 100),
+                curve: Curves.easeIn,
+              );
+              _immersiveAreaController
+                  .setState(ImmersiveAreaController.carouselFocused);
+            },
+            onUnFocused: () {
+              print('Header focused');
+              _scrollController.animateTo(
+                0,
+                duration: const Duration(milliseconds: 100),
+                curve: Curves.easeIn,
+              );
+              _immersiveAreaController
+                  .setState(ImmersiveAreaController.headerFocused);
+            },
+          ),
+          ImmersiveListArea(
+            onFocused: () {
+              print('item 1 focused');
+              _scrollController.animateTo(
+                80,
+                duration: const Duration(milliseconds: 100),
+                curve: Curves.easeIn,
+              );
+              _immersiveAreaController
+                  .setState(ImmersiveAreaController.immersiveListFocused);
+            },
+          ),
+          ...List.generate(
+            _categories.length,
+            (index) => MockItem(
+              onFocus: () {
+                print(
+                    'item $index focused - Category: ${_categories[index].name}');
+                if (index == 0) {
+                  _scrollController.animateTo(
+                    550,
+                    duration: const Duration(milliseconds: 100),
+                    curve: Curves.easeInQuad,
+                  );
+                }
               },
             ),
-            ImmersiveListArea(
-              onFocused: () {
-                print('item 1 focused');
-                _scrollController.animateTo(
-                  80,
-                  duration: const Duration(milliseconds: 100),
-                  curve: Curves.easeIn,
-                );
-                _immersiveAreaController
-                    .setState(ImmersiveAreaController.immersiveListFocused);
-              },
-            ),
-            ...List.generate(
-              _categories.length,
-              (index) => MockItem(
-                onFocus: () {
-                  print(
-                      'item $index focused - Category: ${_categories[index].name}');
-                  if (index == 0) {
-                    _scrollController.animateTo(
-                      550,
-                      duration: const Duration(milliseconds: 100),
-                      curve: Curves.easeInQuad,
-                    );
-                  }
-                },
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       )
     );
   }
