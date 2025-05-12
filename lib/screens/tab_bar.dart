@@ -49,6 +49,8 @@ class _TvTabbarState extends State<TvTabbar> {
 
         if (_selected > 0 && _selected < 5) {
           _movePage(_selected - 1);
+        } else if (_selected == 0) {
+          showAccountPanel();
         }
       }
     }
@@ -80,14 +82,59 @@ class _TvTabbarState extends State<TvTabbar> {
     );
   }
 
+  void showAccountPanel() {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: "Close",
+      barrierColor: Colors.transparent,
+      transitionDuration: const Duration(milliseconds: 80),
+      pageBuilder: (BuildContext buildContext, Animation animation,
+          Animation secondaryAnimation) {
+        return Material(
+          child: Container(
+            color: Colors.black.withAlphaF(0.7),
+            child:Stack(children: [
+              Positioned(
+                left:65,
+                top:30,
+                child:
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 10,
+                  children: [
+                    TvAvatar(
+                      imageUrl: null,
+                      text: pages[0],
+                      isSelected: true,
+                    ),
+                    
+                    Padding(
+                       padding: const EdgeInsets.only(left: 5),
+                       child: Text(pages[0], style: TextStyle(fontSize: 20)),
+                     ),
+                  ],
+                )
+              )
+            ])
+          ),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     debugPrint('_TvTabbarState.build() selected=$_selected');
     return Focus(
       autofocus: true,
-      onFocusChange: (hasFocus) {
-        debugPrint('[onFocusChange] selected=$_selected');
-      },
+      onFocusChange: _onFocusChanged,
       onKeyEvent: (_, onKeyEvent) {
         if (onKeyEvent is KeyDownEvent) {
           debugPrint(
@@ -158,6 +205,16 @@ class _TvTabbarState extends State<TvTabbar> {
       }),
     );
   }
+
+  void _onFocusChanged(hasFocus) {
+      if (hasFocus) {
+        if (_selected == 0) {
+          setState(() {
+            _selected = 1;
+          });
+        }
+      }
+    }
 }
 
 class TvAvatar extends StatelessWidget {
