@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
@@ -84,24 +83,31 @@ class _MediaListState extends State<MediaList> {
   bool _hasFocus = false;
   int _itemCount = 0;
   int _selectedIndex = 0;
-  double _peek = 58;
+  double _peekPadding = 58;
   double _itemWidth = 196;
-  double _itemHeight = 124;
+  double _itemHeight = 110;
   Color _extractColor = Colors.white;
-  bool _circle = false;
+  bool _isCircleShape = false;
+  double _listTitleHeight = 50;
+  double _listTitleScaledHeight = 80;
 
   void calculateItemSize() {
     if (widget.columns == ColumnCount.six) {
       _itemWidth = 124;
-      _circle = true;
+      _itemHeight = 124;
+      _isCircleShape = true;
     } else if (widget.columns == ColumnCount.three) {
       _itemWidth = 268;
+      _itemHeight = 150;
     } else if (widget.columns == ColumnCount.two) {
       _itemWidth = 412;
+      _itemHeight = 230;
     } else if (widget.columns == ColumnCount.one) {
       _itemWidth = 844;
+      _itemHeight = 470;
     } else {
       _itemWidth = 196;
+      _itemHeight = 110;
     }
   }
 
@@ -169,19 +175,10 @@ class _MediaListState extends State<MediaList> {
       final Offset position = box.localToGlobal(Offset.zero);
 
       await _scrollController.animateTo(
-        position.dx + _scrollController.offset - _peek,
+        position.dx + _scrollController.offset - _peekPadding,
         duration: Duration(milliseconds: durationMilliseconds),
         curve: Curves.easeInOut,
       );
-
-      var imagePath =
-          'assets/mock/images/${widget.contents[_selectedIndex].card}';
-      var paletteGenerator = await PaletteGenerator.fromImageProvider(
-        AssetImage(imagePath),
-        size: Size(100, 100),
-        maximumColorCount: 1,
-      );
-      _extractColor = paletteGenerator.dominantColor?.color ?? Colors.white;
 
       await Future.delayed(Duration(milliseconds: 300));
       if (current == _selectedIndex && _hasFocus) {
@@ -219,7 +216,7 @@ class _MediaListState extends State<MediaList> {
       onKeyEvent: _onKeyEvent,
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         SizedBox(
-          height: _hasFocus ? 80 : 50,
+          height: _hasFocus ? _listTitleScaledHeight : _listTitleHeight,
           child: AnimatedScale(
               scale: _hasFocus ? 2.0 : 1.0,
               duration: const Duration(milliseconds: 100),
@@ -241,7 +238,7 @@ class _MediaListState extends State<MediaList> {
               )),
         ),
         SizedBox(
-          height: _itemHeight + 64,
+          height: _itemHeight * 2,
           child: ScrollConfiguration(
             behavior:
                 ScrollBehavior().copyWith(scrollbars: false, overscroll: false),
@@ -249,7 +246,8 @@ class _MediaListState extends State<MediaList> {
               opacity: _hasFocus ? 1.0 : 0.5,
               duration: const Duration(milliseconds: 100),
               child: ListView.builder(
-                padding: EdgeInsets.only(left: _peek, right: _peek),
+                padding:
+                    EdgeInsets.only(left: _peekPadding, right: _peekPadding),
                 clipBehavior: Clip.none,
                 controller: _scrollController,
                 scrollDirection: Axis.horizontal,
@@ -268,7 +266,7 @@ class _MediaListState extends State<MediaList> {
                               margin: EdgeInsets.only(left: 10, right: 10),
                               key: _itemKeys[index],
                               shape: (_hasFocus && index == _selectedIndex)
-                                  ? (_circle
+                                  ? (_isCircleShape
                                       //TODO : blinking border
                                       ? CircleBorder(
                                           side: BorderSide(
@@ -287,7 +285,7 @@ class _MediaListState extends State<MediaList> {
                                   : null,
                               child: Container(
                                 decoration: BoxDecoration(
-                                  borderRadius: _circle
+                                  borderRadius: _isCircleShape
                                       ? BorderRadius.circular(50)
                                       : BorderRadius.circular(10),
                                   boxShadow: (_hasFocus &&
@@ -306,7 +304,7 @@ class _MediaListState extends State<MediaList> {
                                 ),
                                 width: _itemWidth,
                                 height: _itemHeight,
-                                child: _circle
+                                child: _isCircleShape
                                     ? ClipOval(
                                         child: Image.asset(
                                           'assets/mock/images/${widget.contents[index].card}',
@@ -328,10 +326,10 @@ class _MediaListState extends State<MediaList> {
                           child: Column(
                             children: [
                               if (_hasFocus && index == _selectedIndex ||
-                                  _circle)
+                                  _hasFocus && _isCircleShape)
                                 Container(
                                   padding: EdgeInsets.only(top: 10),
-                                  alignment: _circle
+                                  alignment: _isCircleShape
                                       ? Alignment.center
                                       : Alignment.topLeft,
                                   child: Text(widget.contents[index].title,
@@ -341,7 +339,7 @@ class _MediaListState extends State<MediaList> {
                                         fontSize: 16,
                                       )),
                                 ),
-                              if (_hasFocus && !_circle)
+                              if (_hasFocus && !_isCircleShape)
                                 Container(
                                   alignment: Alignment.topLeft,
                                   child: Text(widget.contents[index].subtitle,
