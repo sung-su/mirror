@@ -1,19 +1,18 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/category.dart';
-import 'package:tizen_fs/utils/media_db_parser.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
 import 'package:tizen_fs/widgets/immersive_carousel.dart';
 import 'package:tizen_fs/widgets/media_list.dart';
-import 'mock_item.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.scrollController});
+  const HomePage(
+      {super.key, required this.scrollController, required this.categories});
 
   final ScrollController scrollController;
+  final List<Category> categories;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -21,7 +20,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late ScrollController _scrollController;
-  late List<Category> _categories;
   final ImmersiveListModel _immersiveListModel = ImmersiveListModel.fromMock();
   final ImmersiveCarouselModel _immersiveCarouselModel =
       ImmersiveCarouselModel.fromMock();
@@ -35,10 +33,6 @@ class _HomePageState extends State<HomePage> {
       setState(() {});
     });
     _scrollController = widget.scrollController;
-    _categories = Provider.of<MediaDBParser>(context, listen: false)
-        .categoryMap
-        .values
-        .toList();
   }
 
   @override
@@ -148,22 +142,6 @@ class _HomePageState extends State<HomePage> {
                 _immersiveAreaController
                     .setState(ImmersiveAreaController.mediaListFocused);
               },
-            ),
-            ...List.generate(
-              _categories.length,
-              (index) => MockItem(
-                onFocus: () {
-                  print(
-                      'item $index focused - Category: ${_categories[index].name}');
-                  if (index == 0) {
-                    _scrollController.animateTo(
-                      550,
-                      duration: const Duration(milliseconds: 100),
-                      curve: Curves.easeInQuad,
-                    );
-                  }
-                },
-              ),
             ),
           ],
         ));
