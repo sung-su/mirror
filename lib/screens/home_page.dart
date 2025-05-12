@@ -29,10 +29,17 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _immersiveListModel.addListener(() {
-      setState(() {});
-    });
+
+    if (_immersiveListModel.itemCount == 0) {
+      _immersiveListModel.addListener(_handleModelUpdate);
+    }
     _scrollController = widget.scrollController;
+  }
+
+  void _handleModelUpdate() {
+    _immersiveListModel.removeListener(_handleModelUpdate);
+    setState(() {
+    });
   }
 
   @override
