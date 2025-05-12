@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
 import 'package:tizen_fs/widgets/media_list.dart';
+import 'package:tizen_fs/models/category.dart';
+import 'package:tizen_fs/utils/media_db_parser.dart';
 
 class MediaListPocPage extends StatelessWidget {
   const MediaListPocPage({super.key});
@@ -25,6 +27,7 @@ class _HomeContentState extends State<HomeContent> {
   final ImmersiveListModel _immersiveListModel = ImmersiveListModel.fromMock();
   final ImmersiveAreaController _immersiveAreaController =
       ImmersiveAreaController();
+  late List<Category> _categories;
 
   @override
   void initState() {
@@ -32,6 +35,10 @@ class _HomeContentState extends State<HomeContent> {
     _immersiveListModel.addListener(() {
       setState(() {});
     });
+    _categories = Provider.of<MediaDBParser>(context, listen: false)
+        .categoryMap
+        .values
+        .toList();
   }
 
   @override
@@ -75,6 +82,7 @@ class _HomeContentState extends State<HomeContent> {
               },
             ),
             MediaList(
+              contents: _categories[0].tiles,
               title: 'Your apps',
               columns: ColumnCount.nine,
               onFocused: () {
@@ -89,6 +97,7 @@ class _HomeContentState extends State<HomeContent> {
               },
             ),
             MediaList(
+              contents: _categories[0].tiles,
               title: 'Top selling movies',
               columns: ColumnCount.four,
               onFocused: () {
@@ -103,6 +112,7 @@ class _HomeContentState extends State<HomeContent> {
               },
             ),
             MediaList(
+              contents: _categories[0].tiles,
               title: 'Popular shows',
               columns: ColumnCount.four,
               onFocused: () {
@@ -117,6 +127,7 @@ class _HomeContentState extends State<HomeContent> {
               },
             ),
             MediaList(
+              contents: _categories[0].tiles,
               title: 'Recomended videos',
               columns: ColumnCount.three,
               onFocused: () {

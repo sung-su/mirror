@@ -1,61 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
-
-class MediaContent {
-  final String backdrop;
-  final String card;
-  final String title;
-  final String subtitle;
-  final String description;
-
-  MediaContent({
-    required this.backdrop,
-    required this.card,
-    required this.title,
-    required this.subtitle,
-    required this.description,
-  });
-
-  factory MediaContent.fromJson(Map<String, dynamic> json) {
-    return MediaContent(
-      backdrop: json['backdrop'] as String,
-      card: json['card'] as String,
-      title: json['title'] as String,
-      subtitle: json['metadata'] as String,
-      description: (json['description'] as String).length > 100
-          ? '${json['description'].substring(0, 100)}...'
-          : json['description'] as String,
-    );
-  }
-
-  static Future<List<MediaContent>> loadFromJson() async {
-    final jsonString =
-        await rootBundle.loadString('assets/mock/mock_content.json');
-    final List<dynamic> jsonList = jsonDecode(jsonString);
-    final List<MediaContent> contents =
-        jsonList.map((json) => MediaContent.fromJson(json)).toList();
-
-    return contents;
-  }
-
-  static List<MediaContent> generateMockContent() {
-    return List.generate(
-      10,
-      (index) => MediaContent(
-        backdrop: 'backdrop${(index % 3) + 1}.png',
-        card: 'ContentPath $index',
-        title: 'Title $index',
-        subtitle: 'Subtitle $index',
-        description: '',
-      ),
-    );
-  }
-}
+import 'package:tizen_fs/models/category.dart';
+import 'package:tizen_fs/utils/media_db_parser.dart';
+import 'package:tizen_fs/models/tile.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 enum ColumnCount { one, two, three, four, six, nine }
 
@@ -63,10 +17,12 @@ class MediaList extends StatefulWidget {
   final String title;
   final ColumnCount columns;
   final VoidCallback? onFocused;
- 
+  final VoidCallback? onUnFocused;
+  final List<Tile> contents;
   const MediaList(
       {super.key,
       this.onFocused,
+      this.onUnFocused,
       this.title = 'Title',
       this.columns = ColumnCount.four});
 
@@ -78,7 +34,7 @@ class _MediaListState extends State<MediaList> {
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   late List<GlobalKey> _itemKeys;
-  List<ImmersiveContent> contents = [];
+  late List<Tile> contents;
 
   bool _hasFocus = false;
   int _itemCount = 0;
@@ -122,24 +78,19 @@ class _MediaListState extends State<MediaList> {
     super.initState();
     calculateItemSize();
     _focusNode.addListener(_onFocusChanged);
-
-    if (Provider.of<ImmersiveListModel>(context, listen: false).itemCount == 0) {
-      Provider.of<ImmersiveListModel>(context, listen: false).addListener(_handleModelUpdate);
-    } else {
-      contents = Provider.of<ImmersiveListModel>(context, listen: false).contents;
-      _itemCount = contents.length;
-      _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
-    }
+    _itemCount = widget.contents.length > 10 ? 10 : widget.contents.length;
+    _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
     _selectedIndex = 0;
   }
 
   void _handleModelUpdate() {
     setState(() {
-      contents = Provider.of<ImmersiveListModel>(context, listen: false).contents;
+      contents = widget.contents;
       _itemCount = contents.length;
       _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
     });
-    Provider.of<ImmersiveListModel>(context, listen: false).removeListener(_handleModelUpdate);
+    Provider.of<ImmersiveListModel>(context, listen: false)
+        .removeListener(_handleModelUpdate);
   }
 
   @override
@@ -161,6 +112,7 @@ class _MediaListState extends State<MediaList> {
       Provider.of<BackdropProvider>(context, listen: false)
           .updateBackdrop(getSelectedBackdrop());
     } else {
+      widget.onUnFocused?.call();
       Provider.of<BackdropProvider>(context, listen: false)
           .updateBackdrop(null);
     }
@@ -200,12 +152,12 @@ class _MediaListState extends State<MediaList> {
 
       await _scrollController.animateTo(
         position.dx + _scrollController.offset - _peekPadding,
-        duration: Duration(milliseconds: backdrop ? durationMilliseconds : 1),
+        duration: Duration(milliseconds: durationMilliseconds),
         curve: Curves.easeInOut,
       );
 
       if (backdrop) {
-        await Future.delayed(Duration(milliseconds: 300));
+        await Future.delayed(Duration(milliseconds: 200));
         if (current == _selectedIndex && _hasFocus) {
           Provider.of<BackdropProvider>(context, listen: false)
               .updateBackdrop(getSelectedBackdrop());
@@ -228,11 +180,29 @@ class _MediaListState extends State<MediaList> {
               Colors.black.withAlpha((0.1 * 255).toInt()),
               _extractColor.withAlpha((0.2 * 255).toInt()),
             ],
-            stops: const [0, 1],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildTileImage(String iconUrl) {
+    if (iconUrl.startsWith('http')) {
+      return CachedNetworkImage(
+        imageUrl: iconUrl,
+        fit: BoxFit.fill,
+      );
+    } else if (iconUrl.startsWith('/')) {
+      return Image.file(
+        File(iconUrl),
+        errorBuilder: (context, error, stackTrace) =>
+            const Icon(Icons.broken_image),
+        fit: BoxFit.fill,
+      );
+    } else {
+      return const Center(
+          child: Icon(Icons.image_not_supported, color: Colors.grey));
+    }
   }
 
   @override
@@ -342,17 +312,13 @@ class _MediaListState extends State<MediaList> {
                                 //image layer
                                 child: _isCircleShape
                                     ? ClipOval(
-                                        child: Image.asset(
-                                          'assets/mock/images/${contents[index].card}',
-                                          fit: BoxFit.fill,
-                                        ),
+                                        child: _buildTileImage(
+                                            widget.contents[index].iconUrl!),
                                       )
                                     : ClipRRect(
                                         borderRadius: BorderRadius.circular(10),
-                                        child: Image.asset(
-                                          'assets/mock/images/${contents[index].card}',
-                                          fit: BoxFit.fill,
-                                        ),
+                                        child: _buildTileImage(
+                                            widget.contents[index].iconUrl!),
                                       ),
                               ),
                             )),
@@ -384,7 +350,7 @@ class _MediaListState extends State<MediaList> {
                                   alignment: Alignment.topLeft,
                                   padding: EdgeInsets.only(
                                       top: index == _selectedIndex ? 0 : 5),
-                                  child: Text(widget.contents[index].subtitle,
+                                  child: Text(widget.contents[index].title,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       style: TextStyle(

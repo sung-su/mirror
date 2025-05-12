@@ -90,61 +90,27 @@ class _HomePageState extends State<HomePage> {
                     .setState(ImmersiveAreaController.immersiveListFocused);
               },
             ),
-            MediaList(
-              title: 'Your apps',
-              columns: ColumnCount.nine,
-              onFocused: () {
-                print('item 3 focused');
-                _scrollController.animateTo(
-                  411,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeIn,
-                );
-                _immersiveAreaController
-                    .setState(ImmersiveAreaController.mediaListFocused);
-              },
-            ),
-            MediaList(
-              title: 'Top selling movies',
-              columns: ColumnCount.four,
-              onFocused: () {
-                print('item 3 focused');
-                _scrollController.animateTo(
-                  543,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeIn,
-                );
-                _immersiveAreaController
-                    .setState(ImmersiveAreaController.mediaListFocused);
-              },
-            ),
-            MediaList(
-              title: 'Popular shows',
-              columns: ColumnCount.four,
-              onFocused: () {
-                print('item 3 focused');
-                _scrollController.animateTo(
-                  713,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeIn,
-                );
-                _immersiveAreaController
-                    .setState(ImmersiveAreaController.mediaListFocused);
-              },
-            ),
-            MediaList(
-              title: 'Recomended videos',
-              columns: ColumnCount.three,
-              onFocused: () {
-                print('item 3 focused');
-                _scrollController.animateTo(
-                  883,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeIn,
-                );
-                _immersiveAreaController
-                    .setState(ImmersiveAreaController.mediaListFocused);
-              },
+            ...List.generate(
+              _categories.length,
+              (index) => MediaList(
+                contents: _categories[index].tiles,
+                title: _categories[index].name,
+                columns: index == 0 ? ColumnCount.nine : ColumnCount.four,
+                onFocused: () {
+                  print('item 3 focused');
+                  _scrollController.animateTo(
+                    index == 0
+                        ? 411
+                        : index == 1
+                            ? 543
+                            : 543 + ((index - 1) * 170),
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeIn,
+                  );
+                  _immersiveAreaController
+                      .setState(ImmersiveAreaController.mediaListFocused);
+                },
+              ),
             ),
           ],
         ));
