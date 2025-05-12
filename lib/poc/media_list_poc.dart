@@ -81,7 +81,7 @@ class _HomeContentState extends State<HomeContent> {
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
-                  370,
+                  420, //start 420 + 160
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                 );
@@ -96,8 +96,23 @@ class _HomeContentState extends State<HomeContent> {
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
-                  600,
+                  580,
                   duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                );
+                _immersiveAreaController
+                    .setState(ImmersiveAreaController.mediaListFocused);
+              },
+            ),
+            MediaList(
+              contents: _immersiveListModel?.contents ?? [],
+              title: 'Popular shows',
+              columns: ColumnCount.four,
+              onFocused: () {
+                print('item 3 focused');
+                _scrollController.animateTo(
+                  740,
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.easeIn,
                 );
                 _immersiveAreaController
@@ -111,7 +126,7 @@ class _HomeContentState extends State<HomeContent> {
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
-                  750,
+                  900,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeIn,
                 );

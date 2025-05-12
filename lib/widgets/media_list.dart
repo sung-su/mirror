@@ -88,8 +88,6 @@ class _MediaListState extends State<MediaList> {
   double _itemHeight = 110;
   Color _extractColor = Colors.white;
   bool _isCircleShape = false;
-  double _listTitleHeight = 50;
-  double _listTitleScaledHeight = 80;
 
   void calculateItemSize() {
     if (widget.columns == ColumnCount.six) {
@@ -109,6 +107,8 @@ class _MediaListState extends State<MediaList> {
       _itemWidth = 196;
       _itemHeight = 110;
     }
+    _itemWidth *= 0.95;
+    _itemHeight *= 0.95;
   }
 
   @override
@@ -133,7 +133,7 @@ class _MediaListState extends State<MediaList> {
     setState(() {
       _hasFocus = _focusNode.hasFocus;
     });
-    _scrollToSelected(100);
+    _scrollToSelected(100, true);
 
     if (_hasFocus) {
       widget.onFocused?.call();
@@ -152,21 +152,24 @@ class _MediaListState extends State<MediaList> {
         setState(() {
           _selectedIndex = (_selectedIndex - 1).clamp(0, _itemCount - 1);
         });
-        _scrollToSelected(event is KeyRepeatEvent ? 1 : 100);
+        _scrollToSelected(event is KeyRepeatEvent ? 1 : 100,
+            event is KeyRepeatEvent ? true : false);
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
           _selectedIndex < _itemCount - 1) {
         setState(() {
           _selectedIndex = (_selectedIndex + 1).clamp(0, _itemCount - 1);
         });
-        _scrollToSelected(event is KeyRepeatEvent ? 1 : 100);
+        _scrollToSelected(event is KeyRepeatEvent ? 1 : 100,
+            event is KeyRepeatEvent ? true : false);
         return KeyEventResult.handled;
       }
     }
     return KeyEventResult.ignored;
   }
 
-  Future<void> _scrollToSelected(int durationMilliseconds) async {
+  Future<void> _scrollToSelected(
+      int durationMilliseconds, bool shortcut) async {
     if (_itemKeys[_selectedIndex].currentContext != null) {
       int current = _selectedIndex;
       final RenderBox box = _itemKeys[_selectedIndex]
@@ -176,14 +179,16 @@ class _MediaListState extends State<MediaList> {
 
       await _scrollController.animateTo(
         position.dx + _scrollController.offset - _peekPadding,
-        duration: Duration(milliseconds: durationMilliseconds),
+        duration: Duration(milliseconds: shortcut ? 1 : durationMilliseconds),
         curve: Curves.easeInOut,
       );
 
-      await Future.delayed(Duration(milliseconds: 300));
-      if (current == _selectedIndex && _hasFocus) {
-        Provider.of<BackdropProvider>(context, listen: false)
-            .updateBackdrop(getSelectedBackdrop());
+      if (!shortcut) {
+        await Future.delayed(Duration(milliseconds: 300));
+        if (current == _selectedIndex && _hasFocus) {
+          Provider.of<BackdropProvider>(context, listen: false)
+              .updateBackdrop(getSelectedBackdrop());
+        }
       }
     } else {
       print("Item $_selectedIndex is not in the widget tree");
@@ -215,30 +220,32 @@ class _MediaListState extends State<MediaList> {
       focusNode: _focusNode,
       onKeyEvent: _onKeyEvent,
       child: Column(mainAxisSize: MainAxisSize.min, children: [
+        //list title
         SizedBox(
-          height: _hasFocus ? _listTitleScaledHeight : _listTitleHeight,
+          height: _hasFocus ? 80 : 30,
           child: AnimatedScale(
-              scale: _hasFocus ? 2.0 : 1.0,
+              scale: _hasFocus ? 1.7 : 1.0,
               duration: const Duration(milliseconds: 100),
               alignment: Alignment.topLeft,
               child: Container(
                 alignment: Alignment.topLeft,
                 padding: EdgeInsets.only(
-                  left: _hasFocus ? 30 : 64,
-                  top: _hasFocus ? 5 : 10,
+                  left: _hasFocus ? 35 : 65,
+                  top: 10,
                 ),
                 child: Text(widget.title,
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 18,
                       color: _hasFocus
-                          ? Colors.white.withAlpha((255 * 0.8).toInt())
+                          ? Colors.white.withAlpha((255 * 0.7).toInt())
                           : Colors.grey,
                     )),
               )),
         ),
+        //list
         SizedBox(
-          height: _hasFocus ? _itemHeight * 1.7 : _itemHeight * 1.2,
+          height: _hasFocus ? _itemHeight * 1.8 : _itemHeight * 1.3,
           child: ScrollConfiguration(
             behavior:
                 ScrollBehavior().copyWith(scrollbars: false, overscroll: false),
@@ -256,7 +263,7 @@ class _MediaListState extends State<MediaList> {
                 itemBuilder: (context, index) {
                   return Container(
                     //between items, image-label space
-                    margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                    margin: EdgeInsets.all(7),
                     child: Column(
                       children: [
                         //scale image area
@@ -269,8 +276,6 @@ class _MediaListState extends State<MediaList> {
                             child: Card(
                               color: Colors.transparent,
                               shadowColor: Colors.transparent,
-                              margin:
-                                  EdgeInsets.only(top: 10, left: 10, right: 10),
                               key: _itemKeys[index],
                               shape: (_hasFocus && index == _selectedIndex)
                                   ? (_isCircleShape
@@ -337,7 +342,7 @@ class _MediaListState extends State<MediaList> {
                               if (_hasFocus && index == _selectedIndex ||
                                   _hasFocus && _isCircleShape)
                                 Container(
-                                  padding: EdgeInsets.only(top: 10),
+                                  padding: EdgeInsets.only(top: 5),
                                   alignment: _isCircleShape
                                       ? Alignment.center
                                       : Alignment.topLeft,
