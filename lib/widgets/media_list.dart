@@ -88,6 +88,8 @@ class _MediaListState extends State<MediaList> {
   double _itemHeight = 110;
   Color _extractColor = Colors.white;
   bool _isCircleShape = false;
+  double _titleFontSize = 18;
+  double _subTitleFontSize = 16;
 
   void calculateItemSize() {
     if (widget.columns == ColumnCount.nine) {
@@ -241,7 +243,7 @@ class _MediaListState extends State<MediaList> {
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         //list title
         SizedBox(
-          height: _hasFocus ? 80 : 30,
+          height: _hasFocus ? 70 : 35,
           child: AnimatedScale(
               scale: _hasFocus ? 1.7 : 1.0,
               duration: const Duration(milliseconds: 100),
@@ -249,13 +251,13 @@ class _MediaListState extends State<MediaList> {
               child: Container(
                 alignment: Alignment.topLeft,
                 padding: EdgeInsets.only(
-                  left: _hasFocus ? 35 : 65,
+                  left: _hasFocus ? 35 : 70,
                   top: 10,
                 ),
                 child: Text(widget.title,
                     textAlign: TextAlign.left,
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: _titleFontSize,
                       color: _hasFocus
                           ? Colors.white.withAlpha((255 * 0.7).toInt())
                           : Colors.grey,
@@ -264,7 +266,7 @@ class _MediaListState extends State<MediaList> {
         ),
         //list
         SizedBox(
-          height: _hasFocus ? _itemHeight * 1.8 : _itemHeight * 1.3,
+          height: _hasFocus ? _itemHeight * 1.7 : _itemHeight * 1.3,
           child: ScrollConfiguration(
             behavior:
                 ScrollBehavior().copyWith(scrollbars: false, overscroll: false),
@@ -282,13 +284,15 @@ class _MediaListState extends State<MediaList> {
                 itemBuilder: (context, index) {
                   return Container(
                     //between items, image-label space
-                    margin: EdgeInsets.all(7),
+                    margin: EdgeInsets.all(5),
                     child: Column(
                       children: [
                         //scale image area
                         AnimatedScale(
                             scale: (_hasFocus && index == _selectedIndex)
-                                ? 1.15
+                                ? _isCircleShape
+                                    ? 1.15
+                                    : 1.1
                                 : 1.0,
                             duration: const Duration(milliseconds: 100),
                             //card with border
@@ -301,13 +305,13 @@ class _MediaListState extends State<MediaList> {
                                       ? CircleBorder(
                                           side: BorderSide(
                                               color: Colors.white.withAlpha(
-                                                  (255 * 0.8).toInt()),
+                                                  (255 * 0.7).toInt()),
                                               width: 2.0),
                                         )
                                       : RoundedRectangleBorder(
                                           side: BorderSide(
                                               color: Colors.white.withAlpha(
-                                                  (255 * 0.8).toInt()),
+                                                  (255 * 0.7).toInt()),
                                               width: 2.0),
                                           borderRadius:
                                               BorderRadius.circular(10),
@@ -324,7 +328,7 @@ class _MediaListState extends State<MediaList> {
                                       ? [
                                           BoxShadow(
                                             color: _extractColor
-                                                .withAlpha((255 * 0.8).toInt()),
+                                                .withAlpha((255 * 0.7).toInt()),
                                             spreadRadius: 1,
                                             blurRadius: 20,
                                             blurStyle: BlurStyle.normal,
@@ -370,21 +374,23 @@ class _MediaListState extends State<MediaList> {
                                       maxLines: 1,
                                       style: TextStyle(
                                         color: Colors.white
-                                            .withAlpha((255 * 0.8).toInt()),
-                                        fontSize: 16,
+                                            .withAlpha((255 * 0.7).toInt()),
+                                        fontSize: _subTitleFontSize,
                                       )),
                                 ),
                               //subtitle
                               if (_hasFocus && !_isCircleShape)
                                 Container(
                                   alignment: Alignment.topLeft,
-                                  child: Text(contents[index].subtitle,
+                                  padding: EdgeInsets.only(
+                                      top: index == _selectedIndex ? 0 : 5),
+                                  child: Text(widget.contents[index].subtitle,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       style: TextStyle(
                                         color: Colors.white
                                             .withAlpha((255 * 0.5).toInt()),
-                                        fontSize: 16,
+                                        fontSize: _subTitleFontSize,
                                       )),
                                 ),
                             ],

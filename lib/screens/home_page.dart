@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage> {
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
-                  410,
+                  411,
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                 );
@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
-                  539,
+                  543,
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                 );
@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
-                  703,
+                  713,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeIn,
                 );
@@ -138,7 +138,7 @@ class _HomePageState extends State<HomePage> {
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
-                  867,
+                  883,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeIn,
                 );
