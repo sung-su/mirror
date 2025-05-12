@@ -7,6 +7,7 @@ import 'package:tizen_fs/models/category.dart';
 import 'package:tizen_fs/utils/media_db_parser.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
 import 'package:tizen_fs/widgets/immersive_carousel.dart';
+import 'package:tizen_fs/widgets/media_list.dart';
 import 'mock_item.dart';
 
 class HomePage extends StatefulWidget {
@@ -30,6 +31,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _immersiveListModel.addListener(() {
+      setState(() {});
+    });
     _scrollController = widget.scrollController;
     _categories = Provider.of<MediaDBParser>(context, listen: false)
         .categoryMap
@@ -40,70 +44,129 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => _immersiveListModel,
-        ),
-        ChangeNotifierProvider(
-          create: (context) => _immersiveCarouselModel,
-        ),
-      ],
-      child: Column(
-        children: [
-          ImmersiveArea(
-            _immersiveAreaController,
-            onFocused: () {
-              print('ImmersiveArea focused');
-              _scrollController.animateTo(
-                0,
-                duration: const Duration(milliseconds: 100),
-                curve: Curves.easeIn,
-              );
-              _immersiveAreaController
-                  .setState(ImmersiveAreaController.carouselFocused);
-            },
-            onUnFocused: () {
-              print('Header focused');
-              _scrollController.animateTo(
-                0,
-                duration: const Duration(milliseconds: 100),
-                curve: Curves.easeIn,
-              );
-              _immersiveAreaController
-                  .setState(ImmersiveAreaController.headerFocused);
-            },
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => _immersiveListModel,
           ),
-          ImmersiveListArea(
-            onFocused: () {
-              print('item 1 focused');
-              _scrollController.animateTo(
-                80,
-                duration: const Duration(milliseconds: 100),
-                curve: Curves.easeIn,
-              );
-              _immersiveAreaController
-                  .setState(ImmersiveAreaController.immersiveListFocused);
-            },
-          ),
-          ...List.generate(
-            _categories.length,
-            (index) => MockItem(
-              onFocus: () {
-                print(
-                    'item $index focused - Category: ${_categories[index].name}');
-                if (index == 0) {
-                  _scrollController.animateTo(
-                    550,
-                    duration: const Duration(milliseconds: 100),
-                    curve: Curves.easeInQuad,
-                  );
-                }
-              },
-            ),
+          ChangeNotifierProvider(
+            create: (context) => _immersiveCarouselModel,
           ),
         ],
-      )
-    );
+        child: Column(
+          children: [
+            ImmersiveArea(
+              _immersiveAreaController,
+              onFocused: () {
+                print('ImmersiveArea focused');
+                _scrollController.animateTo(
+                  0,
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.easeIn,
+                );
+                _immersiveAreaController
+                    .setState(ImmersiveAreaController.carouselFocused);
+              },
+              onUnFocused: () {
+                print('Header focused');
+                _scrollController.animateTo(
+                  0,
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.easeIn,
+                );
+                _immersiveAreaController
+                    .setState(ImmersiveAreaController.headerFocused);
+              },
+            ),
+            ImmersiveListArea(
+              onFocused: () {
+                print('item 1 focused');
+                _scrollController.animateTo(
+                  80,
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.easeIn,
+                );
+                _immersiveAreaController
+                    .setState(ImmersiveAreaController.immersiveListFocused);
+              },
+            ),
+            MediaList(
+              contents: _immersiveListModel?.contents ?? [],
+              title: 'Your apps',
+              columns: ColumnCount.nine,
+              onFocused: () {
+                print('item 3 focused');
+                _scrollController.animateTo(
+                  410,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                );
+                _immersiveAreaController
+                    .setState(ImmersiveAreaController.mediaListFocused);
+              },
+            ),
+            MediaList(
+              contents: _immersiveListModel?.contents ?? [],
+              title: 'Top selling movies',
+              columns: ColumnCount.four,
+              onFocused: () {
+                print('item 3 focused');
+                _scrollController.animateTo(
+                  539,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeIn,
+                );
+                _immersiveAreaController
+                    .setState(ImmersiveAreaController.mediaListFocused);
+              },
+            ),
+            MediaList(
+              contents: _immersiveListModel?.contents ?? [],
+              title: 'Popular shows',
+              columns: ColumnCount.four,
+              onFocused: () {
+                print('item 3 focused');
+                _scrollController.animateTo(
+                  703,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeIn,
+                );
+                _immersiveAreaController
+                    .setState(ImmersiveAreaController.mediaListFocused);
+              },
+            ),
+            MediaList(
+              contents: _immersiveListModel?.contents ?? [],
+              title: 'Recomended videos',
+              columns: ColumnCount.three,
+              onFocused: () {
+                print('item 3 focused');
+                _scrollController.animateTo(
+                  867,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeIn,
+                );
+                _immersiveAreaController
+                    .setState(ImmersiveAreaController.mediaListFocused);
+              },
+            ),
+            ...List.generate(
+              _categories.length,
+              (index) => MockItem(
+                onFocus: () {
+                  print(
+                      'item $index focused - Category: ${_categories[index].name}');
+                  if (index == 0) {
+                    _scrollController.animateTo(
+                      550,
+                      duration: const Duration(milliseconds: 100),
+                      curve: Curves.easeInQuad,
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
+        ));
   }
 }
 
@@ -111,6 +174,7 @@ class ImmersiveAreaController {
   static const int headerFocused = 0;
   static const int carouselFocused = 1;
   static const int immersiveListFocused = 2;
+  static const int mediaListFocused = 3;
 
   final List<void Function(int)> _listeners = [];
 
@@ -178,6 +242,13 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
         });
         _pageController.animateToPage(1,
             duration: const Duration(milliseconds: 100), curve: Curves.ease);
+      } else if (state == ImmersiveAreaController.mediaListFocused) {
+        // focused on list area
+        setState(() {
+          expand = false;
+        });
+        _pageController.animateToPage(1,
+            duration: const Duration(milliseconds: 100), curve: Curves.ease);
       }
     });
   }
@@ -209,7 +280,8 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
     action();
     _initialDelayTimer?.cancel();
     _initialDelayTimer = Timer(const Duration(milliseconds: 300), () {
-      _repeatingTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      _repeatingTimer =
+          Timer.periodic(const Duration(milliseconds: 100), (timer) {
         action();
       });
     });
@@ -240,8 +312,7 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
             return KeyEventResult.handled;
           }
           return KeyEventResult.ignored;
-        }
-        else if (event is KeyUpEvent) {
+        } else if (event is KeyUpEvent) {
           _stopRepeating();
           return KeyEventResult.handled;
         }

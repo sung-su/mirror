@@ -77,7 +77,7 @@ class _HomeContentState extends State<HomeContent> {
             MediaList(
               contents: _immersiveListModel?.contents ?? [],
               title: 'Your apps',
-              columns: ColumnCount.six,
+              columns: ColumnCount.nine,
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(

@@ -57,7 +57,7 @@ class MediaContent {
   }
 }
 
-enum ColumnCount { one, two, three, four, six }
+enum ColumnCount { one, two, three, four, six, nine }
 
 class MediaList extends StatefulWidget {
   final String title;
@@ -90,7 +90,11 @@ class _MediaListState extends State<MediaList> {
   bool _isCircleShape = false;
 
   void calculateItemSize() {
-    if (widget.columns == ColumnCount.six) {
+    if (widget.columns == ColumnCount.nine) {
+      _itemWidth = 80;
+      _itemHeight = 80;
+      _isCircleShape = true;
+    } else if (widget.columns == ColumnCount.six) {
       _itemWidth = 124;
       _itemHeight = 124;
       _isCircleShape = true;
@@ -347,6 +351,8 @@ class _MediaListState extends State<MediaList> {
                                       ? Alignment.center
                                       : Alignment.topLeft,
                                   child: Text(widget.contents[index].title,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
                                       style: TextStyle(
                                         color: Colors.white
                                             .withAlpha((255 * 0.8).toInt()),
