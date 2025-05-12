@@ -138,12 +138,12 @@ class _TvTabbarState extends State<TvTabbar> {
               spacing: 10,
               children: [
                 TvTabIcon(
-                  icon: const Icon(Icons.search, size: 17),
+                  icon: Icons.search,
                   isSelected: 4 == _selected,
                   hasFocus: Focus.of(context).hasFocus,
                 ),
                 TvTabIcon(
-                  icon: const Icon(Icons.settings_outlined, size: 17),
+                  icon: Icons.settings_outlined,
                   isSelected: 5 == _selected,
                   hasFocus: Focus.of(context).hasFocus,
                 ),
@@ -174,12 +174,12 @@ class TvAvatar extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(
-            color: isSelected
-                ? Color.fromARGB(255, 125, 125, 125)
-                : Colors.transparent,
-            width: 2.0,
-          ),
+          boxShadow:[
+            BoxShadow(
+              color: isSelected ? $style.colors.onSurface : Colors.transparent,
+              spreadRadius: 2,
+            )
+          ]
         ),
         child: GestureDetector(
             onTap: () {
@@ -234,18 +234,31 @@ class TvTabIcon extends StatelessWidget {
       required this.isSelected,
       required this.hasFocus});
   final bool isSelected;
-  final Widget icon;
+  final IconData icon;
   final bool hasFocus;
 
   @override
   Widget build(BuildContext context) {
     debugPrint('_TabButtonState.build()');
-    return SizedBox(
+    return Container(
       height: 30,
       width: 30,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: isSelected ? $style.colors.onSurface : Colors.transparent,
+            spreadRadius: 1,
+          )
+        ]
+      ),
       child: IconButton(
         padding: EdgeInsets.all(0.0),
-        icon: icon,
+        icon: Icon(
+          icon,
+          size: 17,
+          color: isSelected ? $style.colors.surface : $style.colors.onSurface,
+        ),
         onPressed: () {
           debugPrint('IconButton pressed');
         },
