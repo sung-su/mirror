@@ -63,10 +63,9 @@ class MediaList extends StatefulWidget {
   final String title;
   final ColumnCount columns;
   final VoidCallback? onFocused;
-  final List<ImmersiveContent> contents;
+ 
   const MediaList(
       {super.key,
-      required this.contents,
       this.onFocused,
       this.title = 'Title',
       this.columns = ColumnCount.four});
@@ -79,6 +78,7 @@ class _MediaListState extends State<MediaList> {
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   late List<GlobalKey> _itemKeys;
+  List<ImmersiveContent> contents = [];
 
   bool _hasFocus = false;
   int _itemCount = 0;
@@ -120,9 +120,24 @@ class _MediaListState extends State<MediaList> {
     super.initState();
     calculateItemSize();
     _focusNode.addListener(_onFocusChanged);
-    _itemCount = widget.contents.length;
-    _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
+
+    if (Provider.of<ImmersiveListModel>(context, listen: false).itemCount == 0) {
+      Provider.of<ImmersiveListModel>(context, listen: false).addListener(_handleModelUpdate);
+    } else {
+      contents = Provider.of<ImmersiveListModel>(context, listen: false).contents;
+      _itemCount = contents.length;
+      _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
+    }
     _selectedIndex = 0;
+  }
+
+  void _handleModelUpdate() {
+    setState(() {
+      contents = Provider.of<ImmersiveListModel>(context, listen: false).contents;
+      _itemCount = contents.length;
+      _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
+    });
+    Provider.of<ImmersiveListModel>(context, listen: false).removeListener(_handleModelUpdate);
   }
 
   @override
@@ -324,14 +339,14 @@ class _MediaListState extends State<MediaList> {
                                 child: _isCircleShape
                                     ? ClipOval(
                                         child: Image.asset(
-                                          'assets/mock/images/${widget.contents[index].card}',
+                                          'assets/mock/images/${contents[index].card}',
                                           fit: BoxFit.fill,
                                         ),
                                       )
                                     : ClipRRect(
                                         borderRadius: BorderRadius.circular(10),
                                         child: Image.asset(
-                                          'assets/mock/images/${widget.contents[index].card}',
+                                          'assets/mock/images/${contents[index].card}',
                                           fit: BoxFit.fill,
                                         ),
                                       ),
@@ -350,7 +365,7 @@ class _MediaListState extends State<MediaList> {
                                   alignment: _isCircleShape
                                       ? Alignment.center
                                       : Alignment.topLeft,
-                                  child: Text(widget.contents[index].title,
+                                  child: Text(contents[index].title,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       style: TextStyle(
@@ -363,7 +378,7 @@ class _MediaListState extends State<MediaList> {
                               if (_hasFocus && !_isCircleShape)
                                 Container(
                                   alignment: Alignment.topLeft,
-                                  child: Text(widget.contents[index].subtitle,
+                                  child: Text(contents[index].subtitle,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       style: TextStyle(
