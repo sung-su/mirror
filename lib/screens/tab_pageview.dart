@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
+import 'package:tizen_fs/screens/mock_library_page.dart';
 import 'sample_pages.dart';
 import 'home_page.dart';
 
@@ -27,7 +28,7 @@ class _TvPageViewState extends State<TvPageView> {
       children: [
         HomePage(scrollController: widget.scrollController),
         ListPage(scrollController: widget.scrollController),
-        EmptyPage()
+        MockLibraryPage()
       ]
     );
   }
