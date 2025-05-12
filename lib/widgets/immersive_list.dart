@@ -197,6 +197,7 @@ class ImmersiveListArea extends StatefulWidget {
 class _ImmersiveListAreaState extends State<ImmersiveListArea> {
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
+  List<ImmersiveContent> contents = [];
   late List<GlobalKey> _itemKeys;
 
   bool _hasFocus = false;
@@ -205,18 +206,25 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
   int _selectedIndex = 0;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    var model = Provider.of<ImmersiveListModel>(context);
-    _itemCount = model.itemCount;
-    _selectedIndex = model.selectedIndex;
-    _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
-  }
-
-  @override
   void initState() {
     super.initState();
     _focusNode.addListener(_onFocusChanged);
+    if (Provider.of<ImmersiveListModel>(context, listen: false).itemCount == 0) {
+      Provider.of<ImmersiveListModel>(context, listen: false).addListener(_handleModelUpdate);
+    } else {
+      contents = Provider.of<ImmersiveListModel>(context, listen: false).contents;
+      _itemCount = contents.length;
+      _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
+    }
+  }
+
+  void _handleModelUpdate() {
+    setState(() {
+      contents = Provider.of<ImmersiveListModel>(context, listen: false).contents;
+      _itemCount = contents.length;
+      _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
+    });
+    Provider.of<ImmersiveListModel>(context, listen: false).removeListener(_handleModelUpdate);
   }
 
   @override
@@ -244,44 +252,45 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
 
   KeyEventResult _onKeyEvent(FocusNode focusNode, KeyEvent event) {
     if (event is KeyDownEvent || event is KeyRepeatEvent) {
+      final beforeSelected = _selectedIndex;
       if (event.logicalKey == LogicalKeyboardKey.arrowLeft &&
           _selectedIndex > 0) {
         _selectedIndex = (_selectedIndex - 1).clamp(0, _itemCount - 1);
-        Provider.of<ImmersiveListModel>(context, listen: false).selectedIndex =
-            _selectedIndex;
-        _scrollToSelected(event is KeyRepeatEvent ? 1 : 100);
+        _scrollToSelected(event is KeyRepeatEvent ? 1 : 100, beforeSelected);
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
           _selectedIndex < _itemCount - 1) {
         _selectedIndex = (_selectedIndex + 1).clamp(0, _itemCount - 1);
-        Provider.of<ImmersiveListModel>(context, listen: false).selectedIndex =
-            _selectedIndex;
-        _scrollToSelected(event is KeyRepeatEvent ? 1 : 100);
+        _scrollToSelected(event is KeyRepeatEvent ? 1 : 100, beforeSelected);
         return KeyEventResult.handled;
       }
     }
     return KeyEventResult.ignored;
   }
 
-  Future<void> _scrollToSelected(int durationMilliseconds) async {
+  Future<void> _scrollToSelected(int durationMilliseconds, int beforeSelected) async {
     if (_itemKeys[_selectedIndex].currentContext != null) {
       int current = _selectedIndex;
       final RenderBox box = _itemKeys[_selectedIndex]
           .currentContext!
           .findRenderObject() as RenderBox;
       final Offset position = box.localToGlobal(Offset.zero);
+      setState(() {});
+      Provider.of<ImmersiveListModel>(context, listen: false).selectedIndex = _selectedIndex;
       await _scrollController.animateTo(
         position.dx + _scrollController.offset - _leftPadding,
         duration: Duration(milliseconds: durationMilliseconds),
         curve: Curves.easeInOut,
       );
-      await Future.delayed(Duration(milliseconds: 300));
+
+      await Future.delayed(Duration(milliseconds: 200));
       if (current == _selectedIndex && _hasFocus) {
         Provider.of<BackdropProvider>(context, listen: false)
             .updateBackdrop(getSelectedBackdrop());
       }
     } else {
-      print("Item $_selectedIndex is not in the widget tree");
+      print("Item $_selectedIndex is not in the widget tree - before [$beforeSelected]");
+      _selectedIndex = beforeSelected; // restore previous selection
     }
   }
 
@@ -360,7 +369,7 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.asset(
-                                  'assets/mock/images/${Provider.of<ImmersiveListModel>(context).getContent(index).card}',
+                                  'assets/mock/images/${contents[index].card}',
                                   fit: BoxFit.fill,
                                 ),
                               ),
@@ -381,9 +390,7 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
                               ),
                               Center(
                                   child: Text(
-                                      Provider.of<ImmersiveListModel>(context)
-                                          .getContent(index)
-                                          .title,
+                                      contents[index].title,
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 18,
