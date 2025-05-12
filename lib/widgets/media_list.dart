@@ -322,7 +322,6 @@ class _MediaListState extends State<MediaList> {
                             )),
                         SizedBox(
                           width: _itemWidth,
-                          height: _itemHeight,
                           child: Column(
                             children: [
                               if (_hasFocus && index == _selectedIndex ||
