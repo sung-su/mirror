@@ -28,11 +28,10 @@ class _TvPageViewState extends State<TvPageView> {
         physics: const NeverScrollableScrollPhysics(),
         children: [
           HomePage(
-              scrollController: widget.scrollController,
-              categories: Provider.of<MediaDBParser>(context, listen: false)
-                  .categoryMap
-                  .values
-                  .toList()),
+            scrollController: widget.scrollController,
+            categories:
+                Provider.of<MediaDBParser>(context, listen: false).categories,
+          ),
           ListPage(scrollController: widget.scrollController),
           MockLibraryPage()
         ]);

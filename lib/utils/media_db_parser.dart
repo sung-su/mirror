@@ -9,7 +9,8 @@ import 'package:tizen_fs/models/tile.dart';
 class MediaDBParser {
   static const String dbPath = 'assets/sqlite.db';
   //'/home/owner/apps_rw/com.samsung.tv.home.media/shared/trusted/sqlite.db';
-  final Map<String, Category> categoryMap = {};
+  final Map<String, Category> _categoryMap = {};
+  final List<Category> categories = [];
   final List<String> excludedCategories = [
     'Anchor Row',
     'Genre Bookmark',
@@ -88,10 +89,11 @@ class MediaDBParser {
         final childUIDs = _parseChildEntityList(childEntityList);
         final tiles = _loadTiles(childUIDs, entryMap);
         if (tiles.isNotEmpty) {
-          if (categoryMap.containsKey(title)) {
-            categoryMap[title]!.tiles.addAll(tiles);
+          if (_categoryMap.containsKey(title)) {
+            _categoryMap[title]!.tiles.addAll(tiles);
           } else {
-            categoryMap[title] = Category(uid: uid, name: title, tiles: tiles);
+            _categoryMap[title] = Category(uid: uid, name: title, tiles: tiles);
+            categories.add(_categoryMap[title]!);
           }
         }
       }
@@ -99,9 +101,9 @@ class MediaDBParser {
   }
 
   Future<void> printCategories() async {
-    print('=== Categories loaded: ${categoryMap.length} ===');
+    print('=== Categories loaded: ${_categoryMap.length} ===');
 
-    for (var category in categoryMap.values) {
+    for (var category in _categoryMap.values) {
       print('Category: ${category.name} (UID: ${category.uid})');
       print('   Contains tiles: ${category.tiles.length}');
       for (var tile in category.tiles) {
@@ -142,7 +144,8 @@ class MediaDBParser {
                 title: title,
                 iconUrl: icon,
                 details: contentDetail);
-          } else {
+          } else if (!icon.toString().startsWith('/usr/') &&
+              File(icon).existsSync()) {
             return Tile(
                 iconUrl: icon, parentUID: parentUID, title: title, uid: uid);
           }

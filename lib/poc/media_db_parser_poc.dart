@@ -34,10 +34,7 @@ class _MediaDBParserPocState extends State<MediaDBParserPoc> {
   @override
   void initState() {
     super.initState();
-    categories = Provider.of<MediaDBParser>(context, listen: false)
-        .categoryMap
-        .values
-        .toList();
+    categories = Provider.of<MediaDBParser>(context, listen: false).categories;
     setState(() {
       categories = categories;
     });
