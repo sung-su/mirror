@@ -220,7 +220,13 @@ class TvTab extends StatelessWidget {
         child: Text(
           text,
           style: TextStyle(
-              color: (isSelected && isFocused) ? Colors.black : Colors.white.withAlphaF(.9), fontSize: 16),
+            fontSize: 16,
+            color: isFocused
+              ? (isSelected
+                  ? $style.colors.surface
+                  : $style.colors.onSurface)
+              : $style.colors.onSurface.withAlphaF(0.8),
+          ),
         ),
       ),
     );
