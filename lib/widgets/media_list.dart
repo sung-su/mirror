@@ -172,7 +172,7 @@ class _MediaListState extends State<MediaList> {
           _selectedIndex = (_selectedIndex - 1).clamp(0, _itemCount - 1);
         });
         _scrollToSelected(event is KeyRepeatEvent ? 1 : 100,
-            event is KeyRepeatEvent ? true : false);
+            event is KeyRepeatEvent ? false : true);
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
           _selectedIndex < _itemCount - 1) {
@@ -180,7 +180,7 @@ class _MediaListState extends State<MediaList> {
           _selectedIndex = (_selectedIndex + 1).clamp(0, _itemCount - 1);
         });
         _scrollToSelected(event is KeyRepeatEvent ? 1 : 100,
-            event is KeyRepeatEvent ? true : false);
+            event is KeyRepeatEvent ? false : true);
         return KeyEventResult.handled;
       }
     }
@@ -188,7 +188,7 @@ class _MediaListState extends State<MediaList> {
   }
 
   Future<void> _scrollToSelected(
-      int durationMilliseconds, bool shortcut) async {
+      int durationMilliseconds, bool backdrop) async {
     if (_itemKeys[_selectedIndex].currentContext != null) {
       int current = _selectedIndex;
       final RenderBox box = _itemKeys[_selectedIndex]
@@ -198,11 +198,11 @@ class _MediaListState extends State<MediaList> {
 
       await _scrollController.animateTo(
         position.dx + _scrollController.offset - _peekPadding,
-        duration: Duration(milliseconds: shortcut ? 1 : durationMilliseconds),
+        duration: Duration(milliseconds: backdrop ? durationMilliseconds : 1),
         curve: Curves.easeInOut,
       );
 
-      if (!shortcut) {
+      if (backdrop) {
         await Future.delayed(Duration(milliseconds: 300));
         if (current == _selectedIndex && _hasFocus) {
           Provider.of<BackdropProvider>(context, listen: false)
