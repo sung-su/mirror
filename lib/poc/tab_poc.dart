@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
 import 'package:tizen_fs/screens/tab_bar.dart';
-import 'tab_pageview_poc.dart';
+import 'package:tizen_fs/screens/tab_pageview.dart';
 
 class TabPocPage extends StatelessWidget {
   const TabPocPage({super.key});
