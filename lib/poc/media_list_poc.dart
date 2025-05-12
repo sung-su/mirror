@@ -75,7 +75,6 @@ class _HomeContentState extends State<HomeContent> {
               },
             ),
             MediaList(
-              contents: _immersiveListModel?.contents ?? [],
               title: 'Your apps',
               columns: ColumnCount.nine,
               onFocused: () {
@@ -90,7 +89,6 @@ class _HomeContentState extends State<HomeContent> {
               },
             ),
             MediaList(
-              contents: _immersiveListModel?.contents ?? [],
               title: 'Top selling movies',
               columns: ColumnCount.four,
               onFocused: () {
@@ -105,7 +103,6 @@ class _HomeContentState extends State<HomeContent> {
               },
             ),
             MediaList(
-              contents: _immersiveListModel?.contents ?? [],
               title: 'Popular shows',
               columns: ColumnCount.four,
               onFocused: () {
@@ -120,7 +117,6 @@ class _HomeContentState extends State<HomeContent> {
               },
             ),
             MediaList(
-              contents: _immersiveListModel?.contents ?? [],
               title: 'Recomended videos',
               columns: ColumnCount.three,
               onFocused: () {
