@@ -238,7 +238,7 @@ class _MediaListState extends State<MediaList> {
               )),
         ),
         SizedBox(
-          height: _itemHeight * 2,
+          height: _hasFocus ? _itemHeight * 1.7 : _itemHeight * 1.2,
           child: ScrollConfiguration(
             behavior:
                 ScrollBehavior().copyWith(scrollbars: false, overscroll: false),
@@ -246,6 +246,7 @@ class _MediaListState extends State<MediaList> {
               opacity: _hasFocus ? 1.0 : 0.5,
               duration: const Duration(milliseconds: 100),
               child: ListView.builder(
+                //peek space
                 padding:
                     EdgeInsets.only(left: _peekPadding, right: _peekPadding),
                 clipBehavior: Clip.none,
@@ -254,20 +255,23 @@ class _MediaListState extends State<MediaList> {
                 itemCount: _itemCount,
                 itemBuilder: (context, index) {
                   return Container(
+                    //between items, image-label space
                     margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
                     child: Column(
                       children: [
+                        //scale image area
                         AnimatedScale(
                             scale: (_hasFocus && index == _selectedIndex)
                                 ? 1.15
                                 : 1.0,
                             duration: const Duration(milliseconds: 100),
+                            //card with border
                             child: Card(
-                              margin: EdgeInsets.only(left: 10, right: 10),
+                              margin:
+                                  EdgeInsets.only(top: 10, left: 10, right: 10),
                               key: _itemKeys[index],
                               shape: (_hasFocus && index == _selectedIndex)
                                   ? (_isCircleShape
-                                      //TODO : blinking border
                                       ? CircleBorder(
                                           side: BorderSide(
                                               color: Colors.white.withAlpha(
@@ -283,6 +287,7 @@ class _MediaListState extends State<MediaList> {
                                               BorderRadius.circular(10),
                                         ))
                                   : null,
+                              //glow shadow layer
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: _isCircleShape
@@ -304,6 +309,7 @@ class _MediaListState extends State<MediaList> {
                                 ),
                                 width: _itemWidth,
                                 height: _itemHeight,
+                                //image layer
                                 child: _isCircleShape
                                     ? ClipOval(
                                         child: Image.asset(
@@ -320,10 +326,12 @@ class _MediaListState extends State<MediaList> {
                                       ),
                               ),
                             )),
+                        //labels
                         SizedBox(
                           width: _itemWidth,
                           child: Column(
                             children: [
+                              //title
                               if (_hasFocus && index == _selectedIndex ||
                                   _hasFocus && _isCircleShape)
                                 Container(
@@ -338,6 +346,7 @@ class _MediaListState extends State<MediaList> {
                                         fontSize: 16,
                                       )),
                                 ),
+                              //subtitle
                               if (_hasFocus && !_isCircleShape)
                                 Container(
                                   alignment: Alignment.topLeft,

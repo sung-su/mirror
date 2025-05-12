@@ -96,7 +96,7 @@ class _HomeContentState extends State<HomeContent> {
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
-                  620,
+                  600,
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                 );
@@ -111,7 +111,7 @@ class _HomeContentState extends State<HomeContent> {
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
-                  870,
+                  750,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeIn,
                 );
