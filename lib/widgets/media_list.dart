@@ -267,6 +267,8 @@ class _MediaListState extends State<MediaList> {
                             duration: const Duration(milliseconds: 100),
                             //card with border
                             child: Card(
+                              color: Colors.transparent,
+                              shadowColor: Colors.transparent,
                               margin:
                                   EdgeInsets.only(top: 10, left: 10, right: 10),
                               key: _itemKeys[index],
