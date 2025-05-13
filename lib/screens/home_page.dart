@@ -6,6 +6,7 @@ import 'package:tizen_fs/models/category.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
 import 'package:tizen_fs/widgets/immersive_carousel.dart';
 import 'package:tizen_fs/widgets/category_list.dart';
+import 'manager_services.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage(
@@ -116,8 +117,9 @@ class _HomePageState extends State<HomePage> {
                 columns: ColumnCount.three,
                 title: 'Recomended videos',
                 onFocused: () {
+                  debugPrint('Recomended videos focused');
                   _scrollController.animateTo(
-                    550 + 132 + (13 * 170),
+                    550 + 132 + ((widget.categories.length - 1) * 170),
                     duration: const Duration(milliseconds: 100),
                     curve: Curves.easeInQuad,
                   );
@@ -126,7 +128,18 @@ class _HomePageState extends State<HomePage> {
               category: widget.categories[11],
               title: 'Recently uploaded',
               columns: ColumnCount.three,
+              onFocused: () {
+                debugPrint('Recently uploaded focused');
+                _scrollController.animateTo(
+                  550 + 132 + ((widget.categories.length - 1) * 170) + 220,
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.easeInQuad,
+                );
+              }
             ),
+            EndWidget(
+              scrollController: _scrollController,
+            )
           ],
         ));
   }
