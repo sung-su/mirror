@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/utils/media_db_parser.dart';
+import 'package:tizen_fs/utils/youtube_extractor.dart';
 import 'router.dart';
 
 void main() async {
@@ -11,7 +12,19 @@ void main() async {
   final mediaDBParser = MediaDBParser();
   await mediaDBParser.initialize();
 
-  runApp(Provider<MediaDBParser>.value(value: mediaDBParser, child: TizenFS()));
+  const String apiKey = 'YOUTUBE_API_KEY'; // YouTube API Key
+  const String channelId = 'UCWwgaK7x0_FR1goeSRazfsQ'; // Samsung Channel
+  final youtubeExtractor =
+      YouTubeExtractor(apiKey: apiKey, channelId: channelId);
+  await youtubeExtractor.initialize();
+
+  runApp(MultiProvider(
+    providers: [
+      Provider<MediaDBParser>.value(value: mediaDBParser),
+      Provider<YouTubeExtractor>.value(value: youtubeExtractor),
+    ],
+    child: TizenFS(),
+  ));
 }
 
 class MouseDraggableScrollBehavior extends ScrollBehavior {

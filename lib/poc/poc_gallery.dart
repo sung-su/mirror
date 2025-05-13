@@ -7,6 +7,7 @@ import 'media_list_poc.dart';
 import 'setting_panel_poc.dart';
 import 'immersive_list_poc.dart';
 import 'tab_poc.dart';
+import 'youtube_poc.dart';
 
 class PocGalleryPage extends StatelessWidget {
   const PocGalleryPage({super.key, required this.title});
@@ -106,6 +107,19 @@ class PocGalleryPage extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) =>
                           HomeScreenSizeWrapper(const MediaDBParserPocPage()),
+                    ));
+              },
+            ),
+            ListTile(
+              title: const Text('YouTube Data Poc'),
+              subtitle: const Text('Fetching the YouTube data and show tiles'),
+              leading: const Icon(Icons.video_library),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreenSizeWrapper(const YoutubePocPage()),
                     ));
               },
             ),

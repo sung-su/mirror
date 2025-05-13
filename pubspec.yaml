@@ -45,6 +45,10 @@ dependencies:
   path: ^1.8.2
   expandable_page_view: ^1.0.17
   cached_network_image: ^3.3.0
+  http: ^1.4.0
+  timeago: ^3.7.1
+  url_launcher: ^6.3.1
+  url_launcher_tizen: ^2.1.4
 
 dev_dependencies:
   flutter_test:
