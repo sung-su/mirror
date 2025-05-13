@@ -28,9 +28,6 @@ class _MockAppsPageState extends State<MockAppsPage> {
       children: [
         MockListH(),
         MockListH(),
-        MockListH(),
-        MockListH(),
-        MockListH(),
       ],
     );
   }
@@ -86,7 +83,7 @@ class _MockListHState extends State<MockListH> {
             controller: _controller,
             padding: const EdgeInsets.symmetric(horizontal: 58, vertical: 5),
             scrollDirection: Axis.horizontal,
-            itemCount: 10,
+            itemCount: 5,
             itemExtent: itemSize,
             itemBuilder: (context, index) {
               return AnimatedScale(
