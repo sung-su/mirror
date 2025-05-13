@@ -83,6 +83,7 @@ class _TvTabbarState extends State<TvTabbar> {
   }
 
   void showAccountPanel() {
+    final FocusNode accountFocusNode = FocusNode();
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -92,31 +93,59 @@ class _TvTabbarState extends State<TvTabbar> {
       pageBuilder: (BuildContext buildContext, Animation animation,
           Animation secondaryAnimation) {
         return Material(
+          type: MaterialType.transparency,
           child: Container(
             color: Colors.black.withAlphaF(0.7),
-            child:Stack(children: [
-              Positioned(
-                left:65,
-                top:30,
-                child:
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 10,
-                  children: [
-                    TvAvatar(
-                      imageUrl: null,
-                      text: pages[0],
-                      isSelected: true,
-                    ),
-                    
-                    Padding(
-                       padding: const EdgeInsets.only(left: 5),
-                       child: Text(pages[0], style: TextStyle(fontSize: 20)),
-                     ),
+            child: FocusScope(
+              autofocus: true,
+              onKeyEvent: (node, event) {
+                if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.arrowRight) {
+                  debugPrint('[onKeyEvent] LogicalKeyboardKey.escape');
+                  Navigator.of(context).pop();
+                  return KeyEventResult.handled;
+                } else if (event is KeyDownEvent &&
+                    event.logicalKey == LogicalKeyboardKey.enter) {
+                  debugPrint('[onKeyEvent] LogicalKeyboardKey.enter');
+                  AppRouter.router.go(ScreenPaths.poc);
+                  return KeyEventResult.handled;
+                }
+                return KeyEventResult.ignored;
+              },
+              child: Stack(children: [
+                Positioned(
+                  left:65,
+                  top:30,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 10,
+                    children: [
+                      Focus(
+                        child: TvAvatar(
+                        imageUrl: null,
+                        text: pages[0],
+                        isSelected: true,
+                      )),
+                      Padding(
+                         padding: const EdgeInsets.only(left: 5),
+                         child: Text(pages[0], style: TextStyle(fontSize: 20)),
+                       ),
+                       Focus(
+                        focusNode: accountFocusNode,
+                        child: TextButton (
+                        onPressed: () { print('Add an account'); },
+                        style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        textStyle: TextStyle(fontSize: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      ),
+                      child: const Text('Add an account'),
+                     )
+                     )
                   ],
                 )
               )
             ])
+            )
           ),
         );
       },
