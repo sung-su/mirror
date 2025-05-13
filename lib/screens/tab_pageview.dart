@@ -32,7 +32,7 @@ class _TvPageViewState extends State<TvPageView> {
             categories:
                 Provider.of<MediaDBParser>(context, listen: false).categories,
           ),
-          ListPage(scrollController: widget.scrollController),
+          MockAppsPage(),
           MockLibraryPage()
         ]);
   }
