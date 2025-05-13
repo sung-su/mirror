@@ -15,6 +15,8 @@ class MediaDBParser {
     'Anchor Row',
     'Genre Bookmark',
     'Explore More',
+    'Games to Play with Your Valentine',
+    'Recommended by Xbox',
   ];
   Database? _db;
   bool _initialized = false;
