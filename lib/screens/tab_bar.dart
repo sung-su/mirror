@@ -4,6 +4,7 @@ import 'package:tizen_fs/main.dart';
 import 'package:tizen_fs/poc/setting_panel_poc.dart';
 import 'package:tizen_fs/router.dart';
 import 'package:tizen_fs/styles/app_style.dart';
+import 'account_panel.dart';
 
 class TvTabbar extends StatefulWidget {
   const TvTabbar({
@@ -83,7 +84,7 @@ class _TvTabbarState extends State<TvTabbar> {
   }
 
   void showAccountPanel() {
-    final FocusNode accountFocusNode = FocusNode();
+    // final FocusNode accountFocusNode = FocusNode();
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -92,69 +93,14 @@ class _TvTabbarState extends State<TvTabbar> {
       transitionDuration: const Duration(milliseconds: 80),
       pageBuilder: (BuildContext buildContext, Animation animation,
           Animation secondaryAnimation) {
-        return Material(
-          type: MaterialType.transparency,
-          child: Container(
-            color: Colors.black.withAlphaF(0.7),
-            child: FocusScope(
-              autofocus: true,
-              onKeyEvent: (node, event) {
-                if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.arrowRight) {
-                  debugPrint('[onKeyEvent] LogicalKeyboardKey.escape');
-                  Navigator.of(context).pop();
-                  return KeyEventResult.handled;
-                } else if (event is KeyDownEvent &&
-                    event.logicalKey == LogicalKeyboardKey.enter) {
-                  debugPrint('[onKeyEvent] LogicalKeyboardKey.enter');
-                  AppRouter.router.go(ScreenPaths.poc);
-                  return KeyEventResult.handled;
-                }
-                return KeyEventResult.ignored;
-              },
-              child: Stack(children: [
-                Positioned(
-                  left:65,
-                  top:30,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 10,
-                    children: [
-                      Focus(
-                        child: TvAvatar(
-                        imageUrl: null,
-                        text: pages[0],
-                        isSelected: true,
-                      )),
-                      Padding(
-                         padding: const EdgeInsets.only(left: 5),
-                         child: Text(pages[0], style: TextStyle(fontSize: 20)),
-                       ),
-                       Focus(
-                        focusNode: accountFocusNode,
-                        child: TextButton (
-                        onPressed: () { print('Add an account'); },
-                        style: TextButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        textStyle: TextStyle(fontSize: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                      ),
-                      child: const Text('Add an account'),
-                     )
-                     )
-                  ],
-                )
-              )
-            ])
-            )
-          ),
-        );
-      },
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
-      },
+            return AccountPanel();
+          },
+        transitionBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
     );
   }
 
@@ -256,8 +202,8 @@ class TvAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           boxShadow:[
