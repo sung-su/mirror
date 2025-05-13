@@ -292,23 +292,24 @@ class _CategoryListState extends State<CategoryList> {
                                   color: Colors.transparent,
                                   shadowColor: Colors.transparent,
                                   key: _itemKeys[index],
-                                  shape: (_hasFocus && index == _selectedIndex)
-                                      ? RoundedRectangleBorder(
-                                          side: BorderSide(
-                                              color: Colors.white.withAlpha(
-                                                  (255 * 0.7).toInt()),
-                                              width: 2.0),
-                                          borderRadius: _isCircleShape
-                                              ? BorderRadius.circular(50)
-                                              : BorderRadius.circular(10),
-                                        )
-                                      : null,
                                   child: Container(
-                                    //glow shadow layer
+                                    // border
                                     decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.white
+                                            .withAlpha((255 * 0.7).toInt()),
+                                        width: (_hasFocus &&
+                                                index == _selectedIndex)
+                                            ? 2
+                                            : 0,
+                                      ),
                                       borderRadius: _isCircleShape
-                                          ? BorderRadius.circular(50)
-                                          : BorderRadius.circular(10),
+                                          ? null
+                                          : BorderRadius.circular(12),
+                                      // glow
+                                      shape: _isCircleShape
+                                          ? BoxShape.circle
+                                          : BoxShape.rectangle,
                                       boxShadow: (_hasFocus &&
                                               index == _selectedIndex)
                                           ? [
