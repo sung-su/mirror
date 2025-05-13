@@ -47,7 +47,7 @@ class _TvTabbarState extends State<TvTabbar> {
           _selected = index;
         });
 
-        if (_selected > 0 && _selected < 4) {
+        if (_selected > 0 && _selected < 5) {
           _movePage(_selected - 1);
         }
       }

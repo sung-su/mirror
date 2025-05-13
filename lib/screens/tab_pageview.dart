@@ -3,6 +3,7 @@ import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/screens/mock_library_page.dart';
 import 'package:tizen_fs/utils/media_db_parser.dart';
+import 'package:tizen_fs/screens/search_page.dart';
 import 'sample_pages.dart';
 import 'home_page.dart';
 
@@ -33,7 +34,8 @@ class _TvPageViewState extends State<TvPageView> {
                 Provider.of<MediaDBParser>(context, listen: false).categories,
           ),
           MockAppsPage(),
-          MockLibraryPage()
+          MockLibraryPage(),
+          SearchPage(scrollController: widget.scrollController)
         ]);
   }
 }
