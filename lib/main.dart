@@ -16,7 +16,8 @@ void main() async {
   const String channelId = 'UCWwgaK7x0_FR1goeSRazfsQ'; // Samsung Channel
   final youtubeExtractor =
       YouTubeExtractor(apiKey: apiKey, channelId: channelId);
-  await youtubeExtractor.initialize();
+  // Uncomment the following line to initialize the YouTube extractor
+  //await youtubeExtractor.initialize();
 
   runApp(MultiProvider(
     providers: [
