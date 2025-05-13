@@ -238,10 +238,10 @@ class _CategoryListState extends State<CategoryList> {
                       children: [
                         if (_columns == 3)
                           SizedBox(
-                            width: 20,
-                            height: 15,
+                            width: 25,
+                            height: 25,
                             child: _buildTileImage(
-                                'https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png'),
+                                'assets/mock/images/icons8-youtube-144.png'),
                           ),
                         Text(_title == 'Launcher' ? 'Your apps' : _title,
                             textAlign: TextAlign.left,
@@ -279,72 +279,93 @@ class _CategoryListState extends State<CategoryList> {
                         children: [
                           //scale image area
                           AnimatedScale(
-                              scale: (_hasFocus && index == _selectedIndex)
-                                  ? _isCircleShape
-                                      ? 1.15
-                                      : 1.1
-                                  : 1.0,
-                              duration: const Duration(milliseconds: 100),
-                              //card with border
-                              child: Card(
-                                color: Colors.transparent,
-                                shadowColor: Colors.transparent,
-                                key: _itemKeys[index],
-                                shape: (_hasFocus && index == _selectedIndex)
-                                    ? (_isCircleShape
-                                        ? CircleBorder(
-                                            side: BorderSide(
-                                                color: Colors.white.withAlpha(
+                            scale: (_hasFocus && index == _selectedIndex)
+                                ? _isCircleShape
+                                    ? 1.15
+                                    : 1.1
+                                : 1.0,
+                            duration: const Duration(milliseconds: 100),
+                            //card with border
+                            child: Stack(
+                              children: [
+                                Card(
+                                  color: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  key: _itemKeys[index],
+                                  shape: (_hasFocus && index == _selectedIndex)
+                                      ? RoundedRectangleBorder(
+                                          side: BorderSide(
+                                              color: Colors.white.withAlpha(
+                                                  (255 * 0.7).toInt()),
+                                              width: 2.0),
+                                          borderRadius: _isCircleShape
+                                              ? BorderRadius.circular(50)
+                                              : BorderRadius.circular(10),
+                                        )
+                                      : null,
+                                  child: Container(
+                                    //glow shadow layer
+                                    decoration: BoxDecoration(
+                                      borderRadius: _isCircleShape
+                                          ? BorderRadius.circular(50)
+                                          : BorderRadius.circular(10),
+                                      boxShadow: (_hasFocus &&
+                                              index == _selectedIndex)
+                                          ? [
+                                              BoxShadow(
+                                                color: _extractColor.withAlpha(
                                                     (255 * 0.7).toInt()),
-                                                width: 2.0),
+                                                spreadRadius: 1,
+                                                blurRadius: 20,
+                                                blurStyle: BlurStyle.normal,
+                                                offset: Offset(0, 1),
+                                              ),
+                                            ]
+                                          : null,
+                                    ),
+                                    width: _itemWidth,
+                                    height: _itemHeight,
+                                    //image layer
+                                    child: _isCircleShape
+                                        ? ClipOval(
+                                            child: _buildTileImage(widget
+                                                .category
+                                                .getTile(index)
+                                                .iconUrl!),
                                           )
-                                        : RoundedRectangleBorder(
-                                            side: BorderSide(
-                                                color: Colors.white.withAlpha(
-                                                    (255 * 0.7).toInt()),
-                                                width: 2.0),
+                                        : ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(10),
-                                          ))
-                                    : null,
-                                child: Container(
-                                  //glow shadow layer
-                                  decoration: BoxDecoration(
-                                    borderRadius: _isCircleShape
-                                        ? BorderRadius.circular(50)
-                                        : BorderRadius.circular(10),
-                                    boxShadow: (_hasFocus &&
-                                            index == _selectedIndex)
-                                        ? [
-                                            BoxShadow(
-                                              color: _extractColor.withAlpha(
-                                                  (255 * 0.7).toInt()),
-                                              spreadRadius: 1,
-                                              blurRadius: 20,
-                                              blurStyle: BlurStyle.normal,
-                                              offset: Offset(0, 1),
-                                            ),
-                                          ]
-                                        : null,
+                                            child: _buildTileImage(widget
+                                                .category
+                                                .getTile(index)
+                                                .iconUrl!),
+                                          ),
                                   ),
-                                  width: _itemWidth,
-                                  height: _itemHeight,
-                                  //image layer
-                                  child: _isCircleShape
-                                      ? ClipOval(
-                                          child: _buildTileImage(widget.category
-                                              .getTile(index)
-                                              .iconUrl!),
-                                        )
-                                      : ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: _buildTileImage(widget.category
-                                              .getTile(index)
-                                              .iconUrl!),
-                                        ),
                                 ),
-                              )),
+                                if (_columns == 3)
+                                  // time stamp
+                                  Positioned(
+                                    top: _itemHeight * 0.85,
+                                    left: _itemWidth * 0.85,
+                                    child: Container(
+                                      color: Colors.black,
+                                      padding: const EdgeInsets.only(
+                                          left: 5, right: 5),
+                                      child: Text(
+                                        '12:34',
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 9,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
                           //labels
                           SizedBox(
                             width: _itemWidth,
@@ -452,6 +473,11 @@ class _CategoryListState extends State<CategoryList> {
         File(iconUrl),
         errorBuilder: (context, error, stackTrace) =>
             const Icon(Icons.broken_image),
+        fit: BoxFit.fill,
+      );
+    } else if (iconUrl.startsWith('assets')) {
+      return Image.asset(
+        iconUrl,
         fit: BoxFit.fill,
       );
     } else {
