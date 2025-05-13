@@ -37,8 +37,9 @@ class _CategoryListState extends State<CategoryList> {
   double _itemHeight = 110;
   Color _extractColor = Colors.white;
   bool _isCircleShape = false;
-  double _titleFontSize = 18;
-  double _subTitleFontSize = 16;
+  double _titleFontSize = 16;
+  double _subTitleFontSize = 14;
+  double _cicleFontSize = 12;
 
   void calculateItemSize() {
     if (widget.columns == ColumnCount.nine) {
@@ -133,7 +134,7 @@ class _CategoryListState extends State<CategoryList> {
       final Offset position = box.localToGlobal(Offset.zero);
       await _scrollController.animateTo(
         position.dx + _scrollController.offset - _peekPadding,
-        duration: Duration(milliseconds: durationMilliseconds),
+        duration: Duration(milliseconds: backdrop ? durationMilliseconds : 1),
         curve: Curves.easeInOut,
       );
 
@@ -176,7 +177,6 @@ class _CategoryListState extends State<CategoryList> {
         mainAxisSize: MainAxisSize.min,
         children: [
           //list title
-
           SizedBox(
             height: _hasFocus ? 70 : 35,
             child: AnimatedScale(
@@ -313,7 +313,9 @@ class _CategoryListState extends State<CategoryList> {
                                         style: TextStyle(
                                           color: Colors.white
                                               .withAlpha((255 * 0.7).toInt()),
-                                          fontSize: _subTitleFontSize,
+                                          fontSize: _isCircleShape
+                                              ? _cicleFontSize
+                                              : _subTitleFontSize,
                                         )),
                                   ),
                                 //subtitle
@@ -336,7 +338,7 @@ class _CategoryListState extends State<CategoryList> {
                                         style: TextStyle(
                                           color: Colors.white
                                               .withAlpha((255 * 0.5).toInt()),
-                                          fontSize: _subTitleFontSize,
+                                          fontSize: _titleFontSize,
                                         )),
                                   ),
                               ],
