@@ -2,21 +2,21 @@
     {
       "overline": "",
       "title": "A Minecraft Movie",
-      "description": "Four misfits are suddenly pulled through a mysterious portal into a bizarre cubic wonderland that thrives on imagination. To get back home they'll have to master this world while embarking on a quest with an unexpected expert crafter.",
+      "description": "A mysterious portal pulls four misfits into the Overworld.",
       "backdrop": "backdrop1.png",
       "buttonText": "Watch Now"
     },
     {
       "overline": "",
       "title": "Captain America",
-      "description": "Sam Wilson, the new Captain America, finds himself in the middle of an international incident and must discover the motive behind a nefarious global plan.",
+      "description": "The new Captain America finds himself in the middle of an international incident.",
       "backdrop": "backdrop2.png",
       "buttonText": "Watch Now"
     },
     {
       "overline": "",
       "title": "The Last Of Us",
-      "description": "After a global pandemic destroys civilization, a hardened survivor takes charge of a 14-year-old girl who may be humanity's last hope.",
+      "description": "Joel and Ellie must survive ruthless killers and monsters.",
       "backdrop": "backdrop3.png",
       "buttonText": "Watch Now"
     }

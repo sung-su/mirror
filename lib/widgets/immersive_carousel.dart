@@ -123,6 +123,7 @@ class ImmersiveCarousel extends StatefulWidget {
 
 class ImmersiveCarouselState extends State<ImmersiveCarousel> {
   int _selectedIndex = 0;
+  int _prevIndex = -1;
   int _itemCount = 0;
   bool isFocused = false;
   Timer? autoScrollTimer;
@@ -152,6 +153,7 @@ class ImmersiveCarouselState extends State<ImmersiveCarousel> {
       if (_itemCount == 0) return;
       final nextIndex = (_selectedIndex + 1) % _itemCount;
       setState(() {
+        _prevIndex = _selectedIndex;
         _selectedIndex = nextIndex;
         Provider.of<ImmersiveCarouselModel>(context, listen: false).selectedIndex = _selectedIndex;
       } );
@@ -169,6 +171,7 @@ class ImmersiveCarouselState extends State<ImmersiveCarousel> {
     if (_itemCount == 0) return;
     final nextIndex = (_selectedIndex + delta + _itemCount) % _itemCount;
     setState(()  {
+      _prevIndex = _selectedIndex;
       _selectedIndex = nextIndex;
       Provider.of<ImmersiveCarouselModel>(context, listen: false).selectedIndex = _selectedIndex;
     });
@@ -196,6 +199,12 @@ class ImmersiveCarouselState extends State<ImmersiveCarousel> {
         ));
   }
 
+  bool isMovingForward(int prev, int next, int itemCount) {
+    final forwardDistance = (next - prev + itemCount) % itemCount;
+    final backwardDistance = (prev - next + itemCount) % itemCount;
+    return forwardDistance <= backwardDistance;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_itemCount <= 0) {
@@ -216,16 +225,38 @@ class ImmersiveCarouselState extends State<ImmersiveCarousel> {
               child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
                   transitionBuilder: (Widget child, Animation<double> animation) {
-                    final inOffset = const Offset(0.7, 0.0);
-                    final outOffset = const Offset(1.0, 0.0);
-                    return SlideTransition(
-                      position: Tween<Offset>(
-                        begin: child.key == ValueKey(Provider.of<ImmersiveCarouselModel>(context, listen: false).getSelectedContent().title)
-                        ? inOffset : outOffset,
-                        end: Offset.zero,
-                      ).animate(animation),
-                      child: FadeTransition(opacity: animation, child: child),
+                    bool isForward = isMovingForward(_prevIndex, _selectedIndex, _itemCount);
+                    final incoming = child.key == ValueKey(Provider.of<ImmersiveCarouselModel>(context, listen: false).getSelectedContent().title);
+                    final inTween = Tween<Offset>(
+                      begin: isForward ? const Offset(0.7, 0.0) : const Offset(-0.7, 0.0),
+                      end: Offset.zero
                     );
+                    final outTween = Tween<Offset>(
+                      begin: Offset.zero,
+                      end: isForward ? const Offset(-0.7, 0.0) : const Offset(0.7, 0.0)
+                    );
+                    final curved = CurvedAnimation(
+                      parent: incoming ? animation : ReverseAnimation(animation),
+                      curve: Curves.easeOutCubic,
+                    );
+
+                    if (incoming) {
+                      return SlideTransition(
+                      position: inTween.animate(curved),
+                      child: FadeTransition(
+                        opacity: animation,
+                        child: child,
+                      ),
+                    );
+                    } else {
+                      return SlideTransition(
+                      position: outTween.animate(curved),
+                      child: FadeTransition(
+                          opacity: Tween<double>(begin: 1.0, end: 0.0).animate(curved),
+                          child: child,
+                        ),
+                    );
+                    }
                   },
                   layoutBuilder: (Widget? currentChild, List<Widget> previousChildren) {
                     return Stack(
