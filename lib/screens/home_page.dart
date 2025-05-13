@@ -100,7 +100,11 @@ class _HomePageState extends State<HomePage> {
                   print(
                       'item $index focused - Category: ${widget.categories[index].name}');
                   _scrollController.animateTo(
-                    index == 0 ? 550 : 550 + index * 165 + (index - 1) * 15,
+                    index == 0
+                        ? 550
+                        : index == 1
+                            ? 550 + 132
+                            : 550 + 132 + ((index - 1) * 170),
                     duration: const Duration(milliseconds: 100),
                     curve: Curves.easeInQuad,
                   );
@@ -236,7 +240,6 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
     _repeatingTimer = null;
   }
 
-  @override
   @override
   Widget build(BuildContext context) {
     return Focus(

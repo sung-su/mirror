@@ -29,7 +29,6 @@ class _CategoryListState extends State<CategoryList> {
   final FocusNode _focusNode = FocusNode();
   late List<GlobalKey> _itemKeys;
 
-  double _leftPadding = 58;
   bool _hasFocus = false;
   int _itemCount = 0;
   int _selectedIndex = 0;
@@ -38,8 +37,8 @@ class _CategoryListState extends State<CategoryList> {
   double _itemHeight = 110;
   Color _extractColor = Colors.white;
   bool _isCircleShape = false;
-  double _listTitleHeight = 50;
-  double _listTitleScaledHeight = 80;
+  double _titleFontSize = 18;
+  double _subTitleFontSize = 16;
 
   void calculateItemSize() {
     if (widget.columns == ColumnCount.nine) {
@@ -63,6 +62,8 @@ class _CategoryListState extends State<CategoryList> {
       _itemWidth = 196;
       _itemHeight = 110;
     }
+    _itemWidth *= 0.95;
+    _itemHeight *= 0.95;
   }
 
   @override
@@ -132,7 +133,7 @@ class _CategoryListState extends State<CategoryList> {
       final Offset position = box.localToGlobal(Offset.zero);
       await _scrollController.animateTo(
         position.dx + _scrollController.offset - _peekPadding,
-        duration: Duration(milliseconds: backdrop ? durationMilliseconds : 1),
+        duration: Duration(milliseconds: durationMilliseconds),
         curve: Curves.easeInOut,
       );
 
@@ -160,7 +161,6 @@ class _CategoryListState extends State<CategoryList> {
               Colors.black.withAlpha((0.1 * 255).toInt()),
               _extractColor.withAlpha((0.2 * 255).toInt()),
             ],
-            stops: const [0, 1],
           ),
         ),
       ),
@@ -175,32 +175,36 @@ class _CategoryListState extends State<CategoryList> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          //list title
+
           SizedBox(
-            height: _hasFocus ? _listTitleScaledHeight : _listTitleHeight,
+            height: _hasFocus ? 70 : 35,
             child: AnimatedScale(
-                scale: _hasFocus ? 2.0 : 1.0,
+                scale: _hasFocus ? 1.7 : 1.0,
                 duration: const Duration(milliseconds: 100),
                 alignment: Alignment.topLeft,
                 child: Container(
                   alignment: Alignment.topLeft,
                   padding: EdgeInsets.only(
-                    left: _hasFocus ? 30 : 64,
-                    top: _hasFocus ? 5 : 10,
+                    left: _hasFocus ? 35 : 70,
+                    top: 10,
                   ),
                   child: Text(
                       widget.category.name == 'Launcher'
                           ? 'Your apps'
                           : widget.category.name,
+                      textAlign: TextAlign.left,
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: _titleFontSize,
                         color: _hasFocus
-                            ? Colors.white.withAlpha((255 * 0.8).toInt())
+                            ? Colors.white.withAlpha((255 * 0.7).toInt())
                             : Colors.grey,
                       )),
                 )),
           ),
+          //list
           SizedBox(
-            height: _hasFocus ? _itemHeight * 1.7 : _itemHeight * 1.2,
+            height: _hasFocus ? _itemHeight * 1.7 : _itemHeight * 1.3,
             child: ScrollConfiguration(
               behavior: ScrollBehavior()
                   .copyWith(scrollbars: false, overscroll: false),
@@ -218,35 +222,34 @@ class _CategoryListState extends State<CategoryList> {
                   itemBuilder: (context, index) {
                     return Container(
                       //between items, image-label space
-                      margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                      margin: EdgeInsets.all(5),
                       child: Column(
                         children: [
                           //scale image area
                           AnimatedScale(
                               scale: (_hasFocus && index == _selectedIndex)
-                                  ? 1.15
+                                  ? _isCircleShape
+                                      ? 1.15
+                                      : 1.1
                                   : 1.0,
                               duration: const Duration(milliseconds: 100),
                               //card with border
                               child: Card(
                                 color: Colors.transparent,
                                 shadowColor: Colors.transparent,
-                                margin: EdgeInsets.only(
-                                    top: 10, left: 10, right: 10),
                                 key: _itemKeys[index],
                                 shape: (_hasFocus && index == _selectedIndex)
                                     ? (_isCircleShape
-                                        //TODO : blinking border
                                         ? CircleBorder(
                                             side: BorderSide(
                                                 color: Colors.white.withAlpha(
-                                                    (255 * 0.8).toInt()),
+                                                    (255 * 0.7).toInt()),
                                                 width: 2.0),
                                           )
                                         : RoundedRectangleBorder(
                                             side: BorderSide(
                                                 color: Colors.white.withAlpha(
-                                                    (255 * 0.8).toInt()),
+                                                    (255 * 0.7).toInt()),
                                                 width: 2.0),
                                             borderRadius:
                                                 BorderRadius.circular(10),
@@ -263,7 +266,7 @@ class _CategoryListState extends State<CategoryList> {
                                         ? [
                                             BoxShadow(
                                               color: _extractColor.withAlpha(
-                                                  (255 * 0.8).toInt()),
+                                                  (255 * 0.7).toInt()),
                                               spreadRadius: 1,
                                               blurRadius: 20,
                                               blurStyle: BlurStyle.normal,
@@ -299,7 +302,7 @@ class _CategoryListState extends State<CategoryList> {
                                 if (_hasFocus && index == _selectedIndex ||
                                     _hasFocus && _isCircleShape)
                                   Container(
-                                    padding: EdgeInsets.only(top: 10),
+                                    padding: EdgeInsets.only(top: 5),
                                     alignment: _isCircleShape
                                         ? Alignment.center
                                         : Alignment.topLeft,
@@ -309,8 +312,8 @@ class _CategoryListState extends State<CategoryList> {
                                         maxLines: 1,
                                         style: TextStyle(
                                           color: Colors.white
-                                              .withAlpha((255 * 0.8).toInt()),
-                                          fontSize: 16,
+                                              .withAlpha((255 * 0.7).toInt()),
+                                          fontSize: _subTitleFontSize,
                                         )),
                                   ),
                                 //subtitle
@@ -322,6 +325,8 @@ class _CategoryListState extends State<CategoryList> {
                                         .isNotEmpty)
                                   Container(
                                     alignment: Alignment.topLeft,
+                                    padding: EdgeInsets.only(
+                                        top: index == _selectedIndex ? 0 : 5),
                                     child: Text(
                                         widget.category
                                             .getTile(index)
@@ -331,7 +336,7 @@ class _CategoryListState extends State<CategoryList> {
                                         style: TextStyle(
                                           color: Colors.white
                                               .withAlpha((255 * 0.5).toInt()),
-                                          fontSize: 16,
+                                          fontSize: _subTitleFontSize,
                                         )),
                                   ),
                               ],
