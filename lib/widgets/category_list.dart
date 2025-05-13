@@ -12,10 +12,12 @@ class CategoryList extends StatefulWidget {
   final ColumnCount columns;
   final VoidCallback? onFocused;
   final Category category;
+  final String title;
 
   const CategoryList({
     super.key,
     required this.category,
+    this.title = '',
     this.onFocused,
     this.columns = ColumnCount.four,
   });
@@ -28,7 +30,8 @@ class _CategoryListState extends State<CategoryList> {
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   late List<GlobalKey> _itemKeys;
-
+  late String _title;
+  int _columns = 4;
   bool _hasFocus = false;
   int _itemCount = 0;
   int _selectedIndex = 0;
@@ -39,32 +42,70 @@ class _CategoryListState extends State<CategoryList> {
   bool _isCircleShape = false;
   double _titleFontSize = 16;
   double _subTitleFontSize = 14;
-  double _cicleFontSize = 12;
+  double _subHeadingFontSize = 12;
 
   void calculateItemSize() {
     if (widget.columns == ColumnCount.nine) {
       _itemWidth = 80;
       _itemHeight = 80;
       _isCircleShape = true;
+      _columns = 9;
     } else if (widget.columns == ColumnCount.six) {
       _itemWidth = 124;
       _itemHeight = 124;
       _isCircleShape = true;
+      _columns = 6;
     } else if (widget.columns == ColumnCount.three) {
       _itemWidth = 268;
       _itemHeight = 150;
+      _columns = 3;
     } else if (widget.columns == ColumnCount.two) {
       _itemWidth = 412;
       _itemHeight = 230;
+      _columns = 2;
     } else if (widget.columns == ColumnCount.one) {
       _itemWidth = 844;
       _itemHeight = 470;
+      _columns = 1;
     } else {
       _itemWidth = 196;
       _itemHeight = 110;
+      _columns = 4;
     }
     _itemWidth *= 0.95;
     _itemHeight *= 0.95;
+  }
+
+  bool checkLabelVisible(int order, bool selected) {
+    bool title = false;
+    bool subTitle = false;
+    bool subHeading = false;
+
+    if (!_hasFocus) {
+      return false;
+    } else {
+      if (_columns == 3) {
+        return true;
+      } else if (_columns > 5) {
+        title = true;
+        subTitle = false;
+        subHeading = false;
+      } else {
+        if (selected) {
+          title = true;
+          subTitle = true;
+          subHeading = false;
+        } else {
+          title = false;
+          subTitle = true;
+          subHeading = false;
+        }
+      }
+    }
+
+    if (order == 1) return title;
+    if (order == 2) return subTitle;
+    return subHeading;
   }
 
   @override
@@ -75,6 +116,7 @@ class _CategoryListState extends State<CategoryList> {
     _itemCount = widget.category.tileCount;
     _selectedIndex = 0;
     _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
+    _title = widget.title.isEmpty ? widget.category.name : widget.title;
   }
 
   @override
@@ -189,10 +231,7 @@ class _CategoryListState extends State<CategoryList> {
                     left: _hasFocus ? 35 : 70,
                     top: 10,
                   ),
-                  child: Text(
-                      widget.category.name == 'Launcher'
-                          ? 'Your apps'
-                          : widget.category.name,
+                  child: Text(_title == 'Launcher' ? 'Your apps' : _title,
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontSize: _titleFontSize,
@@ -298,9 +337,9 @@ class _CategoryListState extends State<CategoryList> {
                             width: _itemWidth,
                             child: Column(
                               children: [
-                                //title
-                                if (_hasFocus && index == _selectedIndex ||
-                                    _hasFocus && _isCircleShape)
+                                //1st label
+                                if (checkLabelVisible(
+                                    1, index == _selectedIndex))
                                   Container(
                                     padding: EdgeInsets.only(top: 5),
                                     alignment: _isCircleShape
@@ -314,13 +353,15 @@ class _CategoryListState extends State<CategoryList> {
                                           color: Colors.white
                                               .withAlpha((255 * 0.7).toInt()),
                                           fontSize: _isCircleShape
-                                              ? _cicleFontSize
-                                              : _subTitleFontSize,
+                                              ? _subHeadingFontSize
+                                              : _columns == 3
+                                                  ? _subHeadingFontSize
+                                                  : _subTitleFontSize,
                                         )),
                                   ),
-                                //subtitle
-                                if (_hasFocus &&
-                                    !_isCircleShape &&
+                                //2nd label
+                                if (checkLabelVisible(
+                                        2, index == _selectedIndex) &&
                                     widget.category
                                         .getTile(index)
                                         .details['app_name_list'][0]
@@ -328,7 +369,10 @@ class _CategoryListState extends State<CategoryList> {
                                   Container(
                                     alignment: Alignment.topLeft,
                                     padding: EdgeInsets.only(
-                                        top: index == _selectedIndex ? 0 : 5),
+                                        top: checkLabelVisible(
+                                                1, index == _selectedIndex)
+                                            ? 0
+                                            : 5),
                                     child: Text(
                                         widget.category
                                             .getTile(index)
@@ -338,7 +382,32 @@ class _CategoryListState extends State<CategoryList> {
                                         style: TextStyle(
                                           color: Colors.white
                                               .withAlpha((255 * 0.5).toInt()),
-                                          fontSize: _titleFontSize,
+                                          fontSize: _isCircleShape
+                                              ? _subHeadingFontSize
+                                              : _columns == 3
+                                                  ? _subHeadingFontSize
+                                                  : _subTitleFontSize,
+                                        )),
+                                  ),
+                                //3rd label
+                                if (checkLabelVisible(
+                                    3, index == _selectedIndex))
+                                  Container(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                        widget.category
+                                            .getTile(index)
+                                            .details['price'],
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          color: Colors.white
+                                              .withAlpha((255 * 0.5).toInt()),
+                                          fontSize: _isCircleShape
+                                              ? _subHeadingFontSize
+                                              : _columns == 3
+                                                  ? _subHeadingFontSize
+                                                  : _subTitleFontSize,
                                         )),
                                   ),
                               ],

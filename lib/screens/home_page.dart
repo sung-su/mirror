@@ -110,7 +110,23 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
-            )
+            ),
+            CategoryList(
+                category: widget.categories[1],
+                columns: ColumnCount.three,
+                title: 'Recomended videos',
+                onFocused: () {
+                  _scrollController.animateTo(
+                    550 + 132 + (13 * 170),
+                    duration: const Duration(milliseconds: 100),
+                    curve: Curves.easeInQuad,
+                  );
+                }),
+            CategoryList(
+              category: widget.categories[2],
+              title: 'Recently uploaded',
+              columns: ColumnCount.three,
+            ),
           ],
         ));
   }
