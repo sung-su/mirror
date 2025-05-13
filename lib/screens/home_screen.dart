@@ -38,6 +38,7 @@ class _HomeContentState extends State<HomeContent> {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
+      scrollBehavior: ScrollBehavior().copyWith(scrollbars: false, overscroll: false),
       controller: _scrollController,
       slivers: [
         SliverAppBar(
