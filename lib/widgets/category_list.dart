@@ -31,6 +31,7 @@ class _CategoryListState extends State<CategoryList> {
   final FocusNode _focusNode = FocusNode();
   late List<GlobalKey> _itemKeys;
   late String _title;
+
   int _columns = 4;
   bool _hasFocus = false;
   int _itemCount = 0;
@@ -174,13 +175,14 @@ class _CategoryListState extends State<CategoryList> {
           .currentContext!
           .findRenderObject() as RenderBox;
       final Offset position = box.localToGlobal(Offset.zero);
+
       await _scrollController.animateTo(
         position.dx + _scrollController.offset - _peekPadding,
         duration: Duration(milliseconds: backdrop ? durationMilliseconds : 1),
         curve: Curves.easeInOut,
       );
 
-      if (!backdrop) {
+      if (backdrop) {
         await Future.delayed(Duration(milliseconds: 300));
         if (current == _selectedIndex && _hasFocus) {
           Provider.of<BackdropProvider>(context, listen: false)
@@ -226,20 +228,31 @@ class _CategoryListState extends State<CategoryList> {
                 duration: const Duration(milliseconds: 100),
                 alignment: Alignment.topLeft,
                 child: Container(
-                  alignment: Alignment.topLeft,
-                  padding: EdgeInsets.only(
-                    left: _hasFocus ? 35 : 70,
-                    top: 10,
-                  ),
-                  child: Text(_title == 'Launcher' ? 'Your apps' : _title,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontSize: _titleFontSize,
-                        color: _hasFocus
-                            ? Colors.white.withAlpha((255 * 0.7).toInt())
-                            : Colors.grey,
-                      )),
-                )),
+                    alignment: Alignment.topLeft,
+                    padding: EdgeInsets.only(
+                      left: _hasFocus ? 35 : 70,
+                      top: 10,
+                    ),
+                    child: Row(
+                      spacing: 5,
+                      children: [
+                        if (_columns == 3)
+                          SizedBox(
+                            width: 20,
+                            height: 15,
+                            child: _buildTileImage(
+                                'https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png'),
+                          ),
+                        Text(_title == 'Launcher' ? 'Your apps' : _title,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: _titleFontSize,
+                              color: _hasFocus
+                                  ? Colors.white.withAlpha((255 * 0.7).toInt())
+                                  : Colors.grey,
+                            )),
+                      ],
+                    ))),
           ),
           //list
           SizedBox(

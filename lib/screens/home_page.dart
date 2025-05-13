@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             CategoryList(
-                category: widget.categories[1],
+                category: widget.categories[10],
                 columns: ColumnCount.three,
                 title: 'Recomended videos',
                 onFocused: () {
@@ -123,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                   );
                 }),
             CategoryList(
-              category: widget.categories[2],
+              category: widget.categories[11],
               title: 'Recently uploaded',
               columns: ColumnCount.three,
             ),
