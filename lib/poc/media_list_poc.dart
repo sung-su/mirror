@@ -77,10 +77,11 @@ class _HomeContentState extends State<HomeContent> {
             MediaList(
               title: 'Your apps',
               columns: ColumnCount.nine,
+              contents: _immersiveListModel.contents,
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
-                  420, //start 420 + 160
+                  420,
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                 );
@@ -90,11 +91,12 @@ class _HomeContentState extends State<HomeContent> {
             ),
             MediaList(
               title: 'Top selling movies',
+              contents: _immersiveListModel.contents,
               columns: ColumnCount.four,
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
-                  580,
+                  420 + 132,
                   duration: const Duration(milliseconds: 500),
                   curve: Curves.easeIn,
                 );
@@ -104,11 +106,12 @@ class _HomeContentState extends State<HomeContent> {
             ),
             MediaList(
               title: 'Popular shows',
+              contents: _immersiveListModel.contents,
               columns: ColumnCount.four,
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
-                  740,
+                  420 + 132 + 170,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeIn,
                 );
@@ -118,11 +121,12 @@ class _HomeContentState extends State<HomeContent> {
             ),
             MediaList(
               title: 'Recomended videos',
+              contents: _immersiveListModel.contents,
               columns: ColumnCount.three,
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
-                  900,
+                  420 + 132 + 170 + 170,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeIn,
                 );

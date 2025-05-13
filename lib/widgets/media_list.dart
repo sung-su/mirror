@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -60,14 +62,16 @@ class MediaContent {
 enum ColumnCount { one, two, three, four, six, nine }
 
 class MediaList extends StatefulWidget {
-  final String title;
   final ColumnCount columns;
   final VoidCallback? onFocused;
- 
+  final List<ImmersiveContent> contents;
+  final String title;
+
   const MediaList(
       {super.key,
+      required this.contents,
+      this.title = '',
       this.onFocused,
-      this.title = 'Title',
       this.columns = ColumnCount.four});
 
   @override
@@ -78,8 +82,9 @@ class _MediaListState extends State<MediaList> {
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   late List<GlobalKey> _itemKeys;
-  List<ImmersiveContent> contents = [];
+  late String _title;
 
+  int _columns = 4;
   bool _hasFocus = false;
   int _itemCount = 0;
   int _selectedIndex = 0;
@@ -88,31 +93,72 @@ class _MediaListState extends State<MediaList> {
   double _itemHeight = 110;
   Color _extractColor = Colors.white;
   bool _isCircleShape = false;
+  double _titleFontSize = 16;
+  double _subTitleFontSize = 14;
+  double _subHeadingFontSize = 12;
 
   void calculateItemSize() {
     if (widget.columns == ColumnCount.nine) {
       _itemWidth = 80;
       _itemHeight = 80;
       _isCircleShape = true;
+      _columns = 9;
     } else if (widget.columns == ColumnCount.six) {
       _itemWidth = 124;
       _itemHeight = 124;
       _isCircleShape = true;
+      _columns = 6;
     } else if (widget.columns == ColumnCount.three) {
       _itemWidth = 268;
       _itemHeight = 150;
+      _columns = 3;
     } else if (widget.columns == ColumnCount.two) {
       _itemWidth = 412;
       _itemHeight = 230;
+      _columns = 2;
     } else if (widget.columns == ColumnCount.one) {
       _itemWidth = 844;
       _itemHeight = 470;
+      _columns = 1;
     } else {
       _itemWidth = 196;
       _itemHeight = 110;
+      _columns = 4;
     }
     _itemWidth *= 0.95;
     _itemHeight *= 0.95;
+  }
+
+  bool checkLabelVisible(int order, bool selected) {
+    bool title = false;
+    bool subTitle = false;
+    bool subHeading = false;
+
+    if (!_hasFocus) {
+      return false;
+    } else {
+      if (_columns == 3) {
+        return true;
+      } else if (_columns > 5) {
+        title = true;
+        subTitle = false;
+        subHeading = false;
+      } else {
+        if (selected) {
+          title = true;
+          subTitle = true;
+          subHeading = false;
+        } else {
+          title = false;
+          subTitle = true;
+          subHeading = false;
+        }
+      }
+    }
+
+    if (order == 1) return title;
+    if (order == 2) return subTitle;
+    return subHeading;
   }
 
   @override
@@ -120,24 +166,10 @@ class _MediaListState extends State<MediaList> {
     super.initState();
     calculateItemSize();
     _focusNode.addListener(_onFocusChanged);
-
-    if (Provider.of<ImmersiveListModel>(context, listen: false).itemCount == 0) {
-      Provider.of<ImmersiveListModel>(context, listen: false).addListener(_handleModelUpdate);
-    } else {
-      contents = Provider.of<ImmersiveListModel>(context, listen: false).contents;
-      _itemCount = contents.length;
-      _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
-    }
+    _itemCount = widget.contents.length;
     _selectedIndex = 0;
-  }
-
-  void _handleModelUpdate() {
-    setState(() {
-      contents = Provider.of<ImmersiveListModel>(context, listen: false).contents;
-      _itemCount = contents.length;
-      _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
-    });
-    Provider.of<ImmersiveListModel>(context, listen: false).removeListener(_handleModelUpdate);
+    _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
+    _title = widget.title;
   }
 
   @override
@@ -226,7 +258,6 @@ class _MediaListState extends State<MediaList> {
               Colors.black.withAlpha((0.1 * 255).toInt()),
               _extractColor.withAlpha((0.2 * 255).toInt()),
             ],
-            stops: const [0, 1],
           ),
         ),
       ),
@@ -241,7 +272,7 @@ class _MediaListState extends State<MediaList> {
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         //list title
         SizedBox(
-          height: _hasFocus ? 80 : 30,
+          height: _hasFocus ? 70 : 35,
           child: AnimatedScale(
               scale: _hasFocus ? 1.7 : 1.0,
               duration: const Duration(milliseconds: 100),
@@ -249,22 +280,31 @@ class _MediaListState extends State<MediaList> {
               child: Container(
                 alignment: Alignment.topLeft,
                 padding: EdgeInsets.only(
-                  left: _hasFocus ? 35 : 65,
+                  left: _hasFocus ? 35 : 70,
                   top: 10,
                 ),
-                child: Text(widget.title,
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: _hasFocus
-                          ? Colors.white.withAlpha((255 * 0.7).toInt())
-                          : Colors.grey,
-                    )),
+                child: Row(spacing: 5, children: [
+                  if (_columns == 3)
+                    SizedBox(
+                      width: 20,
+                      height: 15,
+                      child: _buildTileImage(
+                          'https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png'),
+                    ),
+                  Text(widget.title,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontSize: _titleFontSize,
+                        color: _hasFocus
+                            ? Colors.white.withAlpha((255 * 0.7).toInt())
+                            : Colors.grey,
+                      )),
+                ]),
               )),
         ),
         //list
         SizedBox(
-          height: _hasFocus ? _itemHeight * 1.8 : _itemHeight * 1.3,
+          height: _hasFocus ? _itemHeight * 1.7 : _itemHeight * 1.3,
           child: ScrollConfiguration(
             behavior:
                 ScrollBehavior().copyWith(scrollbars: false, overscroll: false),
@@ -282,13 +322,15 @@ class _MediaListState extends State<MediaList> {
                 itemBuilder: (context, index) {
                   return Container(
                     //between items, image-label space
-                    margin: EdgeInsets.all(7),
+                    margin: EdgeInsets.all(5),
                     child: Column(
                       children: [
                         //scale image area
                         AnimatedScale(
                             scale: (_hasFocus && index == _selectedIndex)
-                                ? 1.15
+                                ? _isCircleShape
+                                    ? 1.15
+                                    : 1.1
                                 : 1.0,
                             duration: const Duration(milliseconds: 100),
                             //card with border
@@ -301,13 +343,13 @@ class _MediaListState extends State<MediaList> {
                                       ? CircleBorder(
                                           side: BorderSide(
                                               color: Colors.white.withAlpha(
-                                                  (255 * 0.8).toInt()),
+                                                  (255 * 0.7).toInt()),
                                               width: 2.0),
                                         )
                                       : RoundedRectangleBorder(
                                           side: BorderSide(
                                               color: Colors.white.withAlpha(
-                                                  (255 * 0.8).toInt()),
+                                                  (255 * 0.7).toInt()),
                                               width: 2.0),
                                           borderRadius:
                                               BorderRadius.circular(10),
@@ -324,7 +366,7 @@ class _MediaListState extends State<MediaList> {
                                       ? [
                                           BoxShadow(
                                             color: _extractColor
-                                                .withAlpha((255 * 0.8).toInt()),
+                                                .withAlpha((255 * 0.7).toInt()),
                                             spreadRadius: 1,
                                             blurRadius: 20,
                                             blurStyle: BlurStyle.normal,
@@ -339,14 +381,14 @@ class _MediaListState extends State<MediaList> {
                                 child: _isCircleShape
                                     ? ClipOval(
                                         child: Image.asset(
-                                          'assets/mock/images/${contents[index].card}',
+                                          'assets/mock/images/${widget.contents[index].card}',
                                           fit: BoxFit.fill,
                                         ),
                                       )
                                     : ClipRRect(
                                         borderRadius: BorderRadius.circular(10),
                                         child: Image.asset(
-                                          'assets/mock/images/${contents[index].card}',
+                                          'assets/mock/images/${widget.contents[index].card}',
                                           fit: BoxFit.fill,
                                         ),
                                       ),
@@ -357,35 +399,65 @@ class _MediaListState extends State<MediaList> {
                           width: _itemWidth,
                           child: Column(
                             children: [
-                              //title
-                              if (_hasFocus && index == _selectedIndex ||
-                                  _hasFocus && _isCircleShape)
+                              //1st label
+                              if (checkLabelVisible(1, index == _selectedIndex))
                                 Container(
                                   padding: EdgeInsets.only(top: 5),
                                   alignment: _isCircleShape
                                       ? Alignment.center
                                       : Alignment.topLeft,
-                                  child: Text(contents[index].title,
+                                  child: Text(widget.contents[index].title,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       style: TextStyle(
                                         color: Colors.white
-                                            .withAlpha((255 * 0.8).toInt()),
-                                        fontSize: 16,
+                                            .withAlpha((255 * 0.7).toInt()),
+                                        fontSize: _isCircleShape
+                                            ? _subHeadingFontSize
+                                            : _columns == 3
+                                                ? _subHeadingFontSize
+                                                : _subTitleFontSize,
                                       )),
                                 ),
-                              //subtitle
-                              if (_hasFocus && !_isCircleShape)
+                              //2nd label
+                              if (checkLabelVisible(2, index == _selectedIndex))
                                 Container(
                                   alignment: Alignment.topLeft,
-                                  child: Text(contents[index].subtitle,
+                                  padding: EdgeInsets.only(
+                                      top: checkLabelVisible(
+                                              1, index == _selectedIndex)
+                                          ? 0
+                                          : 5),
+                                  child: Text(widget.contents[index].subtitle,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       style: TextStyle(
                                         color: Colors.white
                                             .withAlpha((255 * 0.5).toInt()),
-                                        fontSize: 16,
+                                        fontSize: _isCircleShape
+                                            ? _subHeadingFontSize
+                                            : _columns == 3
+                                                ? _subHeadingFontSize
+                                                : _subTitleFontSize,
                                       )),
+                                ),
+                              //3rd label
+                              if (checkLabelVisible(3, index == _selectedIndex))
+                                Container(
+                                  alignment: Alignment.topLeft,
+                                  child:
+                                      Text(widget.contents[index].description,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                            color: Colors.white
+                                                .withAlpha((255 * 0.5).toInt()),
+                                            fontSize: _isCircleShape
+                                                ? _subHeadingFontSize
+                                                : _columns == 3
+                                                    ? _subHeadingFontSize
+                                                    : _subTitleFontSize,
+                                          )),
                                 ),
                             ],
                           ),
@@ -400,5 +472,26 @@ class _MediaListState extends State<MediaList> {
         ),
       ]),
     );
+  }
+
+  Widget _buildTileImage(String iconUrl) {
+    if (iconUrl.startsWith('http')) {
+      return CachedNetworkImage(
+        imageUrl: iconUrl,
+        placeholder: (context, url) => const CircularProgressIndicator(),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+        fit: BoxFit.fill,
+      );
+    } else if (iconUrl.startsWith('/')) {
+      return Image.file(
+        File(iconUrl),
+        errorBuilder: (context, error, stackTrace) =>
+            const Icon(Icons.broken_image),
+        fit: BoxFit.fill,
+      );
+    } else {
+      return const Center(
+          child: Icon(Icons.image_not_supported, color: Colors.grey));
+    }
   }
 }
