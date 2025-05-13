@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/category.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
 import 'package:tizen_fs/widgets/immersive_carousel.dart';
-import 'package:tizen_fs/widgets/media_list.dart';
+import 'package:tizen_fs/widgets/category_list.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage(
@@ -38,8 +38,7 @@ class _HomePageState extends State<HomePage> {
 
   void _handleModelUpdate() {
     _immersiveListModel.removeListener(_handleModelUpdate);
-    setState(() {
-    });
+    setState(() {});
   }
 
   @override
@@ -90,62 +89,24 @@ class _HomePageState extends State<HomePage> {
                     .setState(ImmersiveAreaController.immersiveListFocused);
               },
             ),
-            MediaList(
-              title: 'Your apps',
-              columns: ColumnCount.nine,
-              onFocused: () {
-                print('item 3 focused');
-                _scrollController.animateTo(
-                  410,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeIn,
-                );
-                _immersiveAreaController
-                    .setState(ImmersiveAreaController.mediaListFocused);
-              },
-            ),
-            MediaList(
-              title: 'Top selling movies',
-              columns: ColumnCount.four,
-              onFocused: () {
-                print('item 3 focused');
-                _scrollController.animateTo(
-                  539,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeIn,
-                );
-                _immersiveAreaController
-                    .setState(ImmersiveAreaController.mediaListFocused);
-              },
-            ),
-            MediaList(
-              title: 'Popular shows',
-              columns: ColumnCount.four,
-              onFocused: () {
-                print('item 3 focused');
-                _scrollController.animateTo(
-                  703,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeIn,
-                );
-                _immersiveAreaController
-                    .setState(ImmersiveAreaController.mediaListFocused);
-              },
-            ),
-            MediaList(
-              title: 'Recomended videos',
-              columns: ColumnCount.three,
-              onFocused: () {
-                print('item 3 focused');
-                _scrollController.animateTo(
-                  867,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeIn,
-                );
-                _immersiveAreaController
-                    .setState(ImmersiveAreaController.mediaListFocused);
-              },
-            ),
+            ...List.generate(
+              widget.categories.length,
+              (index) => CategoryList(
+                category: widget.categories[index],
+                columns: widget.categories[index].name == 'Launcher'
+                    ? ColumnCount.nine
+                    : ColumnCount.four,
+                onFocused: () {
+                  print(
+                      'item $index focused - Category: ${widget.categories[index].name}');
+                  _scrollController.animateTo(
+                    index == 0 ? 550 : 550 + index * 165 + (index - 1) * 15,
+                    duration: const Duration(milliseconds: 100),
+                    curve: Curves.easeInQuad,
+                  );
+                },
+              ),
+            )
           ],
         ));
   }
