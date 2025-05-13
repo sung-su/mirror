@@ -6,7 +6,7 @@ import 'package:tizen_fs/models/category.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
 import 'package:tizen_fs/widgets/immersive_carousel.dart';
 import 'package:tizen_fs/widgets/category_list.dart';
-import 'manager_services.dart';
+import 'footer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage(
@@ -137,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                 );
               }
             ),
-            EndWidget(
+            Footer(
               scrollController: _scrollController,
             )
           ],

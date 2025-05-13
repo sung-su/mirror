@@ -99,6 +99,7 @@ flutter:
      - assets/mock/images/9_card.jpg
      - assets/mock/images/10_card.jpg
      - assets/mock/images/icons8-youtube-144.png
+     - assets/mock/images/bottom_widget.png
      - assets/sqlite.db
 
 
