@@ -127,7 +127,7 @@ class ImmersiveContentArea extends StatelessWidget {
               child:
                   Icon(Icons.keyboard_arrow_up, size: 35, color: Theme.of(context).indicatorColor.withAlphaF(0.5)))),
       Padding(
-          padding: EdgeInsets.only(left: leftPadding, top: 10, bottom: 10),
+          padding: EdgeInsets.only(left: leftPadding, top: 5, bottom: 0),
           child: Text(
             'Top picks for you',
             textAlign: TextAlign.left,
@@ -323,7 +323,7 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
             opacity: _hasFocus ? 0.0 : 1.0,
             child: Container(
               alignment: Alignment.topLeft,
-              padding: EdgeInsets.only(left: _leftPadding, top: 10, bottom: 10),
+              padding: EdgeInsets.only(left: _leftPadding, top: 5, bottom: 0),
               child: const Text('Top picks for you',
                   textAlign: TextAlign.left,
                   style: TextStyle(

@@ -137,45 +137,49 @@ class _TvTabbarState extends State<TvTabbar> {
       child: Builder(builder: (context) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(48, 20, 48, 0),
-          child: Row(spacing: 20, children: [
-            TvAvatar(
-              imageUrl: null,
-              text: pages[0],
-              isSelected: 0 == _selected,
-            ),
-            TvTab(
-                text: pages[1],
-                isSelected: 1 == _selected,
-                isFocused: Focus.of(context).hasFocus),
-            TvTab(
-                text: pages[2],
-                isSelected: 2 == _selected,
-                isFocused: Focus.of(context).hasFocus),
-            TvTab(
-                text: pages[3],
-                isSelected: 3 == _selected,
-                isFocused: Focus.of(context).hasFocus),
-            const Spacer(),
-            Row(
-              spacing: 10,
-              children: [
-                TvTabIcon(
-                  icon: Icons.search,
-                  isSelected: 4 == _selected,
-                  hasFocus: Focus.of(context).hasFocus,
-                ),
-                TvTabIcon(
-                  icon: Icons.settings_outlined,
-                  isSelected: 5 == _selected,
-                  hasFocus: Focus.of(context).hasFocus,
-                ),
-                Text(
-                  'TizenTV',
-                  style: TextStyle(fontSize: 15),
-                )
-              ],
-            )
-          ]),
+          child: Row(
+            children: [
+              TvAvatar(
+                imageUrl: null,
+                text: pages[0],
+                isSelected: 0 == _selected,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              TvTab(
+                  text: pages[1],
+                  isSelected: 1 == _selected,
+                  isFocused: Focus.of(context).hasFocus),
+              TvTab(
+                  text: pages[2],
+                  isSelected: 2 == _selected,
+                  isFocused: Focus.of(context).hasFocus),
+              TvTab(
+                  text: pages[3],
+                  isSelected: 3 == _selected,
+                  isFocused: Focus.of(context).hasFocus),
+              const Spacer(),
+              Row(
+                spacing: 10,
+                children: [
+                  TvTabIcon(
+                    icon: Icons.search,
+                    isSelected: 4 == _selected,
+                    hasFocus: Focus.of(context).hasFocus,
+                  ),
+                  TvTabIcon(
+                    icon: Icons.settings_outlined,
+                    isSelected: 5 == _selected,
+                    hasFocus: Focus.of(context).hasFocus,
+                  ),
+                  Text(
+                    'TizenTV',
+                    style: TextStyle(fontSize: 15),
+                  )
+                ],
+              )
+            ]),
         );
       }),
     );
@@ -248,7 +252,7 @@ class TvTab extends StatelessWidget {
         borderRadius: isSelected ? BorderRadius.circular(30) : BorderRadius.zero,
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 10),
         child: Text(
           text,
           style: TextStyle(
