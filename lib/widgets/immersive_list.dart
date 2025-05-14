@@ -324,7 +324,7 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
             child: Container(
               alignment: Alignment.topLeft,
               padding: EdgeInsets.only(left: _leftPadding, top: 10, bottom: 10),
-              child: const Text('Top picks for you',
+              child: _hasFocus ? SizedBox(height: 5,) : const Text('Top picks for you',
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     fontSize: 16,

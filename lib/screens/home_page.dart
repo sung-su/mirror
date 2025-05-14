@@ -296,7 +296,7 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
       child: Builder(builder: (context) {
         return AnimatedContainer(
           duration: const Duration(milliseconds: 100),
-          height: expand ? 370 : 200,
+          height: expand ? 370 : 210,
           child: PageView(
             physics: const NeverScrollableScrollPhysics(),
             controller: _pageController,
