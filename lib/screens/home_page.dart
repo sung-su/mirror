@@ -90,6 +90,7 @@ class _HomePageState extends State<HomePage> {
                     .setState(ImmersiveAreaController.immersiveListFocused);
               },
             ),
+            SizedBox(height: 20),
             ...List.generate(
               widget.categories.length,
               (index) => CategoryList(
@@ -102,10 +103,10 @@ class _HomePageState extends State<HomePage> {
                       'item $index focused - Category: ${widget.categories[index].name}');
                   _scrollController.animateTo(
                     index == 0
-                        ? 565
+                        ? 570
                         : index == 1
-                            ? 565 + 132
-                            : 565 + 132 + ((index - 1) * 170),
+                            ? 570 + 148
+                            : 570 + 148 + ((index - 1) * 186),
                     duration: const Duration(milliseconds: 100),
                     curve: Curves.easeInQuad,
                   );
@@ -119,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                 onFocused: () {
                   debugPrint('Recomended videos focused');
                   _scrollController.animateTo(
-                    565 + 132 + ((widget.categories.length - 1) * 170),
+                    570 + 148 + ((widget.categories.length - 1) * 186),
                     duration: const Duration(milliseconds: 100),
                     curve: Curves.easeInQuad,
                   );
@@ -131,7 +132,7 @@ class _HomePageState extends State<HomePage> {
               onFocused: () {
                 debugPrint('Recently uploaded focused');
                 _scrollController.animateTo(
-                  565 + 132 + ((widget.categories.length - 1) * 170) + 220,
+                  570 + 148 + ((widget.categories.length - 1) * 186) + 143,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.easeInQuad,
                 );

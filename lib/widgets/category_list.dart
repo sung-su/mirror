@@ -218,28 +218,25 @@ class _CategoryListState extends State<CategoryList> {
       focusNode: _focusNode,
       onKeyEvent: _onKeyEvent,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           //list title
-          SizedBox(
-            height: _hasFocus ? 70 : 35,
-            child: AnimatedScale(
-                scale: _hasFocus ? 1.7 : 1.0,
-                duration: const Duration(milliseconds: 100),
-                alignment: Alignment.topLeft,
-                child: Container(
-                    alignment: Alignment.topLeft,
-                    padding: EdgeInsets.only(
-                      left: _hasFocus ? 35 : 70,
-                      top: 10,
-                    ),
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(70, 10, 70, 10),
+              child: SizedBox(
+                height: _hasFocus ? 40 : 30,
+                child: AnimatedScale(
+                    scale: _hasFocus ? 1.7 : 1.0,
+                    duration: const Duration(milliseconds: 100),
+                    alignment: Alignment.centerLeft,
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       spacing: 5,
                       children: [
                         if (_columns == 3)
                           SizedBox(
                             width: 25,
-                            height: 25,
+                            height: 17,
                             child: _buildTileImage(
                                 'assets/mock/images/icons8-youtube-144.png'),
                           ),
@@ -252,7 +249,9 @@ class _CategoryListState extends State<CategoryList> {
                                   : Colors.grey,
                             )),
                       ],
-                    ))),
+                    )),
+              ),
+            ),
           ),
           //list
           SizedBox(
@@ -261,7 +260,7 @@ class _CategoryListState extends State<CategoryList> {
               behavior: ScrollBehavior()
                   .copyWith(scrollbars: false, overscroll: false),
               child: AnimatedOpacity(
-                opacity: _hasFocus ? 1.0 : 0.5,
+                opacity: _hasFocus ? 1.0 : 0.3,
                 duration: const Duration(milliseconds: 100),
                 child: ListView.builder(
                   //peek space

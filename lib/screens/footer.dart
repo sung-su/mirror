@@ -22,7 +22,7 @@ class _FooterState extends State<Footer> {
       height: 300,
       child: AnimatedOpacity(
         opacity: _isFocused ? 1.0 : 0.5,
-        duration: const Duration(milliseconds: 100),
+        duration: const Duration(milliseconds: 150),
         child: Container(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(70, 20, 70, 0),
