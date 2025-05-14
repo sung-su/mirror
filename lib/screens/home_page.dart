@@ -102,10 +102,10 @@ class _HomePageState extends State<HomePage> {
                       'item $index focused - Category: ${widget.categories[index].name}');
                   _scrollController.animateTo(
                     index == 0
-                        ? 550
+                        ? 565
                         : index == 1
-                            ? 550 + 132
-                            : 550 + 132 + ((index - 1) * 170),
+                            ? 565 + 132
+                            : 565 + 132 + ((index - 1) * 170),
                     duration: const Duration(milliseconds: 100),
                     curve: Curves.easeInQuad,
                   );
@@ -119,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                 onFocused: () {
                   debugPrint('Recomended videos focused');
                   _scrollController.animateTo(
-                    550 + 132 + ((widget.categories.length - 1) * 170),
+                    565 + 132 + ((widget.categories.length - 1) * 170),
                     duration: const Duration(milliseconds: 100),
                     curve: Curves.easeInQuad,
                   );
@@ -131,7 +131,7 @@ class _HomePageState extends State<HomePage> {
               onFocused: () {
                 debugPrint('Recently uploaded focused');
                 _scrollController.animateTo(
-                  550 + 132 + ((widget.categories.length - 1) * 170) + 220,
+                  565 + 132 + ((widget.categories.length - 1) * 170) + 220,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.easeInQuad,
                 );
