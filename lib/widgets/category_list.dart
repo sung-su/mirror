@@ -41,9 +41,12 @@ class _CategoryListState extends State<CategoryList> {
   double _itemHeight = 110;
   Color _extractColor = Colors.white;
   bool _isCircleShape = false;
-  double _titleFontSize = 16;
-  double _subTitleFontSize = 14;
+  double _titleFontSize = 14;
+  double _subTitleFontSize = 12;
   double _subHeadingFontSize = 12;
+
+  double _listHeightExtended = 70;
+  double _listHeight = 20;
 
   void calculateItemSize() {
     if (widget.columns == ColumnCount.nine) {
@@ -51,30 +54,41 @@ class _CategoryListState extends State<CategoryList> {
       _itemHeight = 80;
       _isCircleShape = true;
       _columns = 9;
+      // TODO: to update fixed value for colums
+      _listHeightExtended = _itemHeight * 1.7;
+      _listHeight = _itemHeight * 1.3;
     } else if (widget.columns == ColumnCount.six) {
       _itemWidth = 124;
       _itemHeight = 124;
       _isCircleShape = true;
       _columns = 6;
+      _listHeightExtended = _itemHeight * 1.7;
+      _listHeight = _itemHeight * 1.3;
     } else if (widget.columns == ColumnCount.three) {
       _itemWidth = 268;
       _itemHeight = 150;
       _columns = 3;
+      _listHeightExtended = _itemHeight * 1.7;
+      _listHeight = _itemHeight * 1.3;
     } else if (widget.columns == ColumnCount.two) {
       _itemWidth = 412;
       _itemHeight = 230;
       _columns = 2;
+      _listHeightExtended = _itemHeight * 1.7;
+      _listHeight = _itemHeight * 1.3;
     } else if (widget.columns == ColumnCount.one) {
       _itemWidth = 844;
       _itemHeight = 470;
       _columns = 1;
+      _listHeightExtended = _itemHeight * 1.7;
+      _listHeight = _itemHeight * 1.3;
     } else {
       _itemWidth = 196;
       _itemHeight = 110;
       _columns = 4;
+      _listHeightExtended = _itemHeight + 70;
+      _listHeight = _itemHeight + 20;
     }
-    _itemWidth *= 0.95;
-    _itemHeight *= 0.95;
   }
 
   bool checkLabelVisible(int order, bool selected) {
@@ -222,9 +236,9 @@ class _CategoryListState extends State<CategoryList> {
           //list title
           Container(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(70, 10, 70, 10),
+              padding: const EdgeInsets.fromLTRB(70, 10, 70, 8),
               child: SizedBox(
-                height: _hasFocus ? 40 : 30,
+                height: _hasFocus ? 40 : 20,
                 child: AnimatedScale(
                     scale: _hasFocus ? 1.7 : 1.0,
                     duration: const Duration(milliseconds: 100),
@@ -255,7 +269,7 @@ class _CategoryListState extends State<CategoryList> {
           ),
           //list
           SizedBox(
-            height: _hasFocus ? _itemHeight * 1.7 : _itemHeight * 1.3,
+            height: _hasFocus ? _listHeightExtended : _listHeight,
             child: ScrollConfiguration(
               behavior: ScrollBehavior()
                   .copyWith(scrollbars: false, overscroll: false),
