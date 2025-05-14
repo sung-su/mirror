@@ -296,12 +296,9 @@ class _CategoryListState extends State<CategoryList> {
                                     // border
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: Colors.white
-                                            .withAlpha((255 * 0.7).toInt()),
-                                        width: (_hasFocus &&
-                                                index == _selectedIndex)
-                                            ? 2
-                                            : 0,
+                                        color: (_hasFocus &&
+                                                index == _selectedIndex) ? Colors.white.withAlpha((255 * 0.7).toInt()) : Colors.transparent,
+                                        width: 2
                                       ),
                                       borderRadius: _isCircleShape
                                           ? null
