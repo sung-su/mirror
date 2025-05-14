@@ -136,7 +136,7 @@ class _TvTabbarState extends State<TvTabbar> {
       },
       child: Builder(builder: (context) {
         return Padding(
-          padding: const EdgeInsets.fromLTRB(48, 20, 48, 0),
+          padding: const EdgeInsets.fromLTRB(43, 20, 48, 0),
           child: Row(
             children: [
               TvAvatar(
@@ -145,7 +145,7 @@ class _TvTabbarState extends State<TvTabbar> {
                 isSelected: 0 == _selected,
               ),
               SizedBox(
-                width: 10,
+                width: 15,
               ),
               TvTab(
                   text: pages[1],

@@ -60,7 +60,7 @@ class _AccountPanelState extends State<AccountPanel> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(64, 35, 0, 0),
+                padding: const EdgeInsets.fromLTRB(59, 35, 0, 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
