@@ -9,6 +9,14 @@ class BackdropProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _isZoomin = false;
+
+  bool get isZoomIn => _isZoomin;
+  set isZoomIn(bool value) {
+    _isZoomin = value;
+    notifyListeners();
+  }
+
   void test() {
     print ('test hello');
   }

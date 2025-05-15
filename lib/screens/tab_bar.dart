@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:tizen_fs/main.dart';
 import 'package:tizen_fs/poc/setting_panel_poc.dart';
+import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/router.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'account_panel.dart';
@@ -193,6 +195,7 @@ class _TvTabbarState extends State<TvTabbar> {
           });
         }
       }
+      Provider.of<BackdropProvider>(context, listen: false).isZoomIn = hasFocus;
     }
 }
 

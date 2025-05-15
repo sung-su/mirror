@@ -29,7 +29,14 @@ class BackdropScaffold extends StatelessWidget {
             transitionBuilder: (child, animation) => ScaleTransition(
                 scale: Tween<double>(begin: 0.95, end: 1.1).animate(animation),
                 child: FadeTransition(opacity: animation, child: child)),
-            child: (backdrop != null) ? backdrop : SizedBox.shrink(),
+            child: (backdrop != null)
+                ? AnimatedScale(
+                    duration: const Duration(milliseconds: 100),
+                    scale: Provider.of<BackdropProvider>(context).isZoomIn
+                        ? 1.1
+                        : 1.0,
+                    child: backdrop)
+                : SizedBox.shrink(),
           ),
 
           // Main content
