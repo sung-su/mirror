@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/poc/immersive_carousel_poc.dart';
 import 'package:tizen_fs/poc/media_db_parser_poc.dart';
+import 'package:tizen_fs/poc/video_player_poc.dart';
 import 'package:tizen_fs/router.dart';
 import 'package:tizen_fs/widgets/home_screen_size_wrapper.dart';
 import 'media_list_poc.dart';
@@ -29,6 +30,19 @@ class PocGalleryPage extends StatelessWidget {
               leading: const Icon(Icons.home),
               onTap: () {
                 AppRouter.router.go(ScreenPaths.home);
+              },
+            ),
+            ListTile(
+              title: const Text('video player Poc'),
+              subtitle: const Text('video player without DRM'),
+              leading: const Icon(Icons.home),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreenSizeWrapper(const VideoPlayerPocPage()),
+                    ));
               },
             ),
             ListTile(
