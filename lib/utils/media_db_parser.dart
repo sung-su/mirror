@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tizen_fs/models/category.dart';
 import 'package:tizen_fs/models/tile.dart';
@@ -32,6 +33,10 @@ class MediaDBParser {
 
   Future<void> _ensureDBOpen() async {
     if (_db == null || !_db!.isOpen) {
+      if (Platform.isLinux || Platform.isWindows) {
+        // Initialize FFI
+        sqfliteFfiInit();
+      }
       final databasesPath = await getDatabasesPath();
       final path = join(databasesPath, 'sqlite.db');
       var exists = await databaseExists(path);
