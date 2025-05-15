@@ -33,13 +33,36 @@ class _VideoScreenState extends State<VideoScreen> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(55, 10, 55, 10),
-      child: _controller.value.isInitialized ? 
-        AspectRatio(aspectRatio: _controller.value.aspectRatio,
-          child: VideoPlayer(_controller),
-        )
-        : Container(
-          child: Image.asset('assets/mock/images/conclave.png'),
-        ),
+      child: Stack(
+        children: [
+          Container(
+            child: _controller.value.isInitialized ?
+              AspectRatio(aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              )
+              : Container(
+                child: Image.asset('assets/mock/images/conclave.png'),
+              ),
+          ),
+          Positioned(
+            bottom: 0,
+            child: Container(
+              color: Colors.black.withAlpha(70),
+              child: SizedBox(
+                width: 960,
+                height: 200,
+                child: Column(
+                  children: [
+                    Text(
+                    'content description here...',
+                    style: const TextStyle(color: Colors.white, fontSize: 24))
+                  ]
+                ),
+              ),
+            ),
+          )
+        ]
+      ),
     );
   }
 }
