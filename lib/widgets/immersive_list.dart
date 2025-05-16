@@ -187,8 +187,9 @@ class ImmersiveContentArea extends StatelessWidget {
 
 class ImmersiveListArea extends StatefulWidget {
   final VoidCallback? onFocused;
+  final void Function(int index)? onExecute;
 
-  const ImmersiveListArea({super.key, this.onFocused});
+  const ImmersiveListArea({super.key, this.onFocused, this.onExecute});
 
   @override
   State<ImmersiveListArea> createState() => _ImmersiveListAreaState();
@@ -262,6 +263,9 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
           _selectedIndex < _itemCount - 1) {
         _selectedIndex = (_selectedIndex + 1).clamp(0, _itemCount - 1);
         _scrollToSelected(event is KeyRepeatEvent ? 1 : 100, beforeSelected);
+        return KeyEventResult.handled;
+      } else if (event.logicalKey == LogicalKeyboardKey.enter) {
+        widget.onExecute?.call(_selectedIndex);
         return KeyEventResult.handled;
       }
     }

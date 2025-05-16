@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/category.dart';
+import 'package:tizen_fs/screens/detail_page.dart';
 import 'package:tizen_fs/widgets/category_list.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
 import 'package:tizen_fs/widgets/immersive_carousel.dart';
@@ -88,6 +89,14 @@ class _HomePageState extends State<HomePage> {
                 );
                 _immersiveAreaController
                     .setState(ImmersiveAreaController.immersiveListFocused);
+              },
+              onExecute: (index) {
+                print('item $index executed');
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailPage(),
+                    ));
               },
             ),
             SizedBox(height: 20),
