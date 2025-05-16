@@ -10,7 +10,7 @@ class AppStyle {
 
 class AppColors {
   final Color primary = Color(0xFF1A1C1E);
-  final Color onPrimary = Color(0xFFA8C8FF);
+  final Color onPrimary = Color.fromARGB(255, 188, 192, 202);
   final Color primaryContainer = Color(0xFF00468A);
   final Color onPrimaryContainer = Color(0xFFD6E3FF);
 
