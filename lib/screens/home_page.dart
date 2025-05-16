@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/category.dart';
+import 'package:tizen_fs/widgets/category_list.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
 import 'package:tizen_fs/widgets/immersive_carousel.dart';
-import 'package:tizen_fs/widgets/category_list.dart';
 import 'footer.dart';
 
 class HomePage extends StatefulWidget {
@@ -94,7 +94,10 @@ class _HomePageState extends State<HomePage> {
             ...List.generate(
               widget.categories.length,
               (index) => CategoryList(
-                category: widget.categories[index],
+                title: widget.categories[index].name == 'Launcher'
+                    ? 'Your apps'
+                    : widget.categories[index].name,
+                tiles: widget.categories[index].tiles,
                 columns: widget.categories[index].name == 'Launcher'
                     ? ColumnCount.nine
                     : ColumnCount.four,
@@ -114,9 +117,11 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             CategoryList(
-                category: widget.categories[10],
+                tiles: widget.categories[3].tiles,
                 columns: ColumnCount.three,
                 title: 'Recomended videos',
+                icon: 'assets/mock/images/icons8-youtube-144.png',
+                timeStamp: true,
                 onFocused: () {
                   debugPrint('Recomended videos focused');
                   _scrollController.animateTo(
@@ -126,18 +131,19 @@ class _HomePageState extends State<HomePage> {
                   );
                 }),
             CategoryList(
-              category: widget.categories[11],
-              title: 'Recently uploaded',
-              columns: ColumnCount.three,
-              onFocused: () {
-                debugPrint('Recently uploaded focused');
-                _scrollController.animateTo(
-                  570 + 140 + ((widget.categories.length - 1) * 168) + 233,
-                  duration: const Duration(milliseconds: 100),
-                  curve: Curves.easeInQuad,
-                );
-              }
-            ),
+                tiles: widget.categories[4].tiles,
+                columns: ColumnCount.three,
+                title: 'Recently uploaded',
+                icon: 'assets/mock/images/icons8-youtube-144.png',
+                timeStamp: true,
+                onFocused: () {
+                  debugPrint('Recently uploaded focused');
+                  _scrollController.animateTo(
+                    570 + 140 + ((widget.categories.length - 1) * 168) + 233,
+                    duration: const Duration(milliseconds: 100),
+                    curve: Curves.easeInQuad,
+                  );
+                }),
             Footer(
               scrollController: _scrollController,
             )

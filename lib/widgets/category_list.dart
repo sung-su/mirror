@@ -4,22 +4,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/category.dart';
+import 'package:tizen_fs/models/tile.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 
 enum ColumnCount { one, two, three, four, six, nine }
 
 class CategoryList extends StatefulWidget {
-  final ColumnCount columns;
   final VoidCallback? onFocused;
-  final Category category;
+  final List<Tile> tiles;
+  final ColumnCount columns;
   final String title;
+  final String icon;
+  final bool timeStamp;
 
   const CategoryList({
     super.key,
-    required this.category,
-    this.title = '',
+    required this.tiles,
     this.onFocused,
     this.columns = ColumnCount.four,
+    this.title = '',
+    this.icon = '',
+    this.timeStamp = false,
   });
 
   @override
@@ -44,6 +49,7 @@ class _CategoryListState extends State<CategoryList> {
   double _titleFontSize = 14;
   double _subTitleFontSize = 12;
   double _subHeadingFontSize = 12;
+  bool _timeStamp = false;
 
   double _listHeightExtended = 70;
   double _listHeight = 20;
@@ -103,9 +109,10 @@ class _CategoryListState extends State<CategoryList> {
         return true;
       } else if (_columns > 5) {
         title = true;
-        subTitle = false;
+        subTitle = _columns == 6 ? true : false;
         subHeading = false;
       } else {
+        //columns == 4
         if (selected) {
           title = true;
           subTitle = true;
@@ -128,10 +135,11 @@ class _CategoryListState extends State<CategoryList> {
     super.initState();
     calculateItemSize();
     _focusNode.addListener(_onFocusChanged);
-    _itemCount = widget.category.tileCount;
+    _itemCount = widget.tiles.length;
     _selectedIndex = 0;
     _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
-    _title = widget.title.isEmpty ? widget.category.name : widget.title;
+    _title = widget.title;
+    _timeStamp = widget.timeStamp;
   }
 
   @override
@@ -247,21 +255,22 @@ class _CategoryListState extends State<CategoryList> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       spacing: 5,
                       children: [
-                        if (_columns == 3)
+                        if (widget.icon.isNotEmpty)
                           SizedBox(
                             width: 25,
                             height: 17,
-                            child: _buildTileImage(
-                                'assets/mock/images/icons8-youtube-144.png'),
+                            child: _buildTileImage(widget.icon),
                           ),
-                        Text(_title == 'Launcher' ? 'Your apps' : _title,
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontSize: _titleFontSize,
-                              color: _hasFocus
-                                  ? Colors.white.withAlpha((255 * 0.7).toInt())
-                                  : Colors.grey,
-                            )),
+                        if (_title.isNotEmpty)
+                          Text(_title,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontSize: _titleFontSize,
+                                color: _hasFocus
+                                    ? Colors.white
+                                        .withAlpha((255 * 0.7).toInt())
+                                    : Colors.grey,
+                              )),
                       ],
                     )),
               ),
@@ -298,7 +307,6 @@ class _CategoryListState extends State<CategoryList> {
                                     : 1.1
                                 : 1.0,
                             duration: const Duration(milliseconds: 100),
-                            //card with border
                             child: Stack(
                               children: [
                                 Card(
@@ -309,10 +317,12 @@ class _CategoryListState extends State<CategoryList> {
                                     // border
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: (_hasFocus &&
-                                                index == _selectedIndex) ? Colors.white.withAlpha((255 * 0.7).toInt()) : Colors.transparent,
-                                        width: 2
-                                      ),
+                                          color: (_hasFocus &&
+                                                  index == _selectedIndex)
+                                              ? Colors.white.withAlpha(
+                                                  (255 * 0.7).toInt())
+                                              : Colors.transparent,
+                                          width: 2),
                                       borderRadius: _isCircleShape
                                           ? null
                                           : BorderRadius.circular(12),
@@ -336,35 +346,34 @@ class _CategoryListState extends State<CategoryList> {
                                     ),
                                     width: _itemWidth,
                                     height: _itemHeight,
-                                    //image layer
+                                    // image
                                     child: _isCircleShape
                                         ? ClipOval(
-                                            child: _buildTileImage(widget
-                                                .category
-                                                .getTile(index)
-                                                .iconUrl!),
+                                            child: _buildTileImage(
+                                                widget.tiles[index].iconUrl!),
                                           )
                                         : ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(10),
-                                            child: _buildTileImage(widget
-                                                .category
-                                                .getTile(index)
-                                                .iconUrl!),
+                                            child: _buildTileImage(
+                                                widget.tiles[index].iconUrl!),
                                           ),
                                   ),
                                 ),
-                                if (_columns == 3)
-                                  // time stamp
+                                if (!_isCircleShape && _timeStamp)
+                                  // timestamp
                                   Positioned(
                                     top: _itemHeight * 0.85,
                                     left: _itemWidth * 0.85,
                                     child: Container(
-                                      color: Colors.black,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
                                       padding: const EdgeInsets.only(
                                           left: 5, right: 5),
                                       child: Text(
-                                        '12:34',
+                                        '123:45',
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         style: TextStyle(
@@ -390,8 +399,7 @@ class _CategoryListState extends State<CategoryList> {
                                     alignment: _isCircleShape
                                         ? Alignment.center
                                         : Alignment.topLeft,
-                                    child: Text(
-                                        widget.category.getTile(index).title,
+                                    child: Text(widget.tiles[index].title,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         style: TextStyle(
@@ -406,22 +414,23 @@ class _CategoryListState extends State<CategoryList> {
                                   ),
                                 //2nd label
                                 if (checkLabelVisible(
-                                        2, index == _selectedIndex) &&
-                                    widget.category
-                                        .getTile(index)
-                                        .details['app_name_list'][0]
-                                        .isNotEmpty)
+                                    2, index == _selectedIndex))
                                   Container(
-                                    alignment: Alignment.topLeft,
+                                    alignment: _isCircleShape
+                                        ? Alignment.center
+                                        : Alignment.topLeft,
                                     padding: EdgeInsets.only(
                                         top: checkLabelVisible(
                                                 1, index == _selectedIndex)
                                             ? 0
                                             : 5),
                                     child: Text(
-                                        widget.category
-                                            .getTile(index)
-                                            .details['app_name_list'][0],
+                                        widget.tiles[index]
+                                                    .details['app_name_list'] !=
+                                                null
+                                            ? widget.tiles[index]
+                                                ?.details['app_name_list'][0]
+                                            : 'subTitle',
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         style: TextStyle(
@@ -440,9 +449,8 @@ class _CategoryListState extends State<CategoryList> {
                                   Container(
                                     alignment: Alignment.topLeft,
                                     child: Text(
-                                        widget.category
-                                            .getTile(index)
-                                            .details['price'],
+                                        widget.tiles[index].details['price'] ??
+                                            'subHeading',
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         style: TextStyle(
