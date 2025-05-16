@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:tizen_fs/screens/video_backdrop.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/age_rating.dart';
 import 'package:tizen_fs/widgets/rotten_rating.dart';
@@ -36,7 +37,13 @@ class _DetailPageState extends State<DetailPage> {
     return Scaffold(
         body: Stack(
       children: [
-        Positioned.fill(child: BackdropArea()),
+        Positioned.fill(
+          child: VideoBackdrop(
+            scrollController: _scrollController,
+            imageUrl: 'https://media.themoviedb.org/t/p/w1066_and_h600_bestv2/1YMrOtrW7b4pL2lfD8UciZPOJGs.jpg',
+            videoUrl: 'assets/mock/videos/conclave_trailer.mp4'
+          )
+        ),
         CustomScrollView(controller: _scrollController, slivers: <Widget>[
           SliverAppBar(
             backgroundColor: Colors.transparent,
@@ -272,37 +279,6 @@ class ImportantInformation extends StatelessWidget {
             ),
           ],
         ));
-  }
-}
-
-class BackdropArea extends StatelessWidget {
-  const BackdropArea({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        SizedBox.expand(
-            child: DecoratedBox(
-                decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 18, 18, 18)))),
-        SizedBox.expand(
-            child: Image.network('https://media.themoviedb.org/t/p/w1066_and_h600_bestv2/1YMrOtrW7b4pL2lfD8UciZPOJGs.jpg',
-                fit: BoxFit.cover)),
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.bottomLeft,
-              end: Alignment.topRight,
-              colors: [
-                Colors.black.withAlphaF(0.9),
-                Colors.transparent,
-              ],
-            ),
-          ),
-        )
-      ],
-    );
   }
 }
 
