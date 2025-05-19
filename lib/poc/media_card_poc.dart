@@ -52,6 +52,22 @@ class _MediaCardPocState extends State<MediaCardPoc> {
                     subtitle: "Subtitle area",
                     description: "1.3M views • 2 days ago",)),
               Center(
+                  child: MediaCard.fourCard(
+                    imageUrl: '',
+                    isSelected: _isSelected,
+                    title: "Custom Content",
+                    subtitle: "Test for custom content",
+                    content: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.yellow[900],
+                      ),
+                      child:Center(
+                        child: Text("Hello")
+                      )
+                    ))),
+
+              Center(
                   child: MediaCard.fiveCard(
                       imageUrl: 'assets/mock/images/2_card.jpg',
                       isSelected: _isSelected,

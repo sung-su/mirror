@@ -21,7 +21,8 @@ class MediaCard extends StatelessWidget {
       this.isSelected = false,
       this.duration,
       this.ratio = MediaCardRatio.wide,
-      this.shadowColor})
+      this.shadowColor,
+      this.content})
       : height = width *
             (ratio == MediaCardRatio.wide
                 ? 9 / 16
@@ -38,6 +39,7 @@ class MediaCard extends StatelessWidget {
       String? duration,
       bool isSelected = false,
       MediaCardRatio ratio = MediaCardRatio.wide,
+      Widget? content,
       Color? shadowColor})
       : this(
             key: key,
@@ -49,6 +51,7 @@ class MediaCard extends StatelessWidget {
             duration: duration,
             isSelected: isSelected,
             ratio: ratio,
+            content: content,
             shadowColor: shadowColor);
 
   const MediaCard.twoCard(
@@ -60,6 +63,7 @@ class MediaCard extends StatelessWidget {
       String? duration,
       bool isSelected = false,
       MediaCardRatio ratio = MediaCardRatio.wide,
+      Widget? content,
       Color? shadowColor})
       : this(
             key: key,
@@ -71,6 +75,7 @@ class MediaCard extends StatelessWidget {
             duration: duration,
             isSelected: isSelected,
             ratio: ratio,
+            content: content,
             shadowColor: shadowColor);
 
   const MediaCard.threeCard(
@@ -82,6 +87,7 @@ class MediaCard extends StatelessWidget {
       String? duration,
       bool isSelected = false,
       MediaCardRatio ratio = MediaCardRatio.wide,
+      Widget? content,
       Color? shadowColor})
       : this(
             key: key,
@@ -93,6 +99,7 @@ class MediaCard extends StatelessWidget {
             duration: duration,
             isSelected: isSelected,
             ratio: ratio,
+            content: content,
             shadowColor: shadowColor);
 
   const MediaCard.fourCard(
@@ -104,6 +111,7 @@ class MediaCard extends StatelessWidget {
       String? duration,
       bool isSelected = false,
       MediaCardRatio ratio = MediaCardRatio.wide,
+      Widget? content,
       Color? shadowColor})
       : this(
             key: key,
@@ -115,6 +123,7 @@ class MediaCard extends StatelessWidget {
             duration: duration,
             isSelected: isSelected,
             ratio: ratio,
+            content: content,
             shadowColor: shadowColor);
 
   const MediaCard.fiveCard(
@@ -126,6 +135,7 @@ class MediaCard extends StatelessWidget {
       String? duration,
       bool isSelected = false,
       MediaCardRatio ratio = MediaCardRatio.wide,
+      Widget? content,
       Color? shadowColor})
       : this(
             key: key,
@@ -137,6 +147,7 @@ class MediaCard extends StatelessWidget {
             duration: duration,
             isSelected: isSelected,
             ratio: ratio,
+            content: content,
             shadowColor: shadowColor);
 
   const MediaCard.nineCard(
@@ -148,6 +159,7 @@ class MediaCard extends StatelessWidget {
       String? duration,
       bool isSelected = false,
       MediaCardRatio ratio = MediaCardRatio.wide,
+      Widget? content,
       Color? shadowColor})
       : this(
             key: key,
@@ -159,6 +171,7 @@ class MediaCard extends StatelessWidget {
             duration: duration,
             isSelected: isSelected,
             ratio: ratio,
+            content: content,
             shadowColor: shadowColor);
 
   const MediaCard.circle(
@@ -169,6 +182,7 @@ class MediaCard extends StatelessWidget {
       String? description,
       String? duration,
       bool isSelected = false,
+      Widget? content,
       Color? shadowColor})
       : this(
             key: key,
@@ -180,6 +194,7 @@ class MediaCard extends StatelessWidget {
             duration: duration,
             isSelected: isSelected,
             ratio: MediaCardRatio.square,
+            content: content,
             shadowColor: shadowColor);
 
   static const int animationDuration = 100;
@@ -193,6 +208,7 @@ class MediaCard extends StatelessWidget {
   final bool isSelected;
   final MediaCardRatio ratio;
   final Color? shadowColor;
+  final Widget? content;
 
   @override
   Widget build(BuildContext context) {
@@ -204,69 +220,93 @@ class MediaCard extends StatelessWidget {
             scale: isSelected ? 1.1 : 1,
             duration: Duration(milliseconds: animationDuration),
             child: Stack(children: [
-              isSelected
-                  ? BlinkBorder(
-                      width: width,
-                      height: height,
-                      ratio: ratio,
-                      shadowColor: shadowColor ?? Colors.white,
-                      child: ratio == MediaCardRatio.square
-                          ? ClipOval(child: _buildTileImage(imageUrl))
-                          : ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: _buildTileImage(imageUrl),
-                            ))
-                  : SizedBox(
-                      width: width,
-                      height: height,
-                      child: ratio == MediaCardRatio.square
-                          ? ClipOval(child: _buildTileImage(imageUrl))
-                          : ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: _buildTileImage(imageUrl),
-                            ),
-                    ),
-              if (duration != null) 
+              _buildBorder(ratio == MediaCardRatio.square
+                  ? ClipOval(child: _buildTileContent())
+                  : ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: _buildTileContent(),
+                    )),
+              if (duration != null)
                 Positioned(
-                  bottom: 8,
-                  right: 8,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3),
-                      color: Colors.black.withAlphaF(0.8),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                    child: Text(duration!, style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold)))),
+                    bottom: 8,
+                    right: 8,
+                    child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(3),
+                          color: Colors.black.withAlphaF(0.8),
+                        ),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                        child: Text(duration!,
+                            style: TextStyle(
+                                fontSize: 9, fontWeight: FontWeight.bold)))),
             ])),
         if (title != null || subtitle != null || description != null)
           SizedBox(height: 4),
         if (title != null)
-          SizedBox(width:width, child:Text(title!, style:TextStyle(fontSize: 12, color: $style.colors.onPrimary.withAlphaF(0.9 * (isSelected ? 1 : 0.9))), maxLines: 1, overflow: TextOverflow.ellipsis)),
+          SizedBox(
+              width: width,
+              child: Text(title!,
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: $style.colors.onPrimary
+                          .withAlphaF(0.9 * (isSelected ? 1 : 0.9))),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis)),
         if (subtitle != null)
-          SizedBox(width:width, child:Text(subtitle!, style:TextStyle(fontSize: 11, color: $style.colors.onPrimary.withAlphaF(0.7 * (isSelected ? 1 : 0.9))), maxLines: 1, overflow: TextOverflow.ellipsis)),
+          SizedBox(
+              width: width,
+              child: Text(subtitle!,
+                  style: TextStyle(
+                      fontSize: 11,
+                      color: $style.colors.onPrimary
+                          .withAlphaF(0.7 * (isSelected ? 1 : 0.9))),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis)),
         if (description != null)
-          SizedBox(width: width, child:Text(description!, style:TextStyle(fontSize: 11, color: $style.colors.onPrimary.withAlphaF(0.7 * (isSelected ? 1 : 0.9))), maxLines: 1, overflow: TextOverflow.ellipsis)),
+          SizedBox(
+              width: width,
+              child: Text(description!,
+                  style: TextStyle(
+                      fontSize: 11,
+                      color: $style.colors.onPrimary
+                          .withAlphaF(0.7 * (isSelected ? 1 : 0.9))),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis)),
       ],
     );
   }
 
-  Widget _buildTileImage(String iconUrl) {
-    if (iconUrl.startsWith('http')) {
+  Widget _buildBorder(Widget content) {
+    return isSelected
+        ? BlinkBorder(
+            width: width,
+            height: height,
+            ratio: ratio,
+            shadowColor: shadowColor ?? Colors.white,
+            child: content)
+        : SizedBox(width: width, height: height, child: content);
+  }
+
+  Widget _buildTileContent() {
+    if (content != null) {
+      return content!;
+    } else if (imageUrl.startsWith('http')) {
       return CachedNetworkImage(
-        imageUrl: iconUrl,
+        imageUrl: imageUrl,
         errorWidget: (context, url, error) => const Icon(Icons.error),
         fit: BoxFit.cover,
       );
-    } else if (iconUrl.startsWith('/')) {
+    } else if (imageUrl.startsWith('/')) {
       return Image.file(
-        File(iconUrl),
+        File(imageUrl),
         errorBuilder: (context, error, stackTrace) =>
             const Icon(Icons.broken_image),
         fit: BoxFit.cover,
       );
-    } else if (iconUrl.startsWith('assets')) {
+    } else if (imageUrl.startsWith('assets')) {
       return Image.asset(
-        iconUrl,
+        imageUrl,
         fit: BoxFit.cover,
       );
     } else {
