@@ -75,6 +75,7 @@ class _MediaCardPocState extends State<MediaCardPoc> {
               Center(
                   child: MediaCard.circle(
                       imageUrl: 'assets/mock/images/2_card.jpg',
+                      title: "Title",
                       isSelected: _isSelected)),
               Center(
                   child: MediaCard.threeCard(

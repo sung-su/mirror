@@ -252,6 +252,7 @@ class MediaCard extends StatelessWidget {
                       color: $style.colors.onPrimary
                           .withAlphaF(0.9 * (isSelected ? 1 : 0.9))),
                   maxLines: 1,
+                  textAlign: ratio == MediaCardRatio.square ? TextAlign.center : TextAlign.justify,
                   overflow: TextOverflow.ellipsis)),
         if (subtitle != null)
           SizedBox(
@@ -281,11 +282,11 @@ class MediaCard extends StatelessWidget {
     return isSelected
         ? BlinkBorder(
             width: width,
-            height: height,
+            height: height.roundToDouble(),
             ratio: ratio,
             shadowColor: shadowColor ?? Colors.white,
             child: content)
-        : SizedBox(width: width, height: height, child: content);
+        : SizedBox(width: width, height: height.roundToDouble(), child: content);
   }
 
   Widget _buildTileContent() {
