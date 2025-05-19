@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:tizen_fs/models/movie.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
 import 'package:tizen_fs/widgets/immersive_carousel.dart';
@@ -67,6 +68,7 @@ class _HomeContentState extends State<HomeContent> {
                   .setState(ImmersiveAreaController.carouselFocused);
             }),
             ImmersiveListArea(
+              movies: context.watch()<MovieViewModel>().movies,
               onFocused: () {
                 print('item 1 focused');
                 _scrollController.animateTo(

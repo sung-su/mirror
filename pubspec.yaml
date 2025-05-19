@@ -53,6 +53,7 @@ dependencies:
   video_player_tizen: ^2.5.5
   sqflite_common_ffi:
   flutter_svg: ^2.1.0
+  dio: ^5.3.2
 
 dev_dependencies:
   flutter_test:

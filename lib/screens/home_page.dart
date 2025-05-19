@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/category.dart';
+import 'package:tizen_fs/models/movie.dart';
 import 'package:tizen_fs/screens/detail_page.dart';
 import 'package:tizen_fs/widgets/category_list.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
@@ -27,6 +28,7 @@ class _HomePageState extends State<HomePage> {
       ImmersiveCarouselModel.fromMock();
   final ImmersiveAreaController _immersiveAreaController =
       ImmersiveAreaController();
+  late List<Movie> movies;
 
   @override
   void initState() {
@@ -45,6 +47,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final movies = context.watch<MovieViewModel>().movies;
+
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(
@@ -52,7 +56,7 @@ class _HomePageState extends State<HomePage> {
           ),
           ChangeNotifierProvider(
             create: (context) => _immersiveCarouselModel,
-          ),
+          )
         ],
         child: Column(
           children: [
@@ -80,6 +84,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ImmersiveListArea(
+              movies: movies,
               onFocused: () {
                 print('item 1 focused');
                 _scrollController.animateTo(
@@ -95,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DetailPage(),
+                      builder: (context) => DetailPage(movie: movies[index%4]),
                     ));
               },
             ),

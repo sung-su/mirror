@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:tizen_fs/models/movie.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
@@ -188,8 +189,9 @@ class ImmersiveContentArea extends StatelessWidget {
 class ImmersiveListArea extends StatefulWidget {
   final VoidCallback? onFocused;
   final void Function(int index)? onExecute;
+  final List<Movie> movies;
 
-  const ImmersiveListArea({super.key, this.onFocused, this.onExecute});
+  const ImmersiveListArea({super.key, this.onFocused, this.onExecute, required this.movies});
 
   @override
   State<ImmersiveListArea> createState() => _ImmersiveListAreaState();
@@ -264,7 +266,8 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
         _selectedIndex = (_selectedIndex + 1).clamp(0, _itemCount - 1);
         _scrollToSelected(event is KeyRepeatEvent ? 1 : 100, beforeSelected);
         return KeyEventResult.handled;
-      } else if (event.logicalKey == LogicalKeyboardKey.enter) {
+      } else if (event.logicalKey == LogicalKeyboardKey.enter ||
+                 event.logicalKey == LogicalKeyboardKey.select) {
         widget.onExecute?.call(_selectedIndex);
         return KeyEventResult.handled;
       }
