@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/movie.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/styles/app_style.dart';
+import 'package:tizen_fs/widgets/media_card.dart';
 
 class ImmersiveContent {
   final String title;
@@ -352,59 +353,11 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
                   scrollDirection: Axis.horizontal,
                   itemCount: _itemCount,
                   itemBuilder: (context, index) {
-                    return AnimatedScale(
-                        scale:
-                            (_hasFocus && index == _selectedIndex) ? 1.1 : 1.0,
-                        duration: const Duration(milliseconds: 200),
-                        child: Card(
-                          margin: EdgeInsets.only(left: 10, right: 10),
-                          key: _itemKeys[index],
-                          shape: _hasFocus && index == _selectedIndex
-                              ? RoundedRectangleBorder(
-                                  side: BorderSide(
-                                      color: Colors.white, width: 2.0),
-                                  borderRadius: BorderRadius.circular(10),
-                                )
-                              : null,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.blue,
-                            ),
-                            width: 190,
-                            child: Stack(fit: StackFit.expand, children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.asset(
-                                  'assets/mock/images/${contents[index].card}',
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.black
-                                          .withAlpha((255 * 0.5).toInt()),
-                                      Colors.black
-                                          .withAlpha((255 * 0.8).toInt()),
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              Center(
-                                  child: Text(
-                                      contents[index].title,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold))),
-                            ]),
-                          ),
-                        ));
+                    return Container(
+                      clipBehavior: Clip.none,
+                      margin: EdgeInsets.symmetric(horizontal: 10),
+                      child: MediaCard.fourCard(key:_itemKeys[index], imageUrl: 'assets/mock/images/${contents[index].card}', isSelected: Focus.of(context).hasFocus && index == _selectedIndex)
+                     );
                   },
                 )),
           ),

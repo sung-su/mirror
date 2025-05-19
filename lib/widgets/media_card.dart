@@ -238,7 +238,8 @@ class MediaCard extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                     child: Text(duration!, style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold)))),
             ])),
-        SizedBox(height: 4),
+        if (title != null || subtitle != null || description != null)
+          SizedBox(height: 4),
         if (title != null)
           SizedBox(width:width, child:Text(title!, style:TextStyle(fontSize: 12, color: $style.colors.onPrimary.withAlphaF(0.9 * (isSelected ? 1 : 0.9))), maxLines: 1, overflow: TextOverflow.ellipsis)),
         if (subtitle != null)
@@ -299,6 +300,7 @@ class _BlinkBorderState extends State<BlinkBorder>
   static const int blinkDuration = 800;
   late AnimationController controller;
   late Animation<double> animation;
+  bool _disposed = false;
 
   @override
   void initState() {
@@ -315,12 +317,15 @@ class _BlinkBorderState extends State<BlinkBorder>
       });
 
     Future.delayed(Duration(milliseconds: 500)).whenComplete(() {
-      controller.repeat(reverse: true);
+      if (!_disposed) {
+        controller.repeat(reverse: true);
+      }
     });
   }
 
   @override
   void dispose() {
+    _disposed = true;
     controller.dispose();
     super.dispose();
   }
