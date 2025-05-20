@@ -75,9 +75,11 @@ class _DetailPageState extends State<DetailPage> {
                       RottenRating(rating: 93),
                       StarRating(rating: 3.8),
                       AgeRating(rating: "12"),
-                      const Text('Thriller'),
-                      const Text('2025'),
-                      const Text('2 hr'),
+                      Text(movie.genres.isNotEmpty ? movie.genres[0].name : ''),
+                      Text(movie.releaseYear),
+                      Text(movie.runtime > 0
+                           ? '${(movie.runtime / 60).floor()}h ${movie.runtime % 60}m'
+                           : ''),
                     ],
                   ),
                 ),
@@ -86,7 +88,7 @@ class _DetailPageState extends State<DetailPage> {
                 SizedBox(height: 20),
                 ButtonList(key: _scrollAnchor),
                 SizedBox(height: 20),
-                CastList(),
+                CastList(movie: movie),
                 SizedBox(height: 20),
                 IfYouLikeList(),
                 SizedBox(height: 20),
@@ -176,7 +178,10 @@ class ButtonList extends StatelessWidget {
 class CastList extends StatelessWidget {
   const CastList({
     super.key,
+    required this.movie,
   });
+
+  final Movie movie;
 
   @override
   Widget build(BuildContext context) {
@@ -190,16 +195,35 @@ class CastList extends StatelessWidget {
             SingleChildScrollView(
               clipBehavior: Clip.none,
               scrollDirection: Axis.horizontal,
-              child: Row(spacing: 10, children: [
-                ...List.generate(
-                    10,
-                    (index) => CircleAvatar(
-                        radius: 60,
-                        backgroundImage: NetworkImage(
-                            'https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png'))),
-              ]),
-            ),
-          ],
+              child: Row(
+                spacing: 10,
+                children:
+                  List.generate(movie.cast.length,
+                      (index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Column(
+                            children: [
+                              CircleAvatar(
+                                radius: 60,
+                                backgroundImage: NetworkImage(
+                                    movie.cast.isNotEmpty
+                                        ? 'https://media.themoviedb.org/t/p/w500${movie.cast[index].profilePath}'
+                                        : ''),
+                              ),
+                              const SizedBox(height: 5),
+                              Text(movie.cast[index].name,
+                                  style: TextStyle(fontSize: 12)),
+                              const SizedBox(height: 5),
+                              Text(movie.cast[index].character,
+                                  style: TextStyle(fontSize: 10)),
+                            ],
+                          ),
+                        );
+                      },
+                  ),
+                ),
+            )],
         ));
   }
 }

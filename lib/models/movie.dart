@@ -51,6 +51,7 @@ class MovieViewModel extends ChangeNotifier {
           queryParameters: {
             'api_key': _apiKey,
             'language': 'en-US',
+            'append_to_response': 'credits,reviews',
           },
         );
         print('response: ${response.data}');
@@ -58,7 +59,7 @@ class MovieViewModel extends ChangeNotifier {
         //sampleMovies.add(Movie.fromJson(response.data));
       }
       catch (e) {
-        print('Error fetching movie($id) data: $e');
+        print('Error fetching movie($id) data: $e ');
       }
     }
     notifyListeners();
@@ -86,12 +87,70 @@ class MovieViewModel extends ChangeNotifier {
 }
 
 class Genre {
+  final int id;
+  final String name;
+
   const Genre({
     required this.id,
     required this.name,
   });
-  final int id;
+
+  factory Genre.fromJson(Map<String, dynamic> json) {
+    return Genre(id: json['id'] ?? 0, name: json['name'] ?? '');
+  }
+}
+
+class Cast {
   final String name;
+  final String originalName;
+  final String profilePath;
+  final String character;
+
+  const Cast({
+    required this.name,
+    required this.originalName,
+    required this.profilePath,
+    required this.character,
+  });
+
+  factory Cast.fromJson(Map<String, dynamic> json) {
+    return Cast(
+      name: json['name'] ?? '',
+      originalName: json['original_name'] ?? '',
+      profilePath: json['profile_path'] ?? '',
+      character: json['character'] ?? '',
+    );
+  }
+
+  String get profileUrl {
+    return profilePath.isNotEmpty ? 'https://image.tmdb.org/t/p/w500$profilePath' : '';
+  }
+}
+
+class Crew {
+  const Crew({
+    required this.name,
+    required this.originalName,
+    required this.profilePath,
+    required this.job,
+  });
+  final String name;
+  final String originalName;
+  final String profilePath;
+  final String job;
+
+  factory Crew.fromJson(Map<String, dynamic> json) {
+    return Crew(
+      name: json['name'] ?? '',
+      originalName: json['original_name'] ?? '',
+      profilePath: json['profile_path'] ?? '',
+      job: json['job'] ?? '',
+    );
+  }
+
+  String get profileUrl {
+    return profilePath.isNotEmpty ? 'https://image.tmdb.org/t/p/w500$profilePath' : '';
+  }
 }
 
 class Movie {
@@ -100,7 +159,12 @@ class Movie {
   final String posterPath;
   final String backdropPath;
   final String releaseDate;
-  final Genre genres;
+  final List<Genre> genres;
+  final double voteAverage;
+  final int voteCount;
+  final int runtime;
+  final List<Cast> cast;
+  final List<Crew> crew;
 
   Movie({
     required this.title,
@@ -108,8 +172,12 @@ class Movie {
     required this.posterPath,
     required this.backdropPath,
     this.releaseDate = '',
-    this.genres = const Genre(id: 0, name: ''),
-    double voteAverage = 0.0,
+    this.genres = const [],
+    this.voteCount = 0,
+    this.runtime = 0,
+    this.cast = const [],
+    this.crew = const [],
+    this.voteAverage = 0.0,
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) {
@@ -118,8 +186,12 @@ class Movie {
       overview: json['overview'],
       posterPath: json['poster_path'],
       backdropPath: json['backdrop_path'],
+      runtime: json['runtime'] ?? 0,
       releaseDate: json['release_date'],
+      genres : (json['genres'] as List).map((e) => Genre.fromJson(e)).toList(),
       voteAverage: json['vote_average'],
+      cast : (json['credits']['cast'] as List).map((e) => Cast.fromJson(e)).toList(),
+      crew : (json['credits']['crew'] as List).map((e) => Crew.fromJson(e)).toList(),
     );
   }
 
@@ -129,6 +201,10 @@ class Movie {
 
   String get backdropUrl {
     return 'https://image.tmdb.org/t/p/w500$backdropPath';
+  }
+
+  String get releaseYear {
+    return releaseDate.split('-')[0];
   }
 
   String get shortOverview {
