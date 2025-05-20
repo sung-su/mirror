@@ -7,6 +7,7 @@ import 'package:tizen_fs/models/movie.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/media_card.dart';
+import 'package:tizen_fs/widgets/selectable_listview.dart';
 
 class ImmersiveContent {
   final String title;
@@ -126,14 +127,17 @@ class ImmersiveContentArea extends StatelessWidget {
       Center(
           child: Padding(
               padding: EdgeInsets.only(top: 10),
-              child:
-                  Icon(Icons.keyboard_arrow_up, size: 35, color: Theme.of(context).indicatorColor.withAlphaF(0.5)))),
+              child: Icon(Icons.keyboard_arrow_up,
+                  size: 35,
+                  color: Theme.of(context).indicatorColor.withAlphaF(0.5)))),
       Padding(
           padding: EdgeInsets.only(left: leftPadding, top: 5, bottom: 0),
           child: Text(
             'Top picks for you',
             textAlign: TextAlign.left,
-            style: TextStyle(fontSize: 24, color: Theme.of(context).colorScheme.onSurface.withAlphaF(0.5)),
+            style: TextStyle(
+                fontSize: 24,
+                color: Theme.of(context).colorScheme.onSurface.withAlphaF(0.5)),
           )),
       Expanded(child: SizedBox.shrink()),
       Padding(
@@ -192,17 +196,19 @@ class ImmersiveListArea extends StatefulWidget {
   final void Function(int index)? onExecute;
   final List<Movie> movies;
 
-  const ImmersiveListArea({super.key, this.onFocused, this.onExecute, required this.movies});
+  const ImmersiveListArea(
+      {super.key, this.onFocused, this.onExecute, required this.movies});
 
   @override
   State<ImmersiveListArea> createState() => _ImmersiveListAreaState();
 }
 
 class _ImmersiveListAreaState extends State<ImmersiveListArea> {
-  final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
+  final GlobalKey<SelectableListViewState> _listViewKey =
+      GlobalKey<SelectableListViewState>();
+
   List<ImmersiveContent> contents = [];
-  late List<GlobalKey> _itemKeys;
 
   bool _hasFocus = false;
   static const double _leftPadding = 58;
@@ -213,27 +219,29 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
   void initState() {
     super.initState();
     _focusNode.addListener(_onFocusChanged);
-    if (Provider.of<ImmersiveListModel>(context, listen: false).itemCount == 0) {
-      Provider.of<ImmersiveListModel>(context, listen: false).addListener(_handleModelUpdate);
+    if (Provider.of<ImmersiveListModel>(context, listen: false).itemCount ==
+        0) {
+      Provider.of<ImmersiveListModel>(context, listen: false)
+          .addListener(_handleModelUpdate);
     } else {
-      contents = Provider.of<ImmersiveListModel>(context, listen: false).contents;
+      contents =
+          Provider.of<ImmersiveListModel>(context, listen: false).contents;
       _itemCount = contents.length;
-      _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
     }
   }
 
   void _handleModelUpdate() {
     setState(() {
-      contents = Provider.of<ImmersiveListModel>(context, listen: false).contents;
+      contents =
+          Provider.of<ImmersiveListModel>(context, listen: false).contents;
       _itemCount = contents.length;
-      _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
     });
-    Provider.of<ImmersiveListModel>(context, listen: false).removeListener(_handleModelUpdate);
+    Provider.of<ImmersiveListModel>(context, listen: false)
+        .removeListener(_handleModelUpdate);
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
     _focusNode.removeListener(_onFocusChanged);
     _focusNode.dispose();
     super.dispose();
@@ -256,19 +264,16 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
 
   KeyEventResult _onKeyEvent(FocusNode focusNode, KeyEvent event) {
     if (event is KeyDownEvent || event is KeyRepeatEvent) {
-      final beforeSelected = _selectedIndex;
       if (event.logicalKey == LogicalKeyboardKey.arrowLeft &&
           _selectedIndex > 0) {
-        _selectedIndex = (_selectedIndex - 1).clamp(0, _itemCount - 1);
-        _scrollToSelected(event is KeyRepeatEvent ? 1 : 100, beforeSelected);
+        _prev(event is KeyRepeatEvent);
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
           _selectedIndex < _itemCount - 1) {
-        _selectedIndex = (_selectedIndex + 1).clamp(0, _itemCount - 1);
-        _scrollToSelected(event is KeyRepeatEvent ? 1 : 100, beforeSelected);
+        _next(event is KeyRepeatEvent);
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.enter ||
-                 event.logicalKey == LogicalKeyboardKey.select) {
+          event.logicalKey == LogicalKeyboardKey.select) {
         widget.onExecute?.call(_selectedIndex);
         return KeyEventResult.handled;
       }
@@ -276,29 +281,37 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
     return KeyEventResult.ignored;
   }
 
-  Future<void> _scrollToSelected(int durationMilliseconds, int beforeSelected) async {
-    if (_itemKeys[_selectedIndex].currentContext != null) {
-      int current = _selectedIndex;
-      final RenderBox box = _itemKeys[_selectedIndex]
-          .currentContext!
-          .findRenderObject() as RenderBox;
-      final Offset position = box.localToGlobal(Offset.zero);
-      setState(() {});
-      Provider.of<ImmersiveListModel>(context, listen: false).selectedIndex = _selectedIndex;
-      await _scrollController.animateTo(
-        position.dx + _scrollController.offset - _leftPadding,
-        duration: Duration(milliseconds: durationMilliseconds),
-        curve: Curves.easeInOut,
-      );
+  Future<void> _next(bool fast) async {
+    if (_selectedIndex >= _itemCount - 1) {
+      return;
+    }
+    Provider.of<ImmersiveListModel>(context, listen: false).selectedIndex = ++_selectedIndex;
+    var moved = await _listViewKey.currentState?.next(fast: fast);
+    _selectedIndex = moved ?? _selectedIndex;
+    final current = _selectedIndex;
 
-      await Future.delayed(Duration(milliseconds: 200));
-      if (current == _selectedIndex && _hasFocus) {
-        Provider.of<BackdropProvider>(context, listen: false)
-            .updateBackdrop(getSelectedBackdrop());
-      }
-    } else {
-      print("Item $_selectedIndex is not in the widget tree - before [$beforeSelected]");
-      _selectedIndex = beforeSelected; // restore previous selection
+    await Future.delayed(const Duration(milliseconds: 300));
+
+    if (current == _selectedIndex) {
+      Provider.of<BackdropProvider>(context, listen: false)
+          .updateBackdrop(getSelectedBackdrop());
+    }
+  }
+
+  Future<void> _prev(bool fast) async {
+    if (_selectedIndex <= 0) {
+      return;
+    }
+    Provider.of<ImmersiveListModel>(context, listen: false).selectedIndex = --_selectedIndex;
+    var moved = await _listViewKey.currentState?.previous(fast: fast);
+    _selectedIndex = moved ?? _selectedIndex;
+    final current = _selectedIndex;
+
+    await Future.delayed(const Duration(milliseconds: 300));
+
+    if (current == _selectedIndex) {
+      Provider.of<BackdropProvider>(context, listen: false)
+          .updateBackdrop(getSelectedBackdrop());
     }
   }
 
@@ -332,35 +345,36 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
             child: Container(
               alignment: Alignment.topLeft,
               padding: EdgeInsets.only(left: _leftPadding, top: 10, bottom: 10),
-              child: _hasFocus ? SizedBox(height: 5,) : const Text('Top picks for you',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  )),
+              child: _hasFocus
+                  ? SizedBox(
+                      height: 5,
+                    )
+                  : const Text('Top picks for you',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      )),
             ),
           ),
           SizedBox(
-            height: 115,
-            child: ScrollConfiguration(
-                behavior: ScrollBehavior()
-                    .copyWith(scrollbars: false, overscroll: false),
-                child: ListView.builder(
+              height: 115,
+              child: SelectableListView(
+                  key: _listViewKey,
                   padding:
                       EdgeInsets.only(left: _leftPadding, right: _leftPadding),
-                  clipBehavior: Clip.none,
-                  controller: _scrollController,
-                  scrollDirection: Axis.horizontal,
                   itemCount: _itemCount,
-                  itemBuilder: (context, index) {
+                  itemBuilder: (context, index, selectedIndex, key) {
                     return Container(
-                      clipBehavior: Clip.none,
-                      margin: EdgeInsets.symmetric(horizontal: 10),
-                      child: MediaCard.fourCard(key:_itemKeys[index], imageUrl: 'assets/mock/images/${contents[index].card}', isSelected: Focus.of(context).hasFocus && index == _selectedIndex)
-                     );
-                  },
-                )),
-          ),
+                        clipBehavior: Clip.none,
+                        margin: EdgeInsets.symmetric(horizontal: 10),
+                        child: MediaCard.fourCard(
+                            key: key,
+                            imageUrl:
+                                'assets/mock/images/${contents[index].card}',
+                            isSelected: Focus.of(context).hasFocus &&
+                                index == selectedIndex));
+                  })),
         ],
       ),
     );
@@ -386,7 +400,8 @@ class CinematicScrim extends StatelessWidget {
               center: Alignment(0.8, -0.8),
               radius: 2,
               colors: [
-                const Color.fromARGB(255, 18, 18, 18).withAlpha((0.1 * 255).toInt()),
+                const Color.fromARGB(255, 18, 18, 18)
+                    .withAlpha((0.1 * 255).toInt()),
                 const Color.fromARGB(255, 18, 18, 18),
               ],
               stops: const [0, 0.7],
