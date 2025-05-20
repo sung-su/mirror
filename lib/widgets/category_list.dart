@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/category.dart';
 import 'package:tizen_fs/models/tile.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
+import 'package:tizen_fs/styles/app_style.dart';
+import 'package:tizen_fs/widgets/media_card.dart';
 
 enum ColumnCount { one, two, three, four, six, nine }
 
@@ -294,181 +296,22 @@ class _CategoryListState extends State<CategoryList> {
                   scrollDirection: Axis.horizontal,
                   itemCount: _itemCount,
                   itemBuilder: (context, index) {
-                    return Container(
-                      //between items, image-label space
-                      margin: EdgeInsets.all(5),
-                      child: Column(
-                        children: [
-                          //scale image area
-                          AnimatedScale(
-                            scale: (_hasFocus && index == _selectedIndex)
-                                ? _isCircleShape
-                                    ? 1.15
-                                    : 1.1
-                                : 1.0,
-                            duration: const Duration(milliseconds: 100),
-                            child: Stack(
-                              children: [
-                                Card(
-                                  color: Colors.transparent,
-                                  shadowColor: Colors.transparent,
-                                  key: _itemKeys[index],
-                                  child: Container(
-                                    // border
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: (_hasFocus &&
-                                                  index == _selectedIndex)
-                                              ? Colors.white.withAlpha(
-                                                  (255 * 0.7).toInt())
-                                              : Colors.transparent,
-                                          width: 2),
-                                      borderRadius: _isCircleShape
-                                          ? null
-                                          : BorderRadius.circular(12),
-                                      // glow
-                                      shape: _isCircleShape
-                                          ? BoxShape.circle
-                                          : BoxShape.rectangle,
-                                      boxShadow: (_hasFocus &&
-                                              index == _selectedIndex)
-                                          ? [
-                                              BoxShadow(
-                                                color: _extractColor.withAlpha(
-                                                    (255 * 0.7).toInt()),
-                                                spreadRadius: 1,
-                                                blurRadius: 20,
-                                                blurStyle: BlurStyle.normal,
-                                                offset: Offset(0, 1),
-                                              ),
-                                            ]
-                                          : null,
-                                    ),
-                                    width: _itemWidth,
-                                    height: _itemHeight,
-                                    // image
-                                    child: _isCircleShape
-                                        ? ClipOval(
-                                            child: _buildTileImage(
-                                                widget.tiles[index].iconUrl!),
-                                          )
-                                        : ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            child: _buildTileImage(
-                                                widget.tiles[index].iconUrl!),
-                                          ),
-                                  ),
-                                ),
-                                if (!_isCircleShape && _timeStamp)
-                                  // timestamp
-                                  Positioned(
-                                    top: _itemHeight * 0.85,
-                                    left: _itemWidth * 0.85,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius: BorderRadius.circular(3),
-                                      ),
-                                      padding: const EdgeInsets.only(
-                                          left: 5, right: 5),
-                                      child: Text(
-                                        '123:45',
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                          //labels
-                          SizedBox(
-                            width: _itemWidth,
-                            child: Column(
-                              children: [
-                                //1st label
-                                if (checkLabelVisible(
-                                    1, index == _selectedIndex))
-                                  Container(
-                                    padding: EdgeInsets.only(top: 5),
-                                    alignment: _isCircleShape
-                                        ? Alignment.center
-                                        : Alignment.topLeft,
-                                    child: Text(widget.tiles[index].title,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          color: Colors.white
-                                              .withAlpha((255 * 0.7).toInt()),
-                                          fontSize: _isCircleShape
-                                              ? _subHeadingFontSize
-                                              : _columns == 3
-                                                  ? _subHeadingFontSize
-                                                  : _subTitleFontSize,
-                                        )),
-                                  ),
-                                //2nd label
-                                if (checkLabelVisible(
-                                    2, index == _selectedIndex))
-                                  Container(
-                                    alignment: _isCircleShape
-                                        ? Alignment.center
-                                        : Alignment.topLeft,
-                                    padding: EdgeInsets.only(
-                                        top: checkLabelVisible(
-                                                1, index == _selectedIndex)
-                                            ? 0
-                                            : 5),
-                                    child: Text(
-                                        widget.tiles[index]
-                                                    .details['app_name_list'] !=
-                                                null
-                                            ? widget.tiles[index]
-                                                ?.details['app_name_list'][0]
-                                            : 'subTitle',
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          color: Colors.white
-                                              .withAlpha((255 * 0.5).toInt()),
-                                          fontSize: _isCircleShape
-                                              ? _subHeadingFontSize
-                                              : _columns == 3
-                                                  ? _subHeadingFontSize
-                                                  : _subTitleFontSize,
-                                        )),
-                                  ),
-                                //3rd label
-                                if (checkLabelVisible(
-                                    3, index == _selectedIndex))
-                                  Container(
-                                    alignment: Alignment.topLeft,
-                                    child: Text(
-                                        widget.tiles[index].details['price'] ??
-                                            'subHeading',
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          color: Colors.white
-                                              .withAlpha((255 * 0.5).toInt()),
-                                          fontSize: _isCircleShape
-                                              ? _subHeadingFontSize
-                                              : _columns == 3
-                                                  ? _subHeadingFontSize
-                                                  : _subTitleFontSize,
-                                        )),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
+                    if (true) {
+                      return Container(
+                        margin: EdgeInsets.all(10),
+                        child: MediaCard(
+                          key: _itemKeys[index],
+                          width: _itemWidth,
+                          imageUrl: widget.tiles[index].iconUrl!,
+                          isSelected: _hasFocus && index == _selectedIndex,
+                          ratio: _isCircleShape ? MediaCardRatio.square : MediaCardRatio.wide,
+                          shadowColor: _extractColor.withAlphaF(0.7),
+                          title: checkLabelVisible(1, index == _selectedIndex) ? widget.tiles[index].title : null,
+                          subtitle: checkLabelVisible(2, index == _selectedIndex) ? getSubtitle(index) : null,
+                          description: checkLabelVisible(3, index == _selectedIndex) ? widget.tiles[index].details['price'] ?? 'subHeading' : null,
+                        ),
+                      );
+                    }
                   },
                 ),
               ),
@@ -477,6 +320,10 @@ class _CategoryListState extends State<CategoryList> {
         ],
       ),
     );
+  }
+
+  String getSubtitle(int index) {
+    return widget.tiles[index].details['app_name_list'] != null ? widget.tiles[index].details['app_name_list'][0] : 'subTitle';
   }
 
   Widget _buildTileImage(String iconUrl) {

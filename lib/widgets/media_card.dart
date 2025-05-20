@@ -248,7 +248,7 @@ class MediaCard extends StatelessWidget {
               width: width,
               child: Text(title!,
                   style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 14,
                       color: $style.colors.onPrimary
                           .withAlphaF(0.9 * (isSelected ? 1 : 0.9))),
                   maxLines: 1,
@@ -259,7 +259,7 @@ class MediaCard extends StatelessWidget {
               width: width,
               child: Text(subtitle!,
                   style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 12,
                       color: $style.colors.onPrimary
                           .withAlphaF(0.7 * (isSelected ? 1 : 0.9))),
                   maxLines: 1,
@@ -269,7 +269,7 @@ class MediaCard extends StatelessWidget {
               width: width,
               child: Text(description!,
                   style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 12,
                       color: $style.colors.onPrimary
                           .withAlphaF(0.7 * (isSelected ? 1 : 0.9))),
                   maxLines: 1,
