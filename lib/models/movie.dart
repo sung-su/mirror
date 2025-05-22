@@ -153,6 +153,28 @@ class Crew {
   }
 }
 
+class Reviews {
+  const Reviews({
+    required this.author,
+    required this.content,
+    required this.createdAt,
+    required this.url,
+  });
+  final String author;
+  final String content;
+  final String createdAt;
+  final String url;
+
+  factory Reviews.fromJson(Map<String, dynamic> json) {
+    return Reviews(
+      author: json['author'] ?? '',
+      content: json['content'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      url: json['url'] ?? '',
+    );
+  }
+}
+
 class Movie {
   final String title;
   final String overview;
@@ -162,9 +184,11 @@ class Movie {
   final List<Genre> genres;
   final double voteAverage;
   final int voteCount;
+  final double popularity;
   final int runtime;
   final List<Cast> cast;
   final List<Crew> crew;
+  final List<Reviews> reviews;
 
   Movie({
     required this.title,
@@ -177,7 +201,9 @@ class Movie {
     this.runtime = 0,
     this.cast = const [],
     this.crew = const [],
+    this.reviews = const [],
     this.voteAverage = 0.0,
+    this.popularity = 0.0,
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) {
@@ -190,8 +216,11 @@ class Movie {
       releaseDate: json['release_date'],
       genres : (json['genres'] as List).map((e) => Genre.fromJson(e)).toList(),
       voteAverage: json['vote_average'],
+      voteCount: json['vote_count'],
+      popularity: json['popularity'],
       cast : (json['credits']['cast'] as List).map((e) => Cast.fromJson(e)).toList(),
       crew : (json['credits']['crew'] as List).map((e) => Crew.fromJson(e)).toList(),
+      reviews : json['reviews']['total_results'] > 0 ? (json['reviews']['results'] as List).map((e) => Reviews.fromJson(e)).toList() : [],
     );
   }
 

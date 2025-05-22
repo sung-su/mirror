@@ -84,7 +84,8 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                 ),
                 SizedBox(height: 20),
-                MockRevewList(),
+                if (movie.reviews.isNotEmpty)
+                  MockReviewList(reviews: movie.reviews),
                 SizedBox(height: 20),
                 ButtonList(key: _scrollAnchor),
                 SizedBox(height: 20),
@@ -110,10 +111,12 @@ class _DetailPageState extends State<DetailPage> {
   }
 }
 
-class MockRevewList extends StatelessWidget {
-  const MockRevewList({
+class MockReviewList extends StatelessWidget {
+  const MockReviewList({
     super.key,
+    required this.reviews,
   });
+  final List<Reviews> reviews;
 
   @override
   Widget build(BuildContext context) {
@@ -123,23 +126,36 @@ class MockRevewList extends StatelessWidget {
         child: SingleChildScrollView(
           clipBehavior: Clip.none,
           scrollDirection: Axis.horizontal,
-          child: Row(spacing: 10, children: [
-            Card.outlined(
-                child: SizedBox(
-              height: 120,
-              width: 400,
-            )),
-            Card.outlined(
-                child: SizedBox(
-              height: 120,
-              width: 400,
-            )),
-            Card.outlined(
-                child: SizedBox(
-              height: 120,
-              width: 400,
-            )),
-          ]),
+          child:
+          Row(
+            children: [
+              ...List.generate(
+                  reviews.length,
+                  (index) {
+                    final review = reviews[index];
+                    return Card(
+                      child: SizedBox(
+                        height: 120,
+                        width: 400,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(review.author, style: const TextStyle(fontSize: 15)),
+                              const SizedBox(height: 5),
+                              Text(review.content,
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 12)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+            ],
+          )
         ));
   }
 }
