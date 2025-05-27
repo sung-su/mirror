@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
 class ListPocPage extends StatelessWidget {
   const ListPocPage({super.key});
 
@@ -22,7 +21,6 @@ class _FocusScrollViewState extends State<FocusScrollView> {
   final ScrollController _scrollController = ScrollController();
   late List<GlobalKey<_ItemContainerState>> _itemKeys = List.generate(10, (_) => GlobalKey<_ItemContainerState>());
   int _focusedIndex = 0;
-  int _prevIndex = -1;
 
   @override
   void initState() {
@@ -33,41 +31,56 @@ class _FocusScrollViewState extends State<FocusScrollView> {
   }
 
   KeyEventResult _handleKey(FocusNode node, KeyEvent event) {
-    if (event is KeyDownEvent) {
+    if (event is KeyDownEvent || event is KeyRepeatEvent) {
       int newIndex = _focusedIndex;
-      if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+      if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
         newIndex++;
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
         newIndex--;
       }
 
-      if(newIndex < 0 || newIndex >= _itemKeys.length)
-      newIndex = (newIndex >= _itemKeys.length) ? _itemKeys.length - 1
-             : (newIndex < 0 ? 0 : _itemKeys.length - 1);
-             
-      _prevIndex = _focusedIndex;       
-      _focusedIndex = newIndex;
-      _updateFocusAndScroll(); 
-
+      if(newIndex < 0 || newIndex >= _itemKeys.length) return KeyEventResult.handled;
+      move(event is KeyRepeatEvent, newIndex);
       return KeyEventResult.handled;
     }
     return KeyEventResult.ignored;
   }
 
-  void _updateFocusAndScroll() {
-    final context = _itemKeys[_focusedIndex].currentContext;
-    if (context != null) {
+  void move (bool fast, int index) async
+  {
+    int? current = await _updateFocusAndScroll(fast ? 1 : 100, index);
+
+    if (current != null) {
+      _itemKeys[_focusedIndex].currentState?.changeFocus(false);
+      _itemKeys[current].currentState?.changeFocus(true);
+      _focusedIndex = current;
+    }
+  }
+
+  Future<int?> _updateFocusAndScroll(int durationMilliseconds, int index) async {
+    final context = _itemKeys[index].currentContext;
+
+    if (context != null) {  
       Scrollable.ensureVisible(
         context,
         alignment: 0.0,
-        duration: const Duration(milliseconds: 100),
+        duration: Duration(milliseconds: durationMilliseconds),
         curve: Curves.easeInOut,
       );
-    }
+      return index;
 
-    _itemKeys[_prevIndex].currentState?.changeFocus(false);
-    _itemKeys[_focusedIndex].currentState?.changeFocus(true);
-    
+      // animateto
+      // final RenderBox box = context.findRenderObject() as RenderBox;
+      // final Offset position = box.localToGlobal(Offset.zero);
+      // await _scrollController.animateTo(
+      //   position.dx + _scrollController.offset - 10,
+      //   duration: Duration(milliseconds: 1), 
+      //   curve: Curves.easeInOut
+      // );
+    }
+    else {
+      return null;
+    }
   }
 
   @override
@@ -78,6 +91,7 @@ class _FocusScrollViewState extends State<FocusScrollView> {
       onKeyEvent: _handleKey,
       child: ListView.builder(
         controller: _scrollController,
+        scrollDirection: Axis.horizontal,
         itemCount: 10,
         itemBuilder: (context, index) {
           return ItemContainer(
@@ -110,14 +124,18 @@ class _ItemContainerState extends State<ItemContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 100,
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      color: isFocused ? Colors.blue : Colors.grey,
-      alignment: Alignment.center,
-      child: Text(
-        'Item ${widget.index}',
-        style: const TextStyle(fontSize: 24, color: Colors.white),
+      width: 300,
+      child: Container(
+        height: 100,
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        color: isFocused ? Colors.blue : Colors.grey,
+        alignment: Alignment.center,
+        child: Text(
+          'Item ${widget.index}',
+          style: const TextStyle(fontSize: 24, color: Colors.white),
+        ),
       ),
     );
   }
