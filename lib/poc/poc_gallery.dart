@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/poc/immersive_carousel_poc.dart';
+import 'package:tizen_fs/poc/list_poc.dart';
 import 'package:tizen_fs/poc/media_card_poc.dart';
 import 'package:tizen_fs/poc/media_db_parser_poc.dart';
 import 'package:tizen_fs/poc/video_player_poc.dart';
@@ -9,6 +10,7 @@ import 'media_list_poc.dart';
 import 'setting_panel_poc.dart';
 import 'immersive_list_poc.dart';
 import 'tab_poc.dart';
+import 'youtube_poc.dart';
 import 'youtube_poc.dart';
 
 class PocGalleryPage extends StatelessWidget {
@@ -25,6 +27,19 @@ class PocGalleryPage extends StatelessWidget {
       body: Center(
         child: ListView(
           children: <Widget>[
+            ListTile(
+              title: const Text('List Poc'),
+              subtitle: const Text('Test for ensureVisible of the Scroller'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreenSizeWrapper(const ListPocPage()),
+                    ));
+              },
+            ),
             ListTile(
               title: const Text('Go to Home'),
               subtitle: const Text('Back to the main screen'),
