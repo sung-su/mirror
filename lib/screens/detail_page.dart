@@ -5,17 +5,11 @@ import 'package:tizen_fs/models/movie.dart';
 import 'package:tizen_fs/screens/detail_footer.dart';
 import 'package:tizen_fs/screens/flexible_title_detail.dart';
 import 'package:tizen_fs/screens/video_backdrop.dart';
-import 'package:tizen_fs/styles/app_style.dart';
-import 'package:tizen_fs/widgets/age_rating.dart';
 import 'package:tizen_fs/screens/button_list.dart';
 import 'package:tizen_fs/widgets/cast_list.dart';
-import 'package:tizen_fs/screens/ifyoulike_list.dart';
 import 'package:tizen_fs/screens/review_list.dart';
-import 'package:tizen_fs/screens/rotten_rating.dart';
-import 'package:tizen_fs/widgets/media_card.dart';
 import 'package:tizen_fs/widgets/movie_list.dart';
-import 'package:tizen_fs/widgets/selectable_listview.dart';
-import 'package:tizen_fs/widgets/star_rating.dart';
+import 'package:tizen_fs/widgets/youtube_list.dart';
 
 class DetailPage extends StatefulWidget {
   final Movie movie;
@@ -108,7 +102,7 @@ class _DetailPageState extends State<DetailPage> {
                     ),
                     CastList(
                       title: 'Cast & Crew',
-                      cast: movie.cast,
+                      casts: movie.cast,
                       onFocused: () {
                         // Scrollable.ensureVisible(
                         //   context,
@@ -118,18 +112,9 @@ class _DetailPageState extends State<DetailPage> {
                         // );
                       }
                     ),
-                    // MovieList(
-                    //   title: widget.categories[5].name,
-                    //   tiles: widget.categories[5].tiles,
-                    //   columns: ColumnCount.six,
-                    //   onFocused: () {
-                    //     print('focused - Category: ${widget.categories[5].name}');
-                    //   },
-                    // ),
                     MovieList(
-                      title: widget.categories[5].name,
-                      tiles: widget.categories[5].tiles,
-                      columns: ColumnCount.four,
+                      title: 'If you like A ${movie.title} Movie',
+                      similars: movie.similars,
                       onFocused: () {
                         print('focused - Category: ${widget.categories[5].name}');
                         // _scrollController.animateTo(
@@ -144,19 +129,20 @@ class _DetailPageState extends State<DetailPage> {
                       },
                     ),
                     MovieList(
-                      tiles: widget.categories[4].tiles,
-                      columns: ColumnCount.three,
-                      title: 'Youtube',
-                      icon: 'assets/mock/images/icons8-youtube-144.png',
-                      timeStamp: true,
+                      title: 'A ${movie.title} Movie on YouTube',
+                      similars: movie.similars,
                       onFocused: () {
-                        debugPrint('Recently uploaded focused');
+                        print('focused - Category: ${widget.categories[5].name}');
                         // _scrollController.animateTo(
-                        //   570 + 140 + ((widget.categories.length - 1) * 168) + 233,
+                        //   index == 0
+                        //       ? 570
+                        //       : index == 1
+                        //           ? 570 + 140
+                        //           : 570 + 140 + ((index - 1) * 168),
                         //   duration: const Duration(milliseconds: 100),
                         //   curve: Curves.easeInQuad,
                         // );
-                      }
+                      },
                     ),
                     ImportantInformation(
                       onFocused: (context) {

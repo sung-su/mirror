@@ -6,12 +6,12 @@ import 'package:tizen_fs/widgets/selectable_listview.dart';
 
 class CastList extends StatefulWidget {
   final VoidCallback? onFocused;
-  final List<Cast> cast;
+  final List<Cast> casts;
   final String title;
 
   const CastList({
     super.key,
-    required this.cast,
+    required this.casts,
     this.onFocused,
     this.title = '',
   });
@@ -39,7 +39,7 @@ class _CastListState extends State<CastList> {
   void initState() {
     super.initState();
     _focusNode.addListener(_onFocusChanged);
-    _itemCount = widget.cast.length;
+    _itemCount = widget.casts.length;
     _selectedIndex = 0;
     _title = widget.title;
   }
@@ -143,13 +143,13 @@ class _CastListState extends State<CastList> {
                     margin: EdgeInsets.symmetric(horizontal: 10),
                     child: MediaCard.circleLarge(
                         key: key,
-                        imageUrl: widget.cast[index].profilePath.isNotEmpty ? 
-                            'https://media.themoviedb.org/t/p/w500${widget.cast[index].profilePath}'
+                        imageUrl: widget.casts[index].profilePath.isNotEmpty ? 
+                            'https://media.themoviedb.org/t/p/w500${widget.casts[index].profilePath}'
                             : '',
                         isSelected: Focus.of(context).hasFocus &&
                             index == selectedIndex,
-                        title: widget.cast[index].name,
-                        subtitle: widget.cast[index].character));
+                        title: widget.casts[index].name,
+                        subtitle: widget.casts[index].character));
               })
           ),
         ],
