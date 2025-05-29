@@ -1,8 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:provider/provider.dart';
+import 'package:path_provider/path_provider.dart';
 
 class MovieViewModel extends ChangeNotifier {
   final Dio _dio = Dio();
@@ -36,6 +37,14 @@ class MovieViewModel extends ChangeNotifier {
     return movie;
   }
 
+  Future<void> saveJson(Map<String, dynamic> jsonData) async {
+    final dir = await getApplicationDocumentsDirectory();
+    final file = File('${dir.path}/movie.json');
+    String encodedData = jsonEncode(jsonData);
+    await file.writeAsString(encodedData);
+    print('filepath=[${file.path}]');
+  }
+
   Future<void> fetchSampleMovies() async {
     final List<int> movieIds = [
       // 950387, // A Minecraft Movie
@@ -53,29 +62,11 @@ class MovieViewModel extends ChangeNotifier {
             'api_key': _apiKey,
             'language': 'en-US',
             'append_to_response':
-                'release_dates,videos,credits,reviews,similar',
+                'release_dates,videos,credits,reviews,similar,lists',
           },
         );
         var movie = Movie.fromJson(response.data);
-        print('@@@ popularity=[${movie.popularity}]');
-        print('@@@ voteAverage=[${movie.voteAverage}]');
-        print(
-            '@@@ certification=[${movie.releaseDates.firstOrNull?.certification}]');
-        print('@@@ genres=[${movie.genres.firstOrNull?.name}]');
-        print('@@@ releaseYear=[${movie.releaseYear}]');
-        print('@@@ runtime=[${movie.runtime}]');
-        print('@@@ author=[${movie.reviews.firstOrNull?.author}]');
-        print('@@@ content=[${movie.reviews.firstOrNull?.content}]');
-        print('@@@ cast=[${movie.cast.firstOrNull?.name}]');
-        print('@@@ character=[${movie.cast.firstOrNull?.character}]');
-        print('@@@ crew=[${movie.crew.firstOrNull?.name}]');
-        print('@@@ job=[${movie.crew.firstOrNull?.job}]');
-        print('@@@ title=[${movie.similars.firstOrNull?.title}]');
-        print('@@@ posterPath=[${movie.similars.firstOrNull?.posterPath}]');
-        print('@@@ name=[${movie.videos.firstOrNull?.name}]');
-        print('@@@ site=[${movie.videos.firstOrNull?.site}]');
-        print('@@@ youtubeUrl=[${movie.videos.firstOrNull?.youtubeUrl}]');
-        print('@@@ publishedYear=[${movie.videos.firstOrNull?.publishedYear}]');
+        // await saveJson(response.data);
         _movies.add(movie);
         // _movies.add(Movie.fromJson(response.data));
         //sampleMovies.add(Movie.fromJson(response.data));
@@ -214,6 +205,7 @@ class Video {
     required this.type,
     required this.official,
     required this.publishedAt,
+
   });
   final String name;
   final String key;
@@ -235,9 +227,19 @@ class Video {
     );
   }
 
+  String get mp4url {
+    return 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+  }
+
   String get youtubeUrl {
     if (site == 'YouTube' && key.isNotEmpty)
       return 'https://www.youtube.com/watch?v=$key';
+    return '';
+  }
+
+  String get youtubeThumbnail {
+    if (site == 'YouTube' && key.isNotEmpty)
+      return 'https://img.youtube.com/vi/$key/0.jpg'
     return '';
   }
 
@@ -269,7 +271,6 @@ class ReleaseDate {
   }
 }
 
-//TODO
 class Similar {
   final String title;
   final String overview;
@@ -295,6 +296,10 @@ class Similar {
     );
   }
 
+  String get mp4url {
+    return 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+  }
+
   String get posterUrl {
     return 'https://image.tmdb.org/t/p/w500$posterPath';
   }
@@ -315,7 +320,7 @@ class Similar {
   }
 }
 
-class Movie extends Similar {
+class Movie {
   final String title;
   final String overview;
   final String posterPath;
@@ -330,7 +335,8 @@ class Movie extends Similar {
   final List<Crew> crew;
   final List<Reviews> reviews;
   final List<Video> videos;
-  final List<ReleaseDate> releaseDates;
+  //final List<ReleaseDate> releaseDates;
+  final String certification;
   final List<Similar> similars;
 
   Movie({
@@ -348,13 +354,10 @@ class Movie extends Similar {
     this.voteAverage = 0.0,
     this.popularity = 0.0,
     this.videos = const [],
-    this.releaseDates = const [],
+    //this.releaseDates = const [],
+    this.certification = '',
     this.similars = const [],
-  }) : super(
-            title: title,
-            overview: overview,
-            posterPath: posterPath,
-            backdropPath: backdropPath);
+  });
 
   factory Movie.fromJson(Map<String, dynamic> json) {
     return Movie(
@@ -382,34 +385,40 @@ class Movie extends Similar {
       videos: (json['videos']['results'] as List)
           .map((e) => Video.fromJson(e))
           .toList(),
-      releaseDates: (json['release_dates']['results'] as List)
+      // releaseDates: (json['release_dates']['results'] as List)
+      //     .where((e) => e['iso_3166_1'] == 'US')
+      //     .expand((e) => e['release_dates'] as List)
+      //     .where((e) => e['iso_639_1'] == 'en' && e['certification'].isNotEmpty)
+      //     .map((e) => ReleaseDate.fromJson(e, iso31661: 'US'))
+      //     .toList(),
+      certification: (json['release_dates']['results'] as List)
           .where((e) => e['iso_3166_1'] == 'US')
           .expand((e) => e['release_dates'] as List)
           .where((e) => e['iso_639_1'] == 'en' && e['certification'].isNotEmpty)
-          .map((e) => ReleaseDate.fromJson(e, iso31661: 'US'))
-          .toList(),
+          .map((e) => e['certification'] ?? '')
+          .toString(),
       similars: (json['similar']['results'] as List)
           .map((e) => Similar.fromJson(e))
           .toList(),
     );
   }
 
-  // String get posterUrl {
-  //   return 'https://image.tmdb.org/t/p/w500$posterPath';
-  // }
+  String get posterUrl {
+    return 'https://image.tmdb.org/t/p/w500$posterPath';
+  }
 
-  // String get backdropUrl {
-  //   return 'https://image.tmdb.org/t/p/w500$backdropPath';
-  // }
+  String get backdropUrl {
+    return 'https://image.tmdb.org/t/p/w500$backdropPath';
+  }
 
-  // String get releaseYear {
-  //   return releaseDate.split('-')[0];
-  // }
+  String get releaseYear {
+    return releaseDate.split('-')[0];
+  }
 
-  // String get shortOverview {
-  //   if (overview.length > 100) {
-  //     return '${overview.substring(0, 100)}...';
-  //   }
-  //   return overview;
-  // }
+  String get shortOverview {
+    if (overview.length > 100) {
+      return '${overview.substring(0, 100)}...';
+    }
+    return overview;
+  }
 }
