@@ -80,7 +80,8 @@ class _VideoBackdropState extends State<VideoBackdrop> {
 
     widget.scrollController.addListener(_handleUserInteraction);
 
-    _startInactivityTimer();
+    // TODO: disable timer for test
+    // _startInactivityTimer();
   }
 
   @override
@@ -92,47 +93,30 @@ class _VideoBackdropState extends State<VideoBackdrop> {
 
   @override
   Widget build(BuildContext context) {
-    return Focus(
-      onKeyEvent: (node, event) {
-        if (event is KeyDownEvent) {
-          if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-            debugPrint('key evnet: arrowUP');
-            widget.scrollController.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-            return KeyEventResult.handled;
-          }
-          else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-            debugPrint('key evnet: arrowdown');
-            widget.scrollController.animateTo(250, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-            return KeyEventResult.handled;
-          }
-        }
-        return KeyEventResult.ignored;
-      },
-      child: Stack(
-        children: [
-          SizedBox.expand(
-              child: DecoratedBox(
-                  decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 18, 18, 18)))),
-          SizedBox.expand(
-              child: (_isIdle && _videoController.value.isInitialized) ?
-              AspectRatio(aspectRatio: _videoController.value.aspectRatio,
-                  child: VideoPlayer(_videoController),
-                )
-              : Image.network(widget.imageUrl,
-                  fit: BoxFit.cover)),
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.bottomLeft,
-                end: Alignment.topRight,
-                colors: (_statusIndex == 2 ) ? [Colors.transparent, Colors.transparent]
-                :[Colors.black.withAlphaF(0.9), Colors.transparent],
-              ),
+    return Stack(
+      children: [
+        SizedBox.expand(
+            child: DecoratedBox(
+                decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 18, 18, 18)))),
+        SizedBox.expand(
+            child: (_isIdle && _videoController.value.isInitialized) ?
+            AspectRatio(aspectRatio: _videoController.value.aspectRatio,
+                child: VideoPlayer(_videoController),
+              )
+            : Image.network(widget.imageUrl,
+                fit: BoxFit.cover)),
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomLeft,
+              end: Alignment.topRight,
+              colors: (_statusIndex == 2 ) ? [Colors.transparent, Colors.transparent]
+              :[Colors.black.withAlphaF(0.9), Colors.transparent],
             ),
-          )
-        ],
-      ),
+          ),
+        )
+      ],
     );
   }
 }

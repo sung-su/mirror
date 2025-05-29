@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class RottenRating extends StatelessWidget {
+class RottenRating extends StatefulWidget {
   static const String positiveRotten = '''
 <svg type="positive" viewBox="0 0 80 80" preserveAspectRatio="xMidYMid" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g transform="translate(1.33, 0)">
@@ -32,12 +32,51 @@ class RottenRating extends StatelessWidget {
   final int rating;
 
   @override
+  State<RottenRating> createState() => RottenRatingState();
+}
+
+class RottenRatingState extends State<RottenRating> {
+  final FocusNode _focusNode = FocusNode();
+  bool _hasFocus = false;
+
+    @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(_onFocusChanged);
+  }
+
+  @override
+  void dispose() {
+    // _scrollController.dispose();
+    _focusNode.removeListener(_onFocusChanged);
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _onFocusChanged() {
+    setState(() {
+      _hasFocus = _focusNode.hasFocus;
+    });
+  }
+
+  void requestFocus() {
+    _focusNode.requestFocus();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Row(
-      spacing: 5,
-      children: [
-      SvgPicture.string(rating > 60 ? positiveRotten : negativeRotten, width: 17, height: 17),
-      Text('$rating%', style: TextStyle(fontSize: 17)),
-    ]);
+    return Focus(
+      focusNode: _focusNode,
+      child: Container(
+        // TODO: to be removed
+        color: _hasFocus ? Colors.red : Colors.transparent,
+        child: Row(
+          spacing: 5,
+          children: [
+          SvgPicture.string(widget.rating > 60 ? RottenRating.positiveRotten : RottenRating.negativeRotten, width: 17, height: 17),
+          Text('${widget.rating}%', style: TextStyle(fontSize: 17)),
+        ]),
+      ),
+    );
   }
 }
