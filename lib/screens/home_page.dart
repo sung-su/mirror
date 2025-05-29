@@ -100,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DetailPage(movie: movies[index%4], categories: widget.categories),
+                      builder: (context) => DetailPage(movie: movies[index%4]),
                     ));
               },
             ),
@@ -122,8 +122,8 @@ class _HomePageState extends State<HomePage> {
                     index == 0
                         ? 570
                         : index == 1
-                            ? 570 + 140
-                            : 570 + 140 + ((index - 1) * 168),
+                            ? 570 + 165
+                            : 570 + 165 + ((index - 1) * 168),
                     duration: const Duration(milliseconds: 100),
                     curve: Curves.easeInQuad,
                   );
@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                 onFocused: () {
                   debugPrint('Recomended videos focused');
                   _scrollController.animateTo(
-                    570 + 140 + ((widget.categories.length - 1) * 168),
+                    570 + 165 + ((widget.categories.length - 1) * 168),
                     duration: const Duration(milliseconds: 100),
                     curve: Curves.easeInQuad,
                   );
@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage> {
                 onFocused: () {
                   debugPrint('Recently uploaded focused');
                   _scrollController.animateTo(
-                    570 + 140 + ((widget.categories.length - 1) * 168) + 233,
+                    570 + 165 + ((widget.categories.length - 1) * 168) + 233,
                     duration: const Duration(milliseconds: 100),
                     curve: Curves.easeInQuad,
                   );

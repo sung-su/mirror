@@ -1,6 +1,4 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:tizen_fs/models/category.dart';
 import 'package:tizen_fs/models/movie.dart';
 import 'package:tizen_fs/screens/detail_footer.dart';
 import 'package:tizen_fs/screens/flexible_title_detail.dart';
@@ -13,8 +11,7 @@ import 'package:tizen_fs/widgets/youtube_list.dart';
 
 class DetailPage extends StatefulWidget {
   final Movie movie;
-  final List<Category> categories;
-  const DetailPage({super.key, required this.movie, required this.categories});
+  const DetailPage({super.key, required this.movie});
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -116,7 +113,7 @@ class _DetailPageState extends State<DetailPage> {
                       title: 'If you like A ${movie.title} Movie',
                       similars: movie.similars,
                       onFocused: () {
-                        print('focused - Category: ${widget.categories[5].name}');
+                        print('focused - MovieList');
                         // _scrollController.animateTo(
                         //   index == 0
                         //       ? 570
@@ -128,11 +125,11 @@ class _DetailPageState extends State<DetailPage> {
                         // );
                       },
                     ),
-                    MovieList(
+                    YoutubeList(
                       title: 'A ${movie.title} Movie on YouTube',
-                      similars: movie.similars,
+                      videos: movie.videos,
                       onFocused: () {
-                        print('focused - Category: ${widget.categories[5].name}');
+                        print('focused - YoutubeList');
                         // _scrollController.animateTo(
                         //   index == 0
                         //       ? 570

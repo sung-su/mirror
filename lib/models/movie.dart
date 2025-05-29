@@ -239,7 +239,7 @@ class Video {
 
   String get youtubeThumbnail {
     if (site == 'YouTube' && key.isNotEmpty)
-      return 'https://img.youtube.com/vi/$key/0.jpg'
+      return 'https://img.youtube.com/vi/$key/0.jpg';
     return '';
   }
 
