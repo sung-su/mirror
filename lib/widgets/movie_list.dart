@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +11,7 @@ import 'package:tizen_fs/widgets/media_card.dart';
 
 enum ColumnCount { one, two, three, four, six, nine }
 
-class CategoryList extends StatefulWidget {
+class MovieList extends StatefulWidget {
   final VoidCallback? onFocused;
   final List<Tile> tiles;
   final ColumnCount columns;
@@ -20,7 +19,7 @@ class CategoryList extends StatefulWidget {
   final String icon;
   final bool timeStamp;
 
-  const CategoryList({
+  const MovieList({
     super.key,
     required this.tiles,
     this.onFocused,
@@ -31,10 +30,10 @@ class CategoryList extends StatefulWidget {
   });
 
   @override
-  State<CategoryList> createState() => _CategoryListState();
+  State<MovieList> createState() => _MovieListState();
 }
 
-class _CategoryListState extends State<CategoryList> {
+class _MovieListState extends State<MovieList> {
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   late List<GlobalKey> _itemKeys;
@@ -237,99 +236,88 @@ class _CategoryListState extends State<CategoryList> {
     );
   }
 
-  Color randomColor()
-  {
-    var random = Random();
-    return Color.fromARGB(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Focus(
       focusNode: _focusNode,
       onKeyEvent: _onKeyEvent,
-      child: Container(
-        color: randomColor(),
-        child: Column(
-          children: [
-            //list title
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(70, 10, 70, 8),
-                child: SizedBox(
-                  height: 40,
-                  // height: _hasFocus ? 40 : 20,
-                  child: AnimatedScale(
-                      scale: _hasFocus ? 1.7 : 1.0,
-                      duration: const Duration(milliseconds: 100),
-                      alignment: Alignment.centerLeft,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        spacing: 5,
-                        children: [
-                          if (widget.icon.isNotEmpty)
-                            SizedBox(
-                              width: 25,
-                              height: 17,
-                              child: _buildTileImage(widget.icon),
-                            ),
-                          if (_title.isNotEmpty)
-                            Text(_title,
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  fontSize: _titleFontSize,
-                                  color: _hasFocus
-                                      ? Colors.white
-                                          .withAlpha((255 * 0.7).toInt())
-                                      : Colors.grey,
-                                )),
-                        ],
-                      )),
-                ),
-              ),
-            ),
-            //list
-            SizedBox(
-              // height: _hasFocus ? _listHeightExtended : _listHeight,
-              height: _hasFocus ? _listHeightExtended : _listHeight,
-              child: ScrollConfiguration(
-                behavior: ScrollBehavior()
-                    .copyWith(scrollbars: false, overscroll: false),
-                child: AnimatedOpacity(
-                  opacity: _hasFocus ? 1.0 : 0.3,
-                  duration: const Duration(milliseconds: 100),
-                  child: ListView.builder(
-                    //peek space
-                    padding:
-                        EdgeInsets.only(left: _peekPadding, right: _peekPadding),
-                    clipBehavior: Clip.none,
-                    controller: _scrollController,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _itemCount,
-                    itemBuilder: (context, index) {
-                      if (true) {
-                        return Container(
-                          margin: EdgeInsets.all(10),
-                          child: MediaCard(
-                            key: _itemKeys[index],
-                            width: _itemWidth,
-                            imageUrl: widget.tiles[index].iconUrl!,
-                            isSelected: _hasFocus && index == _selectedIndex,
-                            ratio: _isCircleShape ? MediaCardRatio.square : MediaCardRatio.wide,
-                            shadowColor: _extractColor.withAlphaF(0.7),
-                            title: checkLabelVisible(1, index == _selectedIndex) ? widget.tiles[index].title : null,
-                            subtitle: checkLabelVisible(2, index == _selectedIndex) ? getSubtitle(index) : null,
-                            description: checkLabelVisible(3, index == _selectedIndex) ? widget.tiles[index].details['price'] ?? 'subHeading' : null,
+      child: Column(
+        children: [
+          //list title
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(70, 10, 70, 8),
+              child: SizedBox(
+                height: _hasFocus ? 40 : 20,
+                child: AnimatedScale(
+                    scale: _hasFocus ? 1.7 : 1.0,
+                    duration: const Duration(milliseconds: 100),
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 5,
+                      children: [
+                        if (widget.icon.isNotEmpty)
+                          SizedBox(
+                            width: 25,
+                            height: 17,
+                            child: _buildTileImage(widget.icon),
                           ),
-                        );
-                      }
-                    },
-                  ),
+                        if (_title.isNotEmpty)
+                          Text(_title,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontSize: _titleFontSize,
+                                color: _hasFocus
+                                    ? Colors.white
+                                        .withAlpha((255 * 0.7).toInt())
+                                    : Colors.grey,
+                              )),
+                      ],
+                    )),
+              ),
+            ),
+          ),
+          //list
+          SizedBox(
+            height: _hasFocus ? _listHeightExtended : _listHeight,
+            child: ScrollConfiguration(
+              behavior: ScrollBehavior()
+                  .copyWith(scrollbars: false, overscroll: false),
+              child: AnimatedOpacity(
+                opacity: _hasFocus ? 1.0 : 0.3,
+                duration: const Duration(milliseconds: 100),
+                child: ListView.builder(
+                  //peek space
+                  padding:
+                      EdgeInsets.only(left: _peekPadding, right: _peekPadding),
+                  clipBehavior: Clip.none,
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _itemCount,
+                  itemBuilder: (context, index) {
+                    if (true) {
+                      return Container(
+                        margin: EdgeInsets.all(10),
+                        child: MediaCard(
+                          key: _itemKeys[index],
+                          width: _itemWidth,
+                          imageUrl: widget.tiles[index].iconUrl!,
+                          isSelected: _hasFocus && index == _selectedIndex,
+                          ratio: _isCircleShape ? MediaCardRatio.square : MediaCardRatio.wide,
+                          shadowColor: _extractColor.withAlphaF(0.7),
+                          title: checkLabelVisible(1, index == _selectedIndex) ? widget.tiles[index].title : null,
+                          subtitle: checkLabelVisible(2, index == _selectedIndex) ? getSubtitle(index) : null,
+                          description: checkLabelVisible(3, index == _selectedIndex) ? widget.tiles[index].details['price'] ?? 'subHeading' : null,
+                        ),
+                      );
+                    }
+                  },
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

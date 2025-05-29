@@ -100,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DetailPage(movie: movies[index%4]),
+                      builder: (context) => DetailPage(movie: movies[index%4], categories: widget.categories),
                     ));
               },
             ),

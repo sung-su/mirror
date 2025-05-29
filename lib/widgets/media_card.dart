@@ -197,6 +197,29 @@ class MediaCard extends StatelessWidget {
             content: content,
             shadowColor: shadowColor);
 
+  const MediaCard.circleLarge(
+      {Key? key,
+      required String imageUrl,
+      String? title,
+      String? subtitle,
+      String? description,
+      String? duration,
+      bool isSelected = false,
+      Widget? content,
+      Color? shadowColor})
+      : this(
+            key: key,
+            width: 124,
+            imageUrl: imageUrl,
+            title: title,
+            subtitle: subtitle,
+            description: description,
+            duration: duration,
+            isSelected: isSelected,
+            ratio: MediaCardRatio.square,
+            content: content,
+            shadowColor: shadowColor);
+
   static const int animationDuration = 100;
   final double width;
   final double height;
@@ -263,6 +286,7 @@ class MediaCard extends StatelessWidget {
                       color: $style.colors.onPrimary
                           .withAlphaF(0.7 * (isSelected ? 1 : 0.9))),
                   maxLines: 1,
+                  textAlign: ratio == MediaCardRatio.square ? TextAlign.center : TextAlign.justify,
                   overflow: TextOverflow.ellipsis)),
         if (description != null)
           SizedBox(

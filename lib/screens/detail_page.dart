@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:tizen_fs/models/category.dart';
 import 'package:tizen_fs/models/movie.dart';
 import 'package:tizen_fs/screens/detail_footer.dart';
 import 'package:tizen_fs/screens/flexible_title_detail.dart';
@@ -11,11 +12,15 @@ import 'package:tizen_fs/widgets/cast_list.dart';
 import 'package:tizen_fs/screens/ifyoulike_list.dart';
 import 'package:tizen_fs/screens/review_list.dart';
 import 'package:tizen_fs/screens/rotten_rating.dart';
+import 'package:tizen_fs/widgets/media_card.dart';
+import 'package:tizen_fs/widgets/movie_list.dart';
+import 'package:tizen_fs/widgets/selectable_listview.dart';
 import 'package:tizen_fs/widgets/star_rating.dart';
 
 class DetailPage extends StatefulWidget {
   final Movie movie;
-  const DetailPage({super.key, required this.movie});
+  final List<Category> categories;
+  const DetailPage({super.key, required this.movie, required this.categories});
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -102,34 +107,55 @@ class _DetailPageState extends State<DetailPage> {
                       }
                     ),
                     CastList(
-                      movie: movie,
-                      onFocused: (context) {
-                        Scrollable.ensureVisible(
-                          context,
-                          alignment: 0.15,
-                          duration: Duration(milliseconds: 100),
-                          curve: Curves.easeInQuad
-                        );
+                      title: 'Cast & Crew',
+                      cast: movie.cast,
+                      onFocused: () {
+                        // Scrollable.ensureVisible(
+                        //   context,
+                        //   alignment: 0.15,
+                        //   duration: Duration(milliseconds: 100),
+                        //   curve: Curves.easeInQuad
+                        // );
                       }
                     ),
-                    IfYouLikeList(
-                      onFocused: (context) {
-                        Scrollable.ensureVisible(
-                          context,
-                          alignment: 0.15,
-                          duration: Duration(milliseconds: 100),
-                          curve: Curves.easeInQuad
-                        );
-                      }
+                    // MovieList(
+                    //   title: widget.categories[5].name,
+                    //   tiles: widget.categories[5].tiles,
+                    //   columns: ColumnCount.six,
+                    //   onFocused: () {
+                    //     print('focused - Category: ${widget.categories[5].name}');
+                    //   },
+                    // ),
+                    MovieList(
+                      title: widget.categories[5].name,
+                      tiles: widget.categories[5].tiles,
+                      columns: ColumnCount.four,
+                      onFocused: () {
+                        print('focused - Category: ${widget.categories[5].name}');
+                        // _scrollController.animateTo(
+                        //   index == 0
+                        //       ? 570
+                        //       : index == 1
+                        //           ? 570 + 140
+                        //           : 570 + 140 + ((index - 1) * 168),
+                        //   duration: const Duration(milliseconds: 100),
+                        //   curve: Curves.easeInQuad,
+                        // );
+                      },
                     ),
-                    IfYouLikeList(
-                      onFocused: (context) {
-                        Scrollable.ensureVisible(
-                          context,
-                          alignment: 0.15,
-                          duration: Duration(milliseconds: 100),
-                          curve: Curves.easeInQuad
-                        );
+                    MovieList(
+                      tiles: widget.categories[4].tiles,
+                      columns: ColumnCount.three,
+                      title: 'Youtube',
+                      icon: 'assets/mock/images/icons8-youtube-144.png',
+                      timeStamp: true,
+                      onFocused: () {
+                        debugPrint('Recently uploaded focused');
+                        // _scrollController.animateTo(
+                        //   570 + 140 + ((widget.categories.length - 1) * 168) + 233,
+                        //   duration: const Duration(milliseconds: 100),
+                        //   curve: Curves.easeInQuad,
+                        // );
                       }
                     ),
                     ImportantInformation(
