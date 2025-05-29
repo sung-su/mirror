@@ -4,6 +4,7 @@ import 'package:tizen_fs/models/movie.dart';
 import 'package:tizen_fs/screens/video_backdrop.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/age_rating.dart';
+import 'package:tizen_fs/widgets/flexible_title_detail.dart';
 import 'package:tizen_fs/widgets/rotten_rating.dart';
 import 'package:tizen_fs/widgets/star_rating.dart';
 
@@ -58,52 +59,36 @@ class _DetailPageState extends State<DetailPage> {
                 left: 58,
               ),
               child: FlexibleTitleForDetail(
-                  expandedHeight: MediaQuery.of(context).size.height - 50,
-                  collapsedHeight: 250,
-                  child: Text(movie.title)),
+                expandedHeight: MediaQuery.of(context).size.height - 50,
+                collapsedHeight: 250,
+                movie: movie,)
             ),
           ),
           SliverToBoxAdapter(
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 58, top: 16),
-                  child: Row(
-                    spacing: 20,
-                    children: [
-                      RottenRating(rating: 93),
-                      StarRating(rating: 3.8),
-                      AgeRating(rating: "12"),
-                      Text(movie.genres.isNotEmpty ? movie.genres[0].name : ''),
-                      Text(movie.releaseYear),
-                      Text(movie.runtime > 0
-                           ? '${(movie.runtime / 60).floor()}h ${movie.runtime % 60}m'
-                           : ''),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-                if (movie.reviews.isNotEmpty)
-                  MockReviewList(reviews: movie.reviews),
-                SizedBox(height: 20),
-                ButtonList(key: _scrollAnchor),
-                SizedBox(height: 20),
-                CastList(movie: movie),
-                SizedBox(height: 20),
-                IfYouLikeList(),
-                SizedBox(height: 20),
-                IfYouLikeList(),
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 58, right: 58),
-                  child: Container(
-                    height: 0.7,
-                    color: Colors.white.withAlphaF(0.9),
-                  ),
-                ),
-                ImportantInformation(),
-                SizedBox(height: 100)
+                    SizedBox(height: 20),
+                    if (movie.reviews.isNotEmpty)
+                      MockReviewList(reviews: movie.reviews),
+                    SizedBox(height: 20),
+                    ButtonList(key: _scrollAnchor),
+                    SizedBox(height: 20),
+                    CastList(movie: movie),
+                    SizedBox(height: 20),
+                    IfYouLikeList(),
+                    SizedBox(height: 20),
+                    IfYouLikeList(),
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 58, right: 58),
+                      child: Container(
+                        height: 0.7,
+                        color: Colors.white.withAlphaF(0.9),
+                      ),
+                    ),
+                    ImportantInformation(),
+                    SizedBox(height: 100),
               ])),
         ]),
       ],
@@ -322,36 +307,5 @@ class ImportantInformation extends StatelessWidget {
             ),
           ],
         ));
-  }
-}
-
-class FlexibleTitleForDetail extends StatelessWidget {
-  final double expandedHeight;
-  final double collapsedHeight;
-  final Widget child;
-  final double minFontSize;
-  final double maxFontSize;
-
-  const FlexibleTitleForDetail({
-    super.key,
-    required this.expandedHeight,
-    required this.collapsedHeight,
-    required this.child,
-    this.minFontSize = 40,
-    this.maxFontSize = 70,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final ratio = max(constraints.maxHeight - collapsedHeight, 0) /
-          max(expandedHeight - collapsedHeight, 0);
-      return Align(
-          alignment: Alignment.bottomLeft,
-          child: DefaultTextStyle(
-              style: TextStyle(
-                  fontSize: maxFontSize - ratio * (maxFontSize - minFontSize)),
-              child: child));
-    });
   }
 }
