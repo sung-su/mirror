@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tizen_fs/styles/app_style.dart';
 
 class RottenRating extends StatefulWidget {
   static const String positiveRotten = '''
@@ -35,18 +36,41 @@ class RottenRating extends StatefulWidget {
   State<RottenRating> createState() => RottenRatingState();
 }
 
-class RottenRatingState extends State<RottenRating> {
+class RottenRatingState extends State<RottenRating>
+    with SingleTickerProviderStateMixin {
+  static const int blinkDuration = 800;
+  late AnimationController controller;
+  late Animation<double> animation;
   final FocusNode _focusNode = FocusNode();
   bool _hasFocus = false;
+  bool _disposed = false;
 
-    @override
+  @override
   void initState() {
     super.initState();
     _focusNode.addListener(_onFocusChanged);
+    controller = AnimationController(
+      duration: const Duration(milliseconds: blinkDuration),
+      vsync: this,
+    );
+
+    animation = Tween<double>(begin: 0.7, end: 0)
+        .animate(CurvedAnimation(parent: controller, curve: Curves.linear))
+      ..addListener(() {
+        setState(() {});
+      });
+
+    Future.delayed(Duration(milliseconds: 500)).whenComplete(() {
+      if (!_disposed) {
+        controller.repeat(reverse: true);
+      }
+    });
   }
 
   @override
   void dispose() {
+    _disposed = true;
+    controller.dispose();
     // _scrollController.dispose();
     _focusNode.removeListener(_onFocusChanged);
     _focusNode.dispose();
@@ -63,19 +87,44 @@ class RottenRatingState extends State<RottenRating> {
     _focusNode.requestFocus();
   }
 
+  Widget _buildBorder(Widget content) {
+    return _hasFocus
+        ? Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color: Colors.white.withAlphaF(animation.value), width: 2),
+              borderRadius: BorderRadius.circular(50),
+              shape: BoxShape.rectangle,
+              backgroundBlendMode: BlendMode.screen,
+              color: Colors.grey.withAlphaF(0.2),
+            ),
+            child: content)
+        : content;
+  }
+
   @override
   Widget build(BuildContext context) {
+    double borderWidth = 2;
+    double height = 24;
+    double width = widget.rating > 99 ? 77 : 67;
     return Focus(
       focusNode: _focusNode,
-      child: Container(
-        // TODO: to be removed
-        color: _hasFocus ? Colors.red : Colors.transparent,
-        child: Row(
-          spacing: 5,
-          children: [
-          SvgPicture.string(widget.rating > 60 ? RottenRating.positiveRotten : RottenRating.negativeRotten, width: 17, height: 17),
-          Text('${widget.rating}%', style: TextStyle(fontSize: 17)),
-        ]),
+      child: _buildBorder(
+        SizedBox(
+          height: _hasFocus ? height : height + (borderWidth * 2),
+          width: _hasFocus ? width : width + (borderWidth * 2),
+          child: Row(spacing: 5, children: [
+            SizedBox(width: _hasFocus ? 1 : 1 + borderWidth),
+            SvgPicture.string(
+                widget.rating > 60
+                    ? RottenRating.positiveRotten
+                    : RottenRating.negativeRotten,
+                width: 17,
+                height: 17),
+            Text('${widget.rating}%', style: TextStyle(fontSize: 17)),
+            SizedBox(width: 1),
+          ]),
+        ),
       ),
     );
   }
