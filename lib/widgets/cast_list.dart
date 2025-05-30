@@ -78,6 +78,7 @@ class _CastListState extends State<CastList> {
     }
     return KeyEventResult.ignored;
   }
+
   Future<void> _next(bool fast) async {
     if (_selectedIndex >= _itemCount - 1) {
       return;
@@ -132,26 +133,27 @@ class _CastListState extends State<CastList> {
           ),
           //list
           SizedBox(
-            height: _listHeight,
-            child: SelectableListView(
-              key: _listViewKey,
-              padding: EdgeInsets.only(left: 58),
-              itemCount: _itemCount,
-              itemBuilder: (context, index, selectedIndex, key) {
-                return Container(
-                    clipBehavior: Clip.none,
-                    margin: EdgeInsets.symmetric(horizontal: 10),
-                    child: MediaCard.circleLarge(
-                        key: key,
-                        imageUrl: widget.casts[index].profilePath.isNotEmpty ? 
-                            'https://media.themoviedb.org/t/p/w500${widget.casts[index].profilePath}'
-                            : '',
-                        isSelected: Focus.of(context).hasFocus &&
-                            index == selectedIndex,
-                        title: widget.casts[index].name,
-                        subtitle: widget.casts[index].character));
-              })
-          ),
+              height: _listHeight,
+              child: SelectableListView(
+                  key: _listViewKey,
+                  padding: EdgeInsets.only(left: 58),
+                  itemCount: _itemCount,
+                  itemBuilder: (context, index, selectedIndex, key) {
+                    return Container(
+                        clipBehavior: Clip.none,
+                        margin: EdgeInsets.symmetric(horizontal: 10),
+                        child: MediaCard.circleLarge(
+                          key: key,
+                          imageUrl: widget.casts[index].profilePath.isNotEmpty
+                              ? 'https://media.themoviedb.org/t/p/w500${widget.casts[index].profilePath}'
+                              : '',
+                          isSelected: Focus.of(context).hasFocus &&
+                              index == selectedIndex,
+                          title: _hasFocus ? widget.casts[index].name : null,
+                          subtitle:
+                              _hasFocus ? widget.casts[index].character : null,
+                        ));
+                  })),
         ],
       ),
     );

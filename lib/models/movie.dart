@@ -47,9 +47,9 @@ class MovieViewModel extends ChangeNotifier {
 
   Future<void> fetchSampleMovies() async {
     final List<int> movieIds = [
-      // 950387, // A Minecraft Movie
-      // 822119, // Captain America: Brave New World
-      // 575265, // Mission: Impossible
+      950387, // A Minecraft Movie
+      822119, // Captain America: Brave New World
+      575265, // Mission: Impossible
       974576, // CONCLAVE
     ];
     //final List<Movie> sampleMovies = [];
@@ -205,7 +205,6 @@ class Video {
     required this.type,
     required this.official,
     required this.publishedAt,
-
   });
   final String name;
   final String key;

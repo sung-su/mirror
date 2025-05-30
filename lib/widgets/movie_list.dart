@@ -76,6 +76,7 @@ class _MovieListState extends State<MovieList> {
     }
     return KeyEventResult.ignored;
   }
+
   Future<void> _next(bool fast) async {
     if (_selectedIndex >= _itemCount - 1) {
       return;
@@ -130,26 +131,30 @@ class _MovieListState extends State<MovieList> {
           ),
           //list
           SizedBox(
-            height: _listHeight,
-            child: SelectableListView(
-              key: _listViewKey,
-              padding: EdgeInsets.only(left: 58),
-              itemCount: _itemCount,
-              itemBuilder: (context, index, selectedIndex, key) {
-                return Container(
-                    clipBehavior: Clip.none,
-                    margin: EdgeInsets.symmetric(horizontal: 10),
-                    child: MediaCard.fourCard(
-                        key: key,
-                        imageUrl: widget.similars[index].posterPath.isNotEmpty ? 
-                            'https://image.tmdb.org/t/p/w500${widget.similars[index].posterPath}'
-                            : '',
-                        isSelected: Focus.of(context).hasFocus &&
-                            index == selectedIndex,
-                        title: widget.similars[index].title,
-                        subtitle: widget.similars[index].releaseDate));
-              })
-          ),
+              height: _listHeight,
+              child: SelectableListView(
+                  key: _listViewKey,
+                  padding: EdgeInsets.only(left: 58),
+                  itemCount: _itemCount,
+                  itemBuilder: (context, index, selectedIndex, key) {
+                    return Container(
+                        clipBehavior: Clip.none,
+                        margin: EdgeInsets.symmetric(horizontal: 10),
+                        child: MediaCard.fourCard(
+                          key: key,
+                          imageUrl: widget.similars[index].posterPath.isNotEmpty
+                              ? 'https://image.tmdb.org/t/p/w500${widget.similars[index].posterPath}'
+                              : '',
+                          isSelected: Focus.of(context).hasFocus &&
+                              index == selectedIndex,
+                          title: _hasFocus && index == selectedIndex
+                              ? widget.similars[index].title
+                              : null,
+                          subtitle: _hasFocus
+                              ? widget.similars[index].releaseDate
+                              : null,
+                        ));
+                  })),
         ],
       ),
     );

@@ -76,6 +76,7 @@ class _YoutubeListState extends State<YoutubeList> {
     }
     return KeyEventResult.ignored;
   }
+
   Future<void> _next(bool fast) async {
     if (_selectedIndex >= _itemCount - 1) {
       return;
@@ -130,25 +131,31 @@ class _YoutubeListState extends State<YoutubeList> {
           ),
           //list
           SizedBox(
-            height: _listHeight,
-            child: SelectableListView(
-              key: _listViewKey,
-              padding: EdgeInsets.only(left: 58),
-              itemCount: _itemCount,
-              itemBuilder: (context, index, selectedIndex, key) {
-                return Container(
-                    clipBehavior: Clip.none,
-                    margin: EdgeInsets.symmetric(horizontal: 10),
-                    child: MediaCard.fourCard(
-                        key: key,
-                        imageUrl: widget.videos[index].youtubeThumbnail.isNotEmpty ? 
-                            widget.videos[index].youtubeThumbnail : '',
-                        isSelected: Focus.of(context).hasFocus &&
-                            index == selectedIndex,
-                        title: widget.videos[index].name,
-                        subtitle: widget.videos[index].publishedAt));
-              })
-          ),
+              height: _listHeight,
+              child: SelectableListView(
+                  key: _listViewKey,
+                  padding: EdgeInsets.only(left: 58),
+                  itemCount: _itemCount,
+                  itemBuilder: (context, index, selectedIndex, key) {
+                    return Container(
+                        clipBehavior: Clip.none,
+                        margin: EdgeInsets.symmetric(horizontal: 10),
+                        child: MediaCard.threeCard(
+                          key: key,
+                          imageUrl:
+                              widget.videos[index].youtubeThumbnail.isNotEmpty
+                                  ? widget.videos[index].youtubeThumbnail
+                                  : '',
+                          isSelected: Focus.of(context).hasFocus &&
+                              index == selectedIndex,
+                          title: _hasFocus ? widget.videos[index].name : null,
+                          subtitle:
+                              _hasFocus ? widget.videos[index].type : null,
+                          description: _hasFocus
+                              ? widget.videos[index].publishedAt
+                              : null,
+                        ));
+                  })),
         ],
       ),
     );
