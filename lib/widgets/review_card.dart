@@ -54,7 +54,7 @@ class ReviewCard extends StatelessWidget {
           width: 1,
         ),
         borderRadius: BorderRadius.circular(16),
-        color: Colors.black.withOpacity(0.5)
+        color: Colors.black.withAlphaF(0.5)
       ),
       child: content
     );

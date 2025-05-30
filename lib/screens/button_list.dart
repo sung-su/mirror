@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_fs/models/movie.dart';
+import 'package:tizen_fs/styles/app_style.dart';
 
 class ButtonList extends StatefulWidget {
   final void Function(BuildContext)? onFocused;
@@ -64,6 +65,33 @@ class ButtonListState extends State<ButtonList> {
     return KeyEventResult.ignored;
   }
 
+  Widget _buildButton(String? text, IconData? iconData) {
+    if (text == null)
+    return IconButton.filled(
+      onPressed: () {},
+      icon: Icon(iconData),
+      style : FilledButton.styleFrom(
+        backgroundColor: Colors.grey.withAlphaF(0.4)
+      )
+    );
+
+    return FilledButton.icon(
+      onPressed: () {},
+      onFocusChange: (hasFocus) {
+      },
+      icon: iconData != null ? Icon(iconData, size: 17) : null,
+      label: Text(
+        text,
+        style: TextStyle(
+          color: Colors.white.withAlphaF(0.8),
+        )
+      ),
+      style : FilledButton.styleFrom(
+        backgroundColor: Colors.grey.withAlphaF(0.4),
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Focus(
@@ -79,21 +107,13 @@ class ButtonListState extends State<ButtonList> {
           child: Row(
             spacing: 10, 
             children: [
-              ...List.generate(
-                _itemCount,
-                (index) => FilledButton.icon(
-                  onPressed: () {},
-                  onFocusChange: (hasFocus) {
-                    debugPrint('############## button focused');
-                  },
-                  icon: Icon(Icons.bookmark_border_outlined),
-                  label: Text('Watchlist'),
-                )
-              ),
-              IconButton.filled(
-                onPressed: () {}, icon: Icon(Icons.format_quote_outlined)),
+              _buildButton('Trailer', Icons.live_tv_rounded),
+              _buildButton('Buy  \$10.0', null),
+              _buildButton('Watchlist', Icons.bookmark_border_outlined),
+              _buildButton(null, Icons.format_quote_outlined),
             ]),
         )),
     );
   }
 }
+
