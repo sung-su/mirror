@@ -31,7 +31,8 @@ class _MovieListState extends State<MovieList> {
   int _itemCount = 0;
   int _selectedIndex = 0;
   double _titleFontSize = 14;
-  double _listHeight = 170;
+  double _listExtenedHeight = 160;
+  double _listHeight = 130;
 
   @override
   void initState() {
@@ -131,7 +132,7 @@ class _MovieListState extends State<MovieList> {
           ),
           //list
           SizedBox(
-              height: _listHeight,
+              height: _hasFocus ? _listExtenedHeight : _listHeight,
               child: SelectableListView(
                   key: _listViewKey,
                   padding: EdgeInsets.only(left: 58),

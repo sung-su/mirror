@@ -32,6 +32,7 @@ class _YoutubeListState extends State<YoutubeList> {
   int _selectedIndex = 0;
   double _titleFontSize = 14;
   double _listHeight = 170;
+  double _listExtendedHeight = 250;
 
   @override
   void initState() {
@@ -99,6 +100,7 @@ class _YoutubeListState extends State<YoutubeList> {
       focusNode: _focusNode,
       onKeyEvent: _onKeyEvent,
       child: Column(
+        spacing: 10,
         children: [
           //list title
           Container(
@@ -131,7 +133,7 @@ class _YoutubeListState extends State<YoutubeList> {
           ),
           //list
           SizedBox(
-              height: _listHeight,
+              height: _hasFocus ? _listExtendedHeight : _listHeight,
               child: SelectableListView(
                   key: _listViewKey,
                   padding: EdgeInsets.only(left: 58),

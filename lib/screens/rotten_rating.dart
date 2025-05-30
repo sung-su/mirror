@@ -71,7 +71,6 @@ class RottenRatingState extends State<RottenRating>
   void dispose() {
     _disposed = true;
     controller.dispose();
-    // _scrollController.dispose();
     _focusNode.removeListener(_onFocusChanged);
     _focusNode.dispose();
     super.dispose();
@@ -106,7 +105,7 @@ class RottenRatingState extends State<RottenRating>
   Widget build(BuildContext context) {
     double borderWidth = 2;
     double height = 24;
-    double width = widget.rating > 99 ? 77 : 67;
+    double width = widget.rating > 99 ? 80 : 70;
     return Focus(
       focusNode: _focusNode,
       child: _buildBorder(

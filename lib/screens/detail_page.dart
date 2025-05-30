@@ -51,6 +51,7 @@ class _DetailPageState extends State<DetailPage> {
                 imageUrl:
                     'https://media.themoviedb.org/t/p/w1066_and_h600_bestv2/${movie.backdropPath}',
                 videoUrl: 'assets/mock/videos/conclave_trailer.mp4')),
+                // videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4')), // X
         CustomScrollView(
             scrollBehavior:
                 ScrollBehavior().copyWith(scrollbars: false, overscroll: false),
@@ -111,7 +112,7 @@ class _DetailPageState extends State<DetailPage> {
                       }
                     ),
                     MovieList(
-                      title: 'If you like A ${movie.title} Movie',
+                      title: 'If you like ${movie.title} Movie',
                       similars: movie.similars,
                       onFocused: () {
                         print('focused - MovieList');
@@ -127,7 +128,7 @@ class _DetailPageState extends State<DetailPage> {
                       },
                     ),
                     YoutubeList(
-                      title: 'A ${movie.title} Movie on YouTube',
+                      title: '${movie.title} Movie on YouTube',
                       videos: movie.videos,
                       onFocused: () {
                         print('focused - YoutubeList');

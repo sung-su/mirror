@@ -81,7 +81,7 @@ class _VideoBackdropState extends State<VideoBackdrop> {
     widget.scrollController.addListener(_handleUserInteraction);
 
     // TODO: disable timer for test
-    // _startInactivityTimer();
+    _startInactivityTimer();
   }
 
   @override
