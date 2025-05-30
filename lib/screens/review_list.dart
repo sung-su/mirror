@@ -1,99 +1,117 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tizen_fs/models/movie.dart';
+import 'package:tizen_fs/widgets/review_card.dart';
+import 'package:tizen_fs/widgets/selectable_listview.dart';
 
-class MockReviewList extends StatefulWidget {
-  final void Function(BuildContext)? onFocused;
-  const MockReviewList({
+class ReviewList extends StatefulWidget {
+  final VoidCallback? onFocused;
+  final List<Reviews> reviews;
+
+  const ReviewList({
     super.key,
     required this.reviews,
     this.onFocused,
   });
-  final List<Reviews> reviews;
 
   @override
-  State<MockReviewList> createState() => _MockReviewListState();
+  State<ReviewList> createState() => _ReviewListState();
 }
 
-class _MockReviewListState extends State<MockReviewList> {
+class _ReviewListState extends State<ReviewList> {
   final FocusNode _focusNode = FocusNode();
+  final GlobalKey<SelectableListViewState> _listViewKey =
+      GlobalKey<SelectableListViewState>();
+
   bool _hasFocus = false;
+  int _itemCount = 0;
   int _selectedIndex = 0;
+  double _listHeight = 110;
 
   @override
   void initState() {
     super.initState();
     _focusNode.addListener(_onFocusChanged);
+    _itemCount = widget.reviews.length;
+    _selectedIndex = 0;
   }
 
   @override
   void dispose() {
-    // _scrollController.dispose();
     _focusNode.removeListener(_onFocusChanged);
     _focusNode.dispose();
     super.dispose();
   }
 
-  void _onFocusChanged() {
+  void _onFocusChanged() async {
     setState(() {
       _hasFocus = _focusNode.hasFocus;
     });
 
     if (_hasFocus) {
-      widget.onFocused?.call(context);
+      widget.onFocused?.call();
     }
   }
 
-  void requestFocus()
-  {
-    _focusNode.requestFocus();
+  KeyEventResult _onKeyEvent(FocusNode focusNode, KeyEvent event) {
+    if (event is KeyDownEvent || event is KeyRepeatEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.arrowLeft &&
+          _selectedIndex > 0) {
+        _prev(event is KeyRepeatEvent);
+        return KeyEventResult.handled;
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
+          _selectedIndex < _itemCount - 1) {
+        _next(event is KeyRepeatEvent);
+        return KeyEventResult.handled;
+      } else if (event.logicalKey == LogicalKeyboardKey.enter ||
+          event.logicalKey == LogicalKeyboardKey.select) {
+        return KeyEventResult.handled;
+      }
+    }
+    return KeyEventResult.ignored;
+  }
+  Future<void> _next(bool fast) async {
+    if (_selectedIndex >= _itemCount - 1) {
+      return;
+    }
+    var moved = await _listViewKey.currentState?.next(fast: fast);
+    _selectedIndex = moved ?? _selectedIndex;
+  }
+
+  Future<void> _prev(bool fast) async {
+    if (_selectedIndex <= 0) {
+      return;
+    }
+    var moved = await _listViewKey.currentState?.previous(fast: fast);
+    _selectedIndex = moved ?? _selectedIndex;
   }
 
   @override
   Widget build(BuildContext context) {
     return Focus(
       focusNode: _focusNode,
-      child: Container(
-        padding: const EdgeInsets.only(left: 58, right: 58),
-        // TODO: to be removed
-        color : _hasFocus ? Colors.red : Colors.transparent,
-        child: SingleChildScrollView(
-          clipBehavior: Clip.none,
-          scrollDirection: Axis.horizontal,
-          child:
-          Row(
-            children: [
-              ...List.generate(
-                  widget.reviews.length,
-                  (index) {
-                    final review = widget.reviews[index];
-                    return Card(
-                      child: SizedBox(
-                        height: 120,
-                        width: 400,
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(review.author, style: const TextStyle(fontSize: 15)),
-                              const SizedBox(height: 5),
-                              Text(review.content,
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(fontSize: 12)),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
-            ],
-          )
-        )
+      onKeyEvent: _onKeyEvent,
+      child: SizedBox(
+        height: _listHeight,
+        child: SelectableListView(
+          key: _listViewKey,
+          padding: EdgeInsets.only(left: 58),
+          itemCount: _itemCount,
+          itemBuilder: (context, index, selectedIndex, key) {
+            final review = widget.reviews[index];
+            return Container(
+                clipBehavior: Clip.none,
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                child: ReviewCard(
+                  key: key,
+                  title: review.author,
+                  description: review.content,
+                  isSelected: Focus.of(context).hasFocus &&
+                      index == selectedIndex,
+                )
+            );
+          })
       ),
-      onFocusChange: (hasFocus) {
-        if(hasFocus) widget.onFocused?.call(context);
-      }
     );
   }
 }

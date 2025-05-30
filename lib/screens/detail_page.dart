@@ -73,74 +73,86 @@ class _DetailPageState extends State<DetailPage> {
                   child: Padding(
                 padding: const EdgeInsets.only(top: 20),
                 child: Column(
-                    spacing: 20,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      if (movie.reviews.isNotEmpty)
-                        MockReviewList(
-                            reviews: movie.reviews,
-                            onFocused: (context) {
-                              _scrollController.animateTo(230,
-                                  duration: Duration(milliseconds: 100),
-                                  curve: Curves.easeInQuad);
-                            }),
-                      ButtonList(
-                          key: _scrollAnchor,
-                          onFocused: (context) {
-                            _scrollController.animateTo(230,
-                                duration: Duration(milliseconds: 100),
-                                curve: Curves.easeInQuad);
-                          }),
-                      CastList(
-                          title: 'Cast & Crew',
-                          casts: movie.cast,
-                          onFocused: () {
-                            // Scrollable.ensureVisible(
-                            //   context,
-                            //   alignment: 0.15,
-                            //   duration: Duration(milliseconds: 100),
-                            //   curve: Curves.easeInQuad
-                            // );
-                          }),
-                      MovieList(
-                        title: 'If you like ${movie.title}',
-                        similars: movie.similars,
+                  spacing: 10,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (movie.reviews.isNotEmpty)
+                      ReviewList(
+                        reviews: movie.reviews,
                         onFocused: () {
-                          print('focused - MovieList');
-                          // _scrollController.animateTo(
-                          //   index == 0
-                          //       ? 570
-                          //       : index == 1
-                          //           ? 570 + 140
-                          //           : 570 + 140 + ((index - 1) * 168),
-                          //   duration: const Duration(milliseconds: 100),
-                          //   curve: Curves.easeInQuad,
-                          // );
-                        },
-                      ),
-                      YoutubeList(
-                        title: '${movie.title} on YouTube',
-                        videos: movie.videos,
-                        onFocused: () {
-                          print('focused - YoutubeList');
-                          // _scrollController.animateTo(
-                          //   index == 0
-                          //       ? 570
-                          //       : index == 1
-                          //           ? 570 + 140
-                          //           : 570 + 140 + ((index - 1) * 168),
-                          //   duration: const Duration(milliseconds: 100),
-                          //   curve: Curves.easeInQuad,
-                          // );
-                        },
-                      ),
-                      ImportantInformation(onFocused: (context) {
-                        Scrollable.ensureVisible(context,
-                            alignment: 1,
+                          _scrollController.animateTo(
+                            230, 
                             duration: Duration(milliseconds: 100),
-                            curve: Curves.easeInQuad);
-                      }),
-                    ]),
+                            curve: Curves.easeInQuad
+                          );
+                        }
+                      ),
+                    SizedBox(height: 10),
+                    ButtonList(
+                      key: _scrollAnchor,
+                      onFocused: (context) {
+                        _scrollController.animateTo(
+                          230, 
+                          duration: Duration(milliseconds: 100),
+                          curve: Curves.easeInQuad
+                        );
+                      }
+                    ),
+                    CastList(
+                      title: 'Cast & Crew',
+                      casts: movie.cast,
+                      onFocused: () {
+                        // Scrollable.ensureVisible(
+                        //   context,
+                        //   alignment: 0.15,
+                        //   duration: Duration(milliseconds: 100),
+                        //   curve: Curves.easeInQuad
+                        // );
+                      }
+                    ),
+                    MovieList(
+                      title: 'If you like A ${movie.title} Movie',
+                      similars: movie.similars,
+                      onFocused: () {
+                        print('focused - MovieList');
+                        // _scrollController.animateTo(
+                        //   index == 0
+                        //       ? 570
+                        //       : index == 1
+                        //           ? 570 + 140
+                        //           : 570 + 140 + ((index - 1) * 168),
+                        //   duration: const Duration(milliseconds: 100),
+                        //   curve: Curves.easeInQuad,
+                        // );
+                      },
+                    ),
+                    YoutubeList(
+                      title: 'A ${movie.title} Movie on YouTube',
+                      videos: movie.videos,
+                      onFocused: () {
+                        print('focused - YoutubeList');
+                        // _scrollController.animateTo(
+                        //   index == 0
+                        //       ? 570
+                        //       : index == 1
+                        //           ? 570 + 140
+                        //           : 570 + 140 + ((index - 1) * 168),
+                        //   duration: const Duration(milliseconds: 100),
+                        //   curve: Curves.easeInQuad,
+                        // );
+                      },
+                    ),
+                    ImportantInformation(
+                      onFocused: (context) {
+                        Scrollable.ensureVisible(
+                          context,
+                          alignment: 1,
+                          duration: Duration(milliseconds: 100),
+                          curve: Curves.easeInQuad
+                        );
+                      }
+                    ),
+                ]),
               )),
             ]),
       ],

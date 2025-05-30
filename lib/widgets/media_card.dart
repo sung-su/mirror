@@ -43,7 +43,7 @@ class MediaCard extends StatelessWidget {
       Color? shadowColor})
       : this(
             key: key,
-            width: 268,
+            width: 844,
             imageUrl: imageUrl,
             title: title,
             subtitle: subtitle,
@@ -67,7 +67,7 @@ class MediaCard extends StatelessWidget {
       Color? shadowColor})
       : this(
             key: key,
-            width: 268,
+            width: 416,
             imageUrl: imageUrl,
             title: title,
             subtitle: subtitle,
