@@ -149,11 +149,11 @@ class _YoutubeListState extends State<YoutubeList> {
                           isSelected: Focus.of(context).hasFocus &&
                               index == selectedIndex,
                           title: _hasFocus ? widget.videos[index].name : null,
-                          subtitle:
-                              _hasFocus ? widget.videos[index].type : null,
-                          description: _hasFocus
-                              ? widget.videos[index].publishedAt
+                          subtitle: _hasFocus
+                              ? widget.videos[index].publishedYear
                               : null,
+                          description:
+                              _hasFocus ? widget.videos[index].type : null,
                         ));
                   })),
         ],

@@ -151,7 +151,7 @@ class _MovieListState extends State<MovieList> {
                               ? widget.similars[index].title
                               : null,
                           subtitle: _hasFocus
-                              ? widget.similars[index].releaseDate
+                              ? widget.similars[index].releaseYear
                               : null,
                         ));
                   })),

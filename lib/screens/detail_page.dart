@@ -18,15 +18,18 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
-  final ScrollController _scrollController = ScrollController(initialScrollOffset: 240);
+  final ScrollController _scrollController =
+      ScrollController(initialScrollOffset: 240);
   final GlobalKey<ButtonListState> _scrollAnchor = GlobalKey<ButtonListState>();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final RenderBox renderBox = _scrollAnchor.currentContext!.findRenderObject() as RenderBox;
-      _scrollAnchor.currentState?.requestFocus(); // request focus on first element of the page
+      final RenderBox renderBox =
+          _scrollAnchor.currentContext!.findRenderObject() as RenderBox;
+      _scrollAnchor.currentState
+          ?.requestFocus(); // request focus on first element of the page
     });
   }
 
@@ -43,117 +46,103 @@ class _DetailPageState extends State<DetailPage> {
         body: Stack(
       children: [
         Positioned.fill(
-          child: VideoBackdrop(
-            scrollController: _scrollController,
-            imageUrl: 'https://media.themoviedb.org/t/p/w1066_and_h600_bestv2/${movie.backdropPath}',
-            videoUrl: 'assets/mock/videos/conclave_trailer.mp4'
-          )
-        ),
+            child: VideoBackdrop(
+                scrollController: _scrollController,
+                imageUrl:
+                    'https://media.themoviedb.org/t/p/w1066_and_h600_bestv2/${movie.backdropPath}',
+                videoUrl: 'assets/mock/videos/conclave_trailer.mp4')),
         CustomScrollView(
-          scrollBehavior: ScrollBehavior().copyWith(scrollbars: false, overscroll: false),
-          controller: _scrollController,
-          slivers: <Widget>[
-            SliverAppBar(
-              backgroundColor: Colors.transparent,
-              automaticallyImplyLeading: false,
-              toolbarHeight: 250,
-              expandedHeight: MediaQuery.of(context).size.height - 50,
-              flexibleSpace: Padding(
-                padding: const EdgeInsets.only(left: 58),
-                child: FlexibleTitleForDetail(
-                  expandedHeight: MediaQuery.of(context).size.height - 50,
-                  collapsedHeight: 250,
-                  movie: movie,
-                  onFocused: (context) {
-                  }
-                )
+            scrollBehavior:
+                ScrollBehavior().copyWith(scrollbars: false, overscroll: false),
+            controller: _scrollController,
+            slivers: <Widget>[
+              SliverAppBar(
+                backgroundColor: Colors.transparent,
+                automaticallyImplyLeading: false,
+                toolbarHeight: 250,
+                expandedHeight: MediaQuery.of(context).size.height - 50,
+                flexibleSpace: Padding(
+                    padding: const EdgeInsets.only(left: 58),
+                    child: FlexibleTitleForDetail(
+                        expandedHeight: MediaQuery.of(context).size.height - 50,
+                        collapsedHeight: 250,
+                        movie: movie,
+                        onFocused: (context) {})),
               ),
-            ),
-           SliverToBoxAdapter(
-              child: Padding(
+              SliverToBoxAdapter(
+                  child: Padding(
                 padding: const EdgeInsets.only(top: 20),
                 child: Column(
-                  spacing: 20,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (movie.reviews.isNotEmpty)
-                      MockReviewList(
-                        reviews: movie.reviews,
-                        onFocused: (context) {
-                          _scrollController.animateTo(
-                            230, 
-                            duration: Duration(milliseconds: 100),
-                            curve: Curves.easeInQuad
-                          );
-                        }
+                    spacing: 20,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (movie.reviews.isNotEmpty)
+                        MockReviewList(
+                            reviews: movie.reviews,
+                            onFocused: (context) {
+                              _scrollController.animateTo(230,
+                                  duration: Duration(milliseconds: 100),
+                                  curve: Curves.easeInQuad);
+                            }),
+                      ButtonList(
+                          key: _scrollAnchor,
+                          onFocused: (context) {
+                            _scrollController.animateTo(230,
+                                duration: Duration(milliseconds: 100),
+                                curve: Curves.easeInQuad);
+                          }),
+                      CastList(
+                          title: 'Cast & Crew',
+                          casts: movie.cast,
+                          onFocused: () {
+                            // Scrollable.ensureVisible(
+                            //   context,
+                            //   alignment: 0.15,
+                            //   duration: Duration(milliseconds: 100),
+                            //   curve: Curves.easeInQuad
+                            // );
+                          }),
+                      MovieList(
+                        title: 'If you like ${movie.title}',
+                        similars: movie.similars,
+                        onFocused: () {
+                          print('focused - MovieList');
+                          // _scrollController.animateTo(
+                          //   index == 0
+                          //       ? 570
+                          //       : index == 1
+                          //           ? 570 + 140
+                          //           : 570 + 140 + ((index - 1) * 168),
+                          //   duration: const Duration(milliseconds: 100),
+                          //   curve: Curves.easeInQuad,
+                          // );
+                        },
                       ),
-                    ButtonList(
-                      key: _scrollAnchor,
-                      onFocused: (context) {
-                        _scrollController.animateTo(
-                          230, 
-                          duration: Duration(milliseconds: 100),
-                          curve: Curves.easeInQuad
-                        );
-                      }
-                    ),
-                    CastList(
-                      title: 'Cast & Crew',
-                      casts: movie.cast,
-                      onFocused: () {
-                        // Scrollable.ensureVisible(
-                        //   context,
-                        //   alignment: 0.15,
-                        //   duration: Duration(milliseconds: 100),
-                        //   curve: Curves.easeInQuad
-                        // );
-                      }
-                    ),
-                    MovieList(
-                      title: 'If you like A ${movie.title} Movie',
-                      similars: movie.similars,
-                      onFocused: () {
-                        print('focused - MovieList');
-                        // _scrollController.animateTo(
-                        //   index == 0
-                        //       ? 570
-                        //       : index == 1
-                        //           ? 570 + 140
-                        //           : 570 + 140 + ((index - 1) * 168),
-                        //   duration: const Duration(milliseconds: 100),
-                        //   curve: Curves.easeInQuad,
-                        // );
-                      },
-                    ),
-                    YoutubeList(
-                      title: 'A ${movie.title} Movie on YouTube',
-                      videos: movie.videos,
-                      onFocused: () {
-                        print('focused - YoutubeList');
-                        // _scrollController.animateTo(
-                        //   index == 0
-                        //       ? 570
-                        //       : index == 1
-                        //           ? 570 + 140
-                        //           : 570 + 140 + ((index - 1) * 168),
-                        //   duration: const Duration(milliseconds: 100),
-                        //   curve: Curves.easeInQuad,
-                        // );
-                      },
-                    ),
-                    ImportantInformation(
-                      onFocused: (context) {
-                        Scrollable.ensureVisible(
-                          context,
-                          alignment: 1,
-                          duration: Duration(milliseconds: 100),
-                          curve: Curves.easeInQuad
-                        );
-                      }
-                    ),
-                ]),
+                      YoutubeList(
+                        title: '${movie.title} on YouTube',
+                        videos: movie.videos,
+                        onFocused: () {
+                          print('focused - YoutubeList');
+                          // _scrollController.animateTo(
+                          //   index == 0
+                          //       ? 570
+                          //       : index == 1
+                          //           ? 570 + 140
+                          //           : 570 + 140 + ((index - 1) * 168),
+                          //   duration: const Duration(milliseconds: 100),
+                          //   curve: Curves.easeInQuad,
+                          // );
+                        },
+                      ),
+                      ImportantInformation(onFocused: (context) {
+                        Scrollable.ensureVisible(context,
+                            alignment: 1,
+                            duration: Duration(milliseconds: 100),
+                            curve: Curves.easeInQuad);
+                      }),
+                    ]),
               )),
-        ]),
+            ]),
       ],
     ));
   }
