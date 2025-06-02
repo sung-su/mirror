@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_fs/styles/app_style.dart';
@@ -67,7 +65,7 @@ class ButtonListState extends State<ButtonList> {
     return KeyEventResult.ignored;
   }
 
-  Future<void> _next(bool fast) async {
+  void _next(bool fast) {
     if (_selectedIndex >= _itemCount - 1) {
       return;
     }
@@ -76,7 +74,7 @@ class ButtonListState extends State<ButtonList> {
     });
   }
 
-  Future<void> _prev(bool fast) async {
+  void _prev(bool fast) {
     if (_selectedIndex <= 0) {
       return;
     }
