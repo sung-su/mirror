@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:tizen_fs/main.dart';
@@ -10,9 +12,7 @@ class ReviewCard extends StatelessWidget {
       this.title,
       this.description,
       this.isSelected = false,
-      this.duration,
-      this.shadowColor,
-      this.content})
+      this.shadowColor})
       : height = 110;
 
   static const int animationDuration = 100;
@@ -20,10 +20,8 @@ class ReviewCard extends StatelessWidget {
   final double height;
   final String? title;
   final String? description;
-  final String? duration;
   final bool isSelected;
   final Color? shadowColor;
-  final Widget? content;
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +33,36 @@ class ReviewCard extends StatelessWidget {
           scale: isSelected ? 1.1 : 1,
           duration: Duration(milliseconds: animationDuration),
           child: _buildBorder(
-            ClipRRect(
-              child: _buildTileContent()
-          )),
+            _buildTileContent()
+          ),
         )
       ],
     );
   }
 
   Widget _buildBorder(Widget content) {
+    // // TODO: performance issue when using blur effect
+    // return ClipRRect(
+    //   borderRadius: BorderRadius.circular(16),
+    //   child: BackdropFilter(
+    //     filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+    //     child: Container(
+    //       width: width,
+    //       height: height,
+    //       padding : EdgeInsets.all(1),
+    //       decoration: BoxDecoration(
+    //         border: const GradientBoxBorder(
+    //           gradient: LinearGradient(colors: [Colors.blue, Colors.pink]),
+    //           width: 1,
+    //         ),
+    //         borderRadius: BorderRadius.circular(16),
+    //         color: Colors.black.withAlphaF(0.5)
+    //       ),
+    //       child: content
+    //     ),
+    //   ),
+    // );
+
     return Container(
       width: width,
       height: height,
@@ -61,44 +80,38 @@ class ReviewCard extends StatelessWidget {
   }
 
   Widget _buildTileContent() {
-    if (content != null) {
-      return content!;
-    } else {
-      return Container(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
-          child: Column(
-            spacing: 10,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                spacing: 10,
-                children: [
-                  Icon(
-                    Icons.people_outline,
-                    size: 17,
-                  ),
-                  Text(this.title!, style: const TextStyle(fontSize: 15)),
-                  Spacer(),
-                  MaterialIconButton(
-                    icon: Icons.arrow_forward,
-                    isSelected: this.isSelected,
-                    width: 20,
-                    height: 20,
-                  )
-                ],
-              ),
-              Text(
-                this.description!,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 12)
-              ),
-            ],
-          ),
+      return Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+        child: Column(
+          spacing: 10,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              spacing: 10,
+              children: [
+                Icon(
+                  Icons.people_outline,
+                  size: 17,
+                ),
+                Text(this.title!, style: const TextStyle(fontSize: 15)),
+                Spacer(),
+                MaterialIconButton(
+                  icon: Icons.arrow_forward,
+                  isSelected: this.isSelected,
+                  width: 20,
+                  height: 20,
+                )
+              ],
+            ),
+            Text(
+              this.description!,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 12)
+            ),
+          ],
         ),
       );
-    }
   }
 }
 
@@ -117,7 +130,6 @@ class MaterialIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('_TabButtonState.build()');
     return Container(
       height: this.height,
       width: this.width,

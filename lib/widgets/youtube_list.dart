@@ -38,7 +38,7 @@ class _YoutubeListState extends State<YoutubeList> {
   void initState() {
     super.initState();
     _focusNode.addListener(_onFocusChanged);
-    _itemCount = widget.videos.length;
+    _itemCount = widget.videos.length; // 104
     _selectedIndex = 0;
     _title = widget.title;
   }
@@ -134,30 +134,34 @@ class _YoutubeListState extends State<YoutubeList> {
           //list
           SizedBox(
               height: _hasFocus ? _listExtendedHeight : _listHeight,
-              child: SelectableListView(
-                  key: _listViewKey,
-                  padding: EdgeInsets.only(left: 58),
-                  itemCount: _itemCount,
-                  itemBuilder: (context, index, selectedIndex, key) {
-                    return Container(
-                        clipBehavior: Clip.none,
-                        margin: EdgeInsets.symmetric(horizontal: 10),
-                        child: MediaCard.threeCard(
-                          key: key,
-                          imageUrl:
-                              widget.videos[index].youtubeThumbnail.isNotEmpty
-                                  ? widget.videos[index].youtubeThumbnail
-                                  : '',
-                          isSelected: Focus.of(context).hasFocus &&
-                              index == selectedIndex,
-                          title: _hasFocus ? widget.videos[index].name : null,
-                          subtitle: _hasFocus
-                              ? widget.videos[index].publishedYear
-                              : null,
-                          description:
-                              _hasFocus ? widget.videos[index].type : null,
-                        ));
-                  })),
+              child: AnimatedOpacity(
+                opacity: _hasFocus ? 1.0 : 0.3,
+                duration: const Duration(milliseconds: 100),
+                child: SelectableListView(
+                    key: _listViewKey,
+                    padding: EdgeInsets.only(left: 58),
+                    itemCount: _itemCount,
+                    itemBuilder: (context, index, selectedIndex, key) {
+                      return Container(
+                          clipBehavior: Clip.none,
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          child: MediaCard.threeCard(
+                            key: key,
+                            imageUrl:
+                                widget.videos[index].youtubeThumbnail.isNotEmpty
+                                    ? widget.videos[index].youtubeThumbnail
+                                    : '',
+                            isSelected: Focus.of(context).hasFocus &&
+                                index == selectedIndex,
+                            title: _hasFocus ? widget.videos[index].name : null,
+                            subtitle: _hasFocus
+                                ? widget.videos[index].publishedYear
+                                : null,
+                            description:
+                                _hasFocus ? widget.videos[index].type : null,
+                          ));
+                    }),
+              )),
         ],
       ),
     );

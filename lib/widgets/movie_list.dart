@@ -133,29 +133,33 @@ class _MovieListState extends State<MovieList> {
           //list
           SizedBox(
               height: _hasFocus ? _listExtenedHeight : _listHeight,
-              child: SelectableListView(
-                  key: _listViewKey,
-                  padding: EdgeInsets.only(left: 58),
-                  itemCount: _itemCount,
-                  itemBuilder: (context, index, selectedIndex, key) {
-                    return Container(
-                        clipBehavior: Clip.none,
-                        margin: EdgeInsets.symmetric(horizontal: 10),
-                        child: MediaCard.fourCard(
-                          key: key,
-                          imageUrl: widget.similars[index].posterPath.isNotEmpty
-                              ? 'https://image.tmdb.org/t/p/w500${widget.similars[index].posterPath}'
-                              : '',
-                          isSelected: Focus.of(context).hasFocus &&
-                              index == selectedIndex,
-                          title: _hasFocus && index == selectedIndex
-                              ? widget.similars[index].title
-                              : null,
-                          subtitle: _hasFocus
-                              ? widget.similars[index].releaseYear
-                              : null,
-                        ));
-                  })),
+              child: AnimatedOpacity(
+                opacity: _hasFocus ? 1.0 : 0.3,
+                duration: const Duration(milliseconds: 100),
+                child: SelectableListView(
+                    key: _listViewKey,
+                    padding: EdgeInsets.only(left: 58),
+                    itemCount: _itemCount,
+                    itemBuilder: (context, index, selectedIndex, key) {
+                      return Container(
+                          clipBehavior: Clip.none,
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          child: MediaCard.fourCard(
+                            key: key,
+                            imageUrl: widget.similars[index].posterPath.isNotEmpty
+                                ? 'https://image.tmdb.org/t/p/w500${widget.similars[index].posterPath}'
+                                : '',
+                            isSelected: Focus.of(context).hasFocus &&
+                                index == selectedIndex,
+                            title: _hasFocus && index == selectedIndex
+                                ? widget.similars[index].title
+                                : null,
+                            subtitle: _hasFocus
+                                ? widget.similars[index].releaseYear
+                                : null,
+                          ));
+                    }),
+              )),
         ],
       ),
     );

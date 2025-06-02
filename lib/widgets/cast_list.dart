@@ -30,16 +30,18 @@ class _CastListState extends State<CastList> {
   late String _title;
 
   bool _hasFocus = false;
-  int _itemCount = 0;
+  int _itemCount = 10;
   int _selectedIndex = 0;
   double _titleFontSize = 14; // * 1.7
-  double _listHeight = 170;
+  double _listExtenedHeight = 170;
+  double _listHeight = 130;
 
   @override
   void initState() {
     super.initState();
     _focusNode.addListener(_onFocusChanged);
-    _itemCount = widget.casts.length;
+    // _itemCount = widget.casts.length;
+    _itemCount = 10;
     _selectedIndex = 0;
     _title = widget.title;
   }
@@ -101,59 +103,56 @@ class _CastListState extends State<CastList> {
       focusNode: _focusNode,
       onKeyEvent: _onKeyEvent,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //list title
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(70, 10, 70, 8),
-              child: SizedBox(
-                height: _hasFocus ? 40 : 20,
-                child: AnimatedScale(
-                    scale: _hasFocus ? 1.7 : 1.0,
-                    duration: const Duration(milliseconds: 100),
-                    alignment: Alignment.centerLeft,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      spacing: 5,
-                      children: [
-                        if (_title.isNotEmpty)
-                          Text(_title,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontSize: _titleFontSize,
-                                color: _hasFocus
-                                    ? Colors.white
-                                        .withAlpha((255 * 0.7).toInt())
-                                    : Colors.grey,
-                              )),
-                      ],
-                    )),
-              ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(58, 10, 70, 8),
+            child: SizedBox(
+              height: _hasFocus ? 40 : 20,
+              child: AnimatedScale(
+                  scale: _hasFocus ? 1.7 : 1.0,
+                  duration: const Duration(milliseconds: 100),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    _title,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: _titleFontSize,
+                      color: _hasFocus
+                          ? Colors.white
+                              .withAlpha((255 * 0.7).toInt())
+                          : Colors.grey,
+                    ))),
             ),
           ),
           //list
           SizedBox(
-              height: _listHeight,
-              child: SelectableListView(
-                  key: _listViewKey,
-                  padding: EdgeInsets.only(left: 58),
-                  itemCount: _itemCount,
-                  itemBuilder: (context, index, selectedIndex, key) {
-                    return Container(
-                        clipBehavior: Clip.none,
-                        margin: EdgeInsets.symmetric(horizontal: 10),
-                        child: MediaCard.circleLarge(
-                          key: key,
-                          imageUrl: widget.casts[index].profilePath.isNotEmpty
-                              ? 'https://media.themoviedb.org/t/p/w500${widget.casts[index].profilePath}'
-                              : '',
-                          isSelected: Focus.of(context).hasFocus &&
-                              index == selectedIndex,
-                          title: _hasFocus ? widget.casts[index].name : null,
-                          subtitle:
-                              _hasFocus ? widget.casts[index].character : null,
-                        ));
-                  })),
+              height: _hasFocus ? _listExtenedHeight : _listHeight,
+              child: AnimatedOpacity(
+                opacity: _hasFocus ? 1.0 : 0.3,
+                duration: const Duration(milliseconds: 100),
+                child: SelectableListView(
+                    key: _listViewKey,
+                    padding: EdgeInsets.only(left: 58),
+                    itemCount: _itemCount,
+                    itemBuilder: (context, index, selectedIndex, key) {
+                      return Container(
+                          clipBehavior: Clip.none,
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          child: MediaCard.circleLarge(
+                            key: key,
+                            imageUrl: widget.casts[index].profilePath.isNotEmpty
+                                ? 'https://media.themoviedb.org/t/p/w500${widget.casts[index].profilePath}'
+                                : '',
+                            isSelected: Focus.of(context).hasFocus &&
+                                index == selectedIndex,
+                            title: _hasFocus ? widget.casts[index].name : null,
+                            subtitle:
+                                _hasFocus ? widget.casts[index].character : null,
+                          ));
+                    }),
+              )),
         ],
       ),
     );

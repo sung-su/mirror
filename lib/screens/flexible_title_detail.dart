@@ -79,4 +79,4 @@ class FlexibleTitleForDetail extends StatelessWidget {
       );
     });
   }
-}
+} 

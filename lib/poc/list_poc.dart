@@ -19,7 +19,7 @@ class FocusScrollView extends StatefulWidget {
 
 class _FocusScrollViewState extends State<FocusScrollView> {
   final ScrollController _scrollController = ScrollController();
-  late List<GlobalKey<_ItemContainerState>> _itemKeys = List.generate(10, (_) => GlobalKey<_ItemContainerState>());
+  late List<GlobalKey<_ItemContainerState>> _itemKeys = List.generate(30, (_) => GlobalKey<_ItemContainerState>());
   int _focusedIndex = 0;
 
   @override
@@ -63,26 +63,22 @@ class _FocusScrollViewState extends State<FocusScrollView> {
     if (context != null) {  
       Scrollable.ensureVisible(
         context,
-        alignment: 0.0,
+        alignment: 0.75,
         duration: Duration(milliseconds: durationMilliseconds),
         curve: Curves.easeInOut,
       );
       return index;
-
-      // animateto
-      // final RenderBox box = context.findRenderObject() as RenderBox;
-      // final Offset position = box.localToGlobal(Offset.zero);
-      // await _scrollController.animateTo(
-      //   position.dx + _scrollController.offset - 10,
-      //   duration: Duration(milliseconds: 1), 
-      //   curve: Curves.easeInOut
-      // );
     }
     else {
       return null;
     }
   }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Focus(
@@ -92,7 +88,8 @@ class _FocusScrollViewState extends State<FocusScrollView> {
       child: ListView.builder(
         controller: _scrollController,
         scrollDirection: Axis.horizontal,
-        itemCount: 10,
+        itemCount: _itemKeys.length,
+        padding: EdgeInsets.only(left: 50),
         itemBuilder: (context, index) {
           return ItemContainer(
             index: index,
