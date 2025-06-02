@@ -21,7 +21,6 @@ class MovieViewModel extends ChangeNotifier {
       posterPath: '',
       backdropPath: '',
     );
-    debugPrint("###################################### fetchMovieDetailById");
     try {
       final response = await _dio.get(
         'https://api.themoviedb.org/3/movie/$movieId',
@@ -54,7 +53,6 @@ class MovieViewModel extends ChangeNotifier {
       974576, // CONCLAVE
     ];
     //final List<Movie> sampleMovies = [];
-    debugPrint("###################################### fetchSampleMovies");
     for (int id in movieIds) {
       try {
         final response = await _dio.get(
@@ -360,7 +358,6 @@ class Movie {
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) {
-    debugPrint("###################################### Movie.fromJson");
     return Movie(
       title: json['title'] ?? '',
       overview: json['overview'] ?? '',
