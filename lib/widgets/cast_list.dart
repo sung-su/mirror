@@ -40,8 +40,7 @@ class _CastListState extends State<CastList> {
   void initState() {
     super.initState();
     _focusNode.addListener(_onFocusChanged);
-    // _itemCount = widget.casts.length;
-    _itemCount = 10;
+    _itemCount = widget.casts.length;
     _selectedIndex = 0;
     _title = widget.title;
   }
