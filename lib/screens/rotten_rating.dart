@@ -30,7 +30,7 @@ class RottenRating extends StatefulWidget {
       </svg>
 ''';
   const RottenRating({super.key, required this.rating});
-  final int rating;
+  final num rating;
 
   @override
   State<RottenRating> createState() => RottenRatingState();

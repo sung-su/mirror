@@ -57,9 +57,9 @@ class FlexibleTitleForDetail extends StatelessWidget {
                 children: [
                   RottenRating(
                     key: _focusedKey,
-                    rating: 93),
-                  StarRating(rating: 3.8),
-                  AgeRating(rating: "12"),
+                    rating: (movie.voteAverage * 10).floor()),
+                  StarRating(rating: (movie.voteAverage / 2).toStringAsFixed(2)),
+                  AgeRating(rating: movie.certification),
                   Text(movie.genres.isNotEmpty ? movie.genres[0].name : ''),
                   Text(movie.releaseYear),
                   Text(movie.runtime > 0

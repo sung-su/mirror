@@ -21,12 +21,10 @@ class CastList extends StatefulWidget {
 }
 
 class _CastListState extends State<CastList> {
-  // final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   final GlobalKey<SelectableListViewState> _listViewKey =
       GlobalKey<SelectableListViewState>();
 
-  // late List<GlobalKey> _itemKeys;
   late String _title;
 
   bool _hasFocus = false;

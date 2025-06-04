@@ -49,9 +49,9 @@ class _DetailPageState extends State<DetailPage> {
             child: SizedBox.expand(
                 child: VideoBackdrop(
                     scrollController: _scrollController,
-                    imageUrl:
-                        'https://media.themoviedb.org/t/p/w1066_and_h600_bestv2/${movie.backdropPath}',
-                    videoUrl: 'assets/mock/videos/conclave_trailer.mp4')),
+                    imageUrl: movie.backdropUrl,
+                    videoUrl: movie.backdropVideoUrl
+                    )),
           ),
           CustomScrollView(
               scrollBehavior:

@@ -18,10 +18,19 @@ class VideoScreen extends StatefulWidget {
 class _VideoScreenState extends State<VideoScreen> {
   late VideoPlayerController _controller;
 
+  final url = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+  final assetUrl = 'assets/mock/videos/conclave_trailer.mp4';
+
+
+  bool isNetworkUrl(String input) {
+    final RegExp urlRegex = RegExp(r'^(https?:)?\/\/[^\s]+$');
+    return urlRegex.hasMatch(input);
+  }
+
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset('assets/mock/videos/conclave_trailer.mp4')
+    _controller = isNetworkUrl(assetUrl) ? VideoPlayerController.networkUrl(Uri.parse(assetUrl)) : VideoPlayerController.asset(assetUrl)
       ..initialize().then((_) {
         setState(() {
           _controller.play();

@@ -294,10 +294,6 @@ class Similar {
     );
   }
 
-  String get mp4url {
-    return 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-  }
-
   String get posterUrl {
     return 'https://image.tmdb.org/t/p/w500$posterPath';
   }
@@ -407,6 +403,11 @@ class Movie {
 
   String get backdropUrl {
     return 'https://image.tmdb.org/t/p/w500$backdropPath';
+  }
+
+  String get backdropVideoUrl {
+    // videoUrl: 'assets/mock/videos/conclave_trailer.mp4'
+    return 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
   }
 
   String get releaseYear {
