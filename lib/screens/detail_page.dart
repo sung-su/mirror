@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/movie.dart';
 import 'package:tizen_fs/screens/detail_footer.dart';
 import 'package:tizen_fs/screens/flexible_title_detail.dart';
+import 'package:tizen_fs/screens/rotten_rating.dart';
 import 'package:tizen_fs/screens/video_backdrop.dart';
 import 'package:tizen_fs/screens/button_list.dart';
+import 'package:tizen_fs/widgets/age_rating.dart';
 import 'package:tizen_fs/widgets/cast_list.dart';
 import 'package:tizen_fs/screens/review_list.dart';
 import 'package:tizen_fs/widgets/movie_list.dart';
+import 'package:tizen_fs/widgets/star_rating.dart';
 import 'package:tizen_fs/widgets/youtube_list.dart';
 
 class DetailPage extends StatefulWidget {
-  final Movie movie;
   const DetailPage({super.key, required this.movie});
+
+  final Movie movie;
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -74,11 +78,36 @@ class _DetailPageState extends State<DetailPage> {
                 ),
                 SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.only(top: 15),
                       child: Column(
-                        spacing: 10,
+                        spacing: 20,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 58),
+                            child: Row(
+                              spacing: 20,
+                              children: [
+                                RottenRating(
+                                  rating: (movie.voteAverage * 10).floor(),
+                                  onFocused: () {
+                                    _scrollController.animateTo(
+                                      230, 
+                                      duration: Duration(milliseconds: 100),
+                                      curve: Curves.easeInQuad
+                                    );
+                                  }
+                                ),
+                                StarRating(rating: (movie.voteAverage / 2).toStringAsFixed(2)),
+                                AgeRating(rating: movie.certification),
+                                Text(movie.genres.isNotEmpty ? movie.genres[0].name : ''),
+                                Text(movie.releaseYear),
+                                Text(movie.runtime > 0
+                                    ? '${(movie.runtime / 60).floor()}h ${movie.runtime % 60}m'
+                                    : ''),
+                              ],
+                            ),
+                          ),
                           if (movie.reviews.isNotEmpty)
                             ReviewList(
                               reviews: movie.reviews,
@@ -93,6 +122,7 @@ class _DetailPageState extends State<DetailPage> {
                           SizedBox(height: 10),
                           ButtonList(
                             key: _scrollAnchor,
+                            movie: movie,
                             onFocused: () {
                               _scrollController.animateTo(
                                 230, 

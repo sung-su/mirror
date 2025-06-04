@@ -70,7 +70,7 @@ class _VideoBackdropState extends State<VideoBackdrop> {
     // TODO : _isIdle = false; _statusIndex = 0;
   }
 
-  bool isNetworkUrl(String input) {
+  bool _isNetworkUrl(String input) {
     final RegExp urlRegex = RegExp(r'^(https?:)?\/\/[^\s]+$');
     return urlRegex.hasMatch(input);
   }
@@ -80,7 +80,7 @@ class _VideoBackdropState extends State<VideoBackdrop> {
     super.initState();
 
     debugPrint('initialize video');
-    _videoController = isNetworkUrl(widget.videoUrl)
+    _videoController = _isNetworkUrl(widget.videoUrl)
     ? VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
     : VideoPlayerController.asset(widget.videoUrl)
       ..setLooping(true);

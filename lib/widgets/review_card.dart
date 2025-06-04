@@ -15,7 +15,7 @@ class ReviewCard extends StatelessWidget {
       this.shadowColor})
       : height = 110;
 
-  static const int animationDuration = 100;
+  static const int animationDuration = 200;
   final double width;
   final double height;
   final String? title;

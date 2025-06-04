@@ -102,7 +102,7 @@ class _ReviewListState extends State<ReviewList> {
             final review = widget.reviews[index];
             return Container(
                 clipBehavior: Clip.none,
-                margin: EdgeInsets.symmetric(horizontal: 20),
+                margin: EdgeInsets.symmetric(horizontal: 15),
                 child: ReviewCard(
                   key: key,
                   title: review.author,

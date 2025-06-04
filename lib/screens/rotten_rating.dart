@@ -29,7 +29,9 @@ class RottenRating extends StatefulWidget {
         </g>
       </svg>
 ''';
-  const RottenRating({super.key, required this.rating});
+  const RottenRating({super.key, required this.rating, required this.onFocused});
+
+  final VoidCallback? onFocused;
   final num rating;
 
   @override
@@ -79,6 +81,9 @@ class RottenRatingState extends State<RottenRating>
   void _onFocusChanged() {
     setState(() {
       _hasFocus = _focusNode.hasFocus;
+      if (_hasFocus) {
+        widget.onFocused?.call();
+      }
     });
   }
 

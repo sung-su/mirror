@@ -1,24 +1,27 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:video_player/video_player.dart';
 
-class VideoPlayerPocPage extends StatelessWidget {
-  const VideoPlayerPocPage({super.key});
+class VideoPlayerPage extends StatefulWidget {
+  const VideoPlayerPage({
+    super.key,
+    required this.title,
+    required this.videoUrl,
+    }
+  );
+
+  final String title;
+  final String videoUrl;
+
 
   @override
-  Widget build(BuildContext context) {
-    return VideoPlayerScreen();
-  }
+  _VideoPlayerPageState createState() => _VideoPlayerPageState();
 }
 
-class VideoPlayerScreen extends StatefulWidget {
-  @override
-  _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
-}
-
-class _VideoPlayerScreenState extends State<VideoPlayerScreen> with SingleTickerProviderStateMixin {
+class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProviderStateMixin {
   late VideoPlayerController _controller;
   final FocusNode _focusNode = FocusNode();
   late AnimationController _iconAnimationController;
@@ -32,9 +35,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with SingleTicker
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(
-      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    )..initialize().then((_) {
+
+    _controller = _isNetworkUrl(widget.videoUrl)
+    ? VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
+    : VideoPlayerController.asset(widget.videoUrl)
+    ..initialize().then((_) {
         setState(() {_showControls = true;});
         _controller.play();
       });
@@ -132,7 +137,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with SingleTicker
     return KeyEventResult.ignored;
   }
 
-  IconData GetIconData()
+  IconData _getIconData()
   {
     if(_seekDirection == 'forward')
       return Icons.forward_10;
@@ -142,6 +147,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with SingleTicker
       return Icons.pause;
     else
       return Icons.play_arrow;
+  }
+
+  bool _isNetworkUrl(String input) {
+    final RegExp urlRegex = RegExp(r'^(https?:)?\/\/[^\s]+$');
+    return urlRegex.hasMatch(input);
   }
 
   @override
@@ -189,7 +199,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with SingleTicker
                             child: IconButton(
                               onPressed: (){},
                               icon: Icon(
-                                GetIconData(),
+                                _getIconData(),
                                 size: 40,
                                 color: Colors.white70,
                               ),
@@ -209,7 +219,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> with SingleTicker
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'A Movie Title',
+                          widget.title,
                           style: TextStyle(color: Colors.white, fontSize: 30),
                         ),
                         SizedBox(height:40),

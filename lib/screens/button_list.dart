@@ -1,13 +1,20 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tizen_fs/models/movie.dart';
+import 'package:tizen_fs/screens/video_player_page.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
 class ButtonList extends StatefulWidget {
-  final VoidCallback? onFocused;
   const ButtonList({
     super.key,
+    required this.movie,
     this.onFocused,
   });
+
+  final Movie movie;
+  final VoidCallback? onFocused;
+  
 
   @override
   State<ButtonList> createState() => ButtonListState();
@@ -18,6 +25,7 @@ class ButtonListState extends State<ButtonList> {
   bool _hasFocus = false;
   int _itemCount = 5;
   int _selectedIndex = 0;
+  Map<int, VoidCallback> _actions = Map<int, VoidCallback>()  ;
 
   @override
   void initState() {
@@ -59,6 +67,7 @@ class ButtonListState extends State<ButtonList> {
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.enter ||
           event.logicalKey == LogicalKeyboardKey.select) {
+          _actions[_selectedIndex]?.call();
         return KeyEventResult.handled;
       }
     }
@@ -83,7 +92,9 @@ class ButtonListState extends State<ButtonList> {
     });
   }
 
-  Widget _buildButton(int itemIndex, String? text, IconData? iconData) {
+  Widget _buildButton(int itemIndex, String? text, IconData? iconData, VoidCallback? callback) {
+    _actions[itemIndex] = callback ?? (){};
+
     if (text == null)
       return SizedBox(
         width: 50,
@@ -103,8 +114,6 @@ class ButtonListState extends State<ButtonList> {
 
     return ElevatedButton.icon(
       onPressed: () {},
-      onFocusChange: (hasFocus) {
-      },
       icon: iconData != null 
         ? Icon(
           iconData,
@@ -146,12 +155,18 @@ class ButtonListState extends State<ButtonList> {
         child: Row(
           spacing: 10,
           children: [
-            _blurEffect(_buildButton(0, 'Trailer', Icons.live_tv_rounded)),
-            _blurEffect(_buildButton(1, 'Buy  \$10.0', null)),
-            _blurEffect(_buildButton(2, 'Watchlist', Icons.bookmark_border_outlined)),
-            _blurEffect(_buildButton(3, null, (_selectedIndex < 3) ? Icons.thumbs_up_down_sharp : Icons.thumb_up_sharp)),
+            _blurEffect(_buildButton(0, 'Trailer', Icons.live_tv_rounded, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VideoPlayerPage(title: widget.movie.title, videoUrl: widget.movie.backdropVideoUrl),
+                ));
+            })),
+            _blurEffect(_buildButton(1, 'Buy  \$10.0', null, null)),
+            _blurEffect(_buildButton(2, 'Watchlist', Icons.bookmark_border_outlined, null)),
+            _blurEffect(_buildButton(3, null, (_selectedIndex < 3) ? Icons.thumbs_up_down_sharp : Icons.thumb_up_sharp, null)),
             if(_selectedIndex >= 3) 
-              _blurEffect(_buildButton(4, null, Icons.thumb_down_sharp))
+              _blurEffect(_buildButton(4, null, Icons.thumb_down_sharp, null))
           ]
         )
       ),
