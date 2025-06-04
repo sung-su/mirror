@@ -166,6 +166,7 @@ class _DetailPageState extends State<DetailPage> {
                             },
                           ),
                           ImportantInformation(
+                            movie: movie,
                             onFocused: (context){
                               Scrollable.ensureVisible(
                                 context,

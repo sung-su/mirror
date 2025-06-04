@@ -225,10 +225,6 @@ class Video {
     );
   }
 
-  String get mp4url {
-    return 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-  }
-
   String get youtubeUrl {
     if (site == 'YouTube' && key.isNotEmpty)
       return 'https://www.youtube.com/watch?v=$key';
@@ -243,29 +239,6 @@ class Video {
 
   String get publishedYear {
     return publishedAt.split('-')[0];
-  }
-}
-
-class ReleaseDate {
-  const ReleaseDate({
-    required this.iso_639_1,
-    required this.iso_3166_1,
-    required this.certification,
-    required this.releaseDate,
-  });
-  final String iso_639_1;
-  final String iso_3166_1;
-  final String certification;
-  final String releaseDate;
-
-  factory ReleaseDate.fromJson(Map<String, dynamic> json,
-      {String iso31661 = 'US'}) {
-    return ReleaseDate(
-      iso_3166_1: iso31661 ?? '',
-      iso_639_1: json['iso_639_1'] ?? '',
-      certification: json['certification'] ?? '',
-      releaseDate: json['release_date'] ?? '',
-    );
   }
 }
 
@@ -329,9 +302,9 @@ class Movie {
   final List<Crew> crew;
   final List<Reviews> reviews;
   final List<Video> videos;
-  //final List<ReleaseDate> releaseDates;
   final String certification;
   final List<Similar> similars;
+  final List<String> spokenLanguages;
 
   Movie({
     required this.title,
@@ -348,9 +321,9 @@ class Movie {
     this.voteAverage = 0.0,
     this.popularity = 0.0,
     this.videos = const [],
-    //this.releaseDates = const [],
     this.certification = '',
     this.similars = const [],
+    this.spokenLanguages = const [],
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) {
@@ -379,20 +352,16 @@ class Movie {
       videos: (json['videos']['results'] as List)
           .map((e) => Video.fromJson(e))
           .toList(),
-      // releaseDates: (json['release_dates']['results'] as List)
-      //     .where((e) => e['iso_3166_1'] == 'US')
-      //     .expand((e) => e['release_dates'] as List)
-      //     .where((e) => e['iso_639_1'] == 'en' && e['certification'].isNotEmpty)
-      //     .map((e) => ReleaseDate.fromJson(e, iso31661: 'US'))
-      //     .toList(),
       certification: (json['release_dates']['results'] as List)
-          .where((e) => e['iso_3166_1'] == 'US')
+          .where((e) => e['iso_63166_1'] == 'US')
           .expand((e) => e['release_dates'] as List)
-          .where((e) => e['iso_639_1'] == 'en' && e['certification'].isNotEmpty)
-          .map((e) => e['certification'] ?? '')
+          .where((e) => e['certification'].isNotEmpty)
           .toString(),
       similars: (json['similar']['results'] as List)
           .map((e) => Similar.fromJson(e))
+          .toList(),
+      spokenLanguages: (json['spoken_languages'] as List)
+          .map((e) => e['english_name'].toString())
           .toList(),
     );
   }
@@ -402,7 +371,7 @@ class Movie {
   }
 
   String get backdropUrl {
-    return 'https://image.tmdb.org/t/p/w500$backdropPath';
+    return 'https://image.tmdb.org/t/p/original$backdropPath';
   }
 
   String get backdropVideoUrl {
@@ -419,5 +388,25 @@ class Movie {
       return '${overview.substring(0, 100)}...';
     }
     return overview;
+  }
+
+  String get quality {
+    return 'Automatically plays in the heghest quality available for your purchase.';
+  }
+
+  String get purchaseDetails {
+    return 'Purchasing grants you a license. See Play Terms of Service for license details.';
+  }
+
+  String get dataSharing {
+    return 'Information about movie and show transactions may be shared amongst YouTube, Google TV, Google Play Movies & TV, and other Google Services to support your access to content and those services';
+  }
+
+  String get audioLanguage {
+    String languages = '';
+    for (var lang in spokenLanguages) {
+      languages += lang + ', ';
+    }
+    return languages;
   }
 }
