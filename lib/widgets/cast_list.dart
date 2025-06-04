@@ -104,13 +104,13 @@ class _CastListState extends State<CastList> {
         children: [
           //list title
           Padding(
-            padding: const EdgeInsets.fromLTRB(58, 10, 70, 8),
+            padding: const EdgeInsets.fromLTRB(58, 0, 70, 8),
             child: SizedBox(
               height: _hasFocus ? 40 : 20,
               child: AnimatedScale(
                   scale: _hasFocus ? 1.7 : 1.0,
                   duration: const Duration(milliseconds: 100),
-                  alignment: Alignment.centerLeft,
+                  alignment: Alignment.topLeft,
                   child: Text(
                     _title,
                     textAlign: TextAlign.left,

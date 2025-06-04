@@ -105,15 +105,15 @@ class _YoutubeListState extends State<YoutubeList> {
           //list title
           Container(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(70, 10, 70, 8),
+              padding: const EdgeInsets.fromLTRB(70, 0, 70, 8),
               child: SizedBox(
                 height: _hasFocus ? 40 : 20,
                 child: AnimatedScale(
                     scale: _hasFocus ? 1.7 : 1.0,
                     duration: const Duration(milliseconds: 100),
-                    alignment: Alignment.centerLeft,
+                    alignment: Alignment.topLeft,
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 5,
                       children: [
                         if (_title.isNotEmpty)

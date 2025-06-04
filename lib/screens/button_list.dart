@@ -96,38 +96,46 @@ class ButtonListState extends State<ButtonList> {
     _actions[itemIndex] = callback ?? (){};
 
     if (text == null)
-      return SizedBox(
-        width: 50,
-        child: IconButton.filled(
-          onPressed: () {},
-          icon: Icon(
-            iconData,
-            size: 15,
+      return AnimatedScale(
+      duration: Duration(milliseconds: 200),
+      scale: (_hasFocus && itemIndex == _selectedIndex) ? 1.1 : 1,
+        child: SizedBox(
+          width: 50,
+          child: IconButton.filled(
+            onPressed: () {},
+            icon: Icon(
+              iconData,
+              size: 15,
+            ),
+            style : FilledButton.styleFrom(
+              animationDuration: Duration(milliseconds: 0),
+              backgroundColor: (_hasFocus && itemIndex == _selectedIndex) ? Colors.white : Colors.grey.withAlphaF(0.4),
+              foregroundColor: (_hasFocus && itemIndex == _selectedIndex) ? Colors.black.withAlphaF(0.8) : Colors.white.withAlphaF(0.8),
+            )
           ),
-          style : FilledButton.styleFrom(
-            animationDuration: Duration(milliseconds: 0),
-            backgroundColor: (_hasFocus && itemIndex == _selectedIndex) ? Colors.white : Colors.grey.withAlphaF(0.4),
-            foregroundColor: (_hasFocus && itemIndex == _selectedIndex) ? Colors.black.withAlphaF(0.8) : Colors.white.withAlphaF(0.8),
-          )
         ),
       );
 
-    return ElevatedButton.icon(
-      onPressed: () {},
-      icon: iconData != null 
-        ? Icon(
-          iconData,
-          size: 17,
-          color:(_hasFocus && itemIndex == _selectedIndex) ? Colors.black.withAlphaF(0.8) : Colors.white.withAlphaF(0.8)
-        ) : null,
-      label: Text(
-        text,
+    return AnimatedScale(
+      duration: Duration(milliseconds: 200),
+      scale: (_hasFocus && itemIndex == _selectedIndex) ? 1.1 : 1,
+      child: ElevatedButton.icon(
+        onPressed: () {},
+        icon: iconData != null 
+          ? Icon(
+            iconData,
+            size: 17,
+            color:(_hasFocus && itemIndex == _selectedIndex) ? Colors.black.withAlphaF(0.8) : Colors.white.withAlphaF(0.8)
+          ) : null,
+        label: Text(
+          text,
+        ),
+        style : ElevatedButton.styleFrom(
+          animationDuration: Duration(milliseconds: 0),
+          backgroundColor: (_hasFocus && itemIndex == _selectedIndex) ? Colors.white : Colors.grey.withAlphaF(0.4),
+          foregroundColor: (_hasFocus && itemIndex == _selectedIndex) ? Colors.black.withAlphaF(0.8) : Colors.white.withAlphaF(0.8),
+        )
       ),
-      style : ElevatedButton.styleFrom(
-        animationDuration: Duration(milliseconds: 0),
-        backgroundColor: (_hasFocus && itemIndex == _selectedIndex) ? Colors.white : Colors.grey.withAlphaF(0.4),
-        foregroundColor: (_hasFocus && itemIndex == _selectedIndex) ? Colors.black.withAlphaF(0.8) : Colors.white.withAlphaF(0.8),
-      )
     );
   }
 

@@ -92,7 +92,7 @@ class _DetailPageState extends State<DetailPage> {
                                   rating: (movie.voteAverage * 10).floor(),
                                   onFocused: () {
                                     _scrollController.animateTo(
-                                      230, 
+                                      250, 
                                       duration: Duration(milliseconds: 100),
                                       curve: Curves.easeInQuad
                                     );
@@ -108,24 +108,25 @@ class _DetailPageState extends State<DetailPage> {
                               ],
                             ),
                           ),
+                          // SizedBox(height: 10),
                           if (movie.reviews.isNotEmpty)
                             ReviewList(
                               reviews: movie.reviews,
                               onFocused: () {
                                 _scrollController.animateTo(
-                                  230, 
+                                  250, 
                                   duration: Duration(milliseconds: 100),
                                   curve: Curves.easeInQuad
                                 );
                               }
                             ),
-                          SizedBox(height: 10),
+                          // SizedBox(height: 10),
                           ButtonList(
                             key: _scrollAnchor,
                             movie: movie,
                             onFocused: () {
                               _scrollController.animateTo(
-                                230, 
+                                250, 
                                 duration: Duration(milliseconds: 100),
                                 curve: Curves.easeInQuad
                               );
@@ -148,7 +149,7 @@ class _DetailPageState extends State<DetailPage> {
                             similars: movie.similars,
                             onFocused: () {
                               _scrollController.animateTo(
-                                660 + 175 * 1, 
+                                660 + 178 * 1, 
                                 duration: Duration(milliseconds: 100),
                                 curve: Curves.easeInQuad
                               );
@@ -159,7 +160,7 @@ class _DetailPageState extends State<DetailPage> {
                             videos: movie.videos,
                             onFocused: () {
                               _scrollController.animateTo(
-                                660 + 175 * 2, 
+                                660 + 178 * 2, 
                                 duration: Duration(milliseconds: 100),
                                 curve: Curves.easeInQuad
                               );
