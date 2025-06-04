@@ -108,7 +108,6 @@ class _DetailPageState extends State<DetailPage> {
                               ],
                             ),
                           ),
-                          // SizedBox(height: 10),
                           if (movie.reviews.isNotEmpty)
                             ReviewList(
                               reviews: movie.reviews,
@@ -120,7 +119,6 @@ class _DetailPageState extends State<DetailPage> {
                                 );
                               }
                             ),
-                          // SizedBox(height: 10),
                           ButtonList(
                             key: _scrollAnchor,
                             movie: movie,

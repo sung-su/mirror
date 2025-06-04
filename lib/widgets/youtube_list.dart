@@ -135,7 +135,7 @@ class _YoutubeListState extends State<YoutubeList> {
           SizedBox(
               height: _hasFocus ? _listExtendedHeight : _listHeight,
               child: AnimatedOpacity(
-                opacity: _hasFocus ? 1.0 : 0.3,
+                opacity: _hasFocus ? 1.0 : 0.6,
                 duration: const Duration(milliseconds: 100),
                 child: SelectableListView(
                     key: _listViewKey,
