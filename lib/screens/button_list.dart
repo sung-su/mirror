@@ -57,12 +57,10 @@ class ButtonListState extends State<ButtonList> {
 
   KeyEventResult _onKeyEvent(FocusNode focusNode, KeyEvent event) {
     if (event is KeyDownEvent || event is KeyRepeatEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.arrowLeft &&
-          _selectedIndex > 0) {
+      if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
         _prev(event is KeyRepeatEvent);
         return KeyEventResult.handled;
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
-          _selectedIndex < _itemCount - 1) {
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
         _next(event is KeyRepeatEvent);
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.enter ||

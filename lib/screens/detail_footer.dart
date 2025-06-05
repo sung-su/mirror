@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tizen_fs/models/movie.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
@@ -110,6 +113,16 @@ class _ImportantInformationState extends State<ImportantInformation> {
               ],
             )),
       ),
+      onKeyEvent: (node, event) {
+        if (event is KeyDownEvent || event is KeyRepeatEvent) {
+          if(event.logicalKey == LogicalKeyboardKey.arrowLeft
+          || event.logicalKey == LogicalKeyboardKey.arrowRight
+          || event.logicalKey == LogicalKeyboardKey.arrowDown) {
+            return KeyEventResult.handled;
+          }
+        }
+        return KeyEventResult.ignored;
+      },
       onFocusChange: (hasFocus) {
         if (hasFocus) {
           setState(() {
