@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_fs/models/movie.dart';
-import 'package:tizen_fs/widgets/media_card.dart';
 import 'package:tizen_fs/widgets/review_card.dart';
 import 'package:tizen_fs/widgets/selectable_listview.dart';
 

@@ -1,11 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:tizen_fs/models/movie.dart';
-import 'package:tizen_fs/widgets/age_rating.dart';
-import 'package:tizen_fs/screens/rotten_rating.dart';
-import 'package:tizen_fs/widgets/star_rating.dart';
 
 class FlexibleTitleForDetail extends StatelessWidget {
   final void Function(BuildContext)? onFocused;

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:video_player/video_player.dart';
 
@@ -66,7 +65,6 @@ class VideoBackdropState extends State<VideoBackdrop> {
   void _advanceState() {
     if (status == 0) {
       debugPrint('state0 : image');
-      _callStatusChanged();
       status = 1;
       _startInactivityTimer();
     }
