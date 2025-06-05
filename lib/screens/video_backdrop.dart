@@ -83,7 +83,7 @@ class _VideoBackdropState extends State<VideoBackdrop> {
     _videoController = _isNetworkUrl(widget.videoUrl)
     ? VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
     : VideoPlayerController.asset(widget.videoUrl)
-      ..setLooping(true);
+      ..setLooping(false);
 
     widget.scrollController.addListener(_handleUserInteraction);
 
