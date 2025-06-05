@@ -137,7 +137,7 @@ class Cast {
 
   String get profileUrl {
     return profilePath.isNotEmpty
-        ? 'https://image.tmdb.org/t/p/w500$profilePath'
+        ? 'https://image.tmdb.org/t/p/w185$profilePath'
         : '';
   }
 }
@@ -168,7 +168,7 @@ class Crew {
 
   String get profileUrl {
     return profilePath.isNotEmpty
-        ? 'https://image.tmdb.org/t/p/w500$profilePath'
+        ? 'https://image.tmdb.org/t/p/w185$profilePath'
         : '';
   }
 }
@@ -268,11 +268,11 @@ class Similar {
   }
 
   String get posterUrl {
-    return 'https://image.tmdb.org/t/p/w500$posterPath';
+    return 'https://image.tmdb.org/t/p/w342$posterPath';
   }
 
   String get backdropUrl {
-    return 'https://image.tmdb.org/t/p/w500$backdropPath';
+    return 'https://image.tmdb.org/t/p/original$backdropPath';
   }
 
   String get releaseYear {
@@ -366,7 +366,7 @@ class Movie {
   }
 
   String get posterUrl {
-    return 'https://image.tmdb.org/t/p/w500$posterPath';
+    return 'https://image.tmdb.org/t/p/w342$posterPath';
   }
 
   String get backdropUrl {
