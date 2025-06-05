@@ -139,9 +139,7 @@ class _CastListState extends State<CastList> {
                           margin: EdgeInsets.symmetric(horizontal: 10),
                           child: MediaCard.circleLarge(
                             key: key,
-                            imageUrl: widget.casts[index].profilePath.isNotEmpty
-                                ? 'https://media.themoviedb.org/t/p/w500${widget.casts[index].profilePath}'
-                                : '',
+                            imageUrl: widget.casts[index].profileUrl,
                             isSelected: Focus.of(context).hasFocus &&
                                 index == selectedIndex,
                             title: _hasFocus ? widget.casts[index].name : null,
