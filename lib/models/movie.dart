@@ -353,10 +353,9 @@ class Movie {
           .map((e) => Video.fromJson(e))
           .toList(),
       certification: (json['release_dates']['results'] as List)
-          .where((e) => e['iso_63166_1'] == 'US')
+          .where((e) => e['iso_3166_1'] == 'US')
           .expand((e) => e['release_dates'] as List)
-          .where((e) => e['certification'].isNotEmpty)
-          .toString(),
+          .firstWhere((e) => e['certification'].isNotEmpty)['certification'],
       similars: (json['similar']['results'] as List)
           .map((e) => Similar.fromJson(e))
           .toList(),
