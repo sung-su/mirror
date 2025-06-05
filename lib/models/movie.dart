@@ -226,15 +226,15 @@ class Video {
   }
 
   String get youtubeUrl {
-    if (site == 'YouTube' && key.isNotEmpty)
-      return 'https://www.youtube.com/watch?v=$key';
-    return '';
+    return key.isNotEmpty
+      ? 'https://www.youtube.com/watch?v=$key'
+      : 'https://www.youtube.com';
   }
 
   String get youtubeThumbnail {
-    if (site == 'YouTube' && key.isNotEmpty)
-      return 'https://img.youtube.com/vi/$key/0.jpg';
-    return '';
+    return key.isNotEmpty
+      ? 'https://img.youtube.com/vi/$key/0.jpg'
+      : 'https://placehold.co/400x300/FF0000/FFFFFF?text=YouTube';
   }
 
   String get publishedYear {
@@ -268,7 +268,9 @@ class Similar {
   }
 
   String get posterUrl {
-    return 'https://image.tmdb.org/t/p/w500$posterPath';
+    return posterPath.isNotEmpty
+      ? 'https://image.tmdb.org/t/p/w500$posterPath'
+      : 'https://placehold.co/400x300/000000/FFFFFF?text=$title';
   }
 
   String get backdropUrl {
@@ -353,9 +355,11 @@ class Movie {
           .map((e) => Video.fromJson(e))
           .toList(),
       certification: (json['release_dates']['results'] as List)
-          .where((e) => e['iso_3166_1'] == 'US')
-          .expand((e) => e['release_dates'] as List)
-          .firstWhere((e) => e['certification'].isNotEmpty)['certification'],
+              .where((e) => e['iso_3166_1'] == 'US')
+              .expand((e) => e['release_dates'] as List)
+              .firstWhere(
+                  (e) => e['certification'].isNotEmpty)['certification'] ??
+          'All',
       similars: (json['similar']['results'] as List)
           .map((e) => Similar.fromJson(e))
           .toList(),
@@ -366,7 +370,9 @@ class Movie {
   }
 
   String get posterUrl {
-    return 'https://image.tmdb.org/t/p/w500$posterPath';
+    return posterPath.isNotEmpty
+      ? 'https://image.tmdb.org/t/p/w500$posterPath'
+      : 'https://placehold.co/400x300/000000/FFFFFF?text=$title';
   }
 
   String get backdropUrl {

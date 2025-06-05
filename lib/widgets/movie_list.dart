@@ -146,9 +146,7 @@ class _MovieListState extends State<MovieList> {
                           margin: EdgeInsets.symmetric(horizontal: 10),
                           child: MediaCard.fourCard(
                             key: key,
-                            imageUrl: widget.similars[index].posterPath.isNotEmpty
-                                ? 'https://image.tmdb.org/t/p/w500${widget.similars[index].posterPath}'
-                                : '',
+                            imageUrl: widget.similars[index].posterUrl,
                             isSelected: Focus.of(context).hasFocus &&
                                 index == selectedIndex,
                             title: _hasFocus && index == selectedIndex

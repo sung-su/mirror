@@ -148,9 +148,7 @@ class _YoutubeListState extends State<YoutubeList> {
                           child: MediaCard.threeCard(
                             key: key,
                             imageUrl:
-                                widget.videos[index].youtubeThumbnail.isNotEmpty
-                                    ? widget.videos[index].youtubeThumbnail
-                                    : '',
+                                widget.videos[index].youtubeThumbnail,
                             isSelected: Focus.of(context).hasFocus &&
                                 index == selectedIndex,
                             title: _hasFocus ? widget.videos[index].name : null,
