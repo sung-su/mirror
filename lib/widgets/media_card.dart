@@ -272,8 +272,8 @@ class MediaCard extends StatelessWidget {
               child: Text(title!,
                   style: TextStyle(
                       fontSize: 14,
-                      color: $style.colors.onPrimary
-                          .withAlphaF(0.9 * (isSelected ? 1 : 0.9))),
+                      color: isSelected ? Colors.white.withAlphaF(0.8)
+                       : $style.colors.onPrimary.withAlphaF(0.8)),
                   maxLines: 1,
                   textAlign: ratio == MediaCardRatio.square ? TextAlign.center : TextAlign.justify,
                   overflow: TextOverflow.ellipsis)),
