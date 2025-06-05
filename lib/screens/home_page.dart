@@ -8,7 +8,7 @@ import 'package:tizen_fs/screens/detail_page.dart';
 import 'package:tizen_fs/widgets/category_list.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
 import 'package:tizen_fs/widgets/immersive_carousel.dart';
-import 'footer.dart';
+import 'package:tizen_fs/widgets/footer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage(
