@@ -25,6 +25,17 @@ class _DetailPageState extends State<DetailPage> {
   final ScrollController _scrollController =
       ScrollController(initialScrollOffset: 240);
   final GlobalKey<ButtonListState> _scrollAnchor = GlobalKey<ButtonListState>();
+  final GlobalKey<VideoBackdropState> _backdropController = GlobalKey<VideoBackdropState>();
+
+  int _backdropState = 0;
+
+  void _setBackdropState(int state) {
+    if (_backdropState == state) return;
+
+    var renderBox = _backdropController.currentContext!.findRenderObject() as RenderBox;
+    _backdropController.currentState!.status = state;
+    _backdropState = state;
+  }
 
   @override
   void initState() {
@@ -52,10 +63,21 @@ class _DetailPageState extends State<DetailPage> {
           RepaintBoundary(
             child: SizedBox.expand(
                 child: VideoBackdrop(
-                    scrollController: _scrollController,
-                    imageUrl: movie.backdropUrl,
-                    videoUrl: movie.backdropVideoUrl
-                    )),
+                  key: _backdropController,
+                  // scrollController: _scrollController,
+                  imageUrl: movie.backdropUrl,
+                  videoUrl: movie.backdropVideoUrl,
+                  onStatusChanged: (status){
+                    if(status == 2) {
+                      _scrollController.animateTo(
+                        0,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.ease
+                      );
+                    }
+                  },
+                  )
+                ),
           ),
           CustomScrollView(
               scrollBehavior:
@@ -96,6 +118,8 @@ class _DetailPageState extends State<DetailPage> {
                                       duration: Duration(milliseconds: 100),
                                       curve: Curves.easeInQuad
                                     );
+                                    if(_backdropState != 0)
+                                      _setBackdropState(3);
                                   }
                                 ),
                                 StarRating(rating: (movie.voteAverage / 2).toStringAsFixed(2)),
@@ -117,6 +141,8 @@ class _DetailPageState extends State<DetailPage> {
                                   duration: Duration(milliseconds: 100),
                                   curve: Curves.easeInQuad
                                 );
+                                if(_backdropState != 0)
+                                  _setBackdropState(3);
                               }
                             ),
                           ButtonList(
@@ -128,6 +154,8 @@ class _DetailPageState extends State<DetailPage> {
                                 duration: Duration(milliseconds: 100),
                                 curve: Curves.easeInQuad
                               );
+                              if(_backdropState != 0)
+                                _setBackdropState(3);
                             }
                           ),
                           CastList(
@@ -139,7 +167,7 @@ class _DetailPageState extends State<DetailPage> {
                                 duration: Duration(milliseconds: 100),
                                 curve: Curves.easeInQuad
                               );
-                              //TODO: stop the video backdrop
+                              _setBackdropState(4);
                             }
                           ),
                           MovieList(
@@ -151,6 +179,7 @@ class _DetailPageState extends State<DetailPage> {
                                 duration: Duration(milliseconds: 100),
                                 curve: Curves.easeInQuad
                               );
+                              _setBackdropState(4);
                             },
                           ),
                           YoutubeList(
@@ -162,6 +191,7 @@ class _DetailPageState extends State<DetailPage> {
                                 duration: Duration(milliseconds: 100),
                                 curve: Curves.easeInQuad
                               );
+                              _setBackdropState(4);
                             },
                           ),
                           ImportantInformation(
@@ -173,6 +203,7 @@ class _DetailPageState extends State<DetailPage> {
                                 duration: Duration(milliseconds: 100),
                                 curve: Curves.easeInOut,
                               );
+                              _setBackdropState(4);
                             },
                           ),
                           SizedBox(
