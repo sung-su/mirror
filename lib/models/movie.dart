@@ -137,7 +137,7 @@ class Cast {
 
   String get profileUrl {
     return profilePath.isNotEmpty
-        ? 'https://image.tmdb.org/t/p/w185$profilePath'
+        ? 'https://image.tmdb.org/t/p/w500$profilePath'
         : 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg';
   }
 }
@@ -168,7 +168,7 @@ class Crew {
 
   String get profileUrl {
     return profilePath.isNotEmpty
-        ? 'https://image.tmdb.org/t/p/w185$profilePath'
+        ? 'https://image.tmdb.org/t/p/w500$profilePath'
         : 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg';
   }
 }
