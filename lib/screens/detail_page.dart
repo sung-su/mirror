@@ -71,7 +71,7 @@ class _DetailPageState extends State<DetailPage> {
                       _scrollController.animateTo(
                         0,
                         duration: const Duration(milliseconds: 300),
-                        curve: Curves.ease
+                        curve: Curves.easeInQuad
                       );
                     }
                   },

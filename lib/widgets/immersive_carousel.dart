@@ -128,6 +128,8 @@ class ImmersiveCarouselState extends State<ImmersiveCarousel> {
   bool isFocused = false;
   Timer? autoScrollTimer;
 
+  int get selectedIndex => _selectedIndex;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();

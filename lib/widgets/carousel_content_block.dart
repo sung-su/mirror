@@ -42,7 +42,7 @@ class ContentBlock extends StatelessWidget {
                   child: SizedBox(
                     height: isFocused ? 40 : 0,
                     child:
-                      TextButton(
+                      ElevatedButton(
                         onPressed: isFocused ? () {} : null,
                         focusNode: isFocused ? null : AlwaysDisabledFocusNode(),
                         style: ElevatedButton.styleFrom(

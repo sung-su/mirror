@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:tizen_fs/models/category.dart';
 import 'package:tizen_fs/models/tile.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/styles/app_style.dart';
@@ -13,6 +12,7 @@ enum ColumnCount { one, two, three, four, six, nine }
 
 class CategoryList extends StatefulWidget {
   final VoidCallback? onFocused;
+  final Function(int)? onItemSelected;
   final List<Tile> tiles;
   final ColumnCount columns;
   final String title;
@@ -23,6 +23,7 @@ class CategoryList extends StatefulWidget {
     super.key,
     required this.tiles,
     this.onFocused,
+    this.onItemSelected,
     this.columns = ColumnCount.four,
     this.title = '',
     this.icon = '',
@@ -185,6 +186,9 @@ class _CategoryListState extends State<CategoryList> {
         });
         _scrollToSelected(event is KeyRepeatEvent ? 1 : 100,
             event is KeyRepeatEvent ? false : true);
+        return KeyEventResult.handled;
+      } else if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.select) {
+        widget.onItemSelected?.call(_selectedIndex);
         return KeyEventResult.handled;
       }
     }

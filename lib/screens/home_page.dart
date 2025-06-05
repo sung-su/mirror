@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
       ImmersiveCarouselModel.fromMock();
   final ImmersiveAreaController _immersiveAreaController =
       ImmersiveAreaController();
-  late List<Movie> movies;
+  late List<Movie> _movies;
 
   @override
   void initState() {
@@ -45,9 +45,18 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
+  void _pushDetailPage(int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailPage(movie: _movies[index%4]),
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final movies = context.watch<MovieViewModel>().movies;
+    _movies = context.watch<MovieViewModel>().movies;
 
     return MultiProvider(
         providers: [
@@ -82,9 +91,12 @@ class _HomePageState extends State<HomePage> {
                 _immersiveAreaController
                     .setState(ImmersiveAreaController.headerFocused);
               },
+              onItemSelected: (index){
+                _pushDetailPage(index);
+              },
             ),
             ImmersiveListArea(
-              movies: movies,
+              movies: _movies,
               onFocused: () {
                 print('item 1 focused');
                 _scrollController.animateTo(
@@ -96,12 +108,7 @@ class _HomePageState extends State<HomePage> {
                     .setState(ImmersiveAreaController.immersiveListFocused);
               },
               onExecute: (index) {
-                print('item $index executed');
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DetailPage(movie: movies[index%4]),
-                    ));
+                _pushDetailPage(index);
               },
             ),
             SizedBox(height: 20),
@@ -128,36 +135,47 @@ class _HomePageState extends State<HomePage> {
                     curve: Curves.easeInQuad,
                   );
                 },
+                onItemSelected: (index) {
+                  _pushDetailPage(index);
+                },
               ),
             ),
             CategoryList(
-                tiles: widget.categories[3].tiles,
-                columns: ColumnCount.three,
-                title: 'Recomended videos',
-                icon: 'assets/mock/images/icons8-youtube-144.png',
-                timeStamp: true,
-                onFocused: () {
-                  debugPrint('Recomended videos focused');
-                  _scrollController.animateTo(
-                    570 + 165 + ((widget.categories.length - 1) * 168),
-                    duration: const Duration(milliseconds: 100),
-                    curve: Curves.easeInQuad,
-                  );
-                }),
+              tiles: widget.categories[3].tiles,
+              columns: ColumnCount.three,
+              title: 'Recomended videos',
+              icon: 'assets/mock/images/icons8-youtube-144.png',
+              timeStamp: true,
+              onFocused: () {
+                debugPrint('Recomended videos focused');
+                _scrollController.animateTo(
+                  570 + 165 + ((widget.categories.length - 1) * 168),
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.easeInQuad,
+                );
+              },
+              onItemSelected: (index) {
+                _pushDetailPage(index);
+              },
+            ),
             CategoryList(
-                tiles: widget.categories[4].tiles,
-                columns: ColumnCount.three,
-                title: 'Recently uploaded',
-                icon: 'assets/mock/images/icons8-youtube-144.png',
-                timeStamp: true,
-                onFocused: () {
-                  debugPrint('Recently uploaded focused');
-                  _scrollController.animateTo(
-                    570 + 165 + ((widget.categories.length - 1) * 168) + 233,
-                    duration: const Duration(milliseconds: 100),
-                    curve: Curves.easeInQuad,
-                  );
-                }),
+              tiles: widget.categories[4].tiles,
+              columns: ColumnCount.three,
+              title: 'Recently uploaded',
+              icon: 'assets/mock/images/icons8-youtube-144.png',
+              timeStamp: true,
+              onFocused: () {
+                debugPrint('Recently uploaded focused');
+                _scrollController.animateTo(
+                  570 + 165 + ((widget.categories.length - 1) * 168) + 233,
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.easeInQuad,
+                );
+              },
+              onItemSelected: (index) {
+                _pushDetailPage(index);
+              },
+            ),
             Footer(
               scrollController: _scrollController,
             )
@@ -192,6 +210,7 @@ class ImmersiveAreaController {
 class ImmersiveArea extends StatefulWidget {
   final VoidCallback? onFocused;
   final VoidCallback? onUnFocused;
+  final Function(int)? onItemSelected;
   final ImmersiveAreaController? controller;
 
   const ImmersiveArea(
@@ -199,6 +218,7 @@ class ImmersiveArea extends StatefulWidget {
     super.key,
     this.onFocused,
     this.onUnFocused,
+    this.onItemSelected,
   });
 
   @override
@@ -304,6 +324,9 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
             _startRepeating(() {
               _carouselKey.currentState?.moveCarousel(-1);
             });
+            return KeyEventResult.handled;
+          } else if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.select) {
+            widget.onItemSelected?.call(_carouselKey.currentState?.selectedIndex ?? 0);
             return KeyEventResult.handled;
           }
           return KeyEventResult.ignored;

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:video_player/video_player.dart';
@@ -131,13 +132,15 @@ class VideoBackdropState extends State<VideoBackdrop> {
                 sigmaX: 5,
                 sigmaY: 5,
               ),
-              child: Image.network(
-                widget.imageUrl,
+              child: CachedNetworkImage(
+                imageUrl: widget.imageUrl,
+                errorWidget: (context, url, error) => const Icon(Icons.error),
                 fit: BoxFit.cover
               ),
             )
-            : Image.network(
-              widget.imageUrl,
+            : CachedNetworkImage(
+              imageUrl: widget.imageUrl,
+              errorWidget: (context, url, error) => const Icon(Icons.error),
               fit: BoxFit.cover
               )
             ),
