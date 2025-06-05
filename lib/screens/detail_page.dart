@@ -64,7 +64,6 @@ class _DetailPageState extends State<DetailPage> {
             child: SizedBox.expand(
                 child: VideoBackdrop(
                   key: _backdropController,
-                  // scrollController: _scrollController,
                   imageUrl: movie.backdropUrl,
                   videoUrl: movie.backdropVideoUrl,
                   onStatusChanged: (status){
@@ -171,7 +170,7 @@ class _DetailPageState extends State<DetailPage> {
                             }
                           ),
                           MovieList(
-                            title: 'If you like ${movie.title} Movie',
+                            title: 'If you like ${movie.title}',
                             similars: movie.similars,
                             onFocused: () {
                               _scrollController.animateTo(
@@ -183,7 +182,7 @@ class _DetailPageState extends State<DetailPage> {
                             },
                           ),
                           YoutubeList(
-                            title: '${movie.title} Movie on YouTube',
+                            title: '${movie.title} on YouTube',
                             videos: movie.videos,
                             onFocused: () {
                               _scrollController.animateTo(
