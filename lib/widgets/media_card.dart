@@ -139,6 +139,30 @@ class MediaCard extends StatelessWidget {
       Color? shadowColor})
       : this(
             key: key,
+            width: 152,
+            imageUrl: imageUrl,
+            title: title,
+            subtitle: subtitle,
+            description: description,
+            duration: duration,
+            isSelected: isSelected,
+            ratio: ratio,
+            content: content,
+            shadowColor: shadowColor);
+
+  const MediaCard.sixCard(
+      {Key? key,
+      required String imageUrl,
+      String? title,
+      String? subtitle,
+      String? description,
+      String? duration,
+      bool isSelected = false,
+      MediaCardRatio ratio = MediaCardRatio.wide,
+      Widget? content,
+      Color? shadowColor})
+      : this(
+            key: key,
             width: 124,
             imageUrl: imageUrl,
             title: title,
