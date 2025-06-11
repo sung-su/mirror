@@ -64,7 +64,6 @@ class _HomeContentState extends State<HomeContent> {
                   .setState(ImmersiveAreaController.carouselFocused);
             }),
             ImmersiveListArea(
-              movies: context.watch()<MovieViewModel>().movies,
               onFocused: () {
                 print('item 1 focused');
                 _scrollController.animateTo(

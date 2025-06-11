@@ -194,10 +194,9 @@ class ImmersiveContentArea extends StatelessWidget {
 class ImmersiveListArea extends StatefulWidget {
   final VoidCallback? onFocused;
   final void Function(int index)? onExecute;
-  final List<Movie> movies;
 
   const ImmersiveListArea(
-      {super.key, this.onFocused, this.onExecute, required this.movies});
+      {super.key, this.onFocused, this.onExecute});
 
   @override
   State<ImmersiveListArea> createState() => _ImmersiveListAreaState();

@@ -40,6 +40,12 @@ class _HomePageState extends State<HomePage> {
     _scrollController = widget.scrollController;
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _movies = context.read<MovieViewModel>().movies;
+  }
+
   void _handleModelUpdate() {
     _immersiveListModel.removeListener(_handleModelUpdate);
     setState(() {});
@@ -56,8 +62,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    _movies = context.watch<MovieViewModel>().movies;
-
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(
@@ -96,7 +100,6 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ImmersiveListArea(
-              movies: _movies,
               onFocused: () {
                 print('item 1 focused');
                 _scrollController.animateTo(
