@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/movie.dart';
+import 'package:tizen_fs/screens/mock_apps_page.dart';
 import 'package:tizen_fs/screens/mock_library_page.dart';
 import 'package:tizen_fs/utils/media_db_parser.dart';
 import 'package:tizen_fs/screens/search_page.dart';
-import 'sample_pages.dart';
 import 'home_page.dart';
 
 class TvPageView extends StatefulWidget {
