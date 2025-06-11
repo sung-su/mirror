@@ -368,7 +368,7 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
                     return Container(
                         clipBehavior: Clip.none,
                         margin: EdgeInsets.symmetric(horizontal: 10),
-                        child: MediaCard.fourCard(
+                        child: MediaCard.fiveCard(
                             key: key,
                             imageUrl:
                                 'assets/mock/images/${contents[index].card}',
