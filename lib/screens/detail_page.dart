@@ -32,7 +32,6 @@ class _DetailPageState extends State<DetailPage> {
   void _setBackdropState(int state) {
     if (_backdropState == state) return;
 
-    var renderBox = _backdropController.currentContext!.findRenderObject() as RenderBox;
     _backdropController.currentState!.status = state;
     _backdropState = state;
   }
@@ -41,8 +40,6 @@ class _DetailPageState extends State<DetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final RenderBox renderBox =
-          _scrollAnchor.currentContext!.findRenderObject() as RenderBox;
       _scrollAnchor.currentState
           ?.requestFocus(); // request focus on first element of the page
     });
@@ -117,8 +114,9 @@ class _DetailPageState extends State<DetailPage> {
                                       duration: Duration(milliseconds: 100),
                                       curve: Curves.easeInQuad
                                     );
-                                    if(_backdropState != 0)
+                                    if(_backdropState != 0) {
                                       _setBackdropState(3);
+                                    }
                                   }
                                 ),
                                 StarRating(rating: (movie.voteAverage / 2).toStringAsFixed(2)),
@@ -140,8 +138,9 @@ class _DetailPageState extends State<DetailPage> {
                                   duration: Duration(milliseconds: 100),
                                   curve: Curves.easeInQuad
                                 );
-                                if(_backdropState != 0)
+                                if(_backdropState != 0) {
                                   _setBackdropState(3);
+                                }
                               }
                             ),
                           ButtonList(
@@ -153,8 +152,9 @@ class _DetailPageState extends State<DetailPage> {
                                 duration: Duration(milliseconds: 100),
                                 curve: Curves.easeInQuad
                               );
-                              if(_backdropState != 0)
+                              if(_backdropState != 0) {
                                 _setBackdropState(3);
+                              }
                             }
                           ),
                           CastList(

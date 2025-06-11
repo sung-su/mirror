@@ -93,7 +93,7 @@ class ButtonListState extends State<ButtonList> {
   Widget _buildButton(int itemIndex, String? text, IconData? iconData, VoidCallback? callback) {
     _actions[itemIndex] = callback ?? (){};
 
-    if (text == null)
+    if (text == null) {
       return AnimatedScale(
       duration: Duration(milliseconds: 200),
       scale: (_hasFocus && itemIndex == _selectedIndex) ? 1.1 : 1,
@@ -113,6 +113,7 @@ class ButtonListState extends State<ButtonList> {
           ),
         ),
       );
+    }
 
     return AnimatedScale(
       duration: Duration(milliseconds: 200),

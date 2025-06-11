@@ -95,9 +95,7 @@ class _HomePageState extends State<HomePage> {
                 _immersiveAreaController
                     .setState(ImmersiveAreaController.headerFocused);
               },
-              onItemSelected: (index){
-                _pushDetailPage(index);
-              },
+              onItemSelected: _pushDetailPage,
             ),
             ImmersiveListArea(
               onFocused: () {
@@ -110,9 +108,7 @@ class _HomePageState extends State<HomePage> {
                 _immersiveAreaController
                     .setState(ImmersiveAreaController.immersiveListFocused);
               },
-              onExecute: (index) {
-                _pushDetailPage(index);
-              },
+              onExecute: _pushDetailPage,
             ),
             SizedBox(height: 20),
             ...List.generate(
@@ -138,9 +134,7 @@ class _HomePageState extends State<HomePage> {
                     curve: Curves.easeInQuad,
                   );
                 },
-                onItemSelected: (index) {
-                  _pushDetailPage(index);
-                },
+                onItemSelected: _pushDetailPage,
               ),
             ),
             CategoryList(
@@ -157,9 +151,7 @@ class _HomePageState extends State<HomePage> {
                   curve: Curves.easeInQuad,
                 );
               },
-              onItemSelected: (index) {
-                _pushDetailPage(index);
-              },
+              onItemSelected: _pushDetailPage,
             ),
             CategoryList(
               tiles: widget.categories[4].tiles,
@@ -175,9 +167,7 @@ class _HomePageState extends State<HomePage> {
                   curve: Curves.easeInQuad,
                 );
               },
-              onItemSelected: (index) {
-                _pushDetailPage(index);
-              },
+              onItemSelected: _pushDetailPage,
             ),
             Footer(
               scrollController: _scrollController,
