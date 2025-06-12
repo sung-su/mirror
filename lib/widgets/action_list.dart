@@ -5,8 +5,8 @@ import 'package:tizen_fs/models/movie.dart';
 import 'package:tizen_fs/screens/video_player_page.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
-class ButtonList extends StatefulWidget {
-  const ButtonList({
+class ActionList extends StatefulWidget {
+  const ActionList({
     super.key,
     required this.movie,
     this.onFocused,
@@ -17,9 +17,9 @@ class ButtonList extends StatefulWidget {
   
 
   @override
-  State<ButtonList> createState() => ButtonListState();
+  State<ActionList> createState() => ActionListState();
 }
-class ButtonListState extends State<ButtonList> {
+class ActionListState extends State<ActionList> {
   final FocusNode _focusNode = FocusNode();
 
   bool _hasFocus = false;

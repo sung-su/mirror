@@ -21,7 +21,7 @@ class VideoPlayerPage extends StatefulWidget {
   _VideoPlayerPageState createState() => _VideoPlayerPageState();
 }
 
-class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProviderStateMixin {
+class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProviderStateMixin, WidgetsBindingObserver  {
   late VideoPlayerController _controller;
   final FocusNode _focusNode = FocusNode();
   late AnimationController _iconAnimationController;
@@ -31,10 +31,12 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
   Timer? _overlayTimer;
   String? _seekDirection; // 'forward' or 'backward'
   bool _showControls = false;
+  Duration _currentPosition = Duration.zero;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     _controller = _isNetworkUrl(widget.videoUrl)
     ? VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
@@ -61,7 +63,30 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.paused) {
+      if (_controller.value.isPlaying) {
+        _controller.pause();
+      }
+    } else if (state == AppLifecycleState.resumed) {
+      if (!_controller.value.isInitialized) {
+        await _controller.initialize();
+      }
+      _controller.play();
+      _controller.seekTo(_currentPosition);
+      setState(() {_showControls = true;});
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    debugPrint('');
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     _focusNode.dispose();
     _iconAnimationController.dispose();
@@ -69,9 +94,9 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
   }
 
   void _seek(bool forward) {
-    final newPosition = _controller.value.position +
+    _currentPosition = _controller.value.position +
         Duration(seconds: forward ? 10 : -10);
-    _controller.seekTo(newPosition);
+    _controller.seekTo(_currentPosition);
     setState(() {
       _seekDirection = forward ? 'forward' : 'backward';
     });

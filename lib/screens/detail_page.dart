@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/movie.dart';
+import 'package:tizen_fs/router.dart';
 import 'package:tizen_fs/widgets/detail_footer.dart';
 import 'package:tizen_fs/widgets/flexible_title_detail.dart';
 import 'package:tizen_fs/widgets/rotten_rating.dart';
 import 'package:tizen_fs/widgets/video_backdrop.dart';
-import 'package:tizen_fs/widgets/button_list.dart';
+import 'package:tizen_fs/widgets/action_list.dart';
 import 'package:tizen_fs/widgets/age_rating.dart';
 import 'package:tizen_fs/widgets/cast_list.dart';
 import 'package:tizen_fs/widgets/review_list.dart';
@@ -21,10 +22,10 @@ class DetailPage extends StatefulWidget {
   State<DetailPage> createState() => _DetailPageState();
 }
 
-class _DetailPageState extends State<DetailPage> {
+class _DetailPageState extends State<DetailPage> with RouteAware {
   final ScrollController _scrollController =
       ScrollController(initialScrollOffset: 240);
-  final GlobalKey<ButtonListState> _scrollAnchor = GlobalKey<ButtonListState>();
+  final GlobalKey<ActionListState> _scrollAnchor = GlobalKey<ActionListState>();
   final GlobalKey<VideoBackdropState> _backdropController = GlobalKey<VideoBackdropState>();
 
   int _backdropState = 0;
@@ -48,7 +49,19 @@ class _DetailPageState extends State<DetailPage> {
   @override
   void dispose() {
     _scrollController.dispose();
+    routeObserver.unsubscribe(this);
     super.dispose();
+  }
+
+  @override
+  void didPushNext() {
+    _setBackdropState(3);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
   }
 
   @override
@@ -143,7 +156,7 @@ class _DetailPageState extends State<DetailPage> {
                                 }
                               }
                             ),
-                          ButtonList(
+                          ActionList(
                             key: _scrollAnchor,
                             movie: movie,
                             onFocused: () {

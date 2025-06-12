@@ -22,7 +22,7 @@ class VideoBackdrop extends StatefulWidget {
   State<VideoBackdrop> createState() => VideoBackdropState();
 }
 
-class VideoBackdropState extends State<VideoBackdrop> {
+class VideoBackdropState extends State<VideoBackdrop> with WidgetsBindingObserver{
   late VideoPlayerController _videoController;
 
   Timer? _inactivityTimer;
@@ -97,6 +97,7 @@ class VideoBackdropState extends State<VideoBackdrop> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     _videoController = _isNetworkUrl(widget.videoUrl)
     ? VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
@@ -108,9 +109,18 @@ class VideoBackdropState extends State<VideoBackdrop> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _inactivityTimer?.cancel();
     _videoController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.paused) {
+      if(status < 3)
+        status = 3;
+    }
   }
 
   @override
