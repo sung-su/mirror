@@ -357,7 +357,7 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
             ),
           ),
           SizedBox(
-              height: 115,
+              height: 90,
               child: SelectableListView(
                   key: _listViewKey,
                   padding:
