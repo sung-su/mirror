@@ -79,12 +79,6 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    debugPrint('');
-  }
-
-  @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
