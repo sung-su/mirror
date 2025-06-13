@@ -32,6 +32,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
   String? _seekDirection; // 'forward' or 'backward'
   bool _showControls = false;
   Duration _currentPosition = Duration.zero;
+  bool _isSeeking = false;
+  bool _isBuffering = false;
 
   @override
   void initState() {
@@ -42,9 +44,12 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
     ? VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
     : VideoPlayerController.asset(widget.videoUrl)
     ..initialize().then((_) {
-        setState(() {_showControls = true;});
+        setState(() {
+          _showControls = true;
+        });
         _controller.play();
       });
+
     _iconAnimationController = AnimationController(
       duration: Duration(milliseconds: 100),
       vsync: this,
@@ -57,6 +62,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
     );
 
     _controller.addListener(() => setState(() {}));
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });
@@ -73,34 +79,21 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
         await _controller.initialize();
       }
       _controller.play();
-      _controller.seekTo(_currentPosition);
-      setState(() {_showControls = true;});
+      await _controller.seekTo(_currentPosition);
+      setState(() {
+        _showControls = true;
+      });
     }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _overlayTimer?.cancel();
     _controller.dispose();
     _focusNode.dispose();
     _iconAnimationController.dispose();
     super.dispose();
-  }
-
-  void _seek(bool forward) {
-    _currentPosition = _controller.value.position +
-        Duration(seconds: forward ? 10 : -10);
-    _controller.seekTo(_currentPosition);
-    setState(() {
-      _seekDirection = forward ? 'forward' : 'backward';
-    });
-    _overlayTimer?.cancel();
-    _iconAnimationController.forward(from:0.0);
-    _overlayTimer = Timer(Duration(seconds: 1), () {
-      setState(() {
-        _seekDirection = null;
-      });
-    });
   }
 
   void _togglePlayPause() {
@@ -140,19 +133,66 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
         event.logicalKey == LogicalKeyboardKey.gameButtonA;
   }
 
+  void _forward(bool forward) {
+    if (_controller.value.isPlaying)
+      _controller.pause();
+
+    _isSeeking = true;
+    _currentPosition = _currentPosition + Duration(seconds: forward ? 10 : -10);
+
+    setState(() {
+      _seekDirection = forward ? 'forward' : 'backward';
+    });
+    _overlayTimer?.cancel();
+    _iconAnimationController.forward(from:0.0);
+    _overlayTimer = Timer(Duration(seconds: 1), () {
+      setState(() {
+        _seekDirection = null;
+      });
+    });
+  }
+
+  void _seek() async {
+    setState(() {
+      _isBuffering = true;
+    });
+
+    await _controller.seekTo(_currentPosition);
+
+    if (!_controller.value.isPlaying)
+      _controller.play();
+
+    setState(() {
+      _isBuffering = false;
+    });
+
+    _isSeeking = false;
+  }
+
   KeyEventResult _onKeyEvent(FocusNode focusNode, KeyEvent event) {
-    if (event is KeyDownEvent || event is KeyRepeatEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-        _seek(true);
-        return KeyEventResult.handled;
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-        _seek(false);
-        return KeyEventResult.handled;
-      } else if (_isSelectKey(event)) {
-        _togglePlayPause();
-        return KeyEventResult.handled;
+    if (!_isBuffering) {
+      if (event is KeyDownEvent || event is KeyRepeatEvent) {
+        if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+          _forward(true);
+          return KeyEventResult.handled;
+        } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+          _forward(false);
+          return KeyEventResult.handled;
+        } else if (_isSelectKey(event)) {
+          if (!_isSeeking)
+            _togglePlayPause();
+          return KeyEventResult.handled;
+        }
+      } else if (event is KeyUpEvent)
+      {
+        if (event.logicalKey == LogicalKeyboardKey.arrowRight
+        || event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+          _seek();
+          return KeyEventResult.handled;
+        }
       }
     }
+
     return KeyEventResult.ignored;
   }
 
@@ -173,6 +213,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
+    final position = _isSeeking ? _currentPosition : _controller.value.position;
+
     return Focus(
       focusNode: _focusNode,
       onKeyEvent: _onKeyEvent,
@@ -188,10 +230,13 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
                       child: VideoPlayer(_controller),
                     ),
                   ),
+                  if(_isBuffering)
+                    Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   if (!_showControls)
                     Center(
                       child: Container(
-                        // color: Colors.amber.withAlphaF(0.5),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
@@ -250,13 +295,9 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
                             padding: EdgeInsets.all(0)
                           ),
                           child: Slider(
-                            value: _controller.value.position.inSeconds
-                                .clamp(0, _controller.value.duration.inSeconds)
-                                .toDouble(),
+                            value : position.inSeconds.clamp(0, _controller.value.duration.inSeconds).toDouble(),
                             max: _controller.value.duration.inSeconds.toDouble(),
-                            onChanged: (value) {
-                              _controller.seekTo(Duration(seconds: value.toInt()));
-                            },
+                            onChanged: null,
                             activeColor: Colors.white,
                             inactiveColor: Colors.white24,
                           ),
@@ -265,7 +306,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              _formatDuration(_controller.value.position),
+                              _formatDuration(position),
                               style: TextStyle(color: Colors.white),
                             ),
                             Text(
