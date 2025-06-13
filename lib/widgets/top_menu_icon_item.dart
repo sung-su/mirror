@@ -6,10 +6,12 @@ class TopMenuIconItem extends StatelessWidget {
       {super.key,
       required this.icon,
       required this.isSelected,
-      required this.hasFocus});
+      required this.hasFocus,
+      this.onPressed});
   final bool isSelected;
   final IconData icon;
   final bool hasFocus;
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +34,7 @@ class TopMenuIconItem extends StatelessWidget {
           size: 17,
           color: isSelected ? $style.colors.surface : $style.colors.onSurface,
         ),
-        onPressed: () {
-          debugPrint('IconButton pressed');
-        },
+        onPressed: () => onPressed?.call(),
         style: IconButton.styleFrom(
             backgroundColor: isSelected
                 ? (hasFocus

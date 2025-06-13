@@ -146,6 +146,10 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
                 imageUrl: null,
                 text: pages[0],
                 isSelected: 0 == _selected,
+                onPressed: () {
+                  Focus.of(context).requestFocus();
+                  setSelected(0);
+                },
               ),
               SizedBox(
                 width: 15,
@@ -153,15 +157,27 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
               TopMenuButtonItem(
                   text: pages[1],
                   isSelected: 1 == _selected,
-                  isFocused: Focus.of(context).hasFocus),
+                  isFocused: Focus.of(context).hasFocus,
+                  onPressed: () {
+                    Focus.of(context).requestFocus();
+                    setSelected(1);
+                  }),
               TopMenuButtonItem(
                   text: pages[2],
                   isSelected: 2 == _selected,
-                  isFocused: Focus.of(context).hasFocus),
+                  isFocused: Focus.of(context).hasFocus,
+                  onPressed: () {
+                    Focus.of(context).requestFocus();
+                    setSelected(2);
+                  }),
               TopMenuButtonItem(
                   text: pages[3],
                   isSelected: 3 == _selected,
-                  isFocused: Focus.of(context).hasFocus),
+                  isFocused: Focus.of(context).hasFocus,
+                  onPressed: () {
+                    Focus.of(context).requestFocus();
+                    setSelected(3);
+                  }),
               const Spacer(),
               Row(
                 spacing: 10,
@@ -170,11 +186,19 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
                     icon: Icons.search,
                     isSelected: 4 == _selected,
                     hasFocus: Focus.of(context).hasFocus,
+                    onPressed: () {
+                      Focus.of(context).requestFocus();
+                      setSelected(4);
+                    }
                   ),
                   TopMenuIconItem(
                     icon: Icons.settings_outlined,
                     isSelected: 5 == _selected,
                     hasFocus: Focus.of(context).hasFocus,
+                    onPressed: () {
+                      Focus.of(context).requestFocus();
+                      setSelected(5);
+                    }
                   ),
                   Text(
                     'TizenTV',

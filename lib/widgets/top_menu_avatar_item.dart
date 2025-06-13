@@ -3,10 +3,11 @@ import 'package:tizen_fs/styles/app_style.dart';
 
 class TopMenuAvatarItem extends StatelessWidget {
   const TopMenuAvatarItem(
-      {super.key, this.imageUrl, this.isSelected = false, this.text});
+      {super.key, this.imageUrl, this.isSelected = false, this.text, this.onPressed});
   final bool isSelected;
   final String? imageUrl;
   final String? text;
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +24,7 @@ class TopMenuAvatarItem extends StatelessWidget {
           ]
         ),
         child: GestureDetector(
-            onTap: () {
-            },
+            onTap: () => onPressed?.call(),
             child: CircleAvatar(
               backgroundColor: Colors.brown.shade800,
               backgroundImage:
