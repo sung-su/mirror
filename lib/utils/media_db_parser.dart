@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:tizen_fs/models/category.dart';
 import 'package:tizen_fs/models/tile.dart';
 
-class MediaDBParser {
+class MediaDBParser extends ChangeNotifier {
   static const String dbPath = 'assets/sqlite.db';
   //'/home/owner/apps_rw/com.samsung.tv.home.media/shared/trusted/sqlite.db';
   final Map<String, Category> _categoryMap = {};
@@ -29,6 +29,7 @@ class MediaDBParser {
     await _loadCategories();
     await close();
     _initialized = true;
+    notifyListeners();
   }
 
   Future<void> _ensureDBOpen() async {

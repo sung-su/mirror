@@ -16,8 +16,10 @@ class _MockAppsPageState extends State<MockAppsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<BackdropProvider>(context, listen: false)
-          .updateBackdrop(null);
+      if (mounted) {
+        Provider.of<BackdropProvider>(context, listen: false)
+            .updateBackdrop(null);
+      }
     });
   }
 
