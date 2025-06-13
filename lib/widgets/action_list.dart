@@ -49,16 +49,16 @@ class ActionListState extends State<ActionList> {
 
     if (_hasFocus) {
       widget.onFocused?.call();
-      Enable(true);
+      enable(true);
     }
   }
 
   void requestFocus(){
     _focusNode.requestFocus();
-    Enable(true);
+    enable(true);
   }
 
-  void Enable(bool enable) {
+  void enable(bool enable) {
     setState(() {
       _isEnabled = enable;
     });

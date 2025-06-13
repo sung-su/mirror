@@ -179,7 +179,7 @@ class _DetailPageState extends State<DetailPage> with RouteAware {
                                 duration: Duration(milliseconds: 100),
                                 curve: Curves.easeInQuad
                               );
-                              _scrollAnchor.currentState?.Enable(false);
+                              _scrollAnchor.currentState?.enable(false);
                               _setBackdropState(4);
                             }
                           ),
