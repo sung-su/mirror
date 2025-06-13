@@ -23,6 +23,7 @@ class ActionListState extends State<ActionList> {
   final FocusNode _focusNode = FocusNode();
 
   bool _hasFocus = false;
+  bool _isEnabled = true;
   int _itemCount = 5;
   int _selectedIndex = 0;
   Map<int, VoidCallback> _actions = Map<int, VoidCallback>()  ;
@@ -48,11 +49,19 @@ class ActionListState extends State<ActionList> {
 
     if (_hasFocus) {
       widget.onFocused?.call();
+      Enable(true);
     }
   }
 
   void requestFocus(){
     _focusNode.requestFocus();
+    Enable(true);
+  }
+
+  void Enable(bool enable) {
+    setState(() {
+      _isEnabled = enable;
+    });
   }
 
   KeyEventResult _onKeyEvent(FocusNode focusNode, KeyEvent event) {
@@ -157,25 +166,29 @@ class ActionListState extends State<ActionList> {
     return Focus(
       focusNode: _focusNode,
       onKeyEvent: _onKeyEvent,
-      child: Container(
-        padding: EdgeInsets.only(left: 58),
-        child: Row(
-          spacing: 10,
-          children: [
-            _blurEffect(_buildButton(0, 'Trailer', Icons.live_tv_rounded, () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => VideoPlayerPage(title: widget.movie.title, videoUrl: widget.movie.backdropVideoUrl),
-                ));
-            })),
-            _blurEffect(_buildButton(1, 'Buy  \$10.0', null, null)),
-            _blurEffect(_buildButton(2, 'Watchlist', Icons.bookmark_border_outlined, null)),
-            _blurEffect(_buildButton(3, null, (_selectedIndex < 3) ? Icons.thumbs_up_down_sharp : Icons.thumb_up_sharp, null)),
-            if(_selectedIndex >= 3) 
-              _blurEffect(_buildButton(4, null, Icons.thumb_down_sharp, null))
-          ]
-        )
+      child: AnimatedOpacity(
+        opacity: _isEnabled ? 1.0 : 0.6,
+        duration: const Duration(milliseconds: 300),
+        child: Container(
+          padding: EdgeInsets.only(left: 58),
+          child: Row(
+            spacing: 10,
+            children: [
+              _blurEffect(_buildButton(0, 'Trailer', Icons.live_tv_rounded, () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VideoPlayerPage(title: widget.movie.title, videoUrl: widget.movie.backdropVideoUrl),
+                  ));
+              })),
+              _blurEffect(_buildButton(1, 'Buy  \$10.0', null, null)),
+              _blurEffect(_buildButton(2, 'Watchlist', Icons.bookmark_border_outlined, null)),
+              _blurEffect(_buildButton(3, null, (_selectedIndex < 3) ? Icons.thumbs_up_down_sharp : Icons.thumb_up_sharp, null)),
+              if(_selectedIndex >= 3)
+                _blurEffect(_buildButton(4, null, Icons.thumb_down_sharp, null))
+            ]
+          )
+        ),
       ),
     );
   }

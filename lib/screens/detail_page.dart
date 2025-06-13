@@ -175,10 +175,11 @@ class _DetailPageState extends State<DetailPage> with RouteAware {
                             casts: movie.cast,
                             onFocused: () {
                               _scrollController.animateTo(
-                                660, 
+                                690,
                                 duration: Duration(milliseconds: 100),
                                 curve: Curves.easeInQuad
                               );
+                              _scrollAnchor.currentState?.Enable(false);
                               _setBackdropState(4);
                             }
                           ),
@@ -187,7 +188,7 @@ class _DetailPageState extends State<DetailPage> with RouteAware {
                             similars: movie.similars,
                             onFocused: () {
                               _scrollController.animateTo(
-                                660 + 178 * 1, 
+                                690 + 178 * 1,
                                 duration: Duration(milliseconds: 100),
                                 curve: Curves.easeInQuad
                               );
@@ -199,7 +200,7 @@ class _DetailPageState extends State<DetailPage> with RouteAware {
                             videos: movie.videos,
                             onFocused: () {
                               _scrollController.animateTo(
-                                660 + 178 * 2, 
+                                690 + 178 * 2,
                                 duration: Duration(milliseconds: 100),
                                 curve: Curves.easeInQuad
                               );

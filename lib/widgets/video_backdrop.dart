@@ -137,16 +137,23 @@ class VideoBackdropState extends State<VideoBackdrop> with WidgetsBindingObserve
                 child: VideoPlayer(_videoController),
               )
             : (_isEffectOn) ? 
-            ImageFiltered(
-              imageFilter: ImageFilter.blur(
-                sigmaX: 5,
-                sigmaY: 5,
-              ),
-              child: CachedNetworkImage(
-                imageUrl: widget.imageUrl,
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-                fit: BoxFit.cover
-              ),
+            Stack(
+              children: [
+                ImageFiltered(
+                  imageFilter: ImageFilter.blur(
+                    sigmaX: 40,
+                    sigmaY: 40,
+                  ),
+                  child: CachedNetworkImage(
+                    imageUrl: widget.imageUrl,
+                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                    fit: BoxFit.cover
+                  ),
+                ),
+                Container(
+                  color: Colors.black.withAlphaF(0.2)
+                ),
+              ]
             )
             : CachedNetworkImage(
               imageUrl: widget.imageUrl,
