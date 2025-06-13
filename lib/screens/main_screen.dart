@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
 import 'home_top_menu.dart';
-import 'tab_pageview.dart';
+import 'home_content_view.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class MainScreen extends StatelessWidget {
+  const MainScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BackdropScaffold(child: const HomeContent());
+    return BackdropScaffold(child: const MainContent());
   }
 }
 
-class HomeContent extends StatefulWidget {
-  const HomeContent({super.key});
+class MainContent extends StatefulWidget {
+  const MainContent({super.key});
 
   @override
-  State<HomeContent> createState() => _HomeContentState();
+  State<MainContent> createState() => _MainContentState();
 }
 
-class _HomeContentState extends State<HomeContent> {
+class _MainContentState extends State<MainContent> {
   final ScrollController _scrollController = ScrollController();
   final PageController _pageController = PageController(initialPage: 0);
 
@@ -52,7 +52,7 @@ class _HomeContentState extends State<HomeContent> {
           ),
         ),
         SliverToBoxAdapter(
-          child: TvPageView(
+          child: HomeContentView(
               pageController: _pageController,
               scrollController: _scrollController,
           )

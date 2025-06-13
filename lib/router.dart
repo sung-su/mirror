@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tizen_fs/screens/home_screen.dart';
+import 'package:tizen_fs/screens/main_screen.dart';
 import 'package:tizen_fs/poc/poc_gallery.dart';
 
 class ScreenPaths {
-  static const String home = '/';
+  static const String main = '/';
   static const String poc = '/poc';
 }
 
@@ -15,8 +15,8 @@ class AppRouter {
   static final router = GoRouter(
     routes: [
       GoRoute(
-        path: ScreenPaths.home,
-        builder: (context, state) => const HomeScreen(),
+        path: ScreenPaths.main,
+        builder: (context, state) => const MainScreen(),
       ),
       GoRoute(
         path: ScreenPaths.poc,

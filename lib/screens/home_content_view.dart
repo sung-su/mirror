@@ -9,8 +9,8 @@ import 'package:tizen_fs/utils/media_db_parser.dart';
 import 'package:tizen_fs/screens/search_page.dart';
 import 'home_page.dart';
 
-class TvPageView extends StatefulWidget {
-  const TvPageView({
+class HomeContentView extends StatefulWidget {
+  const HomeContentView({
     super.key,
     required this.pageController,
     required this.scrollController,
@@ -20,10 +20,10 @@ class TvPageView extends StatefulWidget {
   final ScrollController scrollController;
 
   @override
-  State<TvPageView> createState() => _TvPageViewState();
+  State<HomeContentView> createState() => _HomeContentViewState();
 }
 
-class _TvPageViewState extends State<TvPageView> {
+class _HomeContentViewState extends State<HomeContentView> {
   late final PageController _controller;
   double _currentPage = 0;
 

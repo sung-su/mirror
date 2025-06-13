@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
 import 'package:tizen_fs/screens/home_top_menu.dart';
-import 'package:tizen_fs/screens/tab_pageview.dart';
+import 'package:tizen_fs/screens/home_content_view.dart';
 
 class TabPocPage extends StatelessWidget {
   const TabPocPage({super.key});
@@ -51,7 +51,7 @@ class _HomeContentState extends State<HomeContent> {
           ),
         ),
         SliverToBoxAdapter(
-          child: TvPageView(
+          child: HomeContentView(
               pageController: _pageController,
               scrollController: _scrollController,
           )
