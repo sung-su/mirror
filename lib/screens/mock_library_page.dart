@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tizen_fs/main.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
 class MockLibraryPage extends StatelessWidget {

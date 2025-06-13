@@ -1,8 +1,5 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
-import 'package:tizen_fs/main.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
 class ReviewCard extends StatelessWidget {

@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:tizen_fs/main.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
 enum MediaCardRatio {

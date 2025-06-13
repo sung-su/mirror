@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:tizen_fs/main.dart';
-import 'package:tizen_fs/poc/setting_panel_poc.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/router.dart';
-import 'package:tizen_fs/styles/app_style.dart';
+import 'package:tizen_fs/widgets/top_menu_avatar_item.dart';
+import 'package:tizen_fs/widgets/top_menu_button_item.dart';
+import 'package:tizen_fs/widgets/top_menu_icon_item.dart';
 import 'account_panel.dart';
+import 'setting_panel.dart';
 
-class TvTabbar extends StatefulWidget {
-  const TvTabbar({
+class HomeTopMenu extends StatefulWidget {
+  const HomeTopMenu({
     super.key,
     required this.pageController,
   });
@@ -17,10 +18,10 @@ class TvTabbar extends StatefulWidget {
   final PageController pageController;
 
   @override
-  State<TvTabbar> createState() => _TvTabbarState();
+  State<HomeTopMenu> createState() => _HomeTopMenuState();
 }
 
-class _TvTabbarState extends State<TvTabbar> {
+class _HomeTopMenuState extends State<HomeTopMenu> {
   final List<String> pages = ['QA', 'Home', 'Apps', 'Library'];
   final int _itemCount = 6;
 
@@ -141,7 +142,7 @@ class _TvTabbarState extends State<TvTabbar> {
           padding: const EdgeInsets.fromLTRB(43, 20, 48, 0),
           child: Row(
             children: [
-              TvAvatar(
+              TopMenuAvatarItem(
                 imageUrl: null,
                 text: pages[0],
                 isSelected: 0 == _selected,
@@ -149,15 +150,15 @@ class _TvTabbarState extends State<TvTabbar> {
               SizedBox(
                 width: 15,
               ),
-              TvTab(
+              TopMenuButtonItem(
                   text: pages[1],
                   isSelected: 1 == _selected,
                   isFocused: Focus.of(context).hasFocus),
-              TvTab(
+              TopMenuButtonItem(
                   text: pages[2],
                   isSelected: 2 == _selected,
                   isFocused: Focus.of(context).hasFocus),
-              TvTab(
+              TopMenuButtonItem(
                   text: pages[3],
                   isSelected: 3 == _selected,
                   isFocused: Focus.of(context).hasFocus),
@@ -165,12 +166,12 @@ class _TvTabbarState extends State<TvTabbar> {
               Row(
                 spacing: 10,
                 children: [
-                  TvTabIcon(
+                  TopMenuIconItem(
                     icon: Icons.search,
                     isSelected: 4 == _selected,
                     hasFocus: Focus.of(context).hasFocus,
                   ),
-                  TvTabIcon(
+                  TopMenuIconItem(
                     icon: Icons.settings_outlined,
                     isSelected: 5 == _selected,
                     hasFocus: Focus.of(context).hasFocus,
@@ -197,123 +198,4 @@ class _TvTabbarState extends State<TvTabbar> {
       }
       Provider.of<BackdropProvider>(context, listen: false).isZoomIn = hasFocus;
     }
-}
-
-class TvAvatar extends StatelessWidget {
-  const TvAvatar(
-      {super.key, this.imageUrl, this.isSelected = false, this.text});
-  final bool isSelected;
-  final String? imageUrl;
-  final String? text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        width: 30,
-        height: 30,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          boxShadow:[
-            BoxShadow(
-              color: isSelected ? $style.colors.onSurface : Colors.transparent,
-              spreadRadius: 2,
-            )
-          ]
-        ),
-        child: GestureDetector(
-            onTap: () {
-              // This will be executed when the CircleAvatar is pressed
-              print('CircleAvatar was pressed!');
-            },
-            child: CircleAvatar(
-              backgroundColor: Colors.brown.shade800,
-              backgroundImage:
-                  imageUrl != null ? NetworkImage(imageUrl!) : null,
-              child: (imageUrl == null && text != null) ? Text(text!) : null,
-            )));
-  }
-}
-
-class TvTab extends StatelessWidget {
-  const TvTab({super.key,
-      required this.text,
-      required this.isSelected,
-      required this.isFocused});
-  final bool isSelected;
-  final bool isFocused;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: isSelected
-            ? (isFocused
-                ? Colors.white.withAlphaF(0.9)
-                : Colors.white.withAlphaF(0.15))
-            : Colors.transparent,
-        borderRadius: isSelected ? BorderRadius.circular(30) : BorderRadius.zero,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 10),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 16,
-            color: isFocused
-              ? (isSelected
-                  ? $style.colors.surface
-                  : $style.colors.onSurface)
-              : $style.colors.onSurface.withAlphaF(0.8),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class TvTabIcon extends StatelessWidget {
-  const TvTabIcon(
-      {super.key,
-      required this.icon,
-      required this.isSelected,
-      required this.hasFocus});
-  final bool isSelected;
-  final IconData icon;
-  final bool hasFocus;
-
-  @override
-  Widget build(BuildContext context) {
-    debugPrint('_TabButtonState.build()');
-    return Container(
-      height: 30,
-      width: 30,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: isSelected ? $style.colors.onSurface : Colors.transparent,
-            spreadRadius: 1,
-          )
-        ]
-      ),
-      child: IconButton(
-        padding: EdgeInsets.all(0.0),
-        icon: Icon(
-          icon,
-          size: 17,
-          color: isSelected ? $style.colors.surface : $style.colors.onSurface,
-        ),
-        onPressed: () {
-          debugPrint('IconButton pressed');
-        },
-        style: IconButton.styleFrom(
-            backgroundColor: isSelected
-                ? (hasFocus
-                    ? $style.colors.onPrimaryContainer.withAlphaF(0.8)
-                    : $style.colors.onPrimaryContainer.withAlphaF(0.3))
-                : $style.colors.onPrimaryContainer.withAlphaF(0.3)),
-      ),
-    );
-  }
 }

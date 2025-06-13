@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
-import 'tab_bar.dart';
+import 'home_top_menu.dart';
 import 'tab_pageview.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -47,7 +47,7 @@ class _HomeContentState extends State<HomeContent> {
           automaticallyImplyLeading: false,
           toolbarHeight: 80,
           backgroundColor: Colors.transparent,
-          title: TvTabbar(
+          title: HomeTopMenu(
             pageController: _pageController,
           ),
         ),

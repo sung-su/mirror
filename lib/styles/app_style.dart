@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+AppStyle get $style => AppStyle.instance;
+
 class AppStyle {
   static final AppStyle _instance = AppStyle();
   static AppStyle get instance => _instance;

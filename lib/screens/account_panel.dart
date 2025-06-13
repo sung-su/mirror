@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tizen_fs/poc/setting_panel_poc.dart';
 import 'package:tizen_fs/router.dart';
-import 'package:tizen_fs/screens/tab_bar.dart';
 import 'package:tizen_fs/styles/app_style.dart';
+import 'package:tizen_fs/widgets/top_menu_avatar_item.dart';
 
 class AccountPanel extends StatefulWidget {
+  const AccountPanel({super.key});
 
   @override
   State<AccountPanel> createState() => _AccountPanelState();
@@ -64,7 +64,7 @@ class _AccountPanelState extends State<AccountPanel> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TvAvatar(
+                    TopMenuAvatarItem(
                       imageUrl: null,
                       text: 'QA',
                       isSelected: _iconSelected,

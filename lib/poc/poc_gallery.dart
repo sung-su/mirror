@@ -11,7 +11,6 @@ import 'setting_panel_poc.dart';
 import 'immersive_list_poc.dart';
 import 'tab_poc.dart';
 import 'youtube_poc.dart';
-import 'youtube_poc.dart';
 
 class PocGalleryPage extends StatelessWidget {
   const PocGalleryPage({super.key, required this.title});

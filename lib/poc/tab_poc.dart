@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
-import 'package:tizen_fs/screens/tab_bar.dart';
+import 'package:tizen_fs/screens/home_top_menu.dart';
 import 'package:tizen_fs/screens/tab_pageview.dart';
 
 class TabPocPage extends StatelessWidget {
@@ -46,7 +46,7 @@ class _HomeContentState extends State<HomeContent> {
           automaticallyImplyLeading: false,
           toolbarHeight: 80,
           backgroundColor: Colors.transparent,
-          title: TvTabbar(
+          title: HomeTopMenu(
             pageController: _pageController,
           ),
         ),

@@ -51,5 +51,3 @@ class TizenFS extends StatelessWidget {
     );
   }
 }
-
-AppStyle get $style => AppStyle.instance;
