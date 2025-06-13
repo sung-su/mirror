@@ -18,7 +18,7 @@ class VideoPlayerPage extends StatefulWidget {
 
 
   @override
-  _VideoPlayerPageState createState() => _VideoPlayerPageState();
+  State<VideoPlayerPage> createState() => _VideoPlayerPageState();
 }
 
 class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProviderStateMixin, WidgetsBindingObserver  {
@@ -158,14 +158,12 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
 
   IconData _getIconData()
   {
-    if(_seekDirection == 'forward')
-      return Icons.forward_10;
-    else if(_seekDirection == 'backward')
-      return Icons.replay_10;
-    else if(_seekDirection == 'pause')
-      return Icons.pause;
-    else
-      return Icons.play_arrow;
+    return switch (_seekDirection) {
+      'forward' => Icons.forward_10,
+      'backward' => Icons.replay_10,
+      'pause' => Icons.pause,
+      _ => Icons.play_arrow,
+    };
   }
 
   bool _isNetworkUrl(String input) {

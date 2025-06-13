@@ -16,8 +16,4 @@ class BackdropProvider extends ChangeNotifier {
     _isZoomin = value;
     notifyListeners();
   }
-
-  void test() {
-    print ('test hello');
-  }
 }
