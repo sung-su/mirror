@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
@@ -146,6 +147,7 @@ class MediaDBParser extends ChangeNotifier {
           if (elementID == 'd/dhcategory.layer.tile') {
             final contentDetail =
                 Map<String, dynamic>.from(uiJson['content_detail'] ?? {});
+            contentDetail['duration'] = "${(Random().nextInt(30).toString().padLeft(2, '0'))}:${(Random().nextInt(59).toString().padLeft(2, '0'))}";
             return Tile(
                 uid: uid,
                 parentUID: parentUID,

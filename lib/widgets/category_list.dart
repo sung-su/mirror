@@ -7,6 +7,7 @@ import 'package:tizen_fs/models/tile.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/media_card.dart';
+import 'package:tizen_fs/widgets/selectable_listview.dart';
 
 enum ColumnCount { one, two, three, four, six, nine }
 
@@ -18,6 +19,7 @@ class CategoryList extends StatefulWidget {
   final String title;
   final String icon;
   final bool timeStamp;
+  final bool isCircle;
 
   const CategoryList({
     super.key,
@@ -28,6 +30,7 @@ class CategoryList extends StatefulWidget {
     this.title = '',
     this.icon = '',
     this.timeStamp = false,
+    this.isCircle = false,
   });
 
   @override
@@ -37,67 +40,44 @@ class CategoryList extends StatefulWidget {
 class _CategoryListState extends State<CategoryList> {
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
-  late List<GlobalKey> _itemKeys;
+  final GlobalKey<SelectableListViewState> _listViewKey =
+      GlobalKey<SelectableListViewState>();
+
   late String _title;
 
-  int _columns = 4;
   bool _hasFocus = false;
   int _itemCount = 0;
   int _selectedIndex = 0;
-  double _peekPadding = 58;
+  static const double _horizontalPadding = 58;
   double _itemWidth = 196;
   double _itemHeight = 110;
-  Color _extractColor = Colors.white;
-  bool _isCircleShape = false;
-  double _titleFontSize = 14;
-  double _subTitleFontSize = 12;
-  double _subHeadingFontSize = 12;
+  final Color _extractColor = Colors.white;
+  static const double _titleFontSize = 14;
   bool _timeStamp = false;
 
-  double _listHeightExtended = 70;
+  double _extendedListHeight = 70;
   double _listHeight = 20;
+
+  static const double _titleHeight = 38;
+  static const double _extendedTitleHeight = 58;
 
   void calculateItemSize() {
     if (widget.columns == ColumnCount.nine) {
       _itemWidth = 80;
-      _itemHeight = 80;
-      _isCircleShape = true;
-      _columns = 9;
-      // TODO: to update fixed value for colums
-      _listHeightExtended = _itemHeight * 1.7;
-      _listHeight = _itemHeight * 1.3;
     } else if (widget.columns == ColumnCount.six) {
       _itemWidth = 124;
-      _itemHeight = 124;
-      _isCircleShape = true;
-      _columns = 6;
-      _listHeightExtended = _itemHeight * 1.7;
-      _listHeight = _itemHeight * 1.3;
     } else if (widget.columns == ColumnCount.three) {
       _itemWidth = 268;
-      _itemHeight = 150;
-      _columns = 3;
-      _listHeightExtended = _itemHeight * 1.7;
-      _listHeight = _itemHeight * 1.3;
     } else if (widget.columns == ColumnCount.two) {
       _itemWidth = 412;
-      _itemHeight = 230;
-      _columns = 2;
-      _listHeightExtended = _itemHeight * 1.7;
-      _listHeight = _itemHeight * 1.3;
     } else if (widget.columns == ColumnCount.one) {
       _itemWidth = 844;
-      _itemHeight = 470;
-      _columns = 1;
-      _listHeightExtended = _itemHeight * 1.7;
-      _listHeight = _itemHeight * 1.3;
     } else {
       _itemWidth = 196;
-      _itemHeight = 110;
-      _columns = 4;
-      _listHeightExtended = _itemHeight + 70;
-      _listHeight = _itemHeight + 20;
     }
+    _itemHeight = (_itemWidth * (widget.isCircle ? 1 : 9 / 16)).roundToDouble();
+    _extendedListHeight = _itemHeight * 1.7;
+    _listHeight = (_itemHeight * 1.3).roundToDouble();
   }
 
   bool checkLabelVisible(int order, bool selected) {
@@ -108,22 +88,19 @@ class _CategoryListState extends State<CategoryList> {
     if (!_hasFocus) {
       return false;
     } else {
-      if (_columns == 3) {
+      if (widget.columns == ColumnCount.three) {
         return true;
-      } else if (_columns > 5) {
+      } else if (widget.columns == ColumnCount.six || widget.columns == ColumnCount.nine) {
         title = true;
-        subTitle = _columns == 6 ? true : false;
-        subHeading = false;
+        subTitle = widget.columns == ColumnCount.six;
       } else {
         //columns == 4
         if (selected) {
           title = true;
           subTitle = true;
-          subHeading = false;
         } else {
           title = false;
           subTitle = true;
-          subHeading = false;
         }
       }
     }
@@ -140,7 +117,6 @@ class _CategoryListState extends State<CategoryList> {
     _focusNode.addListener(_onFocusChanged);
     _itemCount = widget.tiles.length;
     _selectedIndex = 0;
-    _itemKeys = List.generate(_itemCount, (index) => GlobalKey());
     _title = widget.title;
     _timeStamp = widget.timeStamp;
   }
@@ -157,7 +133,6 @@ class _CategoryListState extends State<CategoryList> {
     setState(() {
       _hasFocus = _focusNode.hasFocus;
     });
-    _scrollToSelected(100, true);
 
     if (_hasFocus) {
       widget.onFocused?.call();
@@ -171,23 +146,14 @@ class _CategoryListState extends State<CategoryList> {
 
   KeyEventResult _onKeyEvent(FocusNode focusNode, KeyEvent event) {
     if (event is KeyDownEvent || event is KeyRepeatEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.arrowLeft &&
-          _selectedIndex > 0) {
-        setState(() {
-          _selectedIndex = (_selectedIndex - 1).clamp(0, _itemCount - 1);
-        });
-        _scrollToSelected(event is KeyRepeatEvent ? 1 : 100,
-            event is KeyRepeatEvent ? false : true);
+      if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+        _prev(event is KeyRepeatEvent);
         return KeyEventResult.handled;
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
-          _selectedIndex < _itemCount - 1) {
-        setState(() {
-          _selectedIndex = (_selectedIndex + 1).clamp(0, _itemCount - 1);
-        });
-        _scrollToSelected(event is KeyRepeatEvent ? 1 : 100,
-            event is KeyRepeatEvent ? false : true);
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+        _next(event is KeyRepeatEvent);
         return KeyEventResult.handled;
-      } else if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.select) {
+      } else if (event.logicalKey == LogicalKeyboardKey.enter ||
+          event.logicalKey == LogicalKeyboardKey.select) {
         widget.onItemSelected?.call(_selectedIndex);
         return KeyEventResult.handled;
       }
@@ -195,30 +161,40 @@ class _CategoryListState extends State<CategoryList> {
     return KeyEventResult.ignored;
   }
 
-  Future<void> _scrollToSelected(
-      int durationMilliseconds, bool backdrop) async {
-    if (_itemKeys[_selectedIndex].currentContext != null) {
-      int current = _selectedIndex;
-      final RenderBox box = _itemKeys[_selectedIndex]
-          .currentContext!
-          .findRenderObject() as RenderBox;
-      final Offset position = box.localToGlobal(Offset.zero);
+  Future<void> _next(bool fast) async {
+    if (_selectedIndex >= _itemCount - 1) {
+      return;
+    }
+    var moved = await _listViewKey.currentState?.next(fast: fast);
+    _selectedIndex = moved ?? _selectedIndex;
 
-      await _scrollController.animateTo(
-        position.dx + _scrollController.offset - _peekPadding,
-        duration: Duration(milliseconds: backdrop ? durationMilliseconds : 1),
-        curve: Curves.easeInOut,
-      );
+    final current = _selectedIndex;
 
-      if (backdrop) {
-        await Future.delayed(Duration(milliseconds: 300));
-        if (current == _selectedIndex && _hasFocus) {
-          Provider.of<BackdropProvider>(context, listen: false)
-              .updateBackdrop(getSelectedBackdrop());
-        }
+    await Future.delayed(const Duration(milliseconds: 300));
+
+    if (current == _selectedIndex) {
+      if (mounted) {
+        Provider.of<BackdropProvider>(context, listen: false)
+            .updateBackdrop(getSelectedBackdrop());
       }
-    } else {
-      print("Item $_selectedIndex is not in the widget tree");
+    }
+  }
+
+  Future<void> _prev(bool fast) async {
+    if (_selectedIndex <= 0) {
+      return;
+    }
+    var moved = await _listViewKey.currentState?.previous(fast: fast);
+    _selectedIndex = moved ?? _selectedIndex;
+    final current = _selectedIndex;
+
+    await Future.delayed(const Duration(milliseconds: 300));
+
+    if (current == _selectedIndex) {
+      if (mounted) {
+        Provider.of<BackdropProvider>(context, listen: false)
+            .updateBackdrop(getSelectedBackdrop());
+      }
     }
   }
 
@@ -247,78 +223,42 @@ class _CategoryListState extends State<CategoryList> {
       onKeyEvent: _onKeyEvent,
       child: Column(
         children: [
-          //list title
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(70, 10, 70, 8),
-              child: SizedBox(
-                height: _hasFocus ? 40 : 20,
-                child: AnimatedScale(
-                    scale: _hasFocus ? 1.7 : 1.0,
-                    duration: const Duration(milliseconds: 100),
-                    alignment: Alignment.centerLeft,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      spacing: 5,
-                      children: [
-                        if (widget.icon.isNotEmpty)
-                          SizedBox(
-                            width: 25,
-                            height: 17,
-                            child: _buildTileImage(widget.icon),
-                          ),
-                        if (_title.isNotEmpty)
-                          Text(_title,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontSize: _titleFontSize,
-                                color: _hasFocus
-                                    ? Colors.white
-                                        .withAlpha((255 * 0.7).toInt())
-                                    : Colors.grey,
-                              )),
-                      ],
-                    )),
-              ),
-            ),
-          ),
+          //title
+          _buildTitle(),
           //list
           SizedBox(
-            height: _hasFocus ? _listHeightExtended : _listHeight,
-            child: ScrollConfiguration(
-              behavior: ScrollBehavior()
-                  .copyWith(scrollbars: false, overscroll: false),
-              child: AnimatedOpacity(
-                opacity: _hasFocus ? 1.0 : 0.3,
-                duration: const Duration(milliseconds: 100),
-                child: ListView.builder(
-                  //peek space
-                  padding:
-                      EdgeInsets.only(left: _peekPadding, right: _peekPadding),
-                  clipBehavior: Clip.none,
-                  controller: _scrollController,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _itemCount,
-                  itemBuilder: (context, index) {
-                    if (true) {
-                      return Container(
-                        margin: EdgeInsets.all(10),
-                        child: MediaCard(
-                          key: _itemKeys[index],
-                          width: _itemWidth,
-                          imageUrl: widget.tiles[index].iconUrl!,
-                          isSelected: _hasFocus && index == _selectedIndex,
-                          ratio: _isCircleShape ? MediaCardRatio.square : MediaCardRatio.wide,
-                          shadowColor: _extractColor.withAlphaF(0.7),
-                          title: checkLabelVisible(1, index == _selectedIndex) ? widget.tiles[index].title : null,
-                          subtitle: checkLabelVisible(2, index == _selectedIndex) ? getSubtitle(index) : null,
-                          description: checkLabelVisible(3, index == _selectedIndex) ? widget.tiles[index].details['price'] ?? 'subHeading' : null,
-                        ),
-                      );
-                    }
-                  },
-                ),
-              ),
+            height: _hasFocus ? _extendedListHeight : _listHeight,
+            child: SelectableListView(
+              key: _listViewKey,
+              itemCount: _itemCount,
+              padding: EdgeInsets.symmetric(horizontal: _horizontalPadding),
+              itemBuilder: (context, index, selectedIndex, key) {
+                return Container(
+                  margin: EdgeInsets.all(10),
+                  child: MediaCard(
+                    key: key,
+                    width: _itemWidth,
+                    imageUrl: widget.tiles[index].iconUrl!,
+                    isSelected: _hasFocus && index == selectedIndex,
+                    ratio: widget.isCircle
+                        ? MediaCardRatio.square
+                        : MediaCardRatio.wide,
+                    shadowColor: _extractColor.withAlphaF(0.7),
+                    title: checkLabelVisible(1, index == selectedIndex)
+                        ? widget.tiles[index].title
+                        : null,
+                    subtitle: checkLabelVisible(2, index == selectedIndex)
+                        ? getSubtitle(index)
+                        : null,
+                    description: checkLabelVisible(3, index == selectedIndex)
+                        ? widget.tiles[index].details['price'] ?? 'subHeading'
+                        : null,
+                    duration: _timeStamp
+                        ? widget.tiles[index].details['duration']
+                        : null,
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -327,12 +267,42 @@ class _CategoryListState extends State<CategoryList> {
   }
 
   String getSubtitle(int index) {
-    return widget.tiles[index].details['app_name_list'] != null ? widget.tiles[index].details['app_name_list'][0] : 'subTitle';
+    return widget.tiles[index].details['app_name_list']?[0] ?? 'subTitle';
+  }
+
+  Widget _buildTitle() {
+    return Container(
+      height: _hasFocus ? _extendedTitleHeight : _titleHeight,
+      padding: const EdgeInsets.fromLTRB(_horizontalPadding + 12, 10, 0, 8),
+      child: AnimatedScale(
+          scale: _hasFocus ? 1.7 : 1.0,
+          duration: const Duration(milliseconds: 100),
+          alignment: Alignment.centerLeft,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 5,
+            children: [
+              if (widget.icon.isNotEmpty)
+                _buildTileImage(widget.icon),
+              if (_title.isNotEmpty)
+                Text(_title,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: _titleFontSize,
+                      color: _hasFocus
+                          ? Colors.white.withAlpha((255 * 0.7).toInt())
+                          : Colors.grey,
+                    )),
+            ],
+          )),
+    );
   }
 
   Widget _buildTileImage(String iconUrl) {
     if (iconUrl.startsWith('http')) {
       return CachedNetworkImage(
+        width: 25,
+        height: 17,
         imageUrl: iconUrl,
         placeholder: (context, url) => const CircularProgressIndicator(),
         errorWidget: (context, url, error) => const Icon(Icons.error),
@@ -340,6 +310,8 @@ class _CategoryListState extends State<CategoryList> {
       );
     } else if (iconUrl.startsWith('/')) {
       return Image.file(
+        width: 25,
+        height: 17,
         File(iconUrl),
         errorBuilder: (context, error, stackTrace) =>
             const Icon(Icons.broken_image),
@@ -347,6 +319,8 @@ class _CategoryListState extends State<CategoryList> {
       );
     } else if (iconUrl.startsWith('assets')) {
       return Image.asset(
+        width: 25,
+        height: 17,
         iconUrl,
         fit: BoxFit.fill,
       );

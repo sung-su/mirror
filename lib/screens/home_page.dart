@@ -29,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   final ImmersiveAreaController _immersiveAreaController =
       ImmersiveAreaController();
   late List<Movie> _movies;
+  final List<int> _heights = [];
 
   @override
   void initState() {
@@ -38,6 +39,13 @@ class _HomePageState extends State<HomePage> {
       _immersiveListModel.addListener(_handleModelUpdate);
     }
     _scrollController = widget.scrollController;
+
+    _heights.clear();
+    _heights.add(550);
+    for (int i = 0; i < widget.categories.length; i++) {
+      _heights.add(_heights.last + (widget.categories[i].name == 'Launcher' ? 142 : 181));
+    }
+
   }
 
   @override
@@ -118,18 +126,15 @@ class _HomePageState extends State<HomePage> {
                     ? 'Your apps'
                     : widget.categories[index].name,
                 tiles: widget.categories[index].tiles,
-                columns: widget.categories[index].name == 'Launcher'
+                columns: (widget.categories[index].name == 'Launcher')
                     ? ColumnCount.nine
                     : ColumnCount.four,
+                isCircle: widget.categories[index].name == 'Launcher',
                 onFocused: () {
                   print(
                       'item $index focused - Category: ${widget.categories[index].name}');
                   _scrollController.animateTo(
-                    index == 0
-                        ? 550
-                        : index == 1
-                            ? 550 + 165
-                            : 550 + 165 + ((index - 1) * 168),
+                    _heights[index].toDouble(),
                     duration: const Duration(milliseconds: 100),
                     curve: Curves.easeInQuad,
                   );
@@ -146,7 +151,7 @@ class _HomePageState extends State<HomePage> {
               onFocused: () {
                 debugPrint('Recomended videos focused');
                 _scrollController.animateTo(
-                  550 + 165 + ((widget.categories.length - 1) * 168),
+                  _heights[widget.categories.length].toDouble(),
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.easeInQuad,
                 );
@@ -162,7 +167,7 @@ class _HomePageState extends State<HomePage> {
               onFocused: () {
                 debugPrint('Recently uploaded focused');
                 _scrollController.animateTo(
-                  550 + 165 + ((widget.categories.length - 1) * 168) + 233,
+                  _heights[widget.categories.length] + 234,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.easeInQuad,
                 );
