@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/tile.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
@@ -53,7 +54,7 @@ class _CategoryListState extends State<CategoryList> {
   late final double _extendedListHeight;
   late final double _listHeight;
 
-  final Color _extractColor = Colors.white;
+  List<Color?> _extractedColors = [];
 
   static const double _horizontalPadding = 58;
   static const double _titleFontSize = 14;
@@ -112,6 +113,8 @@ class _CategoryListState extends State<CategoryList> {
     _itemCount = widget.tiles.length;
     _selectedIndex = 0;
     _title = widget.title;
+    _extractedColors = List.generate(widget.tiles.length, (i) => null);
+    _extractColor(0);
   }
 
   @override
@@ -160,11 +163,10 @@ class _CategoryListState extends State<CategoryList> {
     }
     var moved = await _listViewKey.currentState?.next(fast: fast);
     _selectedIndex = moved ?? _selectedIndex;
-
     final current = _selectedIndex;
+    _extractColor(current);
 
     await Future.delayed(const Duration(milliseconds: 300));
-
     if (current == _selectedIndex) {
       if (mounted) {
         Provider.of<BackdropProvider>(context, listen: false)
@@ -180,14 +182,27 @@ class _CategoryListState extends State<CategoryList> {
     var moved = await _listViewKey.currentState?.previous(fast: fast);
     _selectedIndex = moved ?? _selectedIndex;
     final current = _selectedIndex;
+    _extractColor(current);
 
     await Future.delayed(const Duration(milliseconds: 300));
-
     if (current == _selectedIndex) {
       if (mounted) {
         Provider.of<BackdropProvider>(context, listen: false)
             .updateBackdrop(getSelectedBackdrop());
       }
+    }
+  }
+
+  void _extractColor(int index) async {
+    if (_extractedColors[index] == null) {
+      final generator = await PaletteGenerator.fromImageProvider(
+        CachedNetworkImageProvider(widget.tiles[index].iconUrl!),
+        size: const Size(100, 100),
+        maximumColorCount: 1,
+      );
+      setState(() {
+        _extractedColors[index] = generator.dominantColor?.color;
+      });
     }
   }
 
@@ -201,7 +216,7 @@ class _CategoryListState extends State<CategoryList> {
             end: Alignment.centerRight,
             colors: [
               Colors.black.withAlpha((0.1 * 255).toInt()),
-              _extractColor.withAlpha((0.2 * 255).toInt()),
+              (_extractedColors[_selectedIndex] ?? Colors.white).withAlpha((0.2 * 255).toInt()),
             ],
           ),
         ),
@@ -236,7 +251,7 @@ class _CategoryListState extends State<CategoryList> {
                     ratio: widget.isCircle
                         ? MediaCardRatio.square
                         : MediaCardRatio.wide,
-                    shadowColor: _extractColor.withAlphaF(0.7),
+                    shadowColor: (_extractedColors[index] ?? Colors.white).withAlphaF(0.7),
                     title: checkLabelVisible(1, index == selectedIndex)
                         ? widget.tiles[index].title
                         : null,

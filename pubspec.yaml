@@ -55,6 +55,7 @@ dependencies:
   flutter_svg: ^2.1.0
   dio: ^5.3.2
   gradient_borders: ^1.0.1
+  color_palette_generator: ^2.0.1
 
 dev_dependencies:
   flutter_test:
