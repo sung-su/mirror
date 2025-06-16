@@ -196,8 +196,7 @@ class _CategoryListState extends State<CategoryList> {
   void _extractColor(int index) async {
     if (_extractedColors[index] == null) {
       final generator = await PaletteGenerator.fromImageProvider(
-        CachedNetworkImageProvider(widget.tiles[index].iconUrl!),
-        size: const Size(100, 100),
+        _getImageProvider(widget.tiles[index].iconUrl!),
         maximumColorCount: 1,
       );
       setState(() {
@@ -304,6 +303,18 @@ class _CategoryListState extends State<CategoryList> {
             ],
           )),
     );
+  }
+
+  ImageProvider _getImageProvider(String iconUrl) {
+    if (iconUrl.startsWith('http')) {
+      return CachedNetworkImageProvider(iconUrl);
+    } else if (iconUrl.startsWith('/')) {
+      return FileImage(File(iconUrl));
+    } else if (iconUrl.startsWith('assets')) {
+      return AssetImage(iconUrl);
+    } else {
+      return const AssetImage('assets/images/placeholder.png');
+    }
   }
 
   Widget _buildTileImage(String iconUrl) {
