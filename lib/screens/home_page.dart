@@ -147,7 +147,7 @@ class _HomePageState extends State<HomePage> {
               columns: ColumnCount.three,
               title: 'Recomended videos',
               icon: 'assets/mock/images/icons8-youtube-144.png',
-              timeStamp: true,
+              hasTimeStamp: true,
               onFocused: () {
                 debugPrint('Recomended videos focused');
                 _scrollController.animateTo(
@@ -163,7 +163,7 @@ class _HomePageState extends State<HomePage> {
               columns: ColumnCount.three,
               title: 'Recently uploaded',
               icon: 'assets/mock/images/icons8-youtube-144.png',
-              timeStamp: true,
+              hasTimeStamp: true,
               onFocused: () {
                 debugPrint('Recently uploaded focused');
                 _scrollController.animateTo(

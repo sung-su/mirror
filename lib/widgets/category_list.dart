@@ -18,7 +18,7 @@ class CategoryList extends StatefulWidget {
   final ColumnCount columns;
   final String title;
   final String icon;
-  final bool timeStamp;
+  final bool hasTimeStamp;
   final bool isCircle;
 
   const CategoryList({
@@ -29,7 +29,7 @@ class CategoryList extends StatefulWidget {
     this.columns = ColumnCount.four,
     this.title = '',
     this.icon = '',
-    this.timeStamp = false,
+    this.hasTimeStamp = false,
     this.isCircle = false,
   });
 
@@ -43,38 +43,32 @@ class _CategoryListState extends State<CategoryList> {
   final GlobalKey<SelectableListViewState> _listViewKey =
       GlobalKey<SelectableListViewState>();
 
-  late String _title;
-
   bool _hasFocus = false;
-  int _itemCount = 0;
   int _selectedIndex = 0;
-  static const double _horizontalPadding = 58;
-  double _itemWidth = 196;
-  double _itemHeight = 110;
+
+  late final String _title;
+  late final int _itemCount;
+  late final double _itemWidth;
+  late final double _itemHeight;
+  late final double _extendedListHeight;
+  late final double _listHeight;
+
   final Color _extractColor = Colors.white;
+
+  static const double _horizontalPadding = 58;
   static const double _titleFontSize = 14;
-  bool _timeStamp = false;
-
-  double _extendedListHeight = 70;
-  double _listHeight = 20;
-
   static const double _titleHeight = 38;
   static const double _extendedTitleHeight = 58;
 
   void calculateItemSize() {
-    if (widget.columns == ColumnCount.nine) {
-      _itemWidth = 80;
-    } else if (widget.columns == ColumnCount.six) {
-      _itemWidth = 124;
-    } else if (widget.columns == ColumnCount.three) {
-      _itemWidth = 268;
-    } else if (widget.columns == ColumnCount.two) {
-      _itemWidth = 412;
-    } else if (widget.columns == ColumnCount.one) {
-      _itemWidth = 844;
-    } else {
-      _itemWidth = 196;
-    }
+    _itemWidth = switch(widget.columns) {
+      ColumnCount.nine => 80,
+      ColumnCount.six => 124,
+      ColumnCount.three => 268,
+      ColumnCount.two => 412,
+      ColumnCount.one => 844,
+      _ => 196, // default case for four columns
+    };
     _itemHeight = (_itemWidth * (widget.isCircle ? 1 : 9 / 16)).roundToDouble();
     _extendedListHeight = _itemHeight * 1.7;
     _listHeight = (_itemHeight * 1.3).roundToDouble();
@@ -118,7 +112,6 @@ class _CategoryListState extends State<CategoryList> {
     _itemCount = widget.tiles.length;
     _selectedIndex = 0;
     _title = widget.title;
-    _timeStamp = widget.timeStamp;
   }
 
   @override
@@ -253,7 +246,7 @@ class _CategoryListState extends State<CategoryList> {
                     description: checkLabelVisible(3, index == selectedIndex)
                         ? widget.tiles[index].details['price'] ?? 'subHeading'
                         : null,
-                    duration: _timeStamp
+                    duration: widget.hasTimeStamp
                         ? widget.tiles[index].details['duration']
                         : null,
                   ),
