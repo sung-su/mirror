@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tizen_fs/models/category.dart';
+import 'package:tizen_fs/utils/media_db_parser.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
+import 'package:tizen_fs/widgets/category_list.dart';
 import 'package:tizen_fs/widgets/immersive_list.dart';
-import 'package:tizen_fs/widgets/media_list.dart';
 
-class MediaListPocPage extends StatelessWidget {
-  const MediaListPocPage({super.key});
+class CategoryListPocPage extends StatelessWidget {
+  const CategoryListPocPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +27,18 @@ class _HomeContentState extends State<HomeContent> {
   final ImmersiveListModel _immersiveListModel = ImmersiveListModel.fromMock();
   final ImmersiveAreaController _immersiveAreaController =
       ImmersiveAreaController();
+  List<Category> categories = [];
 
   @override
   void initState() {
     super.initState();
-    _immersiveListModel.addListener(() {
-      setState(() {});
-    });
+    categories = Provider.of<MediaDBParser>(context, listen: false).categories;
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -74,10 +81,11 @@ class _HomeContentState extends State<HomeContent> {
                     .setState(ImmersiveAreaController.immersiveListFocused);
               },
             ),
-            MediaList(
+            CategoryList(
               title: 'Your apps',
               columns: ColumnCount.nine,
-              contents: _immersiveListModel.contents,
+              tiles: categories[0].tiles,
+              isCircle: true,
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
@@ -89,10 +97,10 @@ class _HomeContentState extends State<HomeContent> {
                     .setState(ImmersiveAreaController.mediaListFocused);
               },
             ),
-            MediaList(
+            CategoryList(
               title: 'Top selling movies',
-              contents: _immersiveListModel.contents,
               columns: ColumnCount.four,
+              tiles: categories[1].tiles,
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
@@ -104,10 +112,10 @@ class _HomeContentState extends State<HomeContent> {
                     .setState(ImmersiveAreaController.mediaListFocused);
               },
             ),
-            MediaList(
+            CategoryList(
               title: 'Popular shows',
-              contents: _immersiveListModel.contents,
               columns: ColumnCount.four,
+              tiles: categories[2].tiles,
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(
@@ -119,10 +127,10 @@ class _HomeContentState extends State<HomeContent> {
                     .setState(ImmersiveAreaController.mediaListFocused);
               },
             ),
-            MediaList(
+            CategoryList(
               title: 'Recomended videos',
-              contents: _immersiveListModel.contents,
               columns: ColumnCount.three,
+              tiles: categories[3].tiles,
               onFocused: () {
                 print('item 3 focused');
                 _scrollController.animateTo(

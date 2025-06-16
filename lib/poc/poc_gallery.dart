@@ -6,7 +6,7 @@ import 'package:tizen_fs/poc/media_db_parser_poc.dart';
 import 'package:tizen_fs/poc/video_player_poc.dart';
 import 'package:tizen_fs/router.dart';
 import 'package:tizen_fs/widgets/home_screen_size_wrapper.dart';
-import 'media_list_poc.dart';
+import 'category_list_poc.dart';
 import 'setting_panel_poc.dart';
 import 'immersive_list_poc.dart';
 import 'tab_poc.dart';
@@ -113,15 +113,15 @@ class PocGalleryPage extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('Media List Poc'),
-              subtitle: const Text('Media List Views'),
+              title: const Text('Category List Poc'),
+              subtitle: const Text('Category List Views'),
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          HomeScreenSizeWrapper(const MediaListPocPage()),
+                          HomeScreenSizeWrapper(const CategoryListPocPage()),
                     ));
               },
             ),
