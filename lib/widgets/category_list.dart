@@ -193,12 +193,15 @@ class _CategoryListState extends State<CategoryList> {
     }
   }
 
+  int _isExtracting = 0;
   void _extractColor(int index) async {
-    if (_extractedColors[index] == null) {
+    if (_isExtracting < 1 && _extractedColors[index] == null) {
+      _isExtracting++;
       final generator = await PaletteGenerator.fromImageProvider(
         _getImageProvider(widget.tiles[index].iconUrl!),
         maximumColorCount: 1,
       );
+      _isExtracting--;
       setState(() {
         _extractedColors[index] = generator.dominantColor?.color;
       });
