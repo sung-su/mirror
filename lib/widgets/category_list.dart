@@ -193,9 +193,11 @@ class _CategoryListState extends State<CategoryList> {
     }
   }
 
+  // Limit the number of concurrent extractions to avoid performance issues
+  static const int _allowedExtracts = 0;
   int _isExtracting = 0;
   void _extractColor(int index) async {
-    if (_isExtracting < 1 && _extractedColors[index] == null) {
+    if (_isExtracting < _allowedExtracts && _extractedColors[index] == null) {
       _isExtracting++;
       final generator = await PaletteGenerator.fromImageProvider(
         _getImageProvider(widget.tiles[index].iconUrl!),
