@@ -253,7 +253,7 @@ class _CategoryListState extends State<CategoryList> {
                     ratio: widget.isCircle
                         ? MediaCardRatio.square
                         : MediaCardRatio.wide,
-                    shadowColor: (_extractedColors[index] ?? Colors.white).withAlphaF(0.7),
+                    shadowColor: _extractedColors[index],
                     title: checkLabelVisible(1, index == selectedIndex)
                         ? widget.tiles[index].title
                         : null,

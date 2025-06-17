@@ -436,7 +436,7 @@ class _BlinkBorderState extends State<BlinkBorder>
               BoxShadow(
                 color: widget.shadowColor.withAlphaF(0.7),
                 spreadRadius: 1,
-                blurRadius: 20,
+                blurRadius: 25,
                 blurStyle: BlurStyle.normal,
                 offset: Offset(0, 0),
               )
