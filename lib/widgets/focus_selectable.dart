@@ -27,13 +27,19 @@ mixin FocusSelectable<T extends StatefulWidget> on State<T> {
   @protected
   Future<void> onNext(bool fast) async {
     var moved = await _listState.currentState?.next(fast: fast);
-    _selectedIndex = moved ?? _selectedIndex;
+    if (moved !=null && _selectedIndex != moved) {
+      _selectedIndex = moved;
+      _listState.currentState?.onSelectionChanged();
+    }
   }
 
   @protected
   Future<void> onPrev(bool fast) async {
     var moved = await _listState.currentState?.previous(fast: fast);
-    _selectedIndex = moved ?? _selectedIndex;
+    if (moved !=null && _selectedIndex != moved) {
+      _selectedIndex = moved;
+      _listState.currentState?.onSelectionChanged();
+    }
   }
 
   @protected

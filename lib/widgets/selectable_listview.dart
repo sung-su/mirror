@@ -6,11 +6,13 @@ class SelectableListView extends StatefulWidget {
     required this.itemCount,
     required this.itemBuilder,
     this.padding,
+    this.onSelectionChanged
   });
 
   final int itemCount;
   final Widget Function(BuildContext, int index, int selectedIndex, Key key) itemBuilder;
   final EdgeInsets? padding;
+  final VoidCallback? onSelectionChanged;
 
   @override
   State<SelectableListView> createState() => SelectableListViewState();
@@ -107,6 +109,10 @@ class SelectableListViewState extends State<SelectableListView> {
     } else {
       return _selectedIndex;
     }
+  }
+
+  void onSelectionChanged() {
+    widget.onSelectionChanged?.call();
   }
 
   @override

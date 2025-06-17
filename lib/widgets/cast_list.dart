@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_fs/models/movie.dart';
+import 'package:tizen_fs/widgets/focus_selectable.dart';
 import 'package:tizen_fs/widgets/media_card.dart';
 import 'package:tizen_fs/widgets/selectable_listview.dart';
 
@@ -20,16 +21,11 @@ class CastList extends StatefulWidget {
   State<CastList> createState() => _CastListState();
 }
 
-class _CastListState extends State<CastList> {
-  final FocusNode _focusNode = FocusNode();
-  final GlobalKey<SelectableListViewState> _listViewKey =
-      GlobalKey<SelectableListViewState>();
-
+class _CastListState extends State<CastList> with FocusSelectable<CastList> {
   late String _title;
 
   bool _hasFocus = false;
   int _itemCount = 10;
-  int _selectedIndex = 0;
   double _titleFontSize = 14; // * 1.7
   double _listExtenedHeight = 170;
   double _listHeight = 130;
@@ -37,22 +33,20 @@ class _CastListState extends State<CastList> {
   @override
   void initState() {
     super.initState();
-    _focusNode.addListener(_onFocusChanged);
+    focusNode.addListener(_onFocusChanged);
     _itemCount = widget.casts.length;
-    _selectedIndex = 0;
     _title = widget.title;
   }
 
   @override
   void dispose() {
-    _focusNode.removeListener(_onFocusChanged);
-    _focusNode.dispose();
+    focusNode.removeListener(_onFocusChanged);
     super.dispose();
   }
 
   void _onFocusChanged() async {
     setState(() {
-      _hasFocus = _focusNode.hasFocus;
+      _hasFocus = focusNode.hasFocus;
     });
 
     if (_hasFocus) {
@@ -60,45 +54,10 @@ class _CastListState extends State<CastList> {
     }
   }
 
-  KeyEventResult _onKeyEvent(FocusNode focusNode, KeyEvent event) {
-    if (event is KeyDownEvent || event is KeyRepeatEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.arrowLeft &&
-          _selectedIndex > 0) {
-        _prev(event is KeyRepeatEvent);
-        return KeyEventResult.handled;
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
-          _selectedIndex < _itemCount - 1) {
-        _next(event is KeyRepeatEvent);
-        return KeyEventResult.handled;
-      } else if (event.logicalKey == LogicalKeyboardKey.enter ||
-          event.logicalKey == LogicalKeyboardKey.select) {
-        return KeyEventResult.handled;
-      }
-    }
-    return KeyEventResult.ignored;
-  }
-
-  Future<void> _next(bool fast) async {
-    if (_selectedIndex >= _itemCount - 1) {
-      return;
-    }
-    var moved = await _listViewKey.currentState?.next(fast: fast);
-    _selectedIndex = moved ?? _selectedIndex;
-  }
-
-  Future<void> _prev(bool fast) async {
-    if (_selectedIndex <= 0) {
-      return;
-    }
-    var moved = await _listViewKey.currentState?.previous(fast: fast);
-    _selectedIndex = moved ?? _selectedIndex;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Focus(
-      focusNode: _focusNode,
-      onKeyEvent: _onKeyEvent,
+      focusNode: focusNode,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -130,8 +89,8 @@ class _CastListState extends State<CastList> {
                 opacity: _hasFocus ? 1.0 : 0.6,
                 duration: const Duration(milliseconds: 100),
                 child: SelectableListView(
-                    key: _listViewKey,
-                    padding: EdgeInsets.only(left: 58),
+                    key: listKey,
+                    padding: EdgeInsets.symmetric(horizontal: 58),
                     itemCount: _itemCount,
                     itemBuilder: (context, index, selectedIndex, key) {
                       return Container(

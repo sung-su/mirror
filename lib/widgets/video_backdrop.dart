@@ -55,6 +55,11 @@ class VideoBackdropState extends State<VideoBackdrop> with WidgetsBindingObserve
     });
   }
 
+  void resetTimer(){
+    _inactivityTimer?.cancel();
+    _inactivityTimer = Timer(_getDuration(), _advanceState);
+  }
+
   Duration _getDuration() {
     return (_statusIndex == 0) ? const Duration(seconds: 0) : const Duration(seconds: 5);
   }

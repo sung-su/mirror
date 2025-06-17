@@ -59,7 +59,8 @@ class RottenRatingState extends State<RottenRating>
     animation = Tween<double>(begin: 0.7, end: 0)
         .animate(CurvedAnimation(parent: controller, curve: Curves.linear))
       ..addListener(() {
-        setState(() {});
+        if(_hasFocus)
+          setState(() {});
       });
 
     Future.delayed(Duration(milliseconds: 500)).whenComplete(() {

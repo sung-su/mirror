@@ -34,6 +34,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
   Duration _currentPosition = Duration.zero;
   bool _isSeeking = false;
   bool _isBuffering = false;
+  bool _isvideoEnded = false;
 
   @override
   void initState() {
@@ -47,6 +48,18 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
         setState(() {
           _showControls = true;
         });
+        _controller.addListener(() {
+          final position = _controller.value.position;
+          final duration = _controller.value.duration;
+          if(!_isvideoEnded && duration != null && position >= duration - const Duration(milliseconds: 500)) {
+            setState(() {
+              _isvideoEnded = true;
+            });
+            _togglePlayPause();
+          }
+          setState(() {});
+        });
+
         _controller.play();
       });
 
@@ -60,8 +73,6 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
     _iconFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _iconAnimationController, curve: Curves.easeIn)
     );
-
-    _controller.addListener(() => setState(() {}));
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
@@ -97,6 +108,15 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
   }
 
   void _togglePlayPause() {
+    if(_isvideoEnded) {
+      _controller.pause();
+      setState (() {
+        _showControls = true;
+        _seekDirection = 'pause';
+      });
+      return;
+    }
+
     if (_controller.value.isPlaying) {
       _controller.pause();
       setState (() {
@@ -139,6 +159,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> with SingleTickerProv
 
     _isSeeking = true;
     _currentPosition = _currentPosition + Duration(seconds: forward ? 10 : -10);
+    _currentPosition = (_currentPosition.inSeconds < 0) ? Duration(seconds: 0) : _currentPosition;
+    _currentPosition = _currentPosition > _controller.value.duration ? _controller.value.duration : _currentPosition;
 
     setState(() {
       _seekDirection = forward ? 'forward' : 'backward';

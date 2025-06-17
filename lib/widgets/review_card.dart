@@ -65,9 +65,9 @@ class ReviewCard extends StatelessWidget {
       height: height,
       padding : EdgeInsets.all(1),
       decoration: BoxDecoration(
-        border: const GradientBoxBorder(
+        border: GradientBoxBorder(
           gradient: LinearGradient(colors: [Colors.blue, Colors.pink]),
-          width: 1,
+          width: isSelected ? 1.5 : 1,
         ),
         borderRadius: BorderRadius.circular(16),
         color: Colors.black.withAlphaF(0.5)

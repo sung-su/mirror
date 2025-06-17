@@ -10,12 +10,13 @@ class ActionList extends StatefulWidget {
     super.key,
     required this.movie,
     this.onFocused,
+    this.onSelectionChanged
   });
 
   final Movie movie;
   final VoidCallback? onFocused;
+  final VoidCallback? onSelectionChanged;
   
-
   @override
   State<ActionList> createState() => ActionListState();
 }
@@ -87,6 +88,7 @@ class ActionListState extends State<ActionList> {
     }
     setState((){
       _selectedIndex++;
+      widget.onSelectionChanged?.call();
     });
   }
 
@@ -96,6 +98,7 @@ class ActionListState extends State<ActionList> {
     }
     setState((){
       _selectedIndex--;
+      widget.onSelectionChanged?.call();
     });
   }
 

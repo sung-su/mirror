@@ -28,7 +28,7 @@ class _DetailPageState extends State<DetailPage> with RouteAware {
   final GlobalKey<ActionListState> _scrollAnchor = GlobalKey<ActionListState>();
   final GlobalKey<VideoBackdropState> _backdropController = GlobalKey<VideoBackdropState>();
 
-  int _backdropState = 0;
+  int _backdropState = -1;
 
   void _setBackdropState(int state) {
     if (_backdropState == state) return;
@@ -127,7 +127,7 @@ class _DetailPageState extends State<DetailPage> with RouteAware {
                                       duration: Duration(milliseconds: 100),
                                       curve: Curves.easeInQuad
                                     );
-                                    if(_backdropState != 0) {
+                                    if(_backdropState != -1) {
                                       _setBackdropState(3);
                                     }
                                   }
@@ -151,10 +151,13 @@ class _DetailPageState extends State<DetailPage> with RouteAware {
                                   duration: Duration(milliseconds: 100),
                                   curve: Curves.easeInQuad
                                 );
-                                if(_backdropState != 0) {
+                                if(_backdropState != -1) {
                                   _setBackdropState(3);
                                 }
-                              }
+                              },
+                              onSelectionChanged: () {
+                                _backdropController.currentState!.resetTimer();
+                              },
                             ),
                           ActionList(
                             key: _scrollAnchor,
@@ -165,10 +168,13 @@ class _DetailPageState extends State<DetailPage> with RouteAware {
                                 duration: Duration(milliseconds: 100),
                                 curve: Curves.easeInQuad
                               );
-                              if(_backdropState != 0) {
+                              if(_backdropState != -1) {
                                 _setBackdropState(3);
                               }
-                            }
+                            },
+                            onSelectionChanged: () {
+                              _backdropController.currentState!.resetTimer();
+                            },
                           ),
                           CastList(
                             title: 'Cast & Crew',
