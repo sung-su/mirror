@@ -194,8 +194,7 @@ class ImmersiveListArea extends StatefulWidget {
   final VoidCallback? onFocused;
   final void Function(int index)? onExecute;
 
-  const ImmersiveListArea(
-      {super.key, this.onFocused, this.onExecute});
+  const ImmersiveListArea({super.key, this.onFocused, this.onExecute});
 
   @override
   State<ImmersiveListArea> createState() => _ImmersiveListAreaState();
@@ -283,7 +282,8 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
     if (_selectedIndex >= _itemCount - 1) {
       return;
     }
-    Provider.of<ImmersiveListModel>(context, listen: false).selectedIndex = ++_selectedIndex;
+    Provider.of<ImmersiveListModel>(context, listen: false).selectedIndex =
+        ++_selectedIndex;
     var moved = await _listViewKey.currentState?.next(fast: fast);
     _selectedIndex = moved ?? _selectedIndex;
     final current = _selectedIndex;
@@ -300,7 +300,8 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
     if (_selectedIndex <= 0) {
       return;
     }
-    Provider.of<ImmersiveListModel>(context, listen: false).selectedIndex = --_selectedIndex;
+    Provider.of<ImmersiveListModel>(context, listen: false).selectedIndex =
+        --_selectedIndex;
     var moved = await _listViewKey.currentState?.previous(fast: fast);
     _selectedIndex = moved ?? _selectedIndex;
     final current = _selectedIndex;
@@ -370,6 +371,13 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
                             key: key,
                             imageUrl:
                                 'assets/mock/images/${contents[index].card}',
+                            onRequestSelect: () {
+                              Focus.of(context).requestFocus();
+                              _listViewKey.currentState?.selectTo(index);
+                            },
+                            onPressed: () {
+                              widget.onExecute?.call(index);
+                            },
                             isSelected: Focus.of(context).hasFocus &&
                                 index == selectedIndex));
                   })),

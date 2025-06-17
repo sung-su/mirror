@@ -266,6 +266,13 @@ class _CategoryListState extends State<CategoryList> {
                     duration: widget.hasTimeStamp
                         ? widget.tiles[index].details['duration']
                         : null,
+                    onRequestSelect: () {
+                      Focus.of(context).requestFocus();
+                      _listViewKey.currentState?.selectTo(index);
+                    },
+                    onPressed: () {
+                      widget.onItemSelected?.call(index);
+                    },
                   ),
                 );
               },

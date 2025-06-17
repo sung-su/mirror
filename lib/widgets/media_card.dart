@@ -21,7 +21,9 @@ class MediaCard extends StatelessWidget {
       this.duration,
       this.ratio = MediaCardRatio.wide,
       this.shadowColor,
-      this.content})
+      this.content,
+      this.onRequestSelect,
+      this.onPressed})
       : height = width *
             (ratio == MediaCardRatio.wide
                 ? 9 / 16
@@ -39,7 +41,9 @@ class MediaCard extends StatelessWidget {
       bool isSelected = false,
       MediaCardRatio ratio = MediaCardRatio.wide,
       Widget? content,
-      Color? shadowColor})
+      Color? shadowColor,
+      void Function()? onRequestSelect,
+      void Function()? onPressed})
       : this(
             key: key,
             width: 844,
@@ -51,6 +55,8 @@ class MediaCard extends StatelessWidget {
             isSelected: isSelected,
             ratio: ratio,
             content: content,
+            onRequestSelect: onRequestSelect,
+            onPressed: onPressed,
             shadowColor: shadowColor);
 
   const MediaCard.twoCard(
@@ -63,7 +69,9 @@ class MediaCard extends StatelessWidget {
       bool isSelected = false,
       MediaCardRatio ratio = MediaCardRatio.wide,
       Widget? content,
-      Color? shadowColor})
+      Color? shadowColor,
+      void Function()? onRequestSelect,
+      void Function()? onPressed})
       : this(
             key: key,
             width: 416,
@@ -75,6 +83,8 @@ class MediaCard extends StatelessWidget {
             isSelected: isSelected,
             ratio: ratio,
             content: content,
+            onRequestSelect: onRequestSelect,
+            onPressed: onPressed,
             shadowColor: shadowColor);
 
   const MediaCard.threeCard(
@@ -87,7 +97,9 @@ class MediaCard extends StatelessWidget {
       bool isSelected = false,
       MediaCardRatio ratio = MediaCardRatio.wide,
       Widget? content,
-      Color? shadowColor})
+      Color? shadowColor,
+      void Function()? onRequestSelect,
+      void Function()? onPressed})
       : this(
             key: key,
             width: 268,
@@ -99,6 +111,8 @@ class MediaCard extends StatelessWidget {
             isSelected: isSelected,
             ratio: ratio,
             content: content,
+            onRequestSelect: onRequestSelect,
+            onPressed: onPressed,
             shadowColor: shadowColor);
 
   const MediaCard.fourCard(
@@ -111,7 +125,9 @@ class MediaCard extends StatelessWidget {
       bool isSelected = false,
       MediaCardRatio ratio = MediaCardRatio.wide,
       Widget? content,
-      Color? shadowColor})
+      Color? shadowColor,
+      void Function()? onRequestSelect,
+      void Function()? onPressed})
       : this(
             key: key,
             width: 196,
@@ -123,6 +139,8 @@ class MediaCard extends StatelessWidget {
             isSelected: isSelected,
             ratio: ratio,
             content: content,
+            onRequestSelect: onRequestSelect,
+            onPressed: onPressed,
             shadowColor: shadowColor);
 
   const MediaCard.fiveCard(
@@ -135,7 +153,9 @@ class MediaCard extends StatelessWidget {
       bool isSelected = false,
       MediaCardRatio ratio = MediaCardRatio.wide,
       Widget? content,
-      Color? shadowColor})
+      Color? shadowColor,
+      void Function()? onRequestSelect,
+      void Function()? onPressed})
       : this(
             key: key,
             width: 152,
@@ -147,6 +167,8 @@ class MediaCard extends StatelessWidget {
             isSelected: isSelected,
             ratio: ratio,
             content: content,
+            onRequestSelect: onRequestSelect,
+            onPressed: onPressed,
             shadowColor: shadowColor);
 
   const MediaCard.sixCard(
@@ -159,7 +181,9 @@ class MediaCard extends StatelessWidget {
       bool isSelected = false,
       MediaCardRatio ratio = MediaCardRatio.wide,
       Widget? content,
-      Color? shadowColor})
+      Color? shadowColor,
+      void Function()? onRequestSelect,
+      void Function()? onPressed})
       : this(
             key: key,
             width: 124,
@@ -171,6 +195,8 @@ class MediaCard extends StatelessWidget {
             isSelected: isSelected,
             ratio: ratio,
             content: content,
+            onRequestSelect: onRequestSelect,
+            onPressed: onPressed,
             shadowColor: shadowColor);
 
   const MediaCard.nineCard(
@@ -183,7 +209,9 @@ class MediaCard extends StatelessWidget {
       bool isSelected = false,
       MediaCardRatio ratio = MediaCardRatio.wide,
       Widget? content,
-      Color? shadowColor})
+      Color? shadowColor,
+      void Function()? onRequestSelect,
+      void Function()? onPressed})
       : this(
             key: key,
             width: 80,
@@ -195,6 +223,8 @@ class MediaCard extends StatelessWidget {
             isSelected: isSelected,
             ratio: ratio,
             content: content,
+            onRequestSelect: onRequestSelect,
+            onPressed: onPressed,
             shadowColor: shadowColor);
 
   const MediaCard.circle(
@@ -206,7 +236,9 @@ class MediaCard extends StatelessWidget {
       String? duration,
       bool isSelected = false,
       Widget? content,
-      Color? shadowColor})
+      Color? shadowColor,
+      void Function()? onRequestSelect,
+      void Function()? onPressed})
       : this(
             key: key,
             width: 80,
@@ -218,6 +250,8 @@ class MediaCard extends StatelessWidget {
             isSelected: isSelected,
             ratio: MediaCardRatio.square,
             content: content,
+            onRequestSelect: onRequestSelect,
+            onPressed: onPressed,
             shadowColor: shadowColor);
 
   const MediaCard.circleLarge(
@@ -229,7 +263,9 @@ class MediaCard extends StatelessWidget {
       String? duration,
       bool isSelected = false,
       Widget? content,
-      Color? shadowColor})
+      Color? shadowColor,
+      void Function()? onRequestSelect,
+      void Function()? onPressed})
       : this(
             key: key,
             width: 124,
@@ -241,6 +277,8 @@ class MediaCard extends StatelessWidget {
             isSelected: isSelected,
             ratio: MediaCardRatio.square,
             content: content,
+            onRequestSelect: onRequestSelect,
+            onPressed: onPressed,
             shadowColor: shadowColor);
 
   static const int animationDuration = 100;
@@ -255,73 +293,83 @@ class MediaCard extends StatelessWidget {
   final MediaCardRatio ratio;
   final Color? shadowColor;
   final Widget? content;
+  final void Function()? onRequestSelect;
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      spacing: 1,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AnimatedScale(
-            scale: isSelected ? 1.1 : 1,
-            duration: Duration(milliseconds: animationDuration),
-            child: Stack(children: [
-              _buildBorder(ratio == MediaCardRatio.square
-                  ? ClipOval(child: _buildTileContent())
-                  : ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: _buildTileContent(),
-                    )),
-              if (duration != null)
-                Positioned(
-                    bottom: 8,
-                    right: 8,
-                    child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3),
-                          color: Colors.black.withAlphaF(0.8),
-                        ),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                        child: Text(duration!,
-                            style: TextStyle(
-                                fontSize: 9, fontWeight: FontWeight.bold)))),
-            ])),
-        if (title != null || subtitle != null || description != null)
-          SizedBox(height: 4),
-        if (title != null)
-          SizedBox(
-              width: width,
-              child: Text(title!,
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: isSelected ? Colors.white.withAlphaF(0.8)
-                       : $style.colors.onPrimary.withAlphaF(0.8)),
-                  maxLines: 1,
-                  textAlign: ratio == MediaCardRatio.square ? TextAlign.center : TextAlign.justify,
-                  overflow: TextOverflow.ellipsis)),
-        if (subtitle != null)
-          SizedBox(
-              width: width,
-              child: Text(subtitle!,
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: $style.colors.onPrimary
-                          .withAlphaF(0.7 * (isSelected ? 1 : 0.9))),
-                  maxLines: 1,
-                  textAlign: ratio == MediaCardRatio.square ? TextAlign.center : TextAlign.justify,
-                  overflow: TextOverflow.ellipsis)),
-        if (description != null)
-          SizedBox(
-              width: width,
-              child: Text(description!,
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: $style.colors.onPrimary
-                          .withAlphaF(0.7 * (isSelected ? 1 : 0.9))),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis)),
-      ],
+    return GestureDetector(
+      onTap: () => isSelected ? onPressed?.call() : onRequestSelect?.call(),
+      child: Column(
+        spacing: 1,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AnimatedScale(
+              scale: isSelected ? 1.1 : 1,
+              duration: Duration(milliseconds: animationDuration),
+              child: Stack(children: [
+                _buildBorder(ratio == MediaCardRatio.square
+                    ? ClipOval(child: _buildTileContent())
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: _buildTileContent(),
+                      )),
+                if (duration != null)
+                  Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            color: Colors.black.withAlphaF(0.8),
+                          ),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                          child: Text(duration!,
+                              style: TextStyle(
+                                  fontSize: 9, fontWeight: FontWeight.bold)))),
+              ])),
+          if (title != null || subtitle != null || description != null)
+            SizedBox(height: 4),
+          if (title != null)
+            SizedBox(
+                width: width,
+                child: Text(title!,
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: isSelected
+                            ? Colors.white.withAlphaF(0.8)
+                            : $style.colors.onPrimary.withAlphaF(0.8)),
+                    maxLines: 1,
+                    textAlign: ratio == MediaCardRatio.square
+                        ? TextAlign.center
+                        : TextAlign.justify,
+                    overflow: TextOverflow.ellipsis)),
+          if (subtitle != null)
+            SizedBox(
+                width: width,
+                child: Text(subtitle!,
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: $style.colors.onPrimary
+                            .withAlphaF(0.7 * (isSelected ? 1 : 0.9))),
+                    maxLines: 1,
+                    textAlign: ratio == MediaCardRatio.square
+                        ? TextAlign.center
+                        : TextAlign.justify,
+                    overflow: TextOverflow.ellipsis)),
+          if (description != null)
+            SizedBox(
+                width: width,
+                child: Text(description!,
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: $style.colors.onPrimary
+                            .withAlphaF(0.7 * (isSelected ? 1 : 0.9))),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis)),
+        ],
+      ),
     );
   }
 
@@ -333,7 +381,8 @@ class MediaCard extends StatelessWidget {
             ratio: ratio,
             shadowColor: shadowColor ?? Colors.white,
             child: content)
-        : SizedBox(width: width, height: height.roundToDouble(), child: content);
+        : SizedBox(
+            width: width, height: height.roundToDouble(), child: content);
   }
 
   Widget _buildTileContent() {

@@ -80,6 +80,15 @@ class SelectableListViewState extends State<SelectableListView> {
     }
   }
 
+  Future<int> selectTo(int index) {
+    if (index < 0 || index >= widget.itemCount) {
+      throw RangeError('Index out of range: $index');
+    }
+    final int previousIndex = _selectedIndex;
+    _selectedIndex = index;
+    return _scrollToSelected(100, previousIndex);
+  }
+
   Future<int> next({bool fast = false}) async {
     if (_selectedIndex < widget.itemCount - 1) {
       final int previousIndex = _selectedIndex;
