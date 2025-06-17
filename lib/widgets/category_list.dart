@@ -6,7 +6,7 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/tile.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
-import 'package:tizen_fs/styles/app_style.dart';
+import 'package:tizen_fs/widgets/focus_selectable.dart';
 import 'package:tizen_fs/widgets/media_card.dart';
 import 'package:tizen_fs/widgets/selectable_listview.dart';
 
@@ -38,15 +38,10 @@ class CategoryList extends StatefulWidget {
   State<CategoryList> createState() => _CategoryListState();
 }
 
-class _CategoryListState extends State<CategoryList> {
+class _CategoryListState extends State<CategoryList> with FocusSelectable<CategoryList> {
   final ScrollController _scrollController = ScrollController();
-  final FocusNode _focusNode = FocusNode();
-  final GlobalKey<SelectableListViewState> _listViewKey =
-      GlobalKey<SelectableListViewState>();
 
   bool _hasFocus = false;
-  int _selectedIndex = 0;
-
   late final String _title;
   late final int _itemCount;
   late final double _itemWidth;
@@ -109,9 +104,8 @@ class _CategoryListState extends State<CategoryList> {
   void initState() {
     super.initState();
     calculateItemSize();
-    _focusNode.addListener(_onFocusChanged);
+    focusNode.addListener(_onFocusChanged);
     _itemCount = widget.tiles.length;
-    _selectedIndex = 0;
     _title = widget.title;
     _extractedColors = List.generate(widget.tiles.length, (i) => null);
     _extractColor(0);
@@ -120,14 +114,13 @@ class _CategoryListState extends State<CategoryList> {
   @override
   void dispose() {
     _scrollController.dispose();
-    _focusNode.removeListener(_onFocusChanged);
-    _focusNode.dispose();
+    focusNode.removeListener(_onFocusChanged);
     super.dispose();
   }
 
   void _onFocusChanged() async {
     setState(() {
-      _hasFocus = _focusNode.hasFocus;
+      _hasFocus = focusNode.hasFocus;
     });
 
     if (_hasFocus) {
@@ -140,56 +133,45 @@ class _CategoryListState extends State<CategoryList> {
     }
   }
 
-  KeyEventResult _onKeyEvent(FocusNode focusNode, KeyEvent event) {
-    if (event is KeyDownEvent || event is KeyRepeatEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-        _prev(event is KeyRepeatEvent);
-        return KeyEventResult.handled;
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-        _next(event is KeyRepeatEvent);
-        return KeyEventResult.handled;
-      } else if (event.logicalKey == LogicalKeyboardKey.enter ||
+  @override
+  KeyEventResult onKeyEvent(FocusNode focusNode, KeyEvent event) {
+    if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter ||
           event.logicalKey == LogicalKeyboardKey.select) {
-        widget.onItemSelected?.call(_selectedIndex);
-        return KeyEventResult.handled;
-      }
+      widget.onItemSelected?.call(selectedIndex);
+      return KeyEventResult.handled;
     }
     return KeyEventResult.ignored;
   }
 
-  Future<void> _next(bool fast) async {
-    if (_selectedIndex >= _itemCount - 1) {
+  @override
+  Future<void> onNext(bool fast) async {
+    final previous = selectedIndex;
+    await super.onNext(fast);
+    if (previous == selectedIndex || !mounted) {
       return;
     }
-    var moved = await _listViewKey.currentState?.next(fast: fast);
-    _selectedIndex = moved ?? _selectedIndex;
-    final current = _selectedIndex;
+    final current = selectedIndex;
     _extractColor(current);
-
     await Future.delayed(const Duration(milliseconds: 300));
-    if (current == _selectedIndex) {
-      if (mounted) {
-        Provider.of<BackdropProvider>(context, listen: false)
-            .updateBackdrop(getSelectedBackdrop());
-      }
+    if (current == selectedIndex && mounted) {
+      Provider.of<BackdropProvider>(context, listen: false)
+          .updateBackdrop(getSelectedBackdrop());
     }
   }
 
-  Future<void> _prev(bool fast) async {
-    if (_selectedIndex <= 0) {
+  @override
+  Future<void> onPrev(bool fast) async {
+    final previous = selectedIndex;
+    await super.onPrev(fast);
+    if (previous == selectedIndex || !mounted) {
       return;
     }
-    var moved = await _listViewKey.currentState?.previous(fast: fast);
-    _selectedIndex = moved ?? _selectedIndex;
-    final current = _selectedIndex;
+    final current = selectedIndex;
     _extractColor(current);
-
     await Future.delayed(const Duration(milliseconds: 300));
-    if (current == _selectedIndex) {
-      if (mounted) {
-        Provider.of<BackdropProvider>(context, listen: false)
-            .updateBackdrop(getSelectedBackdrop());
-      }
+    if (current == selectedIndex && mounted) {
+      Provider.of<BackdropProvider>(context, listen: false)
+          .updateBackdrop(getSelectedBackdrop());
     }
   }
 
@@ -212,7 +194,7 @@ class _CategoryListState extends State<CategoryList> {
 
   Widget getSelectedBackdrop() {
     return Container(
-      key: ValueKey(_selectedIndex),
+      key: ValueKey(selectedIndex),
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -220,7 +202,7 @@ class _CategoryListState extends State<CategoryList> {
             end: Alignment.centerRight,
             colors: [
               Colors.black.withAlpha((0.1 * 255).toInt()),
-              (_extractedColors[_selectedIndex] ?? Colors.white).withAlpha((0.2 * 255).toInt()),
+              (_extractedColors[selectedIndex] ?? Colors.white).withAlpha((0.2 * 255).toInt()),
             ],
           ),
         ),
@@ -231,8 +213,7 @@ class _CategoryListState extends State<CategoryList> {
   @override
   Widget build(BuildContext context) {
     return Focus(
-      focusNode: _focusNode,
-      onKeyEvent: _onKeyEvent,
+      focusNode: focusNode,
       child: Column(
         children: [
           //title
@@ -241,7 +222,7 @@ class _CategoryListState extends State<CategoryList> {
           SizedBox(
             height: _hasFocus ? _extendedListHeight : _listHeight,
             child: SelectableListView(
-              key: _listViewKey,
+              key: listKey,
               itemCount: _itemCount,
               padding: EdgeInsets.symmetric(horizontal: _horizontalPadding),
               itemBuilder: (context, index, selectedIndex, key) {
@@ -270,7 +251,7 @@ class _CategoryListState extends State<CategoryList> {
                         : null,
                     onRequestSelect: () {
                       Focus.of(context).requestFocus();
-                      _listViewKey.currentState?.selectTo(index);
+                      listKey.currentState?.selectTo(index);
                     },
                     onPressed: () {
                       widget.onItemSelected?.call(index);

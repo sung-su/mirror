@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_fs/models/movie.dart';
+import 'package:tizen_fs/widgets/focus_selectable.dart';
 import 'package:tizen_fs/widgets/media_card.dart';
 import 'package:tizen_fs/widgets/selectable_listview.dart';
 
@@ -20,39 +21,32 @@ class MovieList extends StatefulWidget {
   State<MovieList> createState() => _MovieListState();
 }
 
-class _MovieListState extends State<MovieList> {
-  final FocusNode _focusNode = FocusNode();
-  final GlobalKey<SelectableListViewState> _listViewKey =
-      GlobalKey<SelectableListViewState>();
-
+class _MovieListState extends State<MovieList> with FocusSelectable<MovieList> {
   late String _title;
 
   bool _hasFocus = false;
   int _itemCount = 0;
-  int _selectedIndex = 0;
-  double _titleFontSize = 14;
-  double _listExtenedHeight = 160;
-  double _listHeight = 130;
+  final double _titleFontSize = 14;
+  final double _listExtenedHeight = 160;
+  final double _listHeight = 130;
 
   @override
   void initState() {
     super.initState();
-    _focusNode.addListener(_onFocusChanged);
+    focusNode.addListener(_onFocusChanged);
     _itemCount = widget.similars.length;
-    _selectedIndex = 0;
     _title = widget.title;
   }
 
   @override
   void dispose() {
-    _focusNode.removeListener(_onFocusChanged);
-    _focusNode.dispose();
+    focusNode.removeListener(_onFocusChanged);
     super.dispose();
   }
 
   void _onFocusChanged() async {
     setState(() {
-      _hasFocus = _focusNode.hasFocus;
+      _hasFocus = focusNode.hasFocus;
     });
 
     if (_hasFocus) {
@@ -60,74 +54,37 @@ class _MovieListState extends State<MovieList> {
     }
   }
 
-  KeyEventResult _onKeyEvent(FocusNode focusNode, KeyEvent event) {
-    if (event is KeyDownEvent || event is KeyRepeatEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.arrowLeft &&
-          _selectedIndex > 0) {
-        _prev(event is KeyRepeatEvent);
-        return KeyEventResult.handled;
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
-          _selectedIndex < _itemCount - 1) {
-        _next(event is KeyRepeatEvent);
-        return KeyEventResult.handled;
-      } else if (event.logicalKey == LogicalKeyboardKey.enter ||
-          event.logicalKey == LogicalKeyboardKey.select) {
-        return KeyEventResult.handled;
-      }
-    }
-    return KeyEventResult.ignored;
-  }
-
-  Future<void> _next(bool fast) async {
-    if (_selectedIndex >= _itemCount - 1) {
-      return;
-    }
-    var moved = await _listViewKey.currentState?.next(fast: fast);
-    _selectedIndex = moved ?? _selectedIndex;
-  }
-
-  Future<void> _prev(bool fast) async {
-    if (_selectedIndex <= 0) {
-      return;
-    }
-    var moved = await _listViewKey.currentState?.previous(fast: fast);
-    _selectedIndex = moved ?? _selectedIndex;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Focus(
-      focusNode: _focusNode,
-      onKeyEvent: _onKeyEvent,
+      focusNode: focusNode,
       child: Column(
         children: [
           //list title
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(70, 0, 70, 8),
-              child: SizedBox(
-                height: _hasFocus ? 40 : 20,
-                child: AnimatedScale(
-                    scale: _hasFocus ? 1.7 : 1.0,
-                    duration: const Duration(milliseconds: 100),
-                    alignment: Alignment.topLeft,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 5,
-                      children: [
-                        if (_title.isNotEmpty)
-                          Text(_title,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontSize: _titleFontSize,
-                                color: _hasFocus
-                                    ? Colors.white
-                                        .withAlpha((255 * 0.7).toInt())
-                                    : Colors.grey,
-                              )),
-                      ],
-                    )),
-              ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(70, 0, 70, 8),
+            child: SizedBox(
+              height: _hasFocus ? 40 : 20,
+              child: AnimatedScale(
+                  scale: _hasFocus ? 1.7 : 1.0,
+                  duration: const Duration(milliseconds: 100),
+                  alignment: Alignment.topLeft,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 5,
+                    children: [
+                      if (_title.isNotEmpty)
+                        Text(_title,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: _titleFontSize,
+                              color: _hasFocus
+                                  ? Colors.white
+                                      .withAlpha((255 * 0.7).toInt())
+                                  : Colors.grey,
+                            )),
+                    ],
+                  )),
             ),
           ),
           //list
@@ -137,8 +94,8 @@ class _MovieListState extends State<MovieList> {
                 opacity: _hasFocus ? 1.0 : 0.6,
                 duration: const Duration(milliseconds: 100),
                 child: SelectableListView(
-                    key: _listViewKey,
-                    padding: EdgeInsets.only(left: 58),
+                    key: listKey,
+                    padding: EdgeInsets.symmetric(horizontal: 58),
                     itemCount: _itemCount,
                     itemBuilder: (context, index, selectedIndex, key) {
                       return Container(

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/styles/app_style.dart';
+import 'package:tizen_fs/widgets/focus_selectable.dart';
 import 'package:tizen_fs/widgets/media_card.dart';
 import 'package:tizen_fs/widgets/selectable_listview.dart';
 
@@ -200,22 +201,18 @@ class ImmersiveListArea extends StatefulWidget {
   State<ImmersiveListArea> createState() => _ImmersiveListAreaState();
 }
 
-class _ImmersiveListAreaState extends State<ImmersiveListArea> {
-  final FocusNode _focusNode = FocusNode();
-  final GlobalKey<SelectableListViewState> _listViewKey =
-      GlobalKey<SelectableListViewState>();
-
+class _ImmersiveListAreaState extends State<ImmersiveListArea>
+    with FocusSelectable<ImmersiveListArea> {
   List<ImmersiveContent> contents = [];
 
   bool _hasFocus = false;
   static const double _leftPadding = 58;
   int _itemCount = 0;
-  int _selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _focusNode.addListener(_onFocusChanged);
+    focusNode.addListener(_onFocusChanged);
     if (Provider.of<ImmersiveListModel>(context, listen: false).itemCount ==
         0) {
       Provider.of<ImmersiveListModel>(context, listen: false)
@@ -239,14 +236,13 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
 
   @override
   void dispose() {
-    _focusNode.removeListener(_onFocusChanged);
-    _focusNode.dispose();
+    focusNode.removeListener(_onFocusChanged);
     super.dispose();
   }
 
   void _onFocusChanged() async {
     setState(() {
-      _hasFocus = _focusNode.hasFocus;
+      _hasFocus = focusNode.hasFocus;
     });
 
     if (_hasFocus) {
@@ -259,56 +255,51 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
     }
   }
 
-  KeyEventResult _onKeyEvent(FocusNode focusNode, KeyEvent event) {
-    if (event is KeyDownEvent || event is KeyRepeatEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.arrowLeft &&
-          _selectedIndex > 0) {
-        _prev(event is KeyRepeatEvent);
-        return KeyEventResult.handled;
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight &&
-          _selectedIndex < _itemCount - 1) {
-        _next(event is KeyRepeatEvent);
-        return KeyEventResult.handled;
-      } else if (event.logicalKey == LogicalKeyboardKey.enter ||
-          event.logicalKey == LogicalKeyboardKey.select) {
-        widget.onExecute?.call(_selectedIndex);
-        return KeyEventResult.handled;
-      }
+  @override
+  KeyEventResult onKeyEvent(FocusNode focusNode, KeyEvent event) {
+    if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter ||
+        event.logicalKey == LogicalKeyboardKey.select) {
+      widget.onExecute?.call(selectedIndex);
+      return KeyEventResult.handled;
     }
     return KeyEventResult.ignored;
   }
 
-  Future<void> _next(bool fast) async {
-    if (_selectedIndex >= _itemCount - 1) {
+  @override
+  Future<void> onNext(bool fast) async {
+    final previous = selectedIndex;
+    await super.onNext(fast);
+    if (previous == selectedIndex || !mounted) {
       return;
     }
+
     Provider.of<ImmersiveListModel>(context, listen: false).selectedIndex =
-        ++_selectedIndex;
-    var moved = await _listViewKey.currentState?.next(fast: fast);
-    _selectedIndex = moved ?? _selectedIndex;
-    final current = _selectedIndex;
+        selectedIndex;
+    final current = selectedIndex;
 
     await Future.delayed(const Duration(milliseconds: 300));
 
-    if (current == _selectedIndex) {
+    if (current == selectedIndex && mounted) {
       Provider.of<BackdropProvider>(context, listen: false)
           .updateBackdrop(getSelectedBackdrop());
     }
   }
 
-  Future<void> _prev(bool fast) async {
-    if (_selectedIndex <= 0) {
+  @override
+  Future<void> onPrev(bool fast) async {
+    final previous = selectedIndex;
+    await super.onPrev(fast);
+    if (previous == selectedIndex || !mounted) {
       return;
     }
+
     Provider.of<ImmersiveListModel>(context, listen: false).selectedIndex =
-        --_selectedIndex;
-    var moved = await _listViewKey.currentState?.previous(fast: fast);
-    _selectedIndex = moved ?? _selectedIndex;
-    final current = _selectedIndex;
+        selectedIndex;
+    final current = selectedIndex;
 
     await Future.delayed(const Duration(milliseconds: 300));
 
-    if (current == _selectedIndex) {
+    if (current == selectedIndex && mounted) {
       Provider.of<BackdropProvider>(context, listen: false)
           .updateBackdrop(getSelectedBackdrop());
     }
@@ -316,7 +307,7 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
 
   Widget getSelectedBackdrop() {
     return Container(
-        key: ValueKey(_selectedIndex),
+        key: ValueKey(selectedIndex),
         alignment: Alignment.topRight,
         child: SizedBox(
           width: 758,
@@ -334,8 +325,7 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
   @override
   Widget build(BuildContext context) {
     return Focus(
-      focusNode: _focusNode,
-      onKeyEvent: _onKeyEvent,
+      focusNode: focusNode,
       child: Column(
         children: [
           AnimatedOpacity(
@@ -359,7 +349,7 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
           SizedBox(
               height: 90,
               child: SelectableListView(
-                  key: _listViewKey,
+                  key: listKey,
                   padding:
                       EdgeInsets.only(left: _leftPadding, right: _leftPadding),
                   itemCount: _itemCount,
@@ -373,7 +363,7 @@ class _ImmersiveListAreaState extends State<ImmersiveListArea> {
                                 'assets/mock/images/${contents[index].card}',
                             onRequestSelect: () {
                               Focus.of(context).requestFocus();
-                              _listViewKey.currentState?.selectTo(index);
+                              listKey.currentState?.selectTo(index);
                             },
                             onPressed: () {
                               widget.onExecute?.call(index);
