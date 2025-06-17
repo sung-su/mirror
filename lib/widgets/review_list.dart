@@ -95,7 +95,7 @@ class _ReviewListState extends State<ReviewList> {
         height: _listHeight,
         child: SelectableListView(
           key: _listViewKey,
-          padding: EdgeInsets.only(left: 58),
+          padding: EdgeInsets.symmetric(horizontal: 58),
           itemCount: _itemCount,
           itemBuilder: (context, index, selectedIndex, key) {
             final review = widget.reviews[index];
