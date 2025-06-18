@@ -36,6 +36,10 @@ class VideoBackdropState extends State<VideoBackdrop> with WidgetsBindingObserve
     setState(() {
       _statusIndex = value;
 
+      if (_statusIndex > 2) {
+        _videoController.pause();
+      }
+
       if(_statusIndex == 3) {
         _isIdle = false;
         _isEffectOn = false;
