@@ -22,10 +22,10 @@ class MovieList extends StatefulWidget {
 }
 
 class _MovieListState extends State<MovieList> with FocusSelectable<MovieList> {
-  late String _title;
+  late final String _title;
 
   bool _hasFocus = false;
-  int _itemCount = 0;
+  late final int _itemCount;
   final double _titleFontSize = 14;
   final double _listExtenedHeight = 160;
   final double _listHeight = 130;

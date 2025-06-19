@@ -39,8 +39,6 @@ class CategoryList extends StatefulWidget {
 }
 
 class _CategoryListState extends State<CategoryList> with FocusSelectable<CategoryList> {
-  final ScrollController _scrollController = ScrollController();
-
   bool _hasFocus = false;
   late final String _title;
   late final int _itemCount;
@@ -113,7 +111,6 @@ class _CategoryListState extends State<CategoryList> with FocusSelectable<Catego
 
   @override
   void dispose() {
-    _scrollController.dispose();
     focusNode.removeListener(_onFocusChanged);
     super.dispose();
   }

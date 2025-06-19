@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:tizen_fs/models/movie.dart';
 import 'package:tizen_fs/widgets/focus_selectable.dart';
 import 'package:tizen_fs/widgets/review_card.dart';
@@ -21,11 +20,10 @@ class ReviewList extends StatefulWidget {
   State<ReviewList> createState() => _ReviewListState();
 }
 
-class _ReviewListState extends State<ReviewList> with FocusSelectable<ReviewList>  {
-
+class _ReviewListState extends State<ReviewList> with FocusSelectable<ReviewList> {
   bool _hasFocus = false;
-  int _itemCount = 0;
-  double _listHeight = 110;
+  late final int _itemCount;
+  final double _listHeight = 110;
 
   @override
   void initState() {

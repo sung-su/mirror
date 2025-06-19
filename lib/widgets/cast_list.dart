@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:tizen_fs/models/movie.dart';
 import 'package:tizen_fs/widgets/focus_selectable.dart';
 import 'package:tizen_fs/widgets/media_card.dart';
@@ -22,13 +21,13 @@ class CastList extends StatefulWidget {
 }
 
 class _CastListState extends State<CastList> with FocusSelectable<CastList> {
-  late String _title;
+  late final String _title;
 
   bool _hasFocus = false;
-  int _itemCount = 10;
-  double _titleFontSize = 14; // * 1.7
-  double _listExtenedHeight = 170;
-  double _listHeight = 130;
+  late final int _itemCount;
+  final double _titleFontSize = 14; // * 1.7
+  final double _listExtenedHeight = 170;
+  final double _listHeight = 130;
 
   @override
   void initState() {

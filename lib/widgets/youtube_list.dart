@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:tizen_fs/models/movie.dart';
 import 'package:tizen_fs/widgets/focus_selectable.dart';
 import 'package:tizen_fs/widgets/media_card.dart';
@@ -26,10 +25,10 @@ class _YoutubeListState extends State<YoutubeList> with FocusSelectable<YoutubeL
   late String _title;
 
   bool _hasFocus = false;
-  int _itemCount = 0;
-  double _titleFontSize = 14;
-  double _listHeight = 170;
-  double _listExtendedHeight = 250;
+  late final int _itemCount;
+  final double _titleFontSize = 14;
+  final double _listHeight = 170;
+  final double _listExtendedHeight = 250;
 
   @override
   void initState() {
@@ -54,6 +53,7 @@ class _YoutubeListState extends State<YoutubeList> with FocusSelectable<YoutubeL
       widget.onFocused?.call();
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Focus(
@@ -62,32 +62,30 @@ class _YoutubeListState extends State<YoutubeList> with FocusSelectable<YoutubeL
         spacing: 10,
         children: [
           //list title
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(70, 0, 70, 8),
-              child: SizedBox(
-                height: _hasFocus ? 40 : 20,
-                child: AnimatedScale(
-                    scale: _hasFocus ? 1.7 : 1.0,
-                    duration: const Duration(milliseconds: 100),
-                    alignment: Alignment.topLeft,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 5,
-                      children: [
-                        if (_title.isNotEmpty)
-                          Text(_title,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontSize: _titleFontSize,
-                                color: _hasFocus
-                                    ? Colors.white
-                                        .withAlpha((255 * 0.7).toInt())
-                                    : Colors.grey,
-                              )),
-                      ],
-                    )),
-              ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(70, 0, 70, 8),
+            child: SizedBox(
+              height: _hasFocus ? 40 : 20,
+              child: AnimatedScale(
+                  scale: _hasFocus ? 1.7 : 1.0,
+                  duration: const Duration(milliseconds: 100),
+                  alignment: Alignment.topLeft,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 5,
+                    children: [
+                      if (_title.isNotEmpty)
+                        Text(_title,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: _titleFontSize,
+                              color: _hasFocus
+                                  ? Colors.white
+                                      .withAlpha((255 * 0.7).toInt())
+                                  : Colors.grey,
+                            )),
+                    ],
+                  )),
             ),
           ),
           //list
