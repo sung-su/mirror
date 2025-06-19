@@ -9,7 +9,7 @@ mixin FocusSelectable<T extends StatefulWidget> on State<T> {
 
   GlobalKey<SelectableListViewState> get listKey => _listState;
   FocusNode get focusNode => _focusNode;
-  int get selectedIndex => _listState.currentState != null ? _listState.currentState!.selectedIndex : 0;
+  int get selectedIndex => _listState.currentState?.selectedIndex ?? 0;
 
   @override
   void initState() {
