@@ -19,7 +19,7 @@ class _BlurTestPageState extends State<BlurTestPage> {
 
   late List<Movie> _movies;
   bool _isEffectOn = false;
-  late FocusNode _focusNode =FocusNode();
+  late FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -104,31 +104,18 @@ class CustomListView extends StatefulWidget {
 
 class _CustomListViewState extends State<CustomListView> with FocusSelectable<CustomListView>  {
 
-  bool _hasFocus = false;
   int _itemCount = 0;
   double _listHeight = 110;
 
   @override
   void initState() {
     super.initState();
-    focusNode.addListener(_onFocusChanged);
     _itemCount = widget.reviews.length;
   }
 
   @override
   void dispose() {
-    focusNode.removeListener(_onFocusChanged);
     super.dispose();
-  }
-
-  void _onFocusChanged() async {
-    setState(() {
-      _hasFocus = focusNode.hasFocus;
-    });
-
-    if (_hasFocus) {
-      widget.onFocused?.call();
-    }
   }
 
   @override
