@@ -11,13 +11,13 @@ class FlexibleTitleForDetail extends StatelessWidget {
   final double maxFontSize;
   final Movie movie;
 
-  FlexibleTitleForDetail({
+  const FlexibleTitleForDetail({
     super.key,
     required this.expandedHeight,
     required this.collapsedHeight,
     required this.movie,
-    this.minFontSize = 30,
-    this.maxFontSize = 45,
+    this.minFontSize = 35,
+    this.maxFontSize = 60,
     this.onFocused    
   });
 

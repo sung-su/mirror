@@ -24,7 +24,7 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> with RouteAware {
   final ScrollController _scrollController =
-      ScrollController(initialScrollOffset: 240);
+      ScrollController(initialScrollOffset: 280);
   final GlobalKey<ActionListState> _scrollAnchor = GlobalKey<ActionListState>();
   final GlobalKey<VideoBackdropState> _backdropController = GlobalKey<VideoBackdropState>();
 
@@ -98,7 +98,7 @@ class _DetailPageState extends State<DetailPage> with RouteAware {
                   backgroundColor: Colors.transparent,
                   automaticallyImplyLeading: false,
                   toolbarHeight: 250,
-                  expandedHeight: MediaQuery.of(context).size.height - 50,
+                  expandedHeight: MediaQuery.of(context).size.height - 60,
                   flexibleSpace: Padding(
                       padding: const EdgeInsets.only(left: 58),
                       child: FlexibleTitleForDetail(
@@ -111,7 +111,7 @@ class _DetailPageState extends State<DetailPage> with RouteAware {
                     child: Padding(
                       padding: const EdgeInsets.only(top: 15),
                       child: Column(
-                        spacing: 20,
+                        spacing: 25,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Padding(
@@ -123,7 +123,7 @@ class _DetailPageState extends State<DetailPage> with RouteAware {
                                   rating: (movie.voteAverage * 10).floor(),
                                   onFocused: () {
                                     _scrollController.animateTo(
-                                      250, 
+                                      280, 
                                       duration: Duration(milliseconds: 100),
                                       curve: Curves.easeInQuad
                                     );
@@ -147,7 +147,7 @@ class _DetailPageState extends State<DetailPage> with RouteAware {
                               reviews: movie.reviews,
                               onFocused: () {
                                 _scrollController.animateTo(
-                                  250, 
+                                  280,
                                   duration: Duration(milliseconds: 100),
                                   curve: Curves.easeInQuad
                                 );
@@ -164,7 +164,7 @@ class _DetailPageState extends State<DetailPage> with RouteAware {
                             movie: movie,
                             onFocused: () {
                               _scrollController.animateTo(
-                                250, 
+                                280,
                                 duration: Duration(milliseconds: 100),
                                 curve: Curves.easeInQuad
                               );
