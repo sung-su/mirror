@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tizen_fs/poc/blur_test.dart';
 import 'package:tizen_fs/poc/immersive_carousel_poc.dart';
 import 'package:tizen_fs/poc/list_poc.dart';
 import 'package:tizen_fs/poc/media_card_poc.dart';
@@ -26,6 +27,19 @@ class PocGalleryPage extends StatelessWidget {
       body: Center(
         child: ListView(
           children: <Widget>[
+            ListTile(
+              title: const Text('Blur Test'),
+              subtitle: const Text('Test for blur effect'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreenSizeWrapper(const BlurTestPage()),
+                    ));
+              },
+            ),
             ListTile(
               title: const Text('List Poc'),
               subtitle: const Text('Test for ensureVisible of the Scroller'),
