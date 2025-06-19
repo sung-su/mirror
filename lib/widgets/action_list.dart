@@ -15,7 +15,7 @@ class ActionList extends StatefulWidget {
 
   final Movie movie;
   final VoidCallback? onFocused;
-  final VoidCallback? onSelectionChanged;
+  final Function(int)? onSelectionChanged;
   
   @override
   State<ActionList> createState() => ActionListState();
@@ -88,7 +88,7 @@ class ActionListState extends State<ActionList> {
     }
     setState((){
       _selectedIndex++;
-      widget.onSelectionChanged?.call();
+      widget.onSelectionChanged?.call(_selectedIndex);
     });
   }
 
@@ -98,7 +98,7 @@ class ActionListState extends State<ActionList> {
     }
     setState((){
       _selectedIndex--;
-      widget.onSelectionChanged?.call();
+      widget.onSelectionChanged?.call(_selectedIndex);
     });
   }
 

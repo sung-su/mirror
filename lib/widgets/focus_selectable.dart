@@ -6,11 +6,10 @@ mixin FocusSelectable<T extends StatefulWidget> on State<T> {
   final GlobalKey<SelectableListViewState> _listState =
       GlobalKey<SelectableListViewState>();
   final FocusNode _focusNode = FocusNode();
-  int _selectedIndex = 0;
 
   GlobalKey<SelectableListViewState> get listKey => _listState;
   FocusNode get focusNode => _focusNode;
-  int get selectedIndex => _selectedIndex;
+  int get selectedIndex => _listState.currentState != null ? _listState.currentState!.selectedIndex : 0;
 
   @override
   void initState() {
@@ -26,20 +25,12 @@ mixin FocusSelectable<T extends StatefulWidget> on State<T> {
 
   @protected
   Future<void> onNext(bool fast) async {
-    var moved = await _listState.currentState?.next(fast: fast);
-    if (moved !=null && _selectedIndex != moved) {
-      _selectedIndex = moved;
-      _listState.currentState?.onSelectionChanged();
-    }
+    await _listState.currentState?.next(fast: fast);
   }
 
   @protected
   Future<void> onPrev(bool fast) async {
-    var moved = await _listState.currentState?.previous(fast: fast);
-    if (moved !=null && _selectedIndex != moved) {
-      _selectedIndex = moved;
-      _listState.currentState?.onSelectionChanged();
-    }
+    await _listState.currentState?.previous(fast: fast);
   }
 
   @protected

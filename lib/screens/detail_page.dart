@@ -155,7 +155,7 @@ class _DetailPageState extends State<DetailPage> with RouteAware {
                                   _setBackdropState(3);
                                 }
                               },
-                              onSelectionChanged: () {
+                              onSelectionChanged: (selectedIndex) {
                                 _backdropController.currentState!.resetTimer();
                               },
                             ),
@@ -172,7 +172,7 @@ class _DetailPageState extends State<DetailPage> with RouteAware {
                                 _setBackdropState(3);
                               }
                             },
-                            onSelectionChanged: () {
+                            onSelectionChanged: (selectedIndex) {
                               _backdropController.currentState!.resetTimer();
                             },
                           ),

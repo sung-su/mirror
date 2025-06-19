@@ -86,7 +86,7 @@ class _BlurTestPageState extends State<BlurTestPage> {
 
 class CustomListView extends StatefulWidget {
   final VoidCallback? onFocused;
-  final VoidCallback? onSelectionChanged;
+  final Function(int)? onSelectionChanged;
   final List<Reviews> reviews;
   final bool isEffectOn;
 
@@ -141,7 +141,7 @@ class _CustomListViewState extends State<CustomListView> with FocusSelectable<Cu
           key: listKey,
           padding: EdgeInsets.symmetric(horizontal: 58),
           itemCount: _itemCount,
-          onSelectionChanged: () => widget.onSelectionChanged?.call(),
+          onSelectionChanged: (selectedIndex) => widget.onSelectionChanged?.call(selectedIndex),
           itemBuilder: (context, index, selectedIndex, key) {
             final review = widget.reviews[index];
             return Container(

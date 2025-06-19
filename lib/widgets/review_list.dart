@@ -6,7 +6,7 @@ import 'package:tizen_fs/widgets/selectable_listview.dart';
 
 class ReviewList extends StatefulWidget {
   final VoidCallback? onFocused;
-  final VoidCallback? onSelectionChanged;
+  final Function(int)? onSelectionChanged;
   final List<Reviews> reviews;
 
   const ReviewList({
@@ -58,7 +58,7 @@ class _ReviewListState extends State<ReviewList> with FocusSelectable<ReviewList
           key: listKey,
           padding: EdgeInsets.symmetric(horizontal: 58),
           itemCount: _itemCount,
-          onSelectionChanged: () => widget.onSelectionChanged?.call(),
+          onSelectionChanged: (selectedIndex) => widget.onSelectionChanged?.call(selectedIndex),
           itemBuilder: (context, index, selectedIndex, key) {
             final review = widget.reviews[index];
             return Container(

@@ -12,7 +12,7 @@ class SelectableListView extends StatefulWidget {
   final int itemCount;
   final Widget Function(BuildContext, int index, int selectedIndex, Key key) itemBuilder;
   final EdgeInsets? padding;
-  final VoidCallback? onSelectionChanged;
+  final Function(int)? onSelectionChanged;
 
   @override
   State<SelectableListView> createState() => SelectableListViewState();
@@ -75,6 +75,7 @@ class SelectableListViewState extends State<SelectableListView> {
         duration: Duration(milliseconds: duration),
         curve: Curves.easeInOut,
       );
+      widget.onSelectionChanged?.call(_selectedIndex);
       return current;
     } else {
       _selectedIndex = fallbackSelection; // restore previous selection
@@ -109,10 +110,6 @@ class SelectableListViewState extends State<SelectableListView> {
     } else {
       return _selectedIndex;
     }
-  }
-
-  void onSelectionChanged() {
-    widget.onSelectionChanged?.call();
   }
 
   @override
