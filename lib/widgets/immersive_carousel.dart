@@ -196,6 +196,7 @@ class ImmersiveCarouselState extends State<ImmersiveCarousel> {
           height: MediaQuery.of(context).size.height,
           child: CinematicScrim(
             image: Image.asset('assets/mock/images/${Provider.of<ImmersiveCarouselModel>(context, listen: false).getSelectedContent().backdrop}',
+                cacheWidth: (MediaQuery.of(context).size.width * 2).round(),
                 width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, fit: BoxFit.fill),
           ),
         ));

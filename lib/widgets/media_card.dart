@@ -14,6 +14,7 @@ class MediaCard extends StatelessWidget {
       {super.key,
       this.width = 196,
       required this.imageUrl,
+      this.imageWidth,
       this.title,
       this.subtitle,
       this.description,
@@ -34,6 +35,7 @@ class MediaCard extends StatelessWidget {
   const MediaCard.oneCard(
       {Key? key,
       required String imageUrl,
+      int? imageWidth,
       String? title,
       String? subtitle,
       String? description,
@@ -48,6 +50,7 @@ class MediaCard extends StatelessWidget {
             key: key,
             width: 844,
             imageUrl: imageUrl,
+            imageWidth: imageWidth,
             title: title,
             subtitle: subtitle,
             description: description,
@@ -62,6 +65,7 @@ class MediaCard extends StatelessWidget {
   const MediaCard.twoCard(
       {Key? key,
       required String imageUrl,
+      int? imageWidth,
       String? title,
       String? subtitle,
       String? description,
@@ -76,6 +80,7 @@ class MediaCard extends StatelessWidget {
             key: key,
             width: 416,
             imageUrl: imageUrl,
+            imageWidth: imageWidth,
             title: title,
             subtitle: subtitle,
             description: description,
@@ -90,6 +95,7 @@ class MediaCard extends StatelessWidget {
   const MediaCard.threeCard(
       {Key? key,
       required String imageUrl,
+      int? imageWidth,
       String? title,
       String? subtitle,
       String? description,
@@ -104,6 +110,7 @@ class MediaCard extends StatelessWidget {
             key: key,
             width: 268,
             imageUrl: imageUrl,
+            imageWidth: imageWidth,
             title: title,
             subtitle: subtitle,
             description: description,
@@ -118,6 +125,7 @@ class MediaCard extends StatelessWidget {
   const MediaCard.fourCard(
       {Key? key,
       required String imageUrl,
+      int? imageWidth,
       String? title,
       String? subtitle,
       String? description,
@@ -132,6 +140,7 @@ class MediaCard extends StatelessWidget {
             key: key,
             width: 196,
             imageUrl: imageUrl,
+            imageWidth: imageWidth,
             title: title,
             subtitle: subtitle,
             description: description,
@@ -146,6 +155,7 @@ class MediaCard extends StatelessWidget {
   const MediaCard.fiveCard(
       {Key? key,
       required String imageUrl,
+      int? imageWidth,
       String? title,
       String? subtitle,
       String? description,
@@ -160,6 +170,7 @@ class MediaCard extends StatelessWidget {
             key: key,
             width: 152,
             imageUrl: imageUrl,
+            imageWidth: imageWidth,
             title: title,
             subtitle: subtitle,
             description: description,
@@ -174,6 +185,7 @@ class MediaCard extends StatelessWidget {
   const MediaCard.sixCard(
       {Key? key,
       required String imageUrl,
+      int? imageWidth,
       String? title,
       String? subtitle,
       String? description,
@@ -188,6 +200,7 @@ class MediaCard extends StatelessWidget {
             key: key,
             width: 124,
             imageUrl: imageUrl,
+            imageWidth: imageWidth,
             title: title,
             subtitle: subtitle,
             description: description,
@@ -202,6 +215,7 @@ class MediaCard extends StatelessWidget {
   const MediaCard.nineCard(
       {Key? key,
       required String imageUrl,
+      int? imageWidth,
       String? title,
       String? subtitle,
       String? description,
@@ -216,6 +230,7 @@ class MediaCard extends StatelessWidget {
             key: key,
             width: 80,
             imageUrl: imageUrl,
+            imageWidth: imageWidth,
             title: title,
             subtitle: subtitle,
             description: description,
@@ -230,6 +245,7 @@ class MediaCard extends StatelessWidget {
   const MediaCard.circle(
       {Key? key,
       required String imageUrl,
+      int? imageWidth,
       String? title,
       String? subtitle,
       String? description,
@@ -243,6 +259,7 @@ class MediaCard extends StatelessWidget {
             key: key,
             width: 80,
             imageUrl: imageUrl,
+            imageWidth: imageWidth,
             title: title,
             subtitle: subtitle,
             description: description,
@@ -257,6 +274,7 @@ class MediaCard extends StatelessWidget {
   const MediaCard.circleLarge(
       {Key? key,
       required String imageUrl,
+      int? imageWidth,
       String? title,
       String? subtitle,
       String? description,
@@ -270,6 +288,7 @@ class MediaCard extends StatelessWidget {
             key: key,
             width: 124,
             imageUrl: imageUrl,
+            imageWidth: imageWidth,
             title: title,
             subtitle: subtitle,
             description: description,
@@ -285,6 +304,7 @@ class MediaCard extends StatelessWidget {
   final double width;
   final double height;
   final String imageUrl;
+  final int? imageWidth;
   final String? title;
   final String? subtitle;
   final String? description;
@@ -386,17 +406,25 @@ class MediaCard extends StatelessWidget {
   }
 
   Widget _buildTileContent() {
+    var cacheWidth = (width * 2).round();
+
+    if(imageWidth != null) {
+      cacheWidth = (cacheWidth > imageWidth!) ? imageWidth! : cacheWidth;
+    }
+
     if (content != null) {
       return content!;
     } else if (imageUrl.startsWith('http')) {
       return CachedNetworkImage(
         imageUrl: imageUrl,
+        memCacheWidth: cacheWidth,
         errorWidget: (context, url, error) => const Icon(Icons.error),
         fit: BoxFit.cover,
       );
     } else if (imageUrl.startsWith('/')) {
       return Image.file(
         File(imageUrl),
+        cacheWidth: cacheWidth,
         errorBuilder: (context, error, stackTrace) =>
             const Icon(Icons.broken_image),
         fit: BoxFit.cover,
@@ -404,6 +432,7 @@ class MediaCard extends StatelessWidget {
     } else if (imageUrl.startsWith('assets')) {
       return Image.asset(
         imageUrl,
+        cacheWidth: cacheWidth,
         fit: BoxFit.cover,
       );
     } else {

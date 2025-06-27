@@ -229,6 +229,7 @@ class _CategoryListState extends State<CategoryList> with FocusSelectable<Catego
                     key: key,
                     width: _itemWidth,
                     imageUrl: widget.tiles[index].iconUrl!,
+                    imageWidth: widget.tiles[index].imageWidth,
                     isSelected: _hasFocus && index == selectedIndex,
                     ratio: widget.isCircle
                         ? MediaCardRatio.square

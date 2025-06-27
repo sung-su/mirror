@@ -142,6 +142,7 @@ class MediaDBParser extends ChangeNotifier {
           final parentUID = row['parentUID'];
           final uiJson = _parseJson(row['UIJson']);
           final icon = uiJson['focused_icon'] ?? 'Unknown';
+          final iconWidth = uiJson['image_width'];
           final title = uiJson['title'] ?? 'Unknown';
 
           if (elementID == 'd/dhcategory.layer.tile') {
@@ -153,11 +154,12 @@ class MediaDBParser extends ChangeNotifier {
                 parentUID: parentUID,
                 title: title,
                 iconUrl: icon,
+                imageWidth: iconWidth,
                 details: contentDetail);
           } else if (!icon.toString().startsWith('/usr/') &&
               File(icon).existsSync()) {
             return Tile(
-                iconUrl: icon, parentUID: parentUID, title: title, uid: uid);
+                iconUrl: icon, imageWidth: iconWidth, parentUID: parentUID, title: title, uid: uid);
           }
         })
         .whereType<Tile>()

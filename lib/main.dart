@@ -22,6 +22,9 @@ void main() async {
 
   final MovieViewModel movieViewModel = MovieViewModel()..fetchSampleMovies();
 
+  final imageCache = PaintingBinding.instance.imageCache;
+  imageCache.maximumSize = 50;
+  imageCache.maximumSizeBytes = 10 * 1024 * 1024;
 
   runApp(MultiProvider(
     providers: [
