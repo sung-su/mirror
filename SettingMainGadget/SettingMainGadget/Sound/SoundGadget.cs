@@ -10,6 +10,7 @@ using Tizen.NUI;
 using Tizen.NUI.BaseComponents;
 using Tizen.NUI.Components;
 using Tizen.System;
+using System;
 
 namespace Setting.Menu
 {
@@ -118,7 +119,10 @@ namespace Setting.Menu
         {
             if (e.Type == AudioVolumeType.Media && mediaSlider != null)
             {
-                mediaSlider.Slider.CurrentValue = SettingAudioManager.GetPercentageVolumeLevel(e.Type);
+                if (MathF.Abs(SettingAudioManager.GetPercentageVolumeLevel(e.Type) - mediaSlider.Slider.CurrentValue) >= (1.00 / audioVolume.MaxLevel[e.Type]))
+                {
+                    mediaSlider.Slider.CurrentValue = SettingAudioManager.GetPercentageVolumeLevel(e.Type);
+                }
             }
         }
 
