@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
 import 'home_top_menu.dart';
-import 'home_content_view.dart';
+import 'main_content_view.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -52,7 +52,7 @@ class _MainContentState extends State<MainContent> {
           ),
         ),
         SliverToBoxAdapter(
-          child: HomeContentView(
+          child: MainContentView(
               pageController: _pageController,
               scrollController: _scrollController,
           )

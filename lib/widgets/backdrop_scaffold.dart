@@ -30,13 +30,13 @@ class BackdropScaffold extends StatelessWidget {
                             color: const Color.fromARGB(255, 18, 18, 18)))),
                 // Backdrop
                 AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 50),
                   transitionBuilder: (child, animation) => ScaleTransition(
                       scale: Tween<double>(begin: 0.95, end: 1.1).animate(animation),
                       child: FadeTransition(opacity: animation, child: child)),
                   child: (backdrop != null)
                       ? AnimatedScale(
-                          duration: const Duration(milliseconds: 100),
+                          duration: const Duration(milliseconds: 50),
                           scale: Provider.of<BackdropProvider>(context).isZoomIn
                               ? 1.1
                               : 1.0,

@@ -1,10 +1,11 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
+import 'package:tizen_fs/screen/home_page.dart';
 import 'package:tizen_fs/screen/mock_apps_page.dart';
 
-class HomeContentView extends StatefulWidget {
-  const HomeContentView({
+class MainContentView extends StatefulWidget {
+  const MainContentView({
     super.key,
     required this.pageController,
     required this.scrollController,
@@ -14,10 +15,10 @@ class HomeContentView extends StatefulWidget {
   final ScrollController scrollController;
 
   @override
-  State<HomeContentView> createState() => _HomeContentViewState();
+  State<MainContentView> createState() => _MainContentViewState();
 }
 
-class _HomeContentViewState extends State<HomeContentView> {
+class _MainContentViewState extends State<MainContentView> {
   late final PageController _controller;
   double _currentPage = 0;
 
@@ -39,7 +40,7 @@ class _HomeContentViewState extends State<HomeContentView> {
       animationDuration: const Duration(milliseconds: 50),
       physics: const NeverScrollableScrollPhysics(),
       children: [
-        _buildFadingPage(index: 0, child: MockAppsPage()),
+        _buildFadingPage(index: 0, child: HomePage()),
         _buildFadingPage(index: 1, child: MockAppsPage()),
         _buildFadingPage(index: 2, child: MockAppsPage()),
       ]);
