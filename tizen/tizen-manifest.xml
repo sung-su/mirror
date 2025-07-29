@@ -9,7 +9,4 @@
         <metadata key="http://tizen.org/metadata/flutter_tizen/enable_impeller" value="true"/>
     </ui-application>
     <feature name="http://tizen.org/feature/screen.size.all"/>
-    <privileges>
-        <privilege>http://tizen.org/privilege/internet</privilege>
-    </privileges>
 </manifest>

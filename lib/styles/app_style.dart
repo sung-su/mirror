@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 AppStyle get $style => AppStyle.instance;
@@ -38,7 +39,48 @@ class AppColors {
 
   final Color border = Color(0xFF8E9099);
 
-  ThemeData toThemeData() {
+
+  // colors from https://samsungtizenos.com/about/brand-guide/
+  final Color sblue = const Color(0xFF0F42CF);
+  final Color tblue = const Color(0xFF00c9ff);
+
+  ThemeData toLightThemeData() {
+    var colorScheme = ColorScheme.fromSeed(
+      seedColor: sblue,
+      primary: sblue,
+      secondary: tblue,
+      brightness: Brightness.light
+    );
+    
+    var t = ThemeData.from(
+      colorScheme: colorScheme, useMaterial3: true
+    ).copyWith(
+      textSelectionTheme: TextSelectionThemeData(cursorColor: sblue),
+      highlightColor: sblue,
+    );
+
+    return t;
+  }
+
+  ThemeData toDarkThemeData2() {
+    var colorScheme = ColorScheme.fromSeed(
+      seedColor: sblue,
+      secondary: tblue,
+      brightness: Brightness.dark,
+      dynamicSchemeVariant: DynamicSchemeVariant.monochrome,
+    );
+    
+    var t = ThemeData.from(
+      colorScheme: colorScheme, useMaterial3: true
+    ).copyWith(
+      textSelectionTheme: TextSelectionThemeData(cursorColor: sblue),
+      highlightColor: sblue,
+    );
+
+    return t;
+  }
+
+  ThemeData toDarkThemeData() {
     /// Create a TextTheme and ColorScheme, that we can use to generate ThemeData
     TextTheme txtTheme = ThemeData.dark().textTheme;
     ColorScheme colorScheme = ColorScheme(

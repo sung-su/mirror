@@ -18,7 +18,7 @@ class TopMenuAvatarItem extends StatelessWidget {
           shape: BoxShape.circle,
           boxShadow:[
             BoxShadow(
-              color: isSelected ? $style.colors.onSurface : Colors.transparent,
+              color: isSelected ? Theme.of(context).colorScheme.primary : Colors.transparent,
               spreadRadius: 2,
             )
           ]
@@ -26,7 +26,7 @@ class TopMenuAvatarItem extends StatelessWidget {
         child: GestureDetector(
             onTap: () => onPressed?.call(),
             child: CircleAvatar(
-              backgroundColor: Colors.brown.shade800,
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               backgroundImage:
                   imageUrl != null ? NetworkImage(imageUrl!) : null,
               child: (imageUrl == null && text != null) ? Text(text!) : null,

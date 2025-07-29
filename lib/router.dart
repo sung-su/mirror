@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tizen_fs/screens/main_screen.dart';
 import 'package:tizen_fs/poc/poc_gallery.dart';
+import 'package:tizen_fs/screen/main_screen.dart';
 
 class ScreenPaths {
   static const String main = '/';

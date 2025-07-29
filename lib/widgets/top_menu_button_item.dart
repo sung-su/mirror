@@ -13,30 +13,29 @@ class TopMenuButtonItem extends StatelessWidget {
   final String text;
   final void Function()? onPressed;
 
+
   @override
   Widget build(BuildContext context) {
+    final Color baseColor = Theme.of(context).colorScheme.primary;
+    final Color textColor = Theme.of(context).colorScheme.surface;
+    final Color defautTextColor = Theme.of(context).colorScheme.onSurface;
+
     return GestureDetector(
       onTap: () => onPressed?.call(),
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 50),
         decoration: BoxDecoration(
-          color: isSelected
-              ? (isFocused
-                  ? Colors.white.withAlphaF(0.9)
-                  : Colors.white.withAlphaF(0.15))
-              : Colors.transparent,
-          borderRadius: isSelected ? BorderRadius.circular(30) : BorderRadius.zero,
+          color: baseColor.withAlphaF(isSelected ? isFocused ? 0.9 : 0.15 : 0.0),
+          borderRadius: BorderRadius.circular(24),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 10),
           child: Text(
             text,
             style: TextStyle(
+              color: isSelected ? isFocused ? textColor : defautTextColor : defautTextColor,
               fontSize: 16,
-              color: isFocused
-                ? (isSelected
-                    ? $style.colors.surface
-                    : $style.colors.onSurface)
-                : $style.colors.onSurface.withAlphaF(0.8),
+              fontWeight: isSelected ? isFocused ? FontWeight.w600 : FontWeight.w400 : FontWeight.w400,
             ),
           ),
         ),

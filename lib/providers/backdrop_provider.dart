@@ -3,17 +3,23 @@ import 'package:flutter/material.dart';
 class BackdropProvider extends ChangeNotifier {
   Widget? _backdrop;
   Widget? get backdrop => _backdrop;
-
   void updateBackdrop(Widget? backdrop) {
+    debugPrint('updateBackdrop');
     _backdrop = backdrop;
     notifyListeners();
   }
 
   bool _isZoomin = false;
-
   bool get isZoomIn => _isZoomin;
   set isZoomIn(bool value) {
     _isZoomin = value;
+    notifyListeners();
+  }
+
+  bool _isGradientEffectOn = true;
+  bool get isGradientEffectOn => _isGradientEffectOn;
+  set isGradientEffect(bool value) {
+    _isGradientEffectOn = value;
     notifyListeners();
   }
 }
