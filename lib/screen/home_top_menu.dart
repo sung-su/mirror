@@ -98,7 +98,10 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
           } else if (onKeyEvent.logicalKey == LogicalKeyboardKey.enter) {
             debugPrint('[onKeyEvent] LogicalKeyboardKey.enter: $_selected');
             if (_selected == 0) {
-              AppRouter.router.go(ScreenPaths.poc);
+              AppRouter.router.push(ScreenPaths.poc);
+            }
+            if(_selected == 4) {
+              AppRouter.router.push(ScreenPaths.settings);
             }
             return KeyEventResult.handled;
           }
