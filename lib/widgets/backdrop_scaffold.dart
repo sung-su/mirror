@@ -27,7 +27,9 @@ class BackdropScaffold extends StatelessWidget {
                 SizedBox.expand(
                     child: DecoratedBox(
                         decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 18, 18, 18)))),
+                            // color: const Color.fromARGB(255, 18, 18, 18)
+                            color: Theme.of(context).colorScheme.surface
+                            ))),
                 // Backdrop
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 50),

@@ -1,116 +1,216 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_reorderable_grid_view/widgets/reorderable_builder.dart';
+import 'package:shimmer/shimmer.dart';
 
-const _shimmerGradient = LinearGradient(
-  colors: [Color(0xFFEBEBF4), Color(0xFFF4F4F4), Color(0xFFEBEBF4)],
-  stops: [0.1, 0.3, 0.4],
-  begin: Alignment(-1.0, -0.3),
-  end: Alignment(1.0, 0.3),
-  tileMode: TileMode.clamp,
-);
-
-class ShimmerLoading extends StatefulWidget {
-  const ShimmerLoading({
-    super.key,
-    required this.isLoading,
-    required this.child,
-  });
-
-  final bool isLoading;
-  final Widget child;
-
-  @override
-  State<ShimmerLoading> createState() => _ShimmerLoadingState();
-}
-
-class _ShimmerLoadingState extends State<ShimmerLoading> {
-  @override
-  Widget build(BuildContext context) {
-    if (!widget.isLoading) {
-      return widget.child;
-    }
-
-    return ShaderMask(
-      blendMode: BlendMode.srcATop,
-      shaderCallback: (bounds) {
-        return _shimmerGradient.createShader(bounds);
-      },
-      child: widget.child,
-    );
-  }
-}
-
-class ShimmerLoadingPage extends StatefulWidget {
-  const ShimmerLoadingPage({Key? key}) : super(key: key);
-
-  @override
-  _ShimmerLoadingPage createState() => _ShimmerLoadingPage();
-}
-
-class _ShimmerLoadingPage extends State<ShimmerLoadingPage> {
-
+class ShimmerLoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ShimmerLoading(isLoading: true, child: TestView())
+      body: FutureBuilder(
+        future: fetchData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return ShimmerScreen(); // Shimmer effect while loading
+          }
+          else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else {
+            return Screen(data: snapshot.data!);
+          }
+        },
+      ),
+    );
+  }
+
+  Future<List<String>> fetchData() async {
+    // Simulate data fetching delay
+    await Future.delayed(Duration(seconds: 5));
+    return ['Item 1', 'Item 2', 'Item 3'];
+  }
+}
+
+class ShimmerScreen extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Theme.of(context).colorScheme.onPrimary,
+      highlightColor: Theme.of(context).colorScheme.primaryContainer,
+      // child: ListView.builder(
+      //   itemCount: 5, // Adjust the count based on your needs
+      //   itemBuilder: (context, index) {
+      //     return ListTile(
+      //       title: Container(
+      //         decoration: BoxDecoration(
+      //           borderRadius: BorderRadius.circular(10),
+      //           color: Colors.white,
+      //         ),
+      //         height: 50,
+      //         width: 200,
+      //         // color: Colors.white,
+      //       ),
+      //     );
+      //   },
+      // ),
+      child: DummyScreen()
     );
   }
 }
 
-class TestView extends StatefulWidget {
-  @override
-  State<TestView> createState() => _TestViewState();
-}
+class Screen extends StatelessWidget {
+  final List<String> data;
 
-class _TestViewState extends State<TestView> {
-  final _scrollController = ScrollController();
-
-  final _gridViewKey = GlobalKey();
-
-  var _fruits = <String>["apple", "banana", "strawberry", "mango", "blueberry", "peach"];
+  Screen({required this.data});
 
   @override
   Widget build(BuildContext context) {
-    final generatedChildren = List.generate(
-      _fruits.length,
-      (index) => SizedBox(
-        key: Key(_fruits.elementAt(index)),
-        width: 200,
-        height: 70,
-        child: Container(
-          color: Colors.pink,
-          child: Text(
-            _fruits.elementAt(index),
+    // return ListView.builder(
+    //   itemCount: data.length,
+    //   itemBuilder: (context, index) {
+    //     return ListTile(
+    //       title: Text(data[index]),
+    //     );
+    //   },
+    // );
+    return DummyScreen();
+  }
+}
+
+class DummyScreen extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    final Color baseColor = Theme.of(context).colorScheme.onPrimary;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+      child: Column(
+        spacing: 20,
+        children: [
+          Row(
+            spacing: 10,
+            children: [
+              Container (
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: baseColor
+                )
+              ),
+              Container (
+                width: 100,
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  color: baseColor
+                )
+              ),
+              Container (
+                width: 100,
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  color: baseColor
+                )
+              ),
+              Spacer(),
+              Container (
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: baseColor
+                )
+              ),
+              Container (
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: baseColor
+                )
+              ),
+              Container (
+                width: 80,
+                height: 30,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: baseColor
+                )
+              ),
+            ],
           ),
-        ),
+          Row(
+            children: [
+              Column(
+                spacing: 10,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 150),
+                  Container(
+                    width: 250,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: baseColor
+                    )
+                  ),
+                  Container(
+                    width: 400,
+                    height: 15,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: baseColor
+                    )
+                  ),
+                  SizedBox(height: 10),
+                  Container(
+                    width: 100,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      color: baseColor
+                    )
+                  )
+                ],
+              )
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            spacing: 20,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 168,
+                height: 78,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: baseColor
+                )
+              ),
+              Container(
+                width: 168,
+                height: 78,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: baseColor
+                )
+              ),
+              Container(
+                width: 168,
+                height: 78,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: baseColor
+                )
+              ),
+            ],
+          ),
+        ],
       ),
     );
-
-    // TODO: implement build
-    return  Padding(
-        padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
-        child: ReorderableBuilder(
-          children: generatedChildren,
-          scrollController: _scrollController,
-          onReorder: (ReorderedListFunction reorderedListFunction) {
-            setState(() {
-              _fruits = reorderedListFunction(_fruits) as List<String>;
-            });
-          },
-          builder: (children) {
-            return GridView(
-              key: _gridViewKey,
-              controller: _scrollController,
-              children: children,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 5,
-                mainAxisSpacing: 20,
-                crossAxisSpacing: 20,
-                childAspectRatio: 1.5
-              ),
-            );
-          },
-        ),
-      );
   }
 }

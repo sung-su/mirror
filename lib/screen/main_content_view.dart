@@ -41,8 +41,8 @@ class _MainContentViewState extends State<MainContentView> {
       physics: const NeverScrollableScrollPhysics(),
       children: [
         _buildFadingPage(index: 0, child: HomePage()),
-        _buildFadingPage(index: 1, child: MockAppsPage()),
-        _buildFadingPage(index: 2, child: MockAppsPage()),
+        _buildFadingPage(index: 1, child: MockAppsPage(isHorizontal:  true)),
+        _buildFadingPage(index: 2, child: MockAppsPage(isHorizontal: false)),
       ]);
   }
 

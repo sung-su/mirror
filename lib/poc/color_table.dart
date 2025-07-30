@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tizen_fs/styles/app_style.dart';
 
 class ColorTablePage extends StatefulWidget {
   const ColorTablePage({super.key});

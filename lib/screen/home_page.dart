@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
-import 'package:tizen_fs/styles/app_style.dart';
-import 'package:tizen_fs/widgets/focus_selectable.dart';
-import 'package:tizen_fs/widgets/selectable_listview.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

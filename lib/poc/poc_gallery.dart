@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/poc/color_table.dart';
+import 'package:tizen_fs/poc/list_poc.dart';
 import 'package:tizen_fs/poc/reoder_grid_test.dart';
 import 'package:tizen_fs/poc/reoder_grid_test2.dart';
 import 'package:tizen_fs/poc/shimmerloading.dart';
@@ -74,7 +75,20 @@ class PocGalleryPage extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('shimmer loading Test'),
+              title: const Text('H/V List Test'),
+              subtitle: const Text('Simple ListView changed layout for user input'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreenSizeWrapper(ListPocPage()),
+                    ));
+              },
+            ),
+            ListTile(
+              title: const Text('Shimmer loading Test'),
               subtitle: const Text('page loading test'),
               leading: const Icon(Icons.subscriptions),
               onTap: () {
@@ -82,7 +96,7 @@ class PocGalleryPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          HomeScreenSizeWrapper(ShimmerLoadingPage()),
+                          HomeScreenSizeWrapper(ShimmerLoadingScreen()),
                     ));
               },
             ),

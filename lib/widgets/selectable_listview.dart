@@ -6,13 +6,19 @@ class SelectableListView extends StatefulWidget {
     required this.itemCount,
     required this.itemBuilder,
     this.padding,
-    this.onSelectionChanged
+    this.alignment,
+    this.scrollDirection,
+    this.onSelectionChanged,
+    this.onItemTapped
   });
 
   final int itemCount;
   final Widget Function(BuildContext, int index, int selectedIndex, Key key) itemBuilder;
   final EdgeInsets? padding;
+  final double? alignment;
+  final Axis? scrollDirection;
   final Function(int)? onSelectionChanged;
+  final VoidCallback? onItemTapped;
 
   @override
   State<SelectableListView> createState() => SelectableListViewState();
@@ -23,10 +29,21 @@ class SelectableListViewState extends State<SelectableListView> {
   late List<GlobalKey> _itemKeys;
 
   int _selectedIndex = 0;
+  double _alignment = 0.75;
+  Axis _scrollDirection = Axis.horizontal;
 
   @override
   void initState() {
     super.initState();
+
+    if(widget.alignment != null) {
+      _alignment = widget.alignment!;
+    }
+
+    if(widget.scrollDirection != null) {
+      _scrollDirection = widget.scrollDirection!;
+    }
+
     _itemKeys = List.generate(
       widget.itemCount,
       (index) => GlobalKey(),
@@ -62,21 +79,17 @@ class SelectableListViewState extends State<SelectableListView> {
   int get itemCount => widget.itemCount;
 
   Future<int> _scrollToSelected(int duration, int fallbackSelection) async {
-    if (_itemKeys[_selectedIndex].currentContext != null) {
-      int current = _selectedIndex;
-      final RenderBox box = _itemKeys[_selectedIndex]
-          .currentContext!
-          .findRenderObject() as RenderBox;
-      final Offset position = box.localToGlobal(Offset.zero);
-      setState(() {});
-      final double leftPadding = widget.padding?.left ?? 0;
-      await _controller.animateTo(
-        position.dx + _controller.offset - leftPadding,
+    final context = _itemKeys[_selectedIndex].currentContext;
+    if (context != null) {
+      setState(() {});  
+      Scrollable.ensureVisible(
+        context,
+        alignment: _alignment,
         duration: Duration(milliseconds: duration),
         curve: Curves.easeInOut,
       );
       widget.onSelectionChanged?.call(_selectedIndex);
-      return current;
+      return _selectedIndex;
     } else {
       _selectedIndex = fallbackSelection; // restore previous selection
       return fallbackSelection;
@@ -118,16 +131,22 @@ class SelectableListViewState extends State<SelectableListView> {
       behavior: ScrollBehavior().copyWith(scrollbars: false, overscroll: false),
       child: ListView.builder(
         padding: widget.padding,
-        scrollDirection: Axis.horizontal,
+        scrollDirection: _scrollDirection,
         clipBehavior: Clip.none,
         controller: _controller,
         itemCount: widget.itemCount,
         itemBuilder: (context, index) {
-          return widget.itemBuilder(
-            context,
-            index,
-            _selectedIndex,
-            _itemKeys[index],
+          return GestureDetector(
+            onTap: () {
+              selectTo(index);
+              widget.onItemTapped?.call();
+            },
+            child: widget.itemBuilder(
+              context,
+              index,
+              _selectedIndex,
+              _itemKeys[index],
+            )
           );
         },
       ),

@@ -15,6 +15,10 @@ class TopMenuIconItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color baseColor = Theme.of(context).colorScheme.primary;
+    final Color textColor = Theme.of(context).colorScheme.surface;
+    final Color defautTextColor = Theme.of(context).colorScheme.onSurface;
+
     return Container(
       height: 30,
       width: 30,
@@ -22,7 +26,7 @@ class TopMenuIconItem extends StatelessWidget {
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: isSelected ? $style.colors.onSurface : Colors.transparent,
+            color: isSelected ? baseColor : Colors.transparent,
             spreadRadius: 1,
           )
         ]
@@ -32,15 +36,17 @@ class TopMenuIconItem extends StatelessWidget {
         icon: Icon(
           icon,
           size: 17,
-          color: isSelected ? $style.colors.surface : $style.colors.onSurface,
+          color: isSelected ? textColor :defautTextColor,
         ),
-        onPressed: () => onPressed?.call(),
+        onPressed: () {
+          onPressed?.call();
+        },
         style: IconButton.styleFrom(
             backgroundColor: isSelected
                 ? (hasFocus
-                    ? $style.colors.onPrimaryContainer.withAlphaF(0.8)
-                    : $style.colors.onPrimaryContainer.withAlphaF(0.3))
-                : $style.colors.onPrimaryContainer.withAlphaF(0.3)),
+                    ? baseColor.withAlphaF(0.8)
+                    :baseColor.withAlphaF(0.2))
+                : baseColor.withAlphaF(0.2)),
       ),
     );
   }

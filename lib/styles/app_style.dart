@@ -62,7 +62,7 @@ class AppColors {
     return t;
   }
 
-  ThemeData toDarkThemeData2() {
+  ThemeData toDarkThemeData() {
     var colorScheme = ColorScheme.fromSeed(
       seedColor: sblue,
       secondary: tblue,
@@ -80,47 +80,47 @@ class AppColors {
     return t;
   }
 
-  ThemeData toDarkThemeData() {
-    /// Create a TextTheme and ColorScheme, that we can use to generate ThemeData
-    TextTheme txtTheme = ThemeData.dark().textTheme;
-    ColorScheme colorScheme = ColorScheme(
-        // Map our custom theme to the Material ColorScheme
-        brightness: Brightness.dark,
-        primary: primary,
-        onPrimary: onPrimary,
-        primaryContainer: primaryContainer,
-        onPrimaryContainer: onPrimaryContainer,
+  // ThemeData toDarkThemeData() {
+  //   /// Create a TextTheme and ColorScheme, that we can use to generate ThemeData
+  //   TextTheme txtTheme = ThemeData.dark().textTheme;
+  //   ColorScheme colorScheme = ColorScheme(
+  //       // Map our custom theme to the Material ColorScheme
+  //       brightness: Brightness.dark,
+  //       primary: primary,
+  //       onPrimary: onPrimary,
+  //       primaryContainer: primaryContainer,
+  //       onPrimaryContainer: onPrimaryContainer,
 
-        secondary: secondary,
-        onSecondary: onSecondary,
-        secondaryContainer: secondaryContainer,
-        onSecondaryContainer: onSecondaryContainer,
+  //       secondary: secondary,
+  //       onSecondary: onSecondary,
+  //       secondaryContainer: secondaryContainer,
+  //       onSecondaryContainer: onSecondaryContainer,
 
-        tertiary: tertiary,
-        onTertiary: onTertiary,
-        tertiaryContainer: tertiaryContainer,
-        onTertiaryContainer: onTertiaryContainer,
+  //       tertiary: tertiary,
+  //       onTertiary: onTertiary,
+  //       tertiaryContainer: tertiaryContainer,
+  //       onTertiaryContainer: onTertiaryContainer,
 
-        surface: surface,
-        onSurface: onSurface,
-        surfaceContainerHighest: surfaceVariant,
-        onSurfaceVariant: onSurfaceVariant,
+  //       surface: surface,
+  //       onSurface: onSurface,
+  //       surfaceContainerHighest: surfaceVariant,
+  //       onSurfaceVariant: onSurfaceVariant,
 
-        error: error,
-        onError: onError,
-        errorContainer: errorContainer,
-        onErrorContainer: onErrorContainer,
-        outline: border,
-    );
+  //       error: error,
+  //       onError: onError,
+  //       errorContainer: errorContainer,
+  //       onErrorContainer: onErrorContainer,
+  //       outline: border,
+  //   );
     
-    var t = ThemeData.from(textTheme: txtTheme, colorScheme: colorScheme, useMaterial3: true).copyWith(
-      textSelectionTheme: TextSelectionThemeData(cursorColor: primary),
-      highlightColor: primary,
-    );
+  //   var t = ThemeData.from(textTheme: txtTheme, colorScheme: colorScheme, useMaterial3: true).copyWith(
+  //     textSelectionTheme: TextSelectionThemeData(cursorColor: primary),
+  //     highlightColor: primary,
+  //   );
 
-    /// Return the themeData which MaterialApp can now use
-    return t;
-  }
+  //   /// Return the themeData which MaterialApp can now use
+  //   return t;
+  // }
 }
 
 extension ColorConversion on Color {

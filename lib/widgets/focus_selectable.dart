@@ -11,6 +11,20 @@ mixin FocusSelectable<T extends StatefulWidget> on State<T> {
   FocusNode get focusNode => _focusNode;
   int get selectedIndex => _listState.currentState?.selectedIndex ?? 0;
 
+  LogicalKeyboardKey get nextKey => getNextKey();
+
+  LogicalKeyboardKey get prevKey => getPrevKey();
+
+  @protected
+  LogicalKeyboardKey getNextKey() {
+    return LogicalKeyboardKey.arrowRight;
+  }
+
+  @protected
+  LogicalKeyboardKey getPrevKey() {
+    return LogicalKeyboardKey.arrowLeft;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -44,10 +58,10 @@ mixin FocusSelectable<T extends StatefulWidget> on State<T> {
     }
 
     if (event is KeyDownEvent || event is KeyRepeatEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      if (event.logicalKey == prevKey) {
         onPrev(event is KeyRepeatEvent);
         return KeyEventResult.handled;
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+      } else if (event.logicalKey == nextKey) {
         onNext(event is KeyRepeatEvent);
         return KeyEventResult.handled;
       }

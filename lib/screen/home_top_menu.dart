@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/router.dart';
+import 'package:tizen_fs/screen/notification_panel.dart';
 import 'package:tizen_fs/widgets/top_menu_avatar_item.dart';
 import 'package:tizen_fs/widgets/top_menu_button_item.dart';
 import 'package:tizen_fs/widgets/top_menu_icon_item.dart';
@@ -47,12 +48,33 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
         _selected = index;
       });
 
-      if (_selected > 0 && _selected < 5) {
+      if (_selected > 0 && _selected < 4) {
         _movePage(_selected - 1);
-      } else if (_selected == 0) {
+      }
+      else if (_selected == 0) {
         showAccountPanel();
       }
     }
+  }
+
+  void showNotificationPanel() {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: "Close",
+      barrierColor: Colors.transparent,
+      transitionDuration: const Duration(milliseconds: 80),
+      pageBuilder: (BuildContext buildContext, Animation animation,
+          Animation secondaryAnimation) {
+            return NotificationsPanel();
+          },
+        transitionBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+    );
   }
 
   void showAccountPanel() {
@@ -95,13 +117,17 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
             setSelected(
                 (_selected < _itemCount - 1) ? (_selected + 1) : _selected);
             return KeyEventResult.handled;
-          } else if (onKeyEvent.logicalKey == LogicalKeyboardKey.enter) {
+          }
+          else if (onKeyEvent.logicalKey == LogicalKeyboardKey.enter) {
             debugPrint('[onKeyEvent] LogicalKeyboardKey.enter: $_selected');
             if (_selected == 0) {
               AppRouter.router.push(ScreenPaths.poc);
             }
             if(_selected == 4) {
               AppRouter.router.push(ScreenPaths.settings);
+            }            
+            if(_selected == 5) {
+              showNotificationPanel();
             }
             return KeyEventResult.handled;
           }
@@ -160,6 +186,7 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
                     onPressed: () {
                       Focus.of(context).requestFocus();
                       setSelected(4);
+                      AppRouter.router.push(ScreenPaths.settings);
                     }
                   ),
                   TopMenuIconItem(
@@ -169,11 +196,13 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
                     onPressed: () {
                       Focus.of(context).requestFocus();
                       setSelected(5);
+                      showNotificationPanel();
                     }
                   ),
                   Text(
                     'TizenOS',
                     style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontSize: 15,
                       fontWeight: FontWeight.w600
                     ),
