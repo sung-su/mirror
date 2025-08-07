@@ -1,0 +1,20 @@
+[
+    {
+      "appId": "",
+      "name": "Settings",
+      "icon": "assets/mock/images/SettingView.png",
+      "resourcePath": ""
+    },
+    {
+      "appId": "",
+      "name": "Music Player",
+      "icon": "assets/mock/images/MusicPlayer.png",
+      "resourcePath": ""
+    },
+    {
+      "appId": "",
+      "name": "Sample",
+      "icon": "assets/mock/images/ic_launcher.png",
+      "resourcePath": ""
+    }
+  ]

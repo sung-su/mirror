@@ -97,43 +97,56 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
     );
   }
 
+  void _onFocusChanged(bool hasFocus) {
+    if (hasFocus) {
+      if (_selected == 0) {
+        setState(() {
+          _selected = 1;
+        });
+      }
+    }
+    Provider.of<BackdropProvider>(context, listen: false).isZoomIn = hasFocus;
+  }
+
+  KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
+    if (event is KeyDownEvent) {
+      debugPrint(
+          '[onKeyEvent] LogicalKeyboardKey ${event.logicalKey}');
+      if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+        debugPrint('[onKeyEvent] LogicalKeyboardKey.arrowLeft: $_selected');
+        setSelected((_selected > 0) ? (_selected - 1) : _selected);
+        return KeyEventResult.handled;
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+        debugPrint(
+            '[onKeyEvent] LogicalKeyboardKey.arrowRight: $_selected');
+        setSelected(
+            (_selected < _itemCount - 1) ? (_selected + 1) : _selected);
+        return KeyEventResult.handled;
+      }
+      else if (event.logicalKey == LogicalKeyboardKey.enter) {
+        debugPrint('[onKeyEvent] LogicalKeyboardKey.enter: $_selected');
+        if (_selected == 0) {
+          AppRouter.router.push(ScreenPaths.poc);
+        }
+        if(_selected == 4) {
+          AppRouter.router.push(ScreenPaths.settings);
+        }
+        if(_selected == 5) {
+          showNotificationPanel();
+        }
+        return KeyEventResult.handled;
+      }
+    }
+    return KeyEventResult.ignored;
+  }
+
   @override
   Widget build(BuildContext context) {
     debugPrint('_TvTabbarState.build() selected=$_selected');
     return Focus(
       autofocus: true,
       onFocusChange: _onFocusChanged,
-      onKeyEvent: (_, onKeyEvent) {
-        if (onKeyEvent is KeyDownEvent) {
-          debugPrint(
-              '[onKeyEvent] LogicalKeyboardKey ${onKeyEvent.logicalKey}');
-          if (onKeyEvent.logicalKey == LogicalKeyboardKey.arrowLeft) {
-            debugPrint('[onKeyEvent] LogicalKeyboardKey.arrowLeft: $_selected');
-            setSelected((_selected > 0) ? (_selected - 1) : _selected);
-            return KeyEventResult.handled;
-          } else if (onKeyEvent.logicalKey == LogicalKeyboardKey.arrowRight) {
-            debugPrint(
-                '[onKeyEvent] LogicalKeyboardKey.arrowRight: $_selected');
-            setSelected(
-                (_selected < _itemCount - 1) ? (_selected + 1) : _selected);
-            return KeyEventResult.handled;
-          }
-          else if (onKeyEvent.logicalKey == LogicalKeyboardKey.enter) {
-            debugPrint('[onKeyEvent] LogicalKeyboardKey.enter: $_selected');
-            if (_selected == 0) {
-              AppRouter.router.push(ScreenPaths.poc);
-            }
-            if(_selected == 4) {
-              AppRouter.router.push(ScreenPaths.settings);
-            }            
-            if(_selected == 5) {
-              showNotificationPanel();
-            }
-            return KeyEventResult.handled;
-          }
-        }
-        return KeyEventResult.ignored;
-      },
+      onKeyEvent: _onKeyEvent,
       child: Builder(builder: (context) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(43, 20, 48, 0),
@@ -214,15 +227,4 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
       }),
     );
   }
-
-  void _onFocusChanged(hasFocus) {
-      if (hasFocus) {
-        if (_selected == 0) {
-          setState(() {
-            _selected = 1;
-          });
-        }
-      }
-      Provider.of<BackdropProvider>(context, listen: false).isZoomIn = hasFocus;
-    }
 }

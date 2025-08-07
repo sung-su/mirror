@@ -37,12 +37,12 @@ class _MainContentViewState extends State<MainContentView> {
   Widget build(BuildContext context) {
     return ExpandablePageView(
       controller: _controller,
-      animationDuration: const Duration(milliseconds: 50),
-      physics: const NeverScrollableScrollPhysics(),
+      // animationDuration: const Duration(milliseconds: 50),
+      // physics: const NeverScrollableScrollPhysics(),
       children: [
-        _buildFadingPage(index: 0, child: HomePage()),
-        _buildFadingPage(index: 1, child: MockAppsPage(isHorizontal:  true)),
-        _buildFadingPage(index: 2, child: MockAppsPage(isHorizontal: false)),
+        _buildFadingPage(index: 0, child: HomePage(scrollController: widget.scrollController)),
+        _buildFadingPage(index: 1, child: MockAppsPage(isHorizontal:  false)),
+        _buildFadingPage(index: 2, child: MockAppsPage(isHorizontal: true)),
       ]);
   }
 
@@ -50,7 +50,7 @@ class _MainContentViewState extends State<MainContentView> {
     double opacity = 1.0 - min((_currentPage - index).abs(), 1.0);
 
     return AnimatedOpacity(
-      duration: const Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 500),
       opacity: opacity,
       child: child,
     );

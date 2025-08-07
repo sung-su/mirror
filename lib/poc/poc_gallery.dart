@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:tizen_fs/poc/adaptive_grid.dart';
+import 'package:tizen_fs/poc/disable_auto_scroll.dart';
 import 'package:tizen_fs/poc/color_table.dart';
 import 'package:tizen_fs/poc/list_poc.dart';
+import 'package:tizen_fs/poc/infinite_list.dart';
 import 'package:tizen_fs/poc/reoder_grid_test.dart';
 import 'package:tizen_fs/poc/reoder_grid_test2.dart';
 import 'package:tizen_fs/poc/shimmerloading.dart';
@@ -49,7 +52,7 @@ class PocGalleryPage extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('Grid Test'),
+              title: const Text('Grid Test 1'),
               subtitle: const Text('Reorderable grid 1'),
               leading: const Icon(Icons.subscriptions),
               onTap: () {
@@ -62,7 +65,7 @@ class PocGalleryPage extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('Grid Test'),
+              title: const Text('Grid Test 2'),
               subtitle: const Text('Reorderable grid 2'),
               leading: const Icon(Icons.subscriptions),
               onTap: () {
@@ -97,6 +100,45 @@ class PocGalleryPage extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) =>
                           HomeScreenSizeWrapper(ShimmerLoadingScreen()),
+                    ));
+              },
+            ),
+            ListTile(
+              title: const Text('InfiniteScollList'),
+              subtitle: const Text('InfiniteScollList test'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreenSizeWrapper(InfiniteScollList()),
+                    ));
+              },
+            ),
+            ListTile(
+              title: const Text('Adaptive Grid'),
+              subtitle: const Text('Adaptive Grid test'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreenSizeWrapper(AdaptiveGridPage()),
+                    ));
+              },
+            ),
+            ListTile(
+              title: const Text('NoAutoScrollFocusView'),
+              subtitle: const Text('Disable auto scroll test'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreenSizeWrapper(NoAutoScrollFocusView()),
                     ));
               },
             ),

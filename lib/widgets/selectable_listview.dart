@@ -6,10 +6,9 @@ class SelectableListView extends StatefulWidget {
     required this.itemCount,
     required this.itemBuilder,
     this.padding,
+    this.onSelectionChanged,
     this.alignment,
     this.scrollDirection,
-    this.onSelectionChanged,
-    this.onItemTapped
   });
 
   final int itemCount;
@@ -18,7 +17,6 @@ class SelectableListView extends StatefulWidget {
   final double? alignment;
   final Axis? scrollDirection;
   final Function(int)? onSelectionChanged;
-  final VoidCallback? onItemTapped;
 
   @override
   State<SelectableListView> createState() => SelectableListViewState();
@@ -136,17 +134,11 @@ class SelectableListViewState extends State<SelectableListView> {
         controller: _controller,
         itemCount: widget.itemCount,
         itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              selectTo(index);
-              widget.onItemTapped?.call();
-            },
-            child: widget.itemBuilder(
-              context,
-              index,
-              _selectedIndex,
-              _itemKeys[index],
-            )
+          return widget.itemBuilder(
+            context,
+            index,
+            _selectedIndex,
+            _itemKeys[index],
           );
         },
       ),

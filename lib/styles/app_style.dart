@@ -9,6 +9,29 @@ class AppStyle {
 
   final AppColors colors = AppColors();
 
+  /// Animation Durations
+  final _Times times = _Times();
+
+  final LinearGradientColors gradients = LinearGradientColors();
+}
+
+class LinearGradientColors {
+
+  final Map<int, List<Color>> _colorMap = {
+    0 : [Color(0xFF235dcc), Color(0xFF22c6b3)],
+    1 : [Color(0xFFdb567c), Color(0xFF8355db)],
+    2 : [Color(0xFF64b8e8), Color(0xFF636be8)],
+    3 : [Color(0xFFdea23b), Color(0xFFde413f)],
+    4 : [Color(0xFF29d256), Color(0xFFdea23b)],
+  };
+
+  LinearGradient generateLinearGradient(int num) {
+    return LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: _colorMap[num]!
+    );
+  }
 }
 
 class AppColors {
@@ -127,4 +150,12 @@ extension ColorConversion on Color {
   Color withAlphaF(double alpha) {
     return withValues(alpha: alpha);
   }
+}
+
+@immutable
+class _Times {
+  final Duration fast = Duration(milliseconds: 100);
+  final Duration med = Duration(milliseconds: 300);
+  final Duration slow = Duration(milliseconds: 500);
+  final Duration pageTransition = Duration(milliseconds: 200);
 }

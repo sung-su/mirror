@@ -96,9 +96,9 @@ class _ListPocPageState extends State<ListPocPage> {
   }
 }
 class FocusScrollView extends StatefulWidget {
-  FocusScrollView({super.key, required this.isHorizontal});
+  const FocusScrollView({super.key, this.isHorizontal = false});
 
-  bool isHorizontal = false;
+  final bool isHorizontal;
 
   @override
   State<FocusScrollView> createState() => _FocusScrollViewState();
@@ -129,7 +129,9 @@ class _FocusScrollViewState extends State<FocusScrollView> {
         newIndex--;
       }
 
-      if(newIndex < 0 || newIndex >= _itemKeys.length) return KeyEventResult.handled;
+      if(newIndex < 0 || newIndex >= _itemKeys.length) 
+        return KeyEventResult.handled;
+      
       move(event is KeyRepeatEvent, newIndex);
       return KeyEventResult.handled;
     }
@@ -153,7 +155,7 @@ class _FocusScrollViewState extends State<FocusScrollView> {
     if (context != null) {  
       Scrollable.ensureVisible(
         context,
-        alignment: 0.75,
+        alignment: 1,
         duration: Duration(milliseconds: durationMilliseconds),
         curve: Curves.easeInOut,
       );
@@ -202,9 +204,9 @@ class _FocusScrollViewState extends State<FocusScrollView> {
 class ItemContainer extends StatefulWidget {
   final int index;
   final bool isFocused;
-  bool isHorizontal;
+  final bool isHorizontal;
 
-  ItemContainer({
+  const ItemContainer({
     super.key,
     required this.index,
     required this.isFocused,
@@ -225,7 +227,6 @@ class _ItemContainerState extends State<ItemContainer> {
       scale: isFocused ? 1.1 : 1.0,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4),
-        // color: isFocused ? Colors.blue : Colors.grey,
         alignment: Alignment.center,
         child: SizedBox(
           width: widget.isHorizontal ? 200 : 500,

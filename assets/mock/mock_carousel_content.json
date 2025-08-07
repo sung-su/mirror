@@ -1,0 +1,23 @@
+[
+    {
+      "overline": "",
+      "title": "Develop innovation with Tizen OS",
+      "description": "",
+      "backdrop": "gradient-bg-static-alt-a-D0K-Mjox.webp",
+      "buttonText": "Get started"
+    },
+    {
+      "overline": "",
+      "title": "Always Stay Up to Date",
+      "description": "We provide long-term supprot for up to seven years \nso you can always use the latest OS.",
+      "backdrop": "always-stay-up-to-date-1.png",
+      "buttonText": "Go to post"
+    },
+    {
+      "overline": "",
+      "title": "Upscale Your Entertainment",
+      "description": "Upscale your entertainment with Samsung Tizen OS",
+      "backdrop": "maxresdefault.jpg",
+      "buttonText": "Watch Now"
+    }
+  ]

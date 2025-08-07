@@ -40,6 +40,7 @@ class _MainContentState extends State<MainContent> {
     return CustomScrollView(
       scrollBehavior: ScrollBehavior().copyWith(scrollbars: false, overscroll: false),
       controller: _scrollController,
+      primary: false,
       slivers: [
         SliverAppBar(
           pinned: false,

@@ -42,6 +42,7 @@ dependencies:
   flutter_reorderable_grid_view: ^5.5.0 #1
   reorderable_grid_view: ^2.2.6 #2
   shimmer: ^3.0.0
+  cached_network_image: ^3.4.1
   
 
 dev_dependencies:
@@ -72,6 +73,9 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
       - assets/images/gradient-bg-static-alt-a-D0K-Mjox.webp
+      - assets/images/always-stay-up-to-date-1.png
+      - assets/images/maxresdefault.jpg
+      - assets/mock/mock_carousel_content.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

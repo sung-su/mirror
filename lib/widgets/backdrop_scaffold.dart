@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
+import 'package:tizen_fs/styles/app_style.dart';
 
 class BackdropScaffold extends StatelessWidget {
   final Widget child;
@@ -32,13 +33,16 @@ class BackdropScaffold extends StatelessWidget {
                             ))),
                 // Backdrop
                 AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 50),
+                  duration: $style.times.fast,
+                  switchInCurve: Curves.easeInOut,
+                  switchOutCurve: Curves.easeInOut,
                   transitionBuilder: (child, animation) => ScaleTransition(
                       scale: Tween<double>(begin: 0.95, end: 1.1).animate(animation),
                       child: FadeTransition(opacity: animation, child: child)),
                   child: (backdrop != null)
                       ? AnimatedScale(
-                          duration: const Duration(milliseconds: 50),
+                          duration: $style.times.fast,
+                          curve: Curves.easeInOut,
                           scale: Provider.of<BackdropProvider>(context).isZoomIn
                               ? 1.1
                               : 1.0,
