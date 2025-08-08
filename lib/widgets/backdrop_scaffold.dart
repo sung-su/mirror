@@ -13,14 +13,11 @@ class BackdropScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('backdrop_scaffold build');
     return ChangeNotifierProvider(
       create: (context) => BackdropProvider(),
       child: Builder(
         builder: (context) {
-          debugPrint('backdrop_scaffold builder');
           var backdrop = Provider.of<BackdropProvider>(context).backdrop;
-          debugPrint('backdrop_scaffold builder: backdrop == null? ${(backdrop == null)}');
           return Scaffold(
             body: Stack(
               children: [

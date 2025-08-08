@@ -11,7 +11,6 @@ class NotificationsPanel extends StatefulWidget {
 class _NotificationsPanelState extends State<NotificationsPanel> {
   @override
   Widget build(BuildContext context) {
-    debugPrint('NotificationsPanel build');
     return Material(
       type: MaterialType.transparency,
       child: Stack(

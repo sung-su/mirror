@@ -4,7 +4,6 @@ class BackdropProvider extends ChangeNotifier {
   Widget? _backdrop;
   Widget? get backdrop => _backdrop;
   void updateBackdrop(Widget? backdrop) {
-    debugPrint('updateBackdrop');
     _backdrop = backdrop;
     notifyListeners();
   }

@@ -17,7 +17,6 @@ class _AccountPanelState extends State<AccountPanel> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('AccountPanel build');
     return Material(
       type: MaterialType.transparency,
       child: Container(
@@ -26,16 +25,13 @@ class _AccountPanelState extends State<AccountPanel> {
           autofocus: true,
           onKeyEvent: (node, event) {
             if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.arrowRight) {
-              debugPrint('[onKeyEvent] LogicalKeyboardKey.escape');
               Navigator.of(context).pop();
               return KeyEventResult.handled;
             } else if (event is KeyDownEvent &&
                 event.logicalKey == LogicalKeyboardKey.enter) {
-              debugPrint('[onKeyEvent] LogicalKeyboardKey.enter');
               AppRouter.router.push(ScreenPaths.poc);
               return KeyEventResult.handled;
             } else if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.arrowDown) {
-              debugPrint('[onKeyEvent] LogicalKeyboardKey.arrowDown');
               if(_iconSelected) {
                 setState(() {
                   _iconSelected = false;
@@ -44,7 +40,6 @@ class _AccountPanelState extends State<AccountPanel> {
               }
               return KeyEventResult.handled;
             } else if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.arrowUp) {
-              debugPrint('[onKeyEvent] LogicalKeyboardKey.arrowUp');
               if(_buttonSelected) {
                 setState(() {
                   _iconSelected = true;

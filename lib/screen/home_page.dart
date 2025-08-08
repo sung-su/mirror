@@ -18,12 +18,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final ImmersiveCarouselModel _immersiveCarouselModel =
-      ImmersiveCarouselModel.fromMock();
-  final AppInfoModel _appInfoModel =
-      AppInfoModel.fromMock();      
+  final ImmersiveCarouselModel _immersiveCarouselModel = ImmersiveCarouselModel.fromMock();
+  final AppInfoModel _appInfoModel = AppInfoModel.fromMock();      
 
   final List<GlobalKey> _keys= List.generate(3, (index) => GlobalKey());
+
+  List<AppInfo> appInfos = [];
 
   @override
   void initState() {
@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
+        ChangeNotifierProvider( 
           create: (context) => _immersiveCarouselModel,
         ),
         ChangeNotifierProvider(
@@ -66,11 +66,11 @@ class _HomePageState extends State<HomePage> {
                 //   430,
                 //   duration: $style.times.fast,
                 //   curve: Curves.easeInOut
-                // );
-                var itemContext = _keys[1].currentContext;
-                if(itemContext != null) {
+                // ); 
+                var context = _keys[1].currentContext;
+                if (context != null) {
                   Scrollable.ensureVisible(
-                    itemContext,
+                    context,
                     alignment: 0,
                     duration: $style.times.fast,
                     curve: Curves.easeInOut
@@ -78,6 +78,12 @@ class _HomePageState extends State<HomePage> {
                 }
               }
             ),
+            // footer 
+            SizedBox(
+              height: 50,
+              child: Container(
+              ),
+            )
           ],
         ),
       ),
@@ -137,9 +143,6 @@ class _ImmersiveAreaState extends State<ImmersiveArea> {
               _isfocused = false;
             });
           }
-            
-          debugPrint("@@@@@ unfocused : _focusNode.parent?.hasFocus=${_focusNode.parent?.hasFocus}");
-          debugPrint("@@@@@ unfocused : _focusNode.parent?.parent?.hasFocus=${_focusNode.parent?.parent?.hasFocus}");
         }
         widget.onFocusChanged?.call(hasFocus);
       },

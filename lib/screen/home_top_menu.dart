@@ -33,7 +33,6 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
   }
 
   void _movePage(int pageIndex) {
-    debugPrint('_TvPageViewState._movePage: $_selected $pageIndex');
     widget.pageController.animateToPage(
       pageIndex,
       duration: const Duration(milliseconds: 150),
@@ -42,7 +41,6 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
   }
 
   void setSelected(int index) {
-    debugPrint('[setSelected] selected=$_selected, index=$index');
     if (_selected != index) {
       setState(() {
         _selected = index;
@@ -110,21 +108,15 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
 
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
     if (event is KeyDownEvent) {
-      debugPrint(
-          '[onKeyEvent] LogicalKeyboardKey ${event.logicalKey}');
       if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-        debugPrint('[onKeyEvent] LogicalKeyboardKey.arrowLeft: $_selected');
         setSelected((_selected > 0) ? (_selected - 1) : _selected);
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-        debugPrint(
-            '[onKeyEvent] LogicalKeyboardKey.arrowRight: $_selected');
         setSelected(
             (_selected < _itemCount - 1) ? (_selected + 1) : _selected);
         return KeyEventResult.handled;
       }
       else if (event.logicalKey == LogicalKeyboardKey.enter) {
-        debugPrint('[onKeyEvent] LogicalKeyboardKey.enter: $_selected');
         if (_selected == 0) {
           AppRouter.router.push(ScreenPaths.poc);
         }
@@ -142,7 +134,6 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('_TvTabbarState.build() selected=$_selected');
     return Focus(
       autofocus: true,
       onFocusChange: _onFocusChanged,

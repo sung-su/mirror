@@ -19,7 +19,7 @@ class AppInfo {
       5,
       (index) => AppInfo(
         appId: 'appid $index.',
-        name: 'name $index',
+        name: 'App $index',
         icon: 'icon $index',
         resourcePath: 'resource path $index',
       ),
@@ -28,15 +28,15 @@ class AppInfo {
 }
 
 class AppInfoModel extends ChangeNotifier {
-  late List<AppInfo> contents;
+  late List<AppInfo> appInfos;
   bool _isLoading = false;
   int _selectedIndex = 0;
 
-  AppInfoModel(this.contents);
+  AppInfoModel(this.appInfos);
 
   AppInfoModel.fromMock() {
     _isLoading = true;
-    contents = AppInfo.generateMockContent();
+    appInfos = AppInfo.generateMockContent();
     _isLoading = false;
   }
 
@@ -46,8 +46,8 @@ class AppInfoModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  int get itemCount => _isLoading ? 0 : contents.length;
-  AppInfo getContent(int index) {
+  int get itemCount => _isLoading ? 0 : appInfos.length;
+  AppInfo getAppInfo(int index) {
     if (_isLoading) {
       return AppInfo(
         appId: 'Loading...',
@@ -56,10 +56,10 @@ class AppInfoModel extends ChangeNotifier {
         resourcePath: 'Loading...',
       );
     }
-    return contents[index];
+    return appInfos[index];
   }
 
-  AppInfo getSelectedContent() {
+  AppInfo getSelectedAppInfo() {
     if (_isLoading) {
       return AppInfo(
         appId: 'Loading...',
@@ -68,6 +68,6 @@ class AppInfoModel extends ChangeNotifier {
         resourcePath: 'Loading...',
       );
     }
-    return contents[_selectedIndex];
+    return appInfos[_selectedIndex];
   }
 }

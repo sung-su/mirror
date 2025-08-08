@@ -3,9 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:tizen_fs/widgets/carousel_content_block.dart';
-import 'package:tizen_fs/providers/backdrop_provider.dart';
 
 class ImmersiveCarouselContent {
   final String overline;
