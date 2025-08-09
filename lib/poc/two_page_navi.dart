@@ -71,6 +71,16 @@ class TwoPageNavigationState extends State<TwoPageNavigation> {
     return KeyEventResult.ignored;
   }
 
+  void _selectTo(int index)
+  {
+    if(index == _pages.length -1 ) return;
+
+    setState(() {
+      _current = index;
+    });
+    move();
+  }
+
   void _updatePages(int selected){
 
     var current = _current;
@@ -127,14 +137,19 @@ class TwoPageNavigationState extends State<TwoPageNavigation> {
             itemCount: _pages.length,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              return ColoredPage(
-                key: _itemKeys[index],
-                title: _pages[index],
-                isEnabled: index == _current,
-                backgroundcColor: _colors[index % 3],
-                onSelectionChanged: (selected) {
-                  _updatePages(selected);
+              return GestureDetector(
+                onTap: () {
+                  _selectTo(index);
                 },
+                child: ColoredPage(
+                  key: _itemKeys[index],
+                  title: _pages[index],
+                  isEnabled: index == _current,
+                  backgroundcColor: _colors[index % 3],
+                  onSelectionChanged: (selected) {
+                    _updatePages(selected);
+                  },
+                ),
               );
             },
         )
@@ -186,7 +201,7 @@ class _ColoredPageState extends State<ColoredPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: widget.backgroundcColor,
+      color: widget.isEnabled ? widget.backgroundcColor : Colors.grey.shade600,
       child: Column(
         children: [
           SizedBox(
@@ -209,13 +224,6 @@ class _ColoredPageState extends State<ColoredPage> {
                 ),
               ),
             )
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 80),
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Text("* Scroll <- -> key")
-            ),
           ),
           Expanded(
             child: Align(
