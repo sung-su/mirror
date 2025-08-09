@@ -7,6 +7,7 @@ import 'package:tizen_fs/poc/infinite_list.dart';
 import 'package:tizen_fs/poc/reoder_grid_test.dart';
 import 'package:tizen_fs/poc/reoder_grid_test2.dart';
 import 'package:tizen_fs/poc/shimmerloading.dart';
+import 'package:tizen_fs/poc/two_page_navi.dart';
 import 'package:tizen_fs/screen/main_screen.dart';
 import 'package:tizen_fs/widgets/home_screen_size_wrapper.dart';
 
@@ -139,6 +140,19 @@ class PocGalleryPage extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) =>
                           HomeScreenSizeWrapper(NoAutoScrollFocusView()),
+                    ));
+              },
+            ),
+            ListTile(
+              title: const Text('TwoPageNavigation'),
+              subtitle: const Text('TwoPageNavigation'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreenSizeWrapper(TwoPageNavigation()),
                     ));
               },
             ),

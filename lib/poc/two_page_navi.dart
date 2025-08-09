@@ -1,55 +1,271 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:tizen_fs/screen/mock_apps_page.dart';
+import 'package:tizen_fs/settings/master_page.dart';
+import 'package:tizen_fs/settings/settings.dart';
+import 'package:tizen_fs/styles/app_style.dart';
 
-// class TwoPageNavigation extends StatefulWidget {
-//   const TwoPageNavigation({super.key});
+class TwoPageNavigation extends StatefulWidget {
+  final String title;
+  final Widget? masterPage;
+  final Widget? detailPage;
+  final Function(int)? onFocusedItemChanged;
+  final Function(int)? onPageChanged;
 
-//   @override
-//   State<TwoPageNavigation> createState() => _TwoPageNavigationState();
-// }
+  TwoPageNavigation({
+    super.key,
+    this.title = "",
+    this.masterPage,
+    this.detailPage,
+    this.onFocusedItemChanged,
+    this.onPageChanged,
+  });
 
-// class _TwoPageNavigationState extends State<TwoPageNavigation> {
+  @override
+  State<TwoPageNavigation> createState() => TwoPageNavigationState();
+}
 
+class TwoPageNavigationState extends State<TwoPageNavigation> {
+  final FocusNode _focusNode = FocusNode();
+  final PageController _pageController = PageController(
+    viewportFraction: 0.6
+  );
 
+  List<String> _pages = ["Settings", ""];
+  List<Color> _colors = [Colors.red, Colors.green, Colors.blue];
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       color: Colors.amber
-//     );
-//   }
-// }
+  List<GlobalKey> _itemKeys = List.generate(3, (_) => GlobalKey());
 
-// class PageModel {
+  int _current = 0;
 
+  void move() {
+    _pageController.animateToPage(
+      _current,
+      duration: $style.times.fast,
+      curve: Curves.easeInOut
+    );
+  }
 
-//   static List<Page> generateMockPageModel() {
-//   }
-// }
+  int focusedItemIndex = 0;
+  int current = 0;
+  int pageIndex = 0;
 
-// class Page {
-//   Page({
-//     required this.title,
-//     required this.children,
-//   });
+  KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
 
-//   final String title;
-//   final List<Page> children;
-// }
+    debugPrint("#################################### pageview onkeyEvnet");
+    if (event is KeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+        setState(() {
+          _current = (_current < _pages.length - 2) ? _current + 1 : _current;  
+        });
+        move();
+        return KeyEventResult.handled;
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+        setState(() {
+          _current = (_current > 0) ? _current - 1 : _current;
+        });
+        move();
+        return KeyEventResult.handled;
+      } 
+    }
+    return KeyEventResult.ignored;
+  }
 
-// class TopPage extends StatelessWidget with Page {
+  void _updatePages(int selected){
 
-//   @override
-//   set _title(String __title) {
-//     // TODO: implement _title
-//     super._title = __title;
-//   }
+    var current = _current;
+    List newItems = [];
 
+    if (selected == 0) {
+      newItems = ["Accounts", ""];
+    }
+    else if ( selected == 1) {
+      newItems = ["Wi-Fi", ""];
+    }
+    else if (selected == 2) {
+      newItems = ["About Device", ""];
+    }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Center(
-//       child: Text(title)
-//     );
-//   }
-// }
+    final List newKeys = List.generate(2, (_) => GlobalKey());
+    
+    setState(() {
+      _itemKeys = [..._itemKeys.sublist(0, current + 1), ...newKeys];
+      _pages = [..._pages.sublist(0, current + 1), ...newItems];
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    focusedItemIndex = 0;
+    current = 0;
+    pageIndex = 0;
+  }
+
+  @override
+  void didUpdateWidget(covariant TwoPageNavigation oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body:Focus(
+        focusNode: _focusNode,
+        onKeyEvent: _onKeyEvent,
+        child: PageView.builder(
+            controller: _pageController,
+            padEnds: false,
+            scrollDirection: Axis.horizontal,
+            itemCount: _pages.length,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return ColoredPage(
+                key: _itemKeys[index],
+                title: _pages[index],
+                isEnabled: index == _current,
+                backgroundcColor: _colors[index % 3],
+                onSelectionChanged: (selected) {
+                  _updatePages(selected);
+                },
+              );
+            },
+        )
+      )
+    );
+  }
+}
+
+class NoArrowFocusPolicy extends WidgetOrderTraversalPolicy {
+  @override
+  bool inDirection(FocusNode currentNode, TraversalDirection direction) {
+    if (direction == TraversalDirection.left ||
+        direction == TraversalDirection.right) {
+      return false; // 포커스 이동 안 함
+    }
+    return super.inDirection(currentNode, direction);
+  }
+}
+
+class ColoredPage extends StatefulWidget {
+  const ColoredPage({super.key, required this.title, required this.backgroundcColor, required this.onSelectionChanged, required this.isEnabled});
+
+  final Function(int)? onSelectionChanged;
+
+  final Color backgroundcColor;
+  final String title;
+  final bool isEnabled;
+
+  @override
+  State<ColoredPage> createState() => _ColoredPageState();
+}
+
+class _ColoredPageState extends State<ColoredPage> {
+  GlobalKey<MockListState> _listKey = GlobalKey<MockListState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    debugPrint('################## ${widget.title} page init: active=${widget.isEnabled}');
+
+    if (widget.isEnabled) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _listKey.currentState?.initFocus();
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: widget.backgroundcColor,
+      child: Column(
+        children: [
+          SizedBox(
+            height: 120,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(80, 0, 80, 0),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Container(
+                  // color: Colors.amber,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                    child: Text(
+                      widget.title,
+                      style: TextStyle(
+                        fontSize: 30
+                      ),
+                    ),
+                  )
+                ),
+              ),
+            )
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 80),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Text("* Scroll <- -> key")
+            ),
+          ),
+          Expanded(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 80),
+                child: Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  // color: Colors.grey,
+                  child: 
+                  widget.title != null && widget.title.isNotEmpty ? 
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          widget.onSelectionChanged?.call(0);
+                        }, 
+                        child: Text("Account"),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          widget.onSelectionChanged?.call(1);
+                        }, 
+                        child: Text("Wi-Fi"),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          widget.onSelectionChanged?.call(2);
+                        }, 
+                        child: Text("About Device"),
+                      )
+                    ],
+                  ) : SizedBox.shrink(),
+                ),
+                // child : MockList(
+                //   key: _listKey,
+                //   isHorizontal: false,
+                //   onSelectionChanged: (selected) {
+                //     debugPrint("#################### selected=$selected");
+                //     widget.onSelectionChanged?.call(selected % 3);
+                //   },
+                // )
+              ),
+            )
+          )
+        ],
+      ),
+    );
+  }
+}

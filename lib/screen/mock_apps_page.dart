@@ -47,14 +47,16 @@ class _MockAppsPageState extends State<MockAppsPage> {
 }
 
 class MockList extends StatefulWidget {
-  MockList({super.key, required this.isHorizontal});
+  MockList({super.key, required this.isHorizontal, this.onSelectionChanged});
 
   bool isHorizontal = false;
+  final Function(int)? onSelectionChanged;
+
   @override
-  State<MockList> createState() => _MockListState();
+  State<MockList> createState() => MockListState();
 }
 
-class _MockListState extends State<MockList> with FocusSelectable<MockList> {
+class MockListState extends State<MockList> with FocusSelectable<MockList> {
   final double itemSize = 300;
 
   @protected
@@ -65,6 +67,10 @@ class _MockListState extends State<MockList> with FocusSelectable<MockList> {
   @protected
   LogicalKeyboardKey getPrevKey() {
     return widget.isHorizontal ? LogicalKeyboardKey.arrowLeft : LogicalKeyboardKey.arrowUp;
+  }
+
+  void initFocus() {
+    focusNode.requestFocus();
   }
 
   @override
@@ -80,6 +86,7 @@ class _MockListState extends State<MockList> with FocusSelectable<MockList> {
             alignment: 0.5,
             itemCount: 10,
             scrollDirection: widget.isHorizontal? Axis.horizontal : Axis.vertical,
+            onSelectionChanged: widget.onSelectionChanged,
             itemBuilder: (context, index, selectedIndex, key) {
               return AnimatedScale(
                 key: key,
