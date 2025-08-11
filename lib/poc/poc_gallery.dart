@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:tizen_fs/models/settings_pages.dart';
 import 'package:tizen_fs/poc/adaptive_grid.dart';
 import 'package:tizen_fs/poc/disable_auto_scroll.dart';
 import 'package:tizen_fs/poc/color_table.dart';
 import 'package:tizen_fs/poc/list_poc.dart';
 import 'package:tizen_fs/poc/infinite_list.dart';
+import 'package:tizen_fs/poc/page_tree.dart';
 import 'package:tizen_fs/poc/reoder_grid_test.dart';
 import 'package:tizen_fs/poc/reoder_grid_test2.dart';
+import 'package:tizen_fs/poc/setting_page_test.dart';
 import 'package:tizen_fs/poc/shimmerloading.dart';
 import 'package:tizen_fs/poc/two_page_navi.dart';
 import 'package:tizen_fs/screen/main_screen.dart';
@@ -93,7 +96,7 @@ class PocGalleryPage extends StatelessWidget {
             ),
             ListTile(
               title: const Text('Shimmer loading Test'),
-              subtitle: const Text('page loading test'),
+              subtitle: const Text('Page loading view test'),
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
@@ -119,7 +122,7 @@ class PocGalleryPage extends StatelessWidget {
             ),
             ListTile(
               title: const Text('Adaptive Grid'),
-              subtitle: const Text('Adaptive Grid test'),
+              subtitle: const Text('Adaptive grid test'),
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
@@ -145,7 +148,7 @@ class PocGalleryPage extends StatelessWidget {
             ),
             ListTile(
               title: const Text('TwoPageNavigation'),
-              subtitle: const Text('TwoPageNavigation'),
+              subtitle: const Text('Two-page navigation test'),
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
@@ -153,6 +156,32 @@ class PocGalleryPage extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) =>
                           HomeScreenSizeWrapper(TwoPageNavigation()),
+                    ));
+              },
+            ),
+            ListTile(
+              title: const Text('PageTree Rest'),
+              subtitle: const Text('Page tree(static)'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreenSizeWrapper(PageTreeTest(node: rootNode)),
+                    ));
+              },
+            ),
+            ListTile(
+              title: const Text('Setting Pages test'),
+              subtitle: const Text('Settings page tree test'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreenSizeWrapper(SettingPageTest(node: SettingPages().getRoot())),
                     ));
               },
             ),

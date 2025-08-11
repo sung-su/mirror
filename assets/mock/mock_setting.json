@@ -1,0 +1,30 @@
+[
+    {
+      "title": "Abdout Device",
+      "child" : [
+        {"title" : "Name",
+          "child" : []
+        },
+        {"title" : "Model Number",
+          "child" : []
+        },
+        {"title" : "Tizen Version",
+          "child" : []
+        }
+      ]
+    },
+    {
+      "title": "Tizen Profile",
+      "child" : [
+        {"title" : "Profile 1",
+          "child" : []
+        },
+        {"title" : "Profile 2",
+          "child" : []
+        },
+        {"title" : "Profil3",
+          "child" : []
+        }
+      ]
+    }
+  ]
