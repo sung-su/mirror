@@ -21,8 +21,8 @@ class SettingsState extends State<Settings> {
   List<GlobalKey> _itemKeys = List.generate(3, (_) => GlobalKey());
 
   int _current = 0;
-  double viewportFraction = 0.6;
-  
+  double viewportFraction = 0.585;
+
   void move() {
     _pageController.animateToPage(
       _current,
@@ -42,7 +42,7 @@ class SettingsState extends State<Settings> {
     if (event is KeyDownEvent) {
       if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
         setState(() {
-          _current = (_current < _pages.length - 2) ? _current + 1 : _current;  
+          _current = (_current < _pages.length - 2) ? _current + 1 : _current;
         });
         move();
         return KeyEventResult.handled;
@@ -52,7 +52,7 @@ class SettingsState extends State<Settings> {
         });
         move();
         return KeyEventResult.handled;
-      } 
+      }
     }
     return KeyEventResult.ignored;
   }
@@ -104,7 +104,7 @@ class SettingsState extends State<Settings> {
           controller: _pageController,
           padEnds: false,
           scrollDirection: Axis.horizontal,
-          itemCount: _pages.length, 
+          itemCount: _pages.length,
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             if (_pages[index] == null) {
