@@ -12,7 +12,6 @@ class SettingPages {
   }
 
   PageNode getRoot() => _root;
-  
   PageNode _buildPageTree() {
     PageNode settings = PageNode (
       id: 'settings',
@@ -20,50 +19,43 @@ class SettingPages {
       // // builder: (context, node) => ButtonsPage(node: node),
       children: []
     );
-
     settings.children.add(
       PageNode(
         id: 'profile',
-        icon: Icon(Icons.settings_outlined, size: 25),
+        icon: Icon(Icons.person_outlined, size: 25),
         title: 'Profile',
-        description: 'test',
         // builder: (context, node) => ButtonsPage(node: node),
         children: [
           PageNode(
-            id: 'Tizen',
+            id: 'profile_menu1',
             title: 'Tizen',
             // builder: (context, node) => ButtonsPage(node: node),
             children: [
               PageNode(
-                id: 'menu1',
-                title: 'menu1',
+                id: 'profile_menu1_1',
+                title: 'Active',
                 // builder: (context, node) => EmptyPage(node: node),
               ),
               PageNode(
-                id: 'menu2',
-                title: 'menu2',
+                id: 'profile_menu1_2',
+                title: 'Remove',
                 // builder: (context, node) => EmptyPage(node: node),
               ),
-              PageNode(
-                id: 'menu3',
-                title: 'menu3',
-                // builder: (context, node) => EmptyPage(node: node),
-              )
             ]
           ),
           PageNode(
-            id: 'user',
-            title: 'user',
+            id: 'profile_menu2',
+            title: 'Add a profile',
             // builder: (context, node) => EmptyPage(node: node),
           ),
         ],
       )
     );
-    
+
     settings.children.add(
       PageNode(
         id: 'wifi',
-        icon: Icon(Icons.settings_outlined, size: 25),
+        icon: Icon(Icons.wifi_outlined, size: 25),
         title: 'Wi-Fi',
         // builder: (context, node) => EmptyPage(node: node),
         children: [
@@ -73,7 +65,7 @@ class SettingPages {
             // builder: (context, node) => EmptyPage(node: node),
           ),
           PageNode(
-            id: 'wifi_advanced',
+            id: 'wifi_menu2',
             title: 'Advanced',
             // builder: (context, node) => EmptyPage(node: node),
           ),
@@ -84,13 +76,13 @@ class SettingPages {
     settings.children.add(
       PageNode(
         id: 'bluetooth',
-        icon: Icon(Icons.settings_outlined, size: 25),
+        icon: Icon(Icons.bluetooth_outlined, size: 25),
         title: 'Bluetooth',
         // builder: (context, node) => EmptyPage(node: node),
         children: [
           PageNode(
             id: 'bluetooth_menu1',
-            title: 'Bluetooth on/off',
+            title: 'Bluetooth',
             // builder: (context, node) => EmptyPage(node: node),
           ),
         ],
@@ -99,27 +91,18 @@ class SettingPages {
 
     settings.children.add(
       PageNode(
-        id: 'about_device2',
-        icon: Icon(Icons.settings_outlined, size: 25),
-        title: 'About Device2',
-        // builder: (context, node) => EmptyPage(node: node),
-      ),
-    );
-
-    settings.children.add(
-      PageNode(
         id: 'display',
-        icon: Icon(Icons.settings_outlined, size: 25),
+        icon: Icon(Icons.light_mode_outlined, size: 25),
         title: 'Display',
         // builder: (context, node) => EmptyPage(node: node),
         children: [
           PageNode(
-            id: 'display_brightness',
+            id: 'display_menu1',
             title: 'Brightness',
             // builder: (context, node) => EmptyPage(node: node),
           ),
           PageNode(
-            id: 'display_font',
+            id: 'display_menu2',
             title: 'Font Size',
             // builder: (context, node) => EmptyPage(node: node),
           ),
@@ -129,18 +112,36 @@ class SettingPages {
 
     settings.children.add(
       PageNode(
+        id: 'wallpaper',
+        icon: Icon(Icons.format_paint_outlined, size: 25),
+        title: 'Wallpaper',
+        // builder: (context, node) => EmptyPage(node: node),
+      ),
+    );
+
+    settings.children.add(
+      PageNode(
+        id: 'sound',
+        icon: Icon(Icons.volume_up_outlined, size: 25),
+        title: 'Sound',
+        // builder: (context, node) => EmptyPage(node: node),
+      ),
+    );
+
+    settings.children.add(
+      PageNode(
         id: 'date_time',
-        icon: Icon(Icons.settings_outlined, size: 25),
+        icon: Icon(Icons.today_outlined, size: 25),
         title: 'Date & Time',
         // builder: (context, node) => EmptyPage(node: node),
         children: [
           PageNode(
-            id: 'date_time_autoupdate',
+            id: 'date_time_menu1',
             title: 'Auto update',
             // builder: (context, node) => EmptyPage(node: node),
           ),
           PageNode(
-            id: 'date_time_set_data',
+            id: 'date_time_menu2',
             title: 'Set time',
             // builder: (context, node) => EmptyPage(node: node),
           ),
@@ -151,7 +152,7 @@ class SettingPages {
     settings.children.add(
       PageNode(
         id: 'language_input',
-        icon: Icon(Icons.settings_outlined, size: 25),
+        icon: Icon(Icons.language_outlined, size: 25),
         title: 'Language & Input',
         // builder: (context, node) => EmptyPage(node: node),
       ),
@@ -159,21 +160,104 @@ class SettingPages {
 
     settings.children.add(
       PageNode(
-        id: 'about_device6',
-        icon: Icon(Icons.settings_outlined, size: 25),
-        title: 'About Device',
+        id: 'accessibility',
+        icon: Icon(Icons.accessibility_outlined, size: 25),
+        title: 'Accessibility',
         // builder: (context, node) => EmptyPage(node: node),
+      ),
+    );
+
+
+    settings.children.add(
+      PageNode(
+        id: 'about_device',
+        icon: Icon(Icons.info_outline, size: 25),
+        title: 'About device',
+        // builder: (context, node) => EmptyPage(node: node),
+        children: [
+          PageNode(
+            id: 'about_device_menu1',
+            title: 'Device info',
+            children: [
+              PageNode(
+                id: 'about_device_menu1_1',
+                title: 'Name',
+                description: "Tizen",
+                // builder: (context, node) => EmptyPage(node: node),
+              ),
+              PageNode(
+                id: 'about_device_menu1_2',
+                title: 'Model',
+                description: "RPI4",
+                // builder: (context, node) => EmptyPage(node: node),
+              ),
+              PageNode(
+                id: 'about_device_menu1_3',
+                title: 'Tizen version',
+                description: "10.0",
+                // builder: (context, node) => EmptyPage(node: node),
+              ),
+              PageNode(
+                id: 'about_device_menu1_4',
+                title: 'CPU',
+                description: "BCM2711",
+                // builder: (context, node) => EmptyPage(node: node),
+              ),
+              PageNode(
+                id: 'about_device_menu1_5',
+                title: 'RAM',
+                description: "3.8 GB",
+                // builder: (context, node) => EmptyPage(node: node),
+              ),
+              PageNode(
+                id: 'about_device_menu1_6',
+                title: 'Resolution',
+                description: "1920 x 1280",
+                // builder: (context, node) => EmptyPage(node: node),
+              ),
+            ],
+          ),
+          PageNode(
+            id: 'about_device_menu2',
+            title: 'Open source license',
+            // builder: (context, node) => EmptyPage(node: node),
+          ),
+          PageNode(
+            id: 'about_device_menu3',
+            title: 'Manage certificates',
+            // builder: (context, node) => EmptyPage(node: node),
+          ),
+        ],
       ),
     );
 
     settings.children.add(
       PageNode(
         id: 'apps',
-        icon: Icon(Icons.settings_outlined, size: 25),
+        icon: Icon(Icons.apps_outlined, size: 25),
         title: 'Apps',
         // builder: (context, node) => EmptyPage(node: node),
       ),
     );
+
+    settings.children.add(
+      PageNode(
+        id: 'Storage',
+        icon: Icon(Icons.archive_outlined, size: 25),
+        title: 'Storage',
+        // builder: (context, node) => EmptyPage(node: node),
+      ),
+    );
+
+    settings.children.add(
+      PageNode(
+        id: '',
+        // icon: Icon(Icons.settings_outlined, size: 25),
+        title: '',
+        // builder: (context, node) => EmptyPage(node: node),
+      ),
+    );
+
 
     return settings;
   }
