@@ -41,10 +41,8 @@ class SettingListViewState extends State<SettingListView> with FocusSelectable<S
       focusNode: focusNode,
       onFocusChange: (hasfocus) {
         if (hasfocus) {
-          debugPrint("######################### ${widget.node.title} listview focused _selected=$_selected");
           listKey.currentState?.selectTo(_selected);
         } else {
-          debugPrint("######################### ${widget.node.title} listview unfocused _selected=$_selected");
           _selected = listKey.currentState?.selectedIndex ?? 0;
         }
       },
@@ -87,7 +85,6 @@ class ItemView extends StatelessWidget{
     return SizedBox(
       height: 60,
       child: Container(
-        // margin: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Focus.of(context).hasFocus && index == selectedIndex ? Theme.of(context).colorScheme.tertiary : Colors.transparent,

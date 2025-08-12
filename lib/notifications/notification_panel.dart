@@ -24,8 +24,18 @@ class _NotificationsPanelState extends State<NotificationsPanel> {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  color: Theme.of(context).colorScheme.onTertiaryContainer.withAlphaF(0.7),
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
+                child : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 40),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text("There are no notifications")
+                    ],
+                  ),
+                )
               ),
             )
           )       

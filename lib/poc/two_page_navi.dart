@@ -49,8 +49,6 @@ class TwoPageNavigationState extends State<TwoPageNavigation> {
   int pageIndex = 0;
 
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
-
-    debugPrint("#################################### pageview onkeyEvnet");
     if (event is KeyDownEvent) {
       if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
         setState(() {

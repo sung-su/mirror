@@ -23,37 +23,37 @@ class SettingPages {
 
     settings.children.add(
       PageNode(
-        id: 'profiles',
+        id: 'profile',
         icon: Icon(Icons.settings_outlined, size: 25),
-        title: 'Profiles',
+        title: 'Profile',
         description: 'test',
         builder: (context, node) => ButtonsPage(node: node),
         children: [
           PageNode(
-            id: 'profiles_menu1',
-            title: 'Profile menu1',
+            id: 'Tizen',
+            title: 'Tizen',
             builder: (context, node) => ButtonsPage(node: node),
             children: [
               PageNode(
-                id: 'test',
-                title: 'test',
+                id: 'menu1',
+                title: 'menu1',
                 builder: (context, node) => EmptyPage(node: node),
               ),
               PageNode(
-                id: 'test2',
-                title: 'test2',
+                id: 'menu2',
+                title: 'menu2',
                 builder: (context, node) => EmptyPage(node: node),
               ),
               PageNode(
-                id: 'test3',
-                title: 'test3',
+                id: 'menu3',
+                title: 'menu3',
                 builder: (context, node) => EmptyPage(node: node),
               )
             ]
           ),
           PageNode(
-            id: 'profiles_menu12',
-            title: 'Profile menu2',
+            id: 'user',
+            title: 'user',
             builder: (context, node) => EmptyPage(node: node),
           ),
         ],
@@ -72,20 +72,25 @@ class SettingPages {
             title: 'Wi-Fi on/off',
             builder: (context, node) => EmptyPage(node: node),
           ),
+          PageNode(
+            id: 'wifi_advanced',
+            title: 'Advanced',
+            builder: (context, node) => EmptyPage(node: node),
+          ),
         ],
       ),
     );
 
     settings.children.add(
       PageNode(
-        id: 'about_device',
+        id: 'bluetooth',
         icon: Icon(Icons.settings_outlined, size: 25),
-        title: 'About Device',
+        title: 'Bluetooth',
         builder: (context, node) => EmptyPage(node: node),
         children: [
           PageNode(
-            id: 'about_device_menu1',
-            title: 'About Device menu1',
+            id: 'bluetooth_menu1',
+            title: 'Bluetooth on/off',
             builder: (context, node) => EmptyPage(node: node),
           ),
         ],
@@ -103,27 +108,51 @@ class SettingPages {
 
     settings.children.add(
       PageNode(
-        id: 'about_device3',
+        id: 'display',
         icon: Icon(Icons.settings_outlined, size: 25),
-        title: 'About Device3',
+        title: 'Display',
         builder: (context, node) => EmptyPage(node: node),
+        children: [
+          PageNode(
+            id: 'display_brightness',
+            title: 'Brightness',
+            builder: (context, node) => EmptyPage(node: node),
+          ),
+          PageNode(
+            id: 'display_font',
+            title: 'Font Size',
+            builder: (context, node) => EmptyPage(node: node),
+          ),
+        ],
       ),
     );
 
     settings.children.add(
       PageNode(
-        id: 'about_device4',
+        id: 'date_time',
         icon: Icon(Icons.settings_outlined, size: 25),
-        title: 'About Device4',
+        title: 'Date & Time',
         builder: (context, node) => EmptyPage(node: node),
+        children: [
+          PageNode(
+            id: 'date_time_autoupdate',
+            title: 'Auto update',
+            builder: (context, node) => EmptyPage(node: node),
+          ),
+          PageNode(
+            id: 'date_time_set_data',
+            title: 'Set time',
+            builder: (context, node) => EmptyPage(node: node),
+          ),
+        ],
       ),
     );
 
     settings.children.add(
       PageNode(
-        id: 'about_device5',
+        id: 'language_input',
         icon: Icon(Icons.settings_outlined, size: 25),
-        title: 'About Device5',
+        title: 'Language & Input',
         builder: (context, node) => EmptyPage(node: node),
       ),
     );
@@ -132,16 +161,16 @@ class SettingPages {
       PageNode(
         id: 'about_device6',
         icon: Icon(Icons.settings_outlined, size: 25),
-        title: 'About Device6',
+        title: 'About Device',
         builder: (context, node) => EmptyPage(node: node),
       ),
     );
 
     settings.children.add(
       PageNode(
-        id: 'about_device7',
+        id: 'apps',
         icon: Icon(Icons.settings_outlined, size: 25),
-        title: 'About Device7',
+        title: 'Apps',
         builder: (context, node) => EmptyPage(node: node),
       ),
     );

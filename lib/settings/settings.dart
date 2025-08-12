@@ -6,7 +6,7 @@ import 'package:tizen_fs/settings/setting_page.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
 class Settings extends StatefulWidget {
-  Settings({ super.key });
+  const Settings({ super.key });
 
   @override
   State<Settings> createState() => SettingsState();
@@ -26,7 +26,7 @@ class SettingsState extends State<Settings> {
   void move() {
     _pageController.animateToPage(
       _current,
-      duration: $style.times.fast,
+      duration: $style.times.med,
       curve: Curves.easeInOut
     );
   }
@@ -68,7 +68,6 @@ class SettingsState extends State<Settings> {
   }
 
   void _updatePages(PageNode? node, int selected){
-    debugPrint("####################### _updatePages: selected=$selected, _current=$_current");
     if(node == null) return;
 
     var current = _current;
@@ -106,7 +105,7 @@ class SettingsState extends State<Settings> {
           padEnds: false,
           scrollDirection: Axis.horizontal,
           itemCount: _pages.length, 
-          // physics: NeverScrollableScrollPhysics(),
+          physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             if (_pages[index] == null) {
               return Container(
