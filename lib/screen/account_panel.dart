@@ -29,8 +29,8 @@ class _AccountPanelState extends State<AccountPanel> {
               return KeyEventResult.handled;
             } else if (event is KeyDownEvent &&
                 event.logicalKey == LogicalKeyboardKey.enter) {
-              AppRouter.router.push(ScreenPaths.poc);
-              return KeyEventResult.handled;
+              AppRouter.router.push(ScreenPaths.account);
+              return KeyEventResult.ignored;
             } else if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.arrowDown) {
               if(_iconSelected) {
                 setState(() {
@@ -77,14 +77,14 @@ class _AccountPanelState extends State<AccountPanel> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(52, 0, 0, 0),
                 child: TextButton (
-                  onPressed: () { print('Add an account'); },
+                  onPressed: () { AppRouter.router.push(ScreenPaths.poc); },
                   style: TextButton.styleFrom(
                     backgroundColor: _buttonSelected ? Colors.white : Colors.transparent,
                     foregroundColor: _buttonSelected ? Colors.black : Colors.white,
                     animationDuration: const Duration(milliseconds: 100),
                   ),
                   child: const Text(
-                    'Add an account',
+                    'Create new profile',
                     style: TextStyle(
                       fontSize: 12,
                     ),

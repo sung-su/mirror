@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tizen_fs/profiles/accout_popup.dart';
 import 'package:tizen_fs/poc/poc_gallery.dart';
 import 'package:tizen_fs/screen/main_screen.dart';
 import 'package:tizen_fs/settings/settings.dart';
+
+import 'profiles/profiles.dart';
 
 class ScreenPaths {
   static const String main = '/';
   static const String settings = '/settings';
   static const String poc = '/poc';
+  static const String account = '/account';
+  static const String createAccount = '/createAccount';
 }
 
 final RouteObserver<ModalRoute<void>> routeObserver =
@@ -27,6 +32,14 @@ class AppRouter {
       GoRoute(
         path: ScreenPaths.settings,
         builder: (context, state) => Settings(),
+      ),
+      GoRoute(
+        path: ScreenPaths.account,
+        builder: (context, state) => Profiles(),
+      ),
+      GoRoute(
+        path: ScreenPaths.createAccount,
+        builder: (context, state) => CreateProfilePopup(),
       ),
     ],
     observers: [routeObserver],
