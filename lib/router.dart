@@ -26,7 +26,7 @@ class AppRouter {
       ),
       GoRoute(
         path: ScreenPaths.settings,
-        builder: (context, state) => const Settings(),
+        builder: (context, state) => Settings(),
       ),
     ],
     observers: [routeObserver],

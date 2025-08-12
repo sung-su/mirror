@@ -1,91 +1,135 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tizen_fs/settings/master_detail_page.dart';
-import 'package:tizen_fs/settings/master_page.dart';
-import 'package:tizen_fs/settings/menu.dart';
+import 'package:tizen_fs/models/page_node.dart';
+import 'package:tizen_fs/models/settings_pages.dart';
+import 'package:tizen_fs/settings/setting_page.dart';
+import 'package:tizen_fs/styles/app_style.dart';
 
 class Settings extends StatefulWidget {
-  const Settings({super.key});
+  Settings({ super.key });
 
   @override
-  State<Settings> createState() => _Settings();
+  State<Settings> createState() => SettingsState();
 }
 
-class _Settings extends State<Settings> {
-  Menu settings = Menu(
-    title: "Settings",
-    items: [
-      MenuItem(title: "Profile", icon: Icons.person_outlined),
-      MenuItem(title: "Wi-Fi", icon: Icons.wifi_outlined),
-      MenuItem(title: "Bluetooth", icon: Icons.bluetooth_outlined),
-      MenuItem(title: "Display", icon: Icons.light_mode_outlined),
-      MenuItem(title: "Wallpaper", icon: Icons.format_paint_outlined),
-      MenuItem(title: "Sound", icon: Icons.volume_up_outlined),
-      MenuItem(title: "Date & Time", icon: Icons.today_outlined),
-      MenuItem(title: "Language & Input", icon: Icons.language_outlined),
-      MenuItem(title: "Accessibility", icon: Icons.accessibility_outlined),
-      MenuItem(title: "About device", icon: Icons.info_outline),
-      MenuItem(title: "Apps", icon: Icons.apps_outlined),
-      MenuItem(title: "Storage", icon: Icons.archive_outlined),
-    ],
-  );
+class SettingsState extends State<Settings> {
+  final FocusNode _focusNode = FocusNode();
+  late final PageController _pageController;
+  PageNode _pageTree = SettingPages().getRoot();
 
-  Menu profiles = Menu(
-    title: "Profile",
-    items: [
-      MenuItem(title: "Tizen", icon: Icons.person_outlined),
-      MenuItem(title: "Add an account"),
-    ],
-  );
+  late List<PageNode?> _pages;
+  List<GlobalKey> _itemKeys = List.generate(3, (_) => GlobalKey());
 
-  Menu wifi = Menu(
-    title: "Wi-Fi",
-    items: [
-      MenuItem(
-        title: "Wi-Fi",
-        Toggle: false,
-      ),
-      MenuItem(title: "Advanced"),
-    ],
-  );
+  int _current = 0;
+  double viewportFraction = 0.6;
+  
+  void move() {
+    _pageController.animateToPage(
+      _current,
+      duration: $style.times.fast,
+      curve: Curves.easeInOut
+    );
+  }
 
-  Menu empty = Menu(title: "empty", items: []);
-
-  FocusNode masterNode = FocusNode();
-  GlobalKey<MasterDetailPageState> masterKey =
-      GlobalKey<MasterDetailPageState>();
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(viewportFraction: 0.6, keepPage: false);
+    _pages = [_pageTree, null];
+  }
 
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
     if (event is KeyDownEvent) {
       if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-        print("@main _onKeyEvent.arrowRight pageIndex=[$pageIndex]");
-        masterKey.currentState?.moveNext();
+        setState(() {
+          _current = (_current < _pages.length - 2) ? _current + 1 : _current;  
+        });
+        move();
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-        print("@main _onKeyEvent.arrowLeft pageIndex=[$pageIndex]");
-        masterKey.currentState?.movePrev();
+        setState(() {
+          _current = (_current > 0) ? _current - 1 : _current;
+        });
+        move();
         return KeyEventResult.handled;
-      } else if (event.logicalKey == LogicalKeyboardKey.enter ||
-          event.logicalKey == LogicalKeyboardKey.select) {
-        return KeyEventResult.handled;
-      }
-      return KeyEventResult.ignored;
+      } 
     }
     return KeyEventResult.ignored;
   }
 
-  int focusedIndex = 0;
-  int pageIndex = 0;
+  void _selectTo(int index)
+  {
+    if(index == _pages.length -1 ) return;
+
+    setState(() {
+      _current = index;
+    });
+    move();
+  }
+
+  void _updatePages(PageNode? node, int selected){
+    debugPrint("####################### _updatePages: selected=$selected, _current=$_current");
+    if(node == null) return;
+
+    var current = _current;
+    List newItems = [];
+
+    newItems = [node.children[selected], null];
+    final List newKeys = List.generate(2, (_) => GlobalKey());
+
+    setState(() {
+      _itemKeys = [..._itemKeys.sublist(0, current + 1), ...newKeys];
+      _pages = [..._pages.sublist(0, current + 1), ...newItems];
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant Settings oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: MasterDetailPage(
-        key: masterKey,
-        onPageChanged: (changedPageIndex) {
-          pageIndex = changedPageIndex;
-        },
-      ),
+      body:Focus(
+        focusNode: _focusNode,
+        onKeyEvent: _onKeyEvent,
+        child: PageView.builder(
+          controller: _pageController,
+          padEnds: false,
+          scrollDirection: Axis.horizontal,
+          itemCount: _pages.length, 
+          // physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            if (_pages[index] == null) {
+              return Container(
+                color: Theme.of(context).colorScheme.onTertiary
+              );
+            } else {
+              return GestureDetector(
+                onTap: () {
+                  _selectTo(index);
+                },
+                child: SettingPage(
+                  key: _itemKeys[index],
+                  node: _pages[index]!,
+                  isEnabled: index <= _current,
+                  onSelectionChanged: (selected) {
+                    _updatePages(_pages[index], selected);
+                  },
+                )
+              );
+            }
+          },
+        )
+      )
     );
   }
 }

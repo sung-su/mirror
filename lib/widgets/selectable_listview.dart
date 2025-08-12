@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tizen_fs/styles/app_style.dart';
 
 class SelectableListView extends StatefulWidget {
   const SelectableListView({
@@ -23,20 +24,17 @@ class SelectableListView extends StatefulWidget {
 }
 
 class SelectableListViewState extends State<SelectableListView> {
-  final ScrollController _controller = ScrollController();
+  late final ScrollController _controller;
   late List<GlobalKey> _itemKeys;
 
   int _selectedIndex = 0;
-  double _alignment = 0.75;
   Axis _scrollDirection = Axis.horizontal;
 
   @override
   void initState() {
     super.initState();
-
-    if(widget.alignment != null) {
-      _alignment = widget.alignment!;
-    }
+    
+    _controller = ScrollController();
 
     if(widget.scrollDirection != null) {
       _scrollDirection = widget.scrollDirection!;
@@ -77,17 +75,20 @@ class SelectableListViewState extends State<SelectableListView> {
   int get itemCount => widget.itemCount;
 
   Future<int> _scrollToSelected(int duration, int fallbackSelection) async {
-    final context = _itemKeys[_selectedIndex].currentContext;
-    if (context != null) {
-      setState(() {});  
-      Scrollable.ensureVisible(
-        context,
-        alignment: _alignment,
-        duration: Duration(milliseconds: duration),
+    if (_itemKeys[_selectedIndex].currentContext != null) {
+      int current = _selectedIndex;
+      final RenderBox box = _itemKeys[_selectedIndex].currentContext!.findRenderObject() as RenderBox;
+      final Offset position = box.localToGlobal(Offset.zero);
+      if(position.dy.isNaN) return _selectedIndex;
+      setState(() {});
+      final double offset = 300;
+      await _controller.animateTo(
+        position.dy + _controller.offset - offset,
+        duration: $style.times.fast,
         curve: Curves.easeInOut,
       );
       widget.onSelectionChanged?.call(_selectedIndex);
-      return _selectedIndex;
+      return current;
     } else {
       _selectedIndex = fallbackSelection; // restore previous selection
       return fallbackSelection;
@@ -130,7 +131,7 @@ class SelectableListViewState extends State<SelectableListView> {
       child: ListView.builder(
         padding: widget.padding,
         scrollDirection: _scrollDirection,
-        clipBehavior: Clip.none,
+        // clipBehavior: Clip.none,
         controller: _controller,
         itemCount: widget.itemCount,
         itemBuilder: (context, index) {

@@ -17,7 +17,7 @@ class ButtonsPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => Scaffold(body: child.builder(context, child)))
+                  MaterialPageRoute(builder: (_) => Scaffold(body: child.builder?.call(context, child)))
                 );
               },
               child: Text(child.title),

@@ -9,6 +9,7 @@ import 'package:tizen_fs/poc/page_tree.dart';
 import 'package:tizen_fs/poc/reoder_grid_test.dart';
 import 'package:tizen_fs/poc/reoder_grid_test2.dart';
 import 'package:tizen_fs/poc/setting_page_test.dart';
+import 'package:tizen_fs/settings/settings.dart';
 import 'package:tizen_fs/poc/shimmerloading.dart';
 import 'package:tizen_fs/poc/two_page_navi.dart';
 import 'package:tizen_fs/screen/main_screen.dart';
@@ -160,7 +161,7 @@ class PocGalleryPage extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('PageTree Rest'),
+              title: const Text('PageTree Test'),
               subtitle: const Text('Page tree(static)'),
               leading: const Icon(Icons.subscriptions),
               onTap: () {
@@ -173,7 +174,7 @@ class PocGalleryPage extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('Setting Pages test'),
+              title: const Text('Page Tree(Setting Pages) test'),
               subtitle: const Text('Settings page tree test'),
               leading: const Icon(Icons.subscriptions),
               onTap: () {

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_fs/screen/mock_apps_page.dart';
-import 'package:tizen_fs/settings/master_page.dart';
-import 'package:tizen_fs/settings/settings.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
 class TwoPageNavigation extends StatefulWidget {
@@ -158,17 +156,6 @@ class TwoPageNavigationState extends State<TwoPageNavigation> {
   }
 }
 
-class NoArrowFocusPolicy extends WidgetOrderTraversalPolicy {
-  @override
-  bool inDirection(FocusNode currentNode, TraversalDirection direction) {
-    if (direction == TraversalDirection.left ||
-        direction == TraversalDirection.right) {
-      return false; // 포커스 이동 안 함
-    }
-    return super.inDirection(currentNode, direction);
-  }
-}
-
 class ColoredPage extends StatefulWidget {
   const ColoredPage({super.key, required this.title, required this.backgroundcColor, required this.onSelectionChanged, required this.isEnabled});
 
@@ -188,9 +175,6 @@ class _ColoredPageState extends State<ColoredPage> {
   @override
   void initState() {
     super.initState();
-
-    debugPrint('################## ${widget.title} page init: active=${widget.isEnabled}');
-
     if (widget.isEnabled) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _listKey.currentState?.initFocus();
@@ -261,14 +245,6 @@ class _ColoredPageState extends State<ColoredPage> {
                     ],
                   ) : SizedBox.shrink(),
                 ),
-                // child : MockList(
-                //   key: _listKey,
-                //   isHorizontal: false,
-                //   onSelectionChanged: (selected) {
-                //     debugPrint("#################### selected=$selected");
-                //     widget.onSelectionChanged?.call(selected % 3);
-                //   },
-                // )
               ),
             )
           )

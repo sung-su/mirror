@@ -37,22 +37,6 @@ class ShimmerScreen extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: Theme.of(context).colorScheme.onPrimary,
       highlightColor: Theme.of(context).colorScheme.primaryContainer,
-      // child: ListView.builder(
-      //   itemCount: 5, // Adjust the count based on your needs
-      //   itemBuilder: (context, index) {
-      //     return ListTile(
-      //       title: Container(
-      //         decoration: BoxDecoration(
-      //           borderRadius: BorderRadius.circular(10),
-      //           color: Colors.white,
-      //         ),
-      //         height: 50,
-      //         width: 200,
-      //         // color: Colors.white,
-      //       ),
-      //     );
-      //   },
-      // ),
       child: DummyScreen()
     );
   }
@@ -65,14 +49,6 @@ class Screen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return ListView.builder(
-    //   itemCount: data.length,
-    //   itemBuilder: (context, index) {
-    //     return ListTile(
-    //       title: Text(data[index]),
-    //     );
-    //   },
-    // );
     return DummyScreen();
   }
 }

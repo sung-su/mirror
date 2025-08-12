@@ -4,13 +4,17 @@ import 'package:flutter/material.dart';
 class PageNode {
   final String id;
   final String title;
+  final String? description;
+  final Icon? icon;
   final List<PageNode> children;
-  final Widget Function(BuildContext context, PageNode node) builder;
+  final Widget Function(BuildContext context, PageNode node)? builder;
 
   PageNode({
     required this.id,
     required this.title,
-    required this.builder,
+    this.description,
+    this.icon,
+    this.builder,
     this.children = const [],
   });
 }

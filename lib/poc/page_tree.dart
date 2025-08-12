@@ -8,7 +8,7 @@ class PageTreeTest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: node.builder(context, node),
+      body: node.builder?.call(context, node),
     );
   }
 }
