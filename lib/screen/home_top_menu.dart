@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/router.dart';
-import 'package:tizen_fs/screen/notification_panel.dart';
+import 'package:tizen_fs/notifications/notification_panel.dart';
 import 'package:tizen_fs/widgets/top_menu_avatar_item.dart';
 import 'package:tizen_fs/widgets/top_menu_button_item.dart';
 import 'package:tizen_fs/widgets/top_menu_icon_item.dart';

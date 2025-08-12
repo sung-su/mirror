@@ -17,7 +17,7 @@ class SettingPages {
     PageNode settings = PageNode (
       id: 'settings',
       title: 'Settings',
-      builder: (context, node) => ButtonsPage(node: node),
+      // // builder: (context, node) => ButtonsPage(node: node),
       children: []
     );
 
@@ -27,34 +27,34 @@ class SettingPages {
         icon: Icon(Icons.settings_outlined, size: 25),
         title: 'Profile',
         description: 'test',
-        builder: (context, node) => ButtonsPage(node: node),
+        // builder: (context, node) => ButtonsPage(node: node),
         children: [
           PageNode(
             id: 'Tizen',
             title: 'Tizen',
-            builder: (context, node) => ButtonsPage(node: node),
+            // builder: (context, node) => ButtonsPage(node: node),
             children: [
               PageNode(
                 id: 'menu1',
                 title: 'menu1',
-                builder: (context, node) => EmptyPage(node: node),
+                // builder: (context, node) => EmptyPage(node: node),
               ),
               PageNode(
                 id: 'menu2',
                 title: 'menu2',
-                builder: (context, node) => EmptyPage(node: node),
+                // builder: (context, node) => EmptyPage(node: node),
               ),
               PageNode(
                 id: 'menu3',
                 title: 'menu3',
-                builder: (context, node) => EmptyPage(node: node),
+                // builder: (context, node) => EmptyPage(node: node),
               )
             ]
           ),
           PageNode(
             id: 'user',
             title: 'user',
-            builder: (context, node) => EmptyPage(node: node),
+            // builder: (context, node) => EmptyPage(node: node),
           ),
         ],
       )
@@ -65,17 +65,17 @@ class SettingPages {
         id: 'wifi',
         icon: Icon(Icons.settings_outlined, size: 25),
         title: 'Wi-Fi',
-        builder: (context, node) => EmptyPage(node: node),
+        // builder: (context, node) => EmptyPage(node: node),
         children: [
           PageNode(
             id: 'wifi_menu1',
             title: 'Wi-Fi on/off',
-            builder: (context, node) => EmptyPage(node: node),
+            // builder: (context, node) => EmptyPage(node: node),
           ),
           PageNode(
             id: 'wifi_advanced',
             title: 'Advanced',
-            builder: (context, node) => EmptyPage(node: node),
+            // builder: (context, node) => EmptyPage(node: node),
           ),
         ],
       ),
@@ -86,12 +86,12 @@ class SettingPages {
         id: 'bluetooth',
         icon: Icon(Icons.settings_outlined, size: 25),
         title: 'Bluetooth',
-        builder: (context, node) => EmptyPage(node: node),
+        // builder: (context, node) => EmptyPage(node: node),
         children: [
           PageNode(
             id: 'bluetooth_menu1',
             title: 'Bluetooth on/off',
-            builder: (context, node) => EmptyPage(node: node),
+            // builder: (context, node) => EmptyPage(node: node),
           ),
         ],
       ),
@@ -102,7 +102,7 @@ class SettingPages {
         id: 'about_device2',
         icon: Icon(Icons.settings_outlined, size: 25),
         title: 'About Device2',
-        builder: (context, node) => EmptyPage(node: node),
+        // builder: (context, node) => EmptyPage(node: node),
       ),
     );
 
@@ -111,17 +111,17 @@ class SettingPages {
         id: 'display',
         icon: Icon(Icons.settings_outlined, size: 25),
         title: 'Display',
-        builder: (context, node) => EmptyPage(node: node),
+        // builder: (context, node) => EmptyPage(node: node),
         children: [
           PageNode(
             id: 'display_brightness',
             title: 'Brightness',
-            builder: (context, node) => EmptyPage(node: node),
+            // builder: (context, node) => EmptyPage(node: node),
           ),
           PageNode(
             id: 'display_font',
             title: 'Font Size',
-            builder: (context, node) => EmptyPage(node: node),
+            // builder: (context, node) => EmptyPage(node: node),
           ),
         ],
       ),
@@ -132,17 +132,17 @@ class SettingPages {
         id: 'date_time',
         icon: Icon(Icons.settings_outlined, size: 25),
         title: 'Date & Time',
-        builder: (context, node) => EmptyPage(node: node),
+        // builder: (context, node) => EmptyPage(node: node),
         children: [
           PageNode(
             id: 'date_time_autoupdate',
             title: 'Auto update',
-            builder: (context, node) => EmptyPage(node: node),
+            // builder: (context, node) => EmptyPage(node: node),
           ),
           PageNode(
             id: 'date_time_set_data',
             title: 'Set time',
-            builder: (context, node) => EmptyPage(node: node),
+            // builder: (context, node) => EmptyPage(node: node),
           ),
         ],
       ),
@@ -153,7 +153,7 @@ class SettingPages {
         id: 'language_input',
         icon: Icon(Icons.settings_outlined, size: 25),
         title: 'Language & Input',
-        builder: (context, node) => EmptyPage(node: node),
+        // builder: (context, node) => EmptyPage(node: node),
       ),
     );
 
@@ -162,7 +162,7 @@ class SettingPages {
         id: 'about_device6',
         icon: Icon(Icons.settings_outlined, size: 25),
         title: 'About Device',
-        builder: (context, node) => EmptyPage(node: node),
+        // builder: (context, node) => EmptyPage(node: node),
       ),
     );
 
@@ -171,7 +171,7 @@ class SettingPages {
         id: 'apps',
         icon: Icon(Icons.settings_outlined, size: 25),
         title: 'Apps',
-        builder: (context, node) => EmptyPage(node: node),
+        // builder: (context, node) => EmptyPage(node: node),
       ),
     );
 

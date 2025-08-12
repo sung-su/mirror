@@ -53,6 +53,13 @@ class _SettingPageState extends State<SettingPage> with AutomaticKeepAliveClient
       ) ;
     }
 
+    if (widget.node!.builder != null) {
+      return Container(
+        color: widget.isEnabled ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onTertiary,
+        child: widget.node!.builder?.call(context, widget.node!)
+      );
+    }
+
     return Container(
       color: widget.isEnabled ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onTertiary,
       child: Column(
