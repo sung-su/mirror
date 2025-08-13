@@ -22,7 +22,7 @@ class SettingPages {
     settings.children.add(
       PageNode(
         id: 'profile',
-        icon: Icon(Icons.person_outlined, size: 25),
+        icon: Icons.person_outlined,
         title: 'Profile',
         // builder: (context, node) => ButtonsPage(node: node),
         children: [
@@ -55,7 +55,7 @@ class SettingPages {
     settings.children.add(
       PageNode(
         id: 'wifi',
-        icon: Icon(Icons.wifi_outlined, size: 25),
+        icon: Icons.wifi_outlined,
         title: 'Wi-Fi',
         // builder: (context, node) => EmptyPage(node: node),
         children: [
@@ -76,7 +76,7 @@ class SettingPages {
     settings.children.add(
       PageNode(
         id: 'bluetooth',
-        icon: Icon(Icons.bluetooth_outlined, size: 25),
+        icon: Icons.bluetooth_outlined,
         title: 'Bluetooth',
         // builder: (context, node) => EmptyPage(node: node),
         children: [
@@ -92,7 +92,7 @@ class SettingPages {
     settings.children.add(
       PageNode(
         id: 'display',
-        icon: Icon(Icons.light_mode_outlined, size: 25),
+        icon: Icons.light_mode_outlined,
         title: 'Display',
         // builder: (context, node) => EmptyPage(node: node),
         children: [
@@ -113,7 +113,7 @@ class SettingPages {
     settings.children.add(
       PageNode(
         id: 'wallpaper',
-        icon: Icon(Icons.format_paint_outlined, size: 25),
+        icon: Icons.format_paint_outlined,
         title: 'Wallpaper',
         // builder: (context, node) => EmptyPage(node: node),
       ),
@@ -122,7 +122,7 @@ class SettingPages {
     settings.children.add(
       PageNode(
         id: 'sound',
-        icon: Icon(Icons.volume_up_outlined, size: 25),
+        icon: Icons.volume_up_outlined,
         title: 'Sound',
         // builder: (context, node) => EmptyPage(node: node),
       ),
@@ -131,7 +131,7 @@ class SettingPages {
     settings.children.add(
       PageNode(
         id: 'date_time',
-        icon: Icon(Icons.today_outlined, size: 25),
+        icon: Icons.today_outlined,
         title: 'Date & Time',
         // builder: (context, node) => EmptyPage(node: node),
         children: [
@@ -152,7 +152,7 @@ class SettingPages {
     settings.children.add(
       PageNode(
         id: 'language_input',
-        icon: Icon(Icons.language_outlined, size: 25),
+        icon: Icons.language_outlined,
         title: 'Language & Input',
         // builder: (context, node) => EmptyPage(node: node),
       ),
@@ -161,7 +161,7 @@ class SettingPages {
     settings.children.add(
       PageNode(
         id: 'accessibility',
-        icon: Icon(Icons.accessibility_outlined, size: 25),
+        icon: Icons.accessibility_outlined,
         title: 'Accessibility',
         // builder: (context, node) => EmptyPage(node: node),
       ),
@@ -171,7 +171,7 @@ class SettingPages {
     settings.children.add(
       PageNode(
         id: 'about_device',
-        icon: Icon(Icons.info_outline, size: 25),
+        icon: Icons.info_outline,
         title: 'About device',
         // builder: (context, node) => EmptyPage(node: node),
         children: [
@@ -183,7 +183,7 @@ class SettingPages {
                 id: 'about_device_menu1_1',
                 title: 'Name',
                 description: "Tizen",
-                // builder: (context, node) => EmptyPage(node: node),
+                builder: (context, node) => EmptyPage(node: node),
               ),
               PageNode(
                 id: 'about_device_menu1_2',
@@ -234,7 +234,7 @@ class SettingPages {
     settings.children.add(
       PageNode(
         id: 'apps',
-        icon: Icon(Icons.apps_outlined, size: 25),
+        icon: Icons.apps_outlined,
         title: 'Apps',
         // builder: (context, node) => EmptyPage(node: node),
       ),
@@ -243,7 +243,7 @@ class SettingPages {
     settings.children.add(
       PageNode(
         id: 'Storage',
-        icon: Icon(Icons.archive_outlined, size: 25),
+        icon: Icons.archive_outlined,
         title: 'Storage',
         // builder: (context, node) => EmptyPage(node: node),
       ),

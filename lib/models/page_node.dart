@@ -5,7 +5,7 @@ class PageNode {
   final String id;
   final String title;
   final String? description;
-  final Icon? icon;
+  final IconData? icon;
   final List<PageNode> children;
   final Widget Function(BuildContext context, PageNode node)? builder;
 

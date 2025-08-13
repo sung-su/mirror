@@ -81,42 +81,73 @@ class ItemView extends StatelessWidget{
   final int selectedIndex;
   final PageNode node;
 
+  final double titleFontSize = 15;
+  final double subtitleFontSize = 12;
+  final double innerPadding = 20;
+  final double itemHeight = 60;
+  final double iconSize = 25;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: node.children[index].description != null ? 75 : 60,
+      height: node.children[index].description == null ? itemHeight : itemHeight * 1.25,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Focus.of(context).hasFocus && index == selectedIndex ? Theme.of(context).colorScheme.tertiary : Colors.transparent,
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          padding:
+              Focus.of(context).hasFocus && index == selectedIndex
+                  ? EdgeInsets.symmetric(horizontal: innerPadding * 1.25)
+                  : EdgeInsets.symmetric(horizontal: innerPadding),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            spacing: 15,
+            spacing: innerPadding,
             children: [
-              if (node.children[index].icon != null) node.children[index].icon!,
+              if (node.children[index].icon != null)
+                Container(
+                  width: iconSize * 2,
+                  height: iconSize * 2,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Focus.of(context).hasFocus && index == selectedIndex
+                        ? Colors.blueAccent
+                        : Colors.grey[800],
+                  ),
+                  child: Icon(
+                      node.children[index].icon,
+                      size: iconSize,
+                      color: Focus.of(context).hasFocus && index == selectedIndex
+                          ? Colors.white
+                          : Colors.grey[600],
+                    ),
+                ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 3,
                 children: [
                   Text(
                     node.children[index].title,
                     style: TextStyle(
-                      fontSize: 15,
-                      color: Focus.of(context).hasFocus && index == selectedIndex ? Theme.of(context).colorScheme.onTertiary : Theme.of(context).colorScheme.tertiary,
-                    )
+                      fontSize: titleFontSize,
+                      color:
+                          Focus.of(context).hasFocus && index == selectedIndex
+                              ? Theme.of(context).colorScheme.onTertiary
+                              : Theme.of(context).colorScheme.tertiary,
+                    ),
                   ),
-                  if (node.children[index].description != null) 
-                  Text(
-                    node.children[index].description!,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Focus.of(context).hasFocus && index == selectedIndex ? Theme.of(context).colorScheme.onTertiary : Theme.of(context).colorScheme.tertiary,
-                    )
-                  )
+                  if (node.children[index].description != null)
+                    Text(
+                      node.children[index].description!,
+                      style: TextStyle(
+                        fontSize: subtitleFontSize,
+                        color:
+                            Focus.of(context).hasFocus && index == selectedIndex
+                                ? Theme.of(context).colorScheme.onTertiary
+                                : Theme.of(context).colorScheme.tertiary,
+                      ),
+                    ),
                 ],
               ),
             ],
