@@ -62,8 +62,9 @@ class _SettingPageState extends State<SettingPage>
               : Theme.of(context).colorScheme.onTertiary,
       child: Column(
         children: [
+          //title
           Padding(
-            padding: widget.isEnabled ? EdgeInsets.fromLTRB(80, 35, 0, 10) : EdgeInsets.fromLTRB(60, 35, 0, 10),
+            padding: widget.isEnabled ? EdgeInsets.fromLTRB(80, 20, 0, 10) : EdgeInsets.fromLTRB(60, 20, 0, 10),
             child: SizedBox(
               height: titleHeight,
               child: Align(
@@ -77,6 +78,7 @@ class _SettingPageState extends State<SettingPage>
               ),
             ),
           ),
+          //list
           if (!widget.node!.children.isEmpty)
             Expanded(
               child: Align(
@@ -84,7 +86,7 @@ class _SettingPageState extends State<SettingPage>
                 child: Padding(
                   padding:
                       widget.isEnabled
-                          ? const EdgeInsets.symmetric(horizontal: 35)
+                          ? const EdgeInsets.symmetric(horizontal: 40)
                           : const EdgeInsets.symmetric(horizontal: 20),
                   child: SettingListView(
                     key: _listKey,

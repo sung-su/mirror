@@ -48,9 +48,9 @@ class SettingListViewState extends State<SettingListView> with FocusSelectable<S
         }
       },
       child: SelectableListView(
-        scrollOffset: 275,
+        scrollOffset: 265,
         key: listKey,
-        padding: const EdgeInsets.symmetric(horizontal: 25),
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
         alignment: 0.5,
         itemCount: widget.node.children.length,
         scrollDirection: Axis.vertical,
@@ -85,7 +85,7 @@ class ItemView extends StatelessWidget{
   final double titleFontSize = 15;
   final double subtitleFontSize = 13;
   final double innerPadding = 20;
-  final double itemHeight = 60;
+  final double itemHeight = 65;
   final double iconSize = 25;
 
   @override
@@ -95,10 +95,13 @@ class ItemView extends StatelessWidget{
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Focus.of(context).hasFocus && index == selectedIndex ? Theme.of(context).colorScheme.tertiary : Colors.transparent,
+          color:
+              Focus.of(context).hasFocus && index == selectedIndex
+                  ? Theme.of(context).colorScheme.tertiary
+                  : Colors.transparent,
         ),
         child: Padding(
-          padding:
+          padding: //item left side
               Focus.of(context).hasFocus && index == selectedIndex
                   ? EdgeInsets.symmetric(horizontal: innerPadding * 1.25)
                   : EdgeInsets.symmetric(horizontal: innerPadding),
@@ -157,7 +160,7 @@ class ItemView extends StatelessWidget{
               ),
             ],
           ),
-        )
+        ),
       ),
     );
   }
