@@ -29,6 +29,7 @@ class SettingPages {
           PageNode(
             id: 'profile_menu1',
             title: 'Tizen',
+            icon: IconData(0x0054, fontFamily: 'MaterialIcons'), //unicode T: 0054
             // builder: (context, node) => ButtonsPage(node: node),
             children: [
               PageNode(
