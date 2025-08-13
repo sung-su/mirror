@@ -10,8 +10,20 @@ class AppInfoModel extends ChangeNotifier {
 
   AppInfoModel.fromMock() {
     _isLoading = true;
-    appInfos = AppInfo.generateMockContent();
+    appInfos = _generateMockContent();
     _isLoading = false;
+  }
+
+  List<AppInfo> _generateMockContent() {
+    return List.generate(
+      23,
+      (index) => AppInfo(
+        appId: '$index',
+        name: 'App $index',
+        icon: 'icon $index',
+        resourcePath: 'resource path $index',
+      ),
+    );
   }
 
   int get selectedIndex => _selectedIndex;

@@ -87,8 +87,9 @@ class _HomePageState extends State<HomePage> {
             ),
             // footer 
             SizedBox(
-              height: 50,
+              height: 500, 
               child: Container(
+                // color: Colors.red,
               ),
             )
           ],
@@ -161,6 +162,7 @@ class _ImmersiveAreaState extends State<ImmersiveArea> with SingleTickerProvider
             _isfocused = true;
           });
           _animationController.forward();
+          _carouselKey.currentState?.resetAutoScroll();
           _carouselKey.currentState?.updateBackdrop();
         }
         else {
@@ -176,6 +178,7 @@ class _ImmersiveAreaState extends State<ImmersiveArea> with SingleTickerProvider
               _isfocused = false;
             });
             _animationController.forward();
+            _carouselKey.currentState?.stopAutoScroll();
           }
         }
         widget.onFocusChanged?.call(hasFocus);

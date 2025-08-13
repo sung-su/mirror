@@ -73,6 +73,10 @@ class ImmersiveCarouselState extends State<ImmersiveCarousel> {
     startAutoScroll();
   }
 
+  void stopAutoScroll() {
+    autoScrollTimer?.cancel();
+  }
+
   void moveCarousel(int delta) {
     if (_itemCount == 0) return;
     final nextIndex = (_selectedIndex + delta + _itemCount) % _itemCount;
@@ -134,79 +138,77 @@ class ImmersiveCarouselState extends State<ImmersiveCarousel> {
             child: Padding(
             padding: EdgeInsets.only(left: leftOffset, bottom: bottomOffset),
               child: AnimatedSwitcher(
-                  duration: $style.times.fast,
-                  transitionBuilder: (Widget child, Animation<double> animation) {
-                    bool isForward = isMovingForward(_prevIndex, _selectedIndex, _itemCount);
-                    final incoming = child.key == ValueKey(Provider.of<ImmersiveCarouselModel>(context, listen: false).getSelectedContent().title);
-                    final inTween = Tween<Offset>(
-                      begin: isForward ? const Offset(0.7, 0.0) : const Offset(-0.7, 0.0),
-                      end: Offset.zero
-                    );
-                    final outTween = Tween<Offset>(
-                      begin: Offset.zero,
-                      end: isForward ? const Offset(-0.7, 0.0) : const Offset(0.7, 0.0)
-                    );
-                    final curved = CurvedAnimation(
-                      parent: incoming ? animation : ReverseAnimation(animation),
-                      curve: Curves.easeInOut,
-                    );
-    
-                    if (incoming) {
-                      return SlideTransition(
-                      position: inTween.animate(curved),
-                      child: FadeTransition(
-                        opacity: animation,
+                duration: $style.times.fast,
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  bool isForward = isMovingForward(_prevIndex, _selectedIndex, _itemCount);
+                  final incoming = child.key == ValueKey(Provider.of<ImmersiveCarouselModel>(context, listen: false).getSelectedContent().title);
+                  final inTween = Tween<Offset>(
+                    begin: isForward ? const Offset(0.7, 0.0) : const Offset(-0.7, 0.0),
+                    end: Offset.zero
+                  );
+                  final outTween = Tween<Offset>(
+                    begin: Offset.zero,
+                    end: isForward ? const Offset(-0.7, 0.0) : const Offset(0.7, 0.0)
+                  );
+                  final curved = CurvedAnimation(
+                    parent: incoming ? animation : ReverseAnimation(animation),
+                    curve: Curves.easeInOut,
+                  );
+                  if (incoming) {
+                    return SlideTransition(
+                    position: inTween.animate(curved),
+                    child: FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    ),
+                  );
+                  } else {
+                    return SlideTransition(
+                    position: outTween.animate(curved),
+                    child: FadeTransition(
+                        opacity: Tween<double>(begin: 1.0, end: 0.0).animate(curved),
                         child: child,
                       ),
-                    );
-                    } else {
-                      return SlideTransition(
-                      position: outTween.animate(curved),
-                      child: FadeTransition(
-                          opacity: Tween<double>(begin: 1.0, end: 0.0).animate(curved),
-                          child: child,
-                        ),
-                    );
-                    }
-                  },
-                  layoutBuilder: (Widget? currentChild, List<Widget> previousChildren) {
-                    return Stack(
-                      children: <Widget>[
-                        ...previousChildren,
-                        if (currentChild != null) currentChild,
-                      ]);
-                  },
-                  child: KeyedSubtree(
-                    key: ValueKey(Provider.of<ImmersiveCarouselModel>(context, listen: false).getSelectedContent().title),
-                    child: ContentBlock(
-                      item: Provider.of<ImmersiveCarouselModel>(context, listen: false).getSelectedContent(),
-                      isFocused: widget.isFocused,
-                      isExpanded: widget.isExpanded,
-                    ),
-                  )
-                ),
-          )
-          ),
-              // Pagination
-              Positioned(
-                bottom: bottomOffset,
-                right: rightOffset,
-                child: IgnorePointer(
-                  child: Row(
-                  children: List.generate(_itemCount, (index) {
-                    return Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _selectedIndex == index ? Colors.white : Colors.grey,
-                        ),
-                      );
-                  }),
-                                    ),
+                  );
+                  }
+                },
+                layoutBuilder: (Widget? currentChild, List<Widget> previousChildren) {
+                  return Stack(
+                    children: <Widget>[
+                      ...previousChildren,
+                      if (currentChild != null) currentChild,
+                    ]);
+                },
+                child: KeyedSubtree(
+                  key: ValueKey(Provider.of<ImmersiveCarouselModel>(context, listen: false).getSelectedContent().title),
+                  child: ContentBlock(
+                    item: Provider.of<ImmersiveCarouselModel>(context, listen: false).getSelectedContent(),
+                    isFocused: widget.isFocused,
+                    isExpanded: widget.isExpanded,
+                  ),
                 )
               ),
+            )
+          ),
+          Positioned(
+            bottom: bottomOffset,
+            right: rightOffset,
+            child: IgnorePointer(
+              child: Row(
+              children: List.generate(_itemCount, (index) {
+                return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _selectedIndex == index ? Colors.white : Colors.grey,
+                    ),
+                  );
+              }),
+                                ),
+            )
+          ),
         ],
       );
   }

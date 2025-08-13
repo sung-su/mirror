@@ -12,16 +12,4 @@ class AppInfo {
     required this.icon,
     required this.resourcePath,
   });
-
-  static List<AppInfo> generateMockContent() {
-    return List.generate(
-      5,
-      (index) => AppInfo(
-        appId: '$index',
-        name: 'App $index',
-        icon: 'icon $index',
-        resourcePath: 'resource path $index',
-      ),
-    );
-  }
 }

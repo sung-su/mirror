@@ -41,7 +41,11 @@ class SelectableGridViewState extends State<SelectableGridView> {
     super.initState();
 
     _itemKeys = List.generate(widget.itemCount, (indext) => GlobalKey());
+  }
 
+  @override
+  void didUpdateWidget(covariant SelectableGridView oldWidget) {
+    _itemKeys = List.generate(widget.itemCount, (indext) => GlobalKey());
   }
 
   @override
@@ -65,7 +69,7 @@ class SelectableGridViewState extends State<SelectableGridView> {
     if (context != null) {
       Scrollable.ensureVisible(
         context,
-        alignment: 0.1,
+        alignment: 0.18,
         duration: $style.times.fast,
         curve: Curves.easeInOut
       );
@@ -145,7 +149,7 @@ class SelectableGridViewState extends State<SelectableGridView> {
         padding: widget.padding,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columnCount,
-          crossAxisSpacing: 10,
+          crossAxisSpacing: 20,
           mainAxisSpacing: 20,
           childAspectRatio: widget.itemRatio,
         ),

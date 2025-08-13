@@ -20,12 +20,12 @@ class AppList extends StatefulWidget {
 class _AppListState extends State<AppList> {
   final GlobalKey<SelectableGridViewState> _gridKey = GlobalKey<SelectableGridViewState>();
 
-  final double _itemWidth = 152;
+  final double _itemWidth = 150;
   final double _itemRatio = 16/9;
   final double _width = 960;
 
   final double _minimumHeight = 150;
-  final double _vPadding = 30;
+  final double _vPadding = 10;
   final double _hPadding = 58;
 
   bool _isFocused = false;
@@ -39,6 +39,7 @@ class _AppListState extends State<AppList> {
   @override
   void initState() {
     super.initState();
+    _itemCount = appinfos.length;
   }
 
   @override
@@ -50,54 +51,67 @@ class _AppListState extends State<AppList> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     appinfos = Provider.of<AppInfoModel>(context).appInfos;
+    _itemCount = appinfos.length;
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 60, vertical: _isFocused ? 9 : 0),
+          child: Text(
+            'Your Apps',
+            style: TextStyle(
+              fontSize: _isFocused ? 30 : 15
+            ),
+            ),
+        ),
         SizedBox(
-          height: (itemHeight * rowCount + _vPadding) < _minimumHeight ? _minimumHeight : (itemHeight * rowCount + _vPadding),
-          child: SelectableGridView(
-            key: _gridKey,
-            padding: EdgeInsets.symmetric(horizontal: _hPadding, vertical: _vPadding),
-            itemCount: appinfos.length,
-            itemRatio: _itemRatio,
-            onFocused: () {
-              setState(() {
-                _isFocused = true;
-              });
-              widget.onFocused?.call();
-            },
-            onUnfocused: (){
-              setState(() {;
-                _isFocused = false;
-              });
-            },
-            onItemSelected: (selected) {
-              _showFullScrennPopup(context, appinfos[selected]);
-            },
-            itemBuilder: (context, index, selectedIndex, key) {
-              return Center(
-                child: MediaCard(
-                  key: key,
-                  width: _itemWidth,
-                  imageUrl: '',
-                  content: Container(
-                    decoration: BoxDecoration(
-                      gradient: $style.gradients.generateLinearGradient(index % 5)
-                    ),
-                    child: Center(
-                      child: Text(appinfos[index].name),
-                    )
-                  ),
-                  isSelected: index == selectedIndex,
-                  onRequestSelect: () {
-                    _gridKey.currentState?.selectTo(index);
-                  },
-                ),
-              );
+          height: _isFocused ? (itemHeight * rowCount + _vPadding) : _minimumHeight,
+          child: Container(
+            child: SelectableGridView(
+              key: _gridKey,
+              padding: EdgeInsets.symmetric(horizontal: _hPadding, vertical: _isFocused ? _vPadding * 2 : _vPadding),
+              itemCount: _isFocused ? appinfos.length : 5,
+              itemRatio: _itemRatio,
+              onFocused: () {
+                setState(() {
+                  _isFocused = true;
+                });
+                widget.onFocused?.call();
               },
+              onUnfocused: (){
+                setState(() {;
+                  _isFocused = false;
+                });
+              },
+              onItemSelected: (selected) {
+                _showFullScrennPopup(context, appinfos[selected]);
+              },
+              itemBuilder: (context, index, selectedIndex, key) {
+                return Center(
+                  child: MediaCard(
+                    key: key,
+                    width: _itemWidth,
+                    imageUrl: '',
+                    content: Container(
+                      decoration: BoxDecoration(
+                        gradient: $style.gradients.generateLinearGradient(index % 5)
+                      ),
+                      child: Center(
+                        child: Text(appinfos[index].name),
+                      )
+                    ),
+                    isSelected: index == selectedIndex,
+                    onRequestSelect: () {
+                      _gridKey.currentState?.selectTo(index);
+                    },
+                  ),
+                );
+                },
+            ),
           ),
         ),
         SizedBox(
