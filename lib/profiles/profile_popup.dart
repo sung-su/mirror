@@ -51,7 +51,6 @@ class _CreateProfilePopupState extends State<CreateProfilePopup> {
                 padding: const EdgeInsets.fromLTRB(80, 80, 0, 0),
                 child: Container(
                   width: 500,
-                  // color:  Colors.red,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 20,

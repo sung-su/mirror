@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tizen_fs/profiles/profile_popup.dart';
 import 'package:tizen_fs/router.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
@@ -47,11 +48,29 @@ class _ProfilesState extends State<Profiles> {
         return KeyEventResult.handled;
       } 
       else if (event.logicalKey == LogicalKeyboardKey.enter) {
-        AppRouter.router.push(ScreenPaths.createAccount);
+        _showFullScrennPopup(context);
         return KeyEventResult.handled;
       }
     }
     return KeyEventResult.ignored;
+  }
+
+  void _showFullScrennPopup (BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: '',
+      transitionDuration: const Duration(milliseconds: 80),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return CreateProfilePopup();
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    );
   }
 
   @override

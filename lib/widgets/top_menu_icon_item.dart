@@ -26,7 +26,7 @@ class TopMenuIconItem extends StatelessWidget {
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: isSelected ? baseColor : Colors.transparent,
+            color: isSelected && hasFocus ?  baseColor : Colors.transparent,
             spreadRadius: 1,
           )
         ]
@@ -36,7 +36,7 @@ class TopMenuIconItem extends StatelessWidget {
         icon: Icon(
           icon,
           size: 17,
-          color: isSelected ? textColor :defautTextColor,
+          color: isSelected && hasFocus ? textColor :defautTextColor,
         ),
         onPressed: () {
           onPressed?.call();

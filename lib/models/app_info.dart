@@ -17,7 +17,7 @@ class AppInfo {
     return List.generate(
       5,
       (index) => AppInfo(
-        appId: 'appid $index.',
+        appId: '$index',
         name: 'App $index',
         icon: 'icon $index',
         resourcePath: 'resource path $index',

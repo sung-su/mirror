@@ -10,7 +10,8 @@ class SelectableGridView extends StatefulWidget {
     required this.itemBuilder,
     this.padding,
     this.onFocused,
-    this.onUnfocused
+    this.onUnfocused,
+    this.onItemSelected
   });
 
   final int itemCount;
@@ -19,6 +20,7 @@ class SelectableGridView extends StatefulWidget {
   final EdgeInsets? padding;
   final VoidCallback? onFocused;
   final VoidCallback? onUnfocused;
+  final Function(int)? onItemSelected;
 
   @override
   State<SelectableGridView> createState() => SelectableGridViewState();
@@ -46,10 +48,6 @@ class SelectableGridViewState extends State<SelectableGridView> {
   void dispose() {
     _focusNode.dispose();
     super.dispose();
-  }
-
-  void test() {
-
   }
 
   void selectTo(int index) async {
@@ -107,6 +105,10 @@ class SelectableGridViewState extends State<SelectableGridView> {
         if (col > 0) {
           selectTo(_selectedIndex - 1);
         }
+        return KeyEventResult.handled;
+      }
+      else if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.select) {
+        widget.onItemSelected?.call(_selectedIndex);
         return KeyEventResult.handled;
       }
     }

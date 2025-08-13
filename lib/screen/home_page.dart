@@ -7,7 +7,7 @@ import 'package:tizen_fs/models/app_list.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/utils/noscroll_focustraversal_policy.dart';
-import 'package:tizen_fs/widgets/app_list.dart';
+import 'package:tizen_fs/apps/app_list.dart';
 import 'package:tizen_fs/widgets/immersive_carousel.dart';
 import 'package:tizen_fs/models/immersive_carosel_model.dart';
 
