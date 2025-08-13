@@ -52,6 +52,19 @@ class _SettingPageState extends State<SettingPage>
   Widget build(BuildContext context) {
     super.build(context);
 
+    if (widget.node == null) {
+      return Container (
+        color: Theme.of(context).colorScheme.onTertiary
+      );
+    }
+
+    if (widget.node!.builder != null) {
+      return Container(
+        color: widget.isEnabled ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onTertiary,
+        child: widget.node!.builder?.call(context, widget.node!)
+      );
+    }
+
     double titleHeight = 100;
     double titleFontSize = 30;
 
