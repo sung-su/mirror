@@ -49,7 +49,7 @@ class SettingListViewState extends State<SettingListView> with FocusSelectable<S
       },
       child: SelectableListView(
         key: listKey,
-        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 25),
         alignment: 0.5,
         itemCount: widget.node.children.length,
         scrollDirection: Axis.vertical,
@@ -82,7 +82,7 @@ class ItemView extends StatelessWidget{
   final PageNode node;
 
   final double titleFontSize = 15;
-  final double subtitleFontSize = 12;
+  final double subtitleFontSize = 13;
   final double innerPadding = 20;
   final double itemHeight = 60;
   final double iconSize = 25;
@@ -138,16 +138,20 @@ class ItemView extends StatelessWidget{
                     ),
                   ),
                   if (node.children[index].description != null)
+                  Padding( //subtitle left side
+                    padding: EdgeInsets.only(left: innerPadding / 2),
+                    child :
                     Text(
                       node.children[index].description!,
                       style: TextStyle(
                         fontSize: subtitleFontSize,
                         color:
                             Focus.of(context).hasFocus && index == selectedIndex
-                                ? Theme.of(context).colorScheme.onTertiary
-                                : Theme.of(context).colorScheme.tertiary,
+                                ? Theme.of(context).colorScheme.onTertiary.withAlpha(175)
+                                : Theme.of(context).colorScheme.tertiary.withAlpha(175),
                       ),
                     ),
+                  )
                 ],
               ),
             ],
