@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class PageNode {
@@ -7,7 +6,8 @@ class PageNode {
   final String? description;
   final IconData? icon;
   final List<PageNode> children;
-  final Widget Function(BuildContext context, PageNode node)? builder;
+  final Widget Function(BuildContext context, PageNode node, bool isEnabled)?
+  builder;
 
   PageNode({
     required this.id,

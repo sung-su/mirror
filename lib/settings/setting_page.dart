@@ -61,7 +61,7 @@ class _SettingPageState extends State<SettingPage>
     if (widget.node!.builder != null) {
       return Container(
         color: widget.isEnabled ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onTertiary,
-        child: widget.node!.builder?.call(context, widget.node!)
+        child: widget.node!.builder?.call(context, widget.node!, widget.isEnabled)
       );
     }
 
