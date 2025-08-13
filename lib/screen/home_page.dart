@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/app_info.dart';
 import 'package:tizen_fs/models/app_list.dart';
+import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/utils/noscroll_focustraversal_policy.dart';
 import 'package:tizen_fs/widgets/app_list.dart';
@@ -80,6 +81,7 @@ class _HomePageState extends State<HomePage> {
                     curve: Curves.easeInOut
                   );
                   _isScrolling = false;
+                  Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(null);
                 }
               }
             ),
@@ -159,6 +161,7 @@ class _ImmersiveAreaState extends State<ImmersiveArea> with SingleTickerProvider
             _isfocused = true;
           });
           _animationController.forward();
+          _carouselKey.currentState?.updateBackdrop();
         }
         else {
           if ((_focusNode.parent != null) && (!_focusNode.parent!.hasFocus)) {

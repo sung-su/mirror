@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_fs/models/page_node.dart';
+import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/focus_selectable.dart';
 import 'package:tizen_fs/widgets/selectable_listview.dart';
 
@@ -59,7 +60,7 @@ class SettingListViewState extends State<SettingListView> with FocusSelectable<S
           return AnimatedScale(
             key: key,
             scale: Focus.of(context).hasFocus && index == selectedIndex ? 1.1 : 1.0,
-            duration: const Duration(milliseconds: 200),
+            duration: $style.times.fast,
             child: GestureDetector(
               onTap: () {
                 listKey.currentState?.selectTo(index);

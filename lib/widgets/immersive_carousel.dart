@@ -64,6 +64,10 @@ class ImmersiveCarouselState extends State<ImmersiveCarousel> {
     });
   }
 
+  void updateBackdrop() {
+    Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(getSelectedBackdrop());
+  }
+
   void resetAutoScroll() {
     autoScrollTimer?.cancel();
     startAutoScroll();

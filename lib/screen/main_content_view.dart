@@ -1,8 +1,11 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
+import 'package:provider/provider.dart';
+import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/screen/home_page.dart';
 import 'package:tizen_fs/screen/mock_apps_page.dart';
+import 'package:tizen_fs/styles/app_style.dart';
 
 class MainContentView extends StatefulWidget {
   const MainContentView({
@@ -37,12 +40,11 @@ class _MainContentViewState extends State<MainContentView> {
   Widget build(BuildContext context) {
     return ExpandablePageView(
       controller: _controller,
-      // animationDuration: const Duration(milliseconds: 50),
-      // physics: const NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       children: [
         _buildFadingPage(index: 0, child: HomePage(scrollController: widget.scrollController)),
-        _buildFadingPage(index: 1, child: MockAppsPage(isHorizontal:  false)),
-        _buildFadingPage(index: 2, child: MockAppsPage(isHorizontal: true)),
+        _buildFadingPage(index: 1, child: Mockpage()),
+        // _buildFadingPage(index: 2, child: MockAppsPage(isHorizontal: true)),
       ]);
   }
 
@@ -50,11 +52,30 @@ class _MainContentViewState extends State<MainContentView> {
     double opacity = 1.0 - min((_currentPage - index).abs(), 1.0);
 
     return AnimatedOpacity(
-      duration: const Duration(milliseconds: 500),
+      duration: $style.times.fast,
       opacity: opacity,
       child: child,
     );
   }
 }
 
+class Mockpage extends StatefulWidget{
+  @override
+  State<Mockpage> createState() => _MockpageState();
+}
 
+class _MockpageState extends State<Mockpage> {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(null);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
