@@ -83,7 +83,7 @@ class ItemView extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 60,
+      height: node.children[index].description != null ? 75 : 60,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
