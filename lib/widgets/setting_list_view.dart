@@ -48,6 +48,7 @@ class SettingListViewState extends State<SettingListView> with FocusSelectable<S
         }
       },
       child: SelectableListView(
+        scrollOffset: 275,
         key: listKey,
         padding: const EdgeInsets.symmetric(horizontal: 25),
         alignment: 0.5,

@@ -10,6 +10,7 @@ class SelectableListView extends StatefulWidget {
     this.onSelectionChanged,
     this.alignment,
     this.scrollDirection,
+    this.scrollOffset = 300,
   });
 
   final int itemCount;
@@ -18,6 +19,7 @@ class SelectableListView extends StatefulWidget {
   final double? alignment;
   final Axis? scrollDirection;
   final Function(int)? onSelectionChanged;
+  final double scrollOffset;
 
   @override
   State<SelectableListView> createState() => SelectableListViewState();
@@ -81,7 +83,7 @@ class SelectableListViewState extends State<SelectableListView> {
       final Offset position = box.localToGlobal(Offset.zero);
       if(position.dy.isNaN) return _selectedIndex;
       setState(() {});
-      final double offset = 300;
+      final double offset = widget.scrollOffset;
       await _controller.animateTo(
         position.dy + _controller.offset - offset,
         duration: $style.times.fast,
