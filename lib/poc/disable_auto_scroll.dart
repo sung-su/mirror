@@ -75,7 +75,7 @@ class _NoAutoScrollFocusViewState extends State<NoAutoScrollFocusView> {
         title: Text("Disabled Auto Scroll on Focus"),
       ),
       body: FocusTraversalGroup(
-        policy: NoScrollFocusTraversalPolicy(),
+        policy: NoScrollFocusTraversalPolicy(() => false),
         child: ListView.builder(
           controller: _scrollController,
           itemCount: _focusNodes.length,

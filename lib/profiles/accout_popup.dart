@@ -163,7 +163,7 @@ class ItemView extends StatelessWidget{
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.primary,
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
