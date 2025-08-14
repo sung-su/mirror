@@ -20,10 +20,13 @@ namespace Runner
             {
                 switch (call.Method)
                 {
-                    case "getSystemMemoryUsage":
-                        {
-                            var m = new SystemMemoryUsage();
+                    case "getAboutDeviceInfo":
+                    {
+                        var m = new SystemMemoryUsage();
                             m.Update();
+                            var ram = m.Total / (1024 * 1024);
+                            Information.TryGetValue("http://tizen.org/feature/screen.width", out int width);
+                            Information.TryGetValue("http://tizen.org/feature/screen.height", out int height);
                             return new Dictionary<string, double>
                             {
                                 ["Total"] = m.Total,
@@ -31,16 +34,30 @@ namespace Runner
                                 ["Free"] = m.Free,
                                 ["Cache"] = m.Cache,
                                 ["Swap"] = m.Swap,
-                                ["Ram"] = ((m.Total / 1024) / 1024),
+                                ["Ram"] = ram,
+                                ["width"] = width,
+                                ["height"] = height,
+                            };
+                    }
+                    case "getSystemMemoryUsage":
+                        {
+                            var m = new SystemMemoryUsage();
+                            m.Update();
+                            var ram = m.Total / (1024 * 1024);
+                            return new Dictionary<string, double>
+                            {
+                                ["Total"] = m.Total,
+                                ["Used"] = m.Used,
+                                ["Free"] = m.Free,
+                                ["Cache"] = m.Cache,
+                                ["Swap"] = m.Swap,
+                                ["Ram"] = ram,
                             };
                         }
                     case "getResolution":
                         {
-                            int width = -1;
-                            int height = -1;
-                            Information.TryGetValue("http://tizen.org/feature/screen.width", out width);
-                            Information.TryGetValue("http://tizen.org/feature/screen.height", out height);
-
+                            Information.TryGetValue("http://tizen.org/feature/screen.width", out int width);
+                            Information.TryGetValue("http://tizen.org/feature/screen.height", out int height);
                             return new Dictionary<string, int>
                             {
                                 ["width"] = width,

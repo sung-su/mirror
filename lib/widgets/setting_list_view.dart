@@ -48,9 +48,10 @@ class SettingListViewState extends State<SettingListView> with FocusSelectable<S
         }
       },
       child: SelectableListView(
-        scrollOffset: 265,
+        scrollOffset: 260,
         key: listKey,
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+        //between item and item
+        padding: const EdgeInsets.symmetric(vertical: 10),
         alignment: 0.5,
         itemCount: widget.node.children.length,
         scrollDirection: Axis.vertical,
@@ -60,8 +61,9 @@ class SettingListViewState extends State<SettingListView> with FocusSelectable<S
         itemBuilder: (context, index, selectedIndex, key) {
           return AnimatedScale(
             key: key,
-            scale: Focus.of(context).hasFocus && index == selectedIndex ? 1.1 : 1.0,
-            duration: $style.times.fast,
+            scale: Focus.of(context).hasFocus && index == selectedIndex ? 1.0 : .9,
+            duration: $style.times.med,
+            curve: Curves.easeInOut,
             child: GestureDetector(
               onTap: () {
                 listKey.currentState?.selectTo(index);
@@ -82,8 +84,8 @@ class ItemView extends StatelessWidget{
   final int selectedIndex;
   final PageNode node;
 
-  final double titleFontSize = 15;
-  final double subtitleFontSize = 13;
+  final double titleFontSize = 13;
+  final double subtitleFontSize = 11;
   final double innerPadding = 20;
   final double itemHeight = 65;
   final double iconSize = 25;
@@ -91,7 +93,7 @@ class ItemView extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: node.children[index].description == null ? itemHeight : itemHeight * 1.25,
+      height: node.children[index].description == null ? itemHeight : 82,//itemHeight * 1.25,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -101,32 +103,33 @@ class ItemView extends StatelessWidget{
                   : Colors.transparent,
         ),
         child: Padding(
-          padding: //item left side
+          padding: // left padding of item inside
               Focus.of(context).hasFocus && index == selectedIndex
-                  ? EdgeInsets.symmetric(horizontal: innerPadding * 1.25)
+                  ? EdgeInsets.symmetric(horizontal: 30)//innerPadding * 1.5)
                   : EdgeInsets.symmetric(horizontal: innerPadding),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            spacing: innerPadding,
+            spacing: 15,//innerPadding * 0.75, // between icon-text spacing
             children: [
               if (node.children[index].icon != null)
                 Container(
-                  width: iconSize * 2,
-                  height: iconSize * 2,
+                  width: 43,//iconSize * 1.75,
+                  height: 43,//iconSize * 1.75,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Focus.of(context).hasFocus && index == selectedIndex
-                        ? Colors.blueAccent
-                        : Colors.grey[800],
+                        ? Color(0xF04285F4)
+                        : Color(0xF0263041),
                   ),
                   child: Icon(
                       node.children[index].icon,
                       size: iconSize,
                       color: Focus.of(context).hasFocus && index == selectedIndex
-                          ? Colors.white
-                          : Colors.grey[600],
+                          ? Color(0xF0D3E0F5)
+                          : Color(0xF0AEB2B9),
                     ),
                 ),
+              // item text
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,17 +145,15 @@ class ItemView extends StatelessWidget{
                     ),
                   ),
                   if (node.children[index].description != null)
-                  Padding( //subtitle left side
-                    padding: EdgeInsets.only(left: innerPadding / 2),
+                  Padding(
+                    padding: // subtitle left padding
+                      EdgeInsets.only(left: 10),
                     child :
                     Text(
                       node.children[index].description!,
                       style: TextStyle(
                         fontSize: subtitleFontSize,
-                        color:
-                            Focus.of(context).hasFocus && index == selectedIndex
-                                ? Theme.of(context).colorScheme.onTertiary.withAlpha(175)
-                                : Theme.of(context).colorScheme.tertiary.withAlpha(175),
+                        color:Color(0xFF979AA0),
                       ),
                     ),
                   )

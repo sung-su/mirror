@@ -12,4 +12,9 @@ class TizenFx {
     final m = await _ch.invokeMapMethod<String, int>('getResolution');
     return Map<String, int>.from(m ?? const {});
   }
+
+  static Future<Map<String, double>> getAboutDeviceInfo() async {
+    final m = await _ch.invokeMapMethod<String, double>('getAboutDeviceInfo');
+    return Map<String, double>.from(m ?? const {});
+  }
 }

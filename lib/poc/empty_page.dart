@@ -8,9 +8,16 @@ class EmptyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsGeometry.fromLTRB(60, 60, 0, 0),
-      child: Text(node.title, style: TextStyle(fontSize: 30)),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: isEnabled
+                    ? EdgeInsets.fromLTRB(120, 70, 0, 0)
+                    : EdgeInsets.fromLTRB(80, 70, 0, 0),
+          child: Text(node.title, style: TextStyle(fontSize: 24)),
+        ),
+      ],
     );
   }
 }

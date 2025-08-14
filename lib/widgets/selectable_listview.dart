@@ -86,7 +86,7 @@ class SelectableListViewState extends State<SelectableListView> {
       final double offset = widget.scrollOffset;
       await _controller.animateTo(
         position.dy + _controller.offset - offset,
-        duration: $style.times.fast,
+        duration: $style.times.med,
         curve: Curves.easeInOut,
       );
       widget.onSelectionChanged?.call(_selectedIndex);

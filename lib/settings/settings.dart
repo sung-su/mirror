@@ -34,7 +34,7 @@ class SettingsState extends State<Settings> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(viewportFraction: 0.6, keepPage: false);
+    _pageController = PageController(viewportFraction: viewportFraction, keepPage: false);
     _pages = [_pageTree, null];
   }
 
@@ -123,7 +123,7 @@ class SettingsState extends State<Settings> {
                   onSelectionChanged: (selected) {
                     _updatePages(_pages[index], selected);
                   },
-                )
+                ),
               );
             }
           },

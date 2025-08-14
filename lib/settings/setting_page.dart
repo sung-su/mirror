@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/page_node.dart';
+import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/setting_list_view.dart';
 
 class SettingPage extends StatefulWidget {
@@ -28,7 +29,11 @@ class _SettingPageState extends State<SettingPage>
   @override
   void initState() {
     super.initState();
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _opacity = 0.5;
+      });
+    });
     if (widget.isEnabled) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         initFocus();
@@ -46,72 +51,95 @@ class _SettingPageState extends State<SettingPage>
     if (widget.isEnabled) {
       initFocus();
     }
+    setState(() {
+      _opacity = widget.isEnabled ? 1.0 : 0.5;
+    });
   }
+
+  double _opacity = 0.5;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
     if (widget.node == null) {
-      return Container (
-        color: Theme.of(context).colorScheme.onTertiary
-      );
+      return Container(color: Theme.of(context).colorScheme.onTertiary);
     }
 
     if (widget.node!.builder != null) {
       return Container(
-        color: widget.isEnabled ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onTertiary,
-        child: widget.node!.builder?.call(context, widget.node!, widget.isEnabled)
+        color:
+            widget.isEnabled
+                ? Theme.of(context).colorScheme.surface
+                : Theme.of(context).colorScheme.onTertiary,
+        child: AnimatedOpacity(
+          duration: $style.times.med,
+          opacity: _opacity,
+          curve: Curves.easeInOut,
+          child: widget.node!.builder?.call(
+            context,
+            widget.node!,
+            widget.isEnabled,
+          ),
+        ),
       );
     }
 
     double titleHeight = 100;
-    double titleFontSize = 30;
+    double titleFontSize = 22;
 
     return Container(
       color:
           widget.isEnabled
               ? Theme.of(context).colorScheme.surface
               : Theme.of(context).colorScheme.onTertiary,
-      child: Column(
-        children: [
-          //title
-          Padding(
-            padding: widget.isEnabled ? EdgeInsets.fromLTRB(80, 20, 0, 10) : EdgeInsets.fromLTRB(60, 20, 0, 10),
-            child: SizedBox(
-              height: titleHeight,
-              child: Align(
+      child: AnimatedOpacity(
+        opacity: _opacity,
+        duration: $style.times.med,
+        curve: Curves.easeInOut,
+        child: Column(
+          children: [
+            //title
+            Padding(
+              padding: // title up/left padding
+                  widget.isEnabled
+                      ? EdgeInsets.fromLTRB(120, 20, 0, 0)
+                      : EdgeInsets.fromLTRB(80, 20, 0, 0),
+              child: SizedBox(
+                height: titleHeight,
+                child: Align(
                   alignment: Alignment.bottomLeft,
                   child: Container(
                     child: Text(
-                        widget.node?.title ?? '',
-                        style: TextStyle(fontSize: titleFontSize),
+                      widget.node?.title ?? '',
+                      style: TextStyle(fontSize: titleFontSize),
                     ),
-                ),
-              ),
-            ),
-          ),
-          //list
-          if (!widget.node!.children.isEmpty)
-            Expanded(
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding:
-                      widget.isEnabled
-                          ? const EdgeInsets.symmetric(horizontal: 40)
-                          : const EdgeInsets.symmetric(horizontal: 20),
-                  child: SettingListView(
-                    key: _listKey,
-                    node: widget.node!,
-                    onSelectionChanged: (selected) {
-                      widget.onSelectionChanged?.call(selected);
-                    },
                   ),
                 ),
               ),
             ),
-        ],
+            //list
+            if (!widget.node!.children.isEmpty)
+              Expanded(
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: // item left/right padding
+                        widget.isEnabled
+                            ? const EdgeInsets.symmetric(horizontal: 80)
+                            : const EdgeInsets.symmetric(horizontal: 40),
+                    child: SettingListView(
+                      key: _listKey,
+                      node: widget.node!,
+                      onSelectionChanged: (selected) {
+                        widget.onSelectionChanged?.call(selected);
+                      },
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
