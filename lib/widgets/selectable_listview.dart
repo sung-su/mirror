@@ -82,14 +82,15 @@ class SelectableListViewState extends State<SelectableListView> {
       final RenderBox box = _itemKeys[_selectedIndex].currentContext!.findRenderObject() as RenderBox;
       final Offset position = box.localToGlobal(Offset.zero);
       if(position.dy.isNaN) return _selectedIndex;
+
       setState(() {});
       final double offset = widget.scrollOffset;
+      widget.onSelectionChanged?.call(_selectedIndex);
       await _controller.animateTo(
         position.dy + _controller.offset - offset,
         duration: $style.times.med,
         curve: Curves.easeInOut,
       );
-      widget.onSelectionChanged?.call(_selectedIndex);
       return current;
     } else {
       _selectedIndex = fallbackSelection; // restore previous selection

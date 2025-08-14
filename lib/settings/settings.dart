@@ -60,7 +60,6 @@ class SettingsState extends State<Settings> {
   void _selectTo(int index)
   {
     if(index == _pages.length -1 ) return;
-
     setState(() {
       _current = index;
     });
@@ -69,6 +68,11 @@ class SettingsState extends State<Settings> {
 
   void _updatePages(PageNode? node, int selected){
     if(node == null) return;
+
+    final currentState = _itemKeys[_current + 1]?.currentState;
+    if(currentState is SettingPageState) {
+      currentState.hidePage();
+    }
 
     var current = _current;
     List newItems = [];

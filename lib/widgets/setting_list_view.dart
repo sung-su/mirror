@@ -69,7 +69,10 @@ class SettingListViewState extends State<SettingListView> with FocusSelectable<S
                 listKey.currentState?.selectTo(index);
                 Focus.of(context).requestFocus();
               },
-              child: ItemView(index: index, selectedIndex: selectedIndex, node: widget.node)
+              child: ItemView(
+                node: widget.node.children[index],
+                isFocused: Focus.of(context).hasFocus && index == selectedIndex
+                )
             ),
           );
         }),
@@ -78,13 +81,12 @@ class SettingListViewState extends State<SettingListView> with FocusSelectable<S
 }
 
 class ItemView extends StatelessWidget{
-  const ItemView({super.key, required this.index, required this.selectedIndex, required this.node});
+  const ItemView({super.key, required this.node, required this.isFocused});
 
-  final int index;
-  final int selectedIndex;
   final PageNode node;
+  final bool isFocused;
 
-  final double titleFontSize = 13;
+  final double titleFontSize = 15;
   final double subtitleFontSize = 11;
   final double innerPadding = 20;
   final double itemHeight = 65;
@@ -93,39 +95,39 @@ class ItemView extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: node.children[index].description == null ? itemHeight : 82,//itemHeight * 1.25,
+      height: node.description == null ? itemHeight : 82,//itemHeight * 1.25,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color:
-              Focus.of(context).hasFocus && index == selectedIndex
+              isFocused
                   ? Theme.of(context).colorScheme.tertiary
                   : Colors.transparent,
         ),
         child: Padding(
           padding: // left padding of item inside
-              Focus.of(context).hasFocus && index == selectedIndex
-                  ? EdgeInsets.symmetric(horizontal: 30)//innerPadding * 1.5)
+              isFocused
+                  ? EdgeInsets.symmetric(horizontal: 20)//innerPadding * 1.5)
                   : EdgeInsets.symmetric(horizontal: innerPadding),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             spacing: 15,//innerPadding * 0.75, // between icon-text spacing
             children: [
-              if (node.children[index].icon != null)
+              if (node.icon != null)
                 Container(
                   width: 43,//iconSize * 1.75,
                   height: 43,//iconSize * 1.75,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Focus.of(context).hasFocus && index == selectedIndex
-                        ? Color(0xF04285F4)
+                    color: isFocused
+                        ? Color(0xF04285F4).withAlphaF(0.2)
                         : Color(0xF0263041),
                   ),
                   child: Icon(
-                      node.children[index].icon,
+                      node.icon,
                       size: iconSize,
-                      color: Focus.of(context).hasFocus && index == selectedIndex
-                          ? Color(0xF0D3E0F5)
+                      color: isFocused
+                          ? Color(0xF04285F4)
                           : Color(0xF0AEB2B9),
                     ),
                 ),
@@ -135,22 +137,22 @@ class ItemView extends StatelessWidget{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    node.children[index].title,
+                    node.title,
                     style: TextStyle(
                       fontSize: titleFontSize,
                       color:
-                          Focus.of(context).hasFocus && index == selectedIndex
+                          isFocused
                               ? Theme.of(context).colorScheme.onTertiary
                               : Theme.of(context).colorScheme.tertiary,
                     ),
                   ),
-                  if (node.children[index].description != null)
+                  if (node.description != null)
                   Padding(
                     padding: // subtitle left padding
                       EdgeInsets.only(left: 10),
                     child :
                     Text(
-                      node.children[index].description!,
+                      node.description!,
                       style: TextStyle(
                         fontSize: subtitleFontSize,
                         color:Color(0xFF979AA0),

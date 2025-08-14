@@ -16,12 +16,14 @@ class SettingPage extends StatefulWidget {
   final Function(int)? onSelectionChanged;
 
   @override
-  State<SettingPage> createState() => _SettingPageState();
+  State<SettingPage> createState() => SettingPageState();
 }
 
-class _SettingPageState extends State<SettingPage>
+class SettingPageState extends State<SettingPage>
     with AutomaticKeepAliveClientMixin {
   GlobalKey<SettingListViewState> _listKey = GlobalKey<SettingListViewState>();
+
+  double _opacity = 0;
 
   @override
   bool get wantKeepAlive => widget.isEnabled;
@@ -31,7 +33,7 @@ class _SettingPageState extends State<SettingPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        _opacity = 0.5;
+        _opacity = widget.isEnabled ? 1.0 : 0.7;
       });
     });
     if (widget.isEnabled) {
@@ -45,6 +47,12 @@ class _SettingPageState extends State<SettingPage>
     _listKey.currentState?.initFocus();
   }
 
+  void hidePage() {
+    setState(() {
+      _opacity = 0;
+    });
+  }
+
   @override
   void didUpdateWidget(covariant SettingPage oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -52,11 +60,9 @@ class _SettingPageState extends State<SettingPage>
       initFocus();
     }
     setState(() {
-      _opacity = widget.isEnabled ? 1.0 : 0.5;
+      _opacity = widget.isEnabled ? 1.0 : 0.7;
     });
   }
-
-  double _opacity = 0.5;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +79,7 @@ class _SettingPageState extends State<SettingPage>
                 ? Theme.of(context).colorScheme.surface
                 : Theme.of(context).colorScheme.onTertiary,
         child: AnimatedOpacity(
-          duration: $style.times.med,
+          duration: $style.times.fast,
           opacity: _opacity,
           curve: Curves.easeInOut,
           child: widget.node!.builder?.call(
@@ -86,7 +92,7 @@ class _SettingPageState extends State<SettingPage>
     }
 
     double titleHeight = 100;
-    double titleFontSize = 22;
+    double titleFontSize = 35;
 
     return Container(
       color:
@@ -126,7 +132,7 @@ class _SettingPageState extends State<SettingPage>
                   child: Padding(
                     padding: // item left/right padding
                         widget.isEnabled
-                            ? const EdgeInsets.symmetric(horizontal: 80)
+                            ? const EdgeInsets.symmetric(horizontal: 80, vertical: 10)
                             : const EdgeInsets.symmetric(horizontal: 40),
                     child: SettingListView(
                       key: _listKey,
