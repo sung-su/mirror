@@ -5,6 +5,7 @@ import 'package:tizen_fs/styles/app_style.dart';
 class SelectableGridView extends StatefulWidget {
   const SelectableGridView({
     super.key,
+    required this.scrollController,
     required this.itemCount,
     required this.itemRatio,
     required this.itemBuilder,
@@ -21,6 +22,7 @@ class SelectableGridView extends StatefulWidget {
   final VoidCallback? onFocused;
   final VoidCallback? onUnfocused;
   final Function(int)? onItemSelected;
+  final ScrollController scrollController;
 
   @override
   State<SelectableGridView> createState() => SelectableGridViewState();
@@ -28,6 +30,7 @@ class SelectableGridView extends StatefulWidget {
 
 class SelectableGridViewState extends State<SelectableGridView> {
   final FocusNode _focusNode = FocusNode();
+  final GlobalKey _gridKey = GlobalKey();
   late List<GlobalKey> _itemKeys;
 
   int _selectedIndex = -1;
@@ -67,12 +70,15 @@ class SelectableGridViewState extends State<SelectableGridView> {
   Future<int> _scrollToSelected(var index) async {
     final context = _itemKeys[index].currentContext;
     if (context != null) {
-      Scrollable.ensureVisible(
-        context,
-        alignment: 0.18,
-        duration: $style.times.fast,
-        curve: Curves.easeInOut
+      final row = index ~/ columnCount;
+      final offset = (430 + (120 * row)).toDouble();
+
+      widget.scrollController.animateTo(
+        offset,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOut,
       );
+
       return index;
     }
     else {
@@ -144,13 +150,14 @@ class SelectableGridViewState extends State<SelectableGridView> {
       onKeyEvent: _handleKey,
       onFocusChange: _onFocusChanged,
       child: GridView.builder(
-        clipBehavior: Clip.none,
+        key: _gridKey,
+        shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         padding: widget.padding,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columnCount,
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 20,
+          crossAxisSpacing: 15,
+          mainAxisSpacing: 30,
           childAspectRatio: widget.itemRatio,
         ),
         itemBuilder: (context, index) {

@@ -8,15 +8,15 @@ class AppInfoModel extends ChangeNotifier {
 
   AppInfoModel(this.appInfos);
 
-  AppInfoModel.fromMock() {
+  AppInfoModel.fromMock(int itemcount) {
     _isLoading = true;
-    appInfos = _generateMockContent();
+    appInfos = _generateMockContent(itemcount);
     _isLoading = false;
   }
 
-  List<AppInfo> _generateMockContent() {
+  List<AppInfo> _generateMockContent(int itemcount) {
     return List.generate(
-      23,
+      itemcount,
       (index) => AppInfo(
         appId: '$index',
         name: 'App $index',

@@ -43,7 +43,7 @@ class _MainContentViewState extends State<MainContentView> {
       physics: const NeverScrollableScrollPhysics(),
       children: [
         _buildFadingPage(index: 0, child: HomePage(scrollController: widget.scrollController)),
-        // _buildFadingPage(index: 1, child: Mockpage()),
+        _buildFadingPage(index: 1, child: Mockpage()),
         // _buildFadingPage(index: 2, child: MockAppsPage(isHorizontal: true)),
       ]);
   }
@@ -70,7 +70,9 @@ class _MockpageState extends State<Mockpage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(null);
+      if (mounted) {
+        Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(null);
+      }
     });
   }
 

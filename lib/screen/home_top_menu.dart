@@ -23,8 +23,8 @@ class HomeTopMenu extends StatefulWidget {
 }
 
 class _HomeTopMenuState extends State<HomeTopMenu> {
-  final List<String> pages = ['QA', 'Home'];
-  final int _itemCount = 4;
+  final List<String> pages = ['QA', 'Home', 'Mock'];
+  final int _itemCount = 5;
 
   int _selected = 1;
 
@@ -47,7 +47,7 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
         _selected = index;
       });
 
-      if (_selected > 0 && _selected < (_itemCount - 3)) {
+      if (_selected > 0 && _selected < (_itemCount - 2)) {
         _movePage(_selected - 1);
       }
       else if (_selected == 0) {
@@ -121,10 +121,10 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
         if (_selected == 0) {
           AppRouter.router.push(ScreenPaths.poc);
         }
-        if(_selected == 2) {
+        if(_selected == 3) {
           AppRouter.router.push(ScreenPaths.settings);
         }
-        if(_selected == 3) {
+        if(_selected == 4) {
           showNotificationPanel();
         }
         return KeyEventResult.handled;
@@ -165,13 +165,22 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
                   setSelected(1);
                 }
               ),
+              TopMenuButtonItem(
+                text: pages[2],
+                isSelected: 2 == _selected,
+                isFocused: Focus.of(context).hasFocus,
+                onPressed: () {
+                  Focus.of(context).requestFocus();
+                  setSelected(2);
+                }
+              ),
               const Spacer(),
               Row(
                 spacing: 10,
                 children: [
                   TopMenuIconItem(
                     icon: Icons.settings_outlined,
-                    isSelected: 2 == _selected,
+                    isSelected: 3 == _selected,
                     hasFocus: Focus.of(context).hasFocus,
                     onPressed: () {
                       Focus.of(context).requestFocus();
@@ -181,7 +190,7 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
                   ),
                   TopMenuIconItem(
                     icon: Icons.notifications_none_outlined,
-                    isSelected: 3 == _selected,
+                    isSelected: 4 == _selected,
                     hasFocus: Focus.of(context).hasFocus,
                     onPressed: () {
                       Focus.of(context).requestFocus();

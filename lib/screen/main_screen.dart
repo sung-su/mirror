@@ -20,7 +20,7 @@ class MainContent extends StatefulWidget {
 }
 
 class _MainContentState extends State<MainContent> {
-  final ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController(keepScrollOffset: true);
   final PageController _pageController = PageController(initialPage: 0);
 
   @override

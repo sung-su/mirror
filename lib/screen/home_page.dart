@@ -21,9 +21,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ImmersiveCarouselModel _immersiveCarouselModel = ImmersiveCarouselModel.fromMock();
-  final AppInfoModel _appInfoModel = AppInfoModel.fromMock();      
+  final AppInfoModel _appInfoModel = AppInfoModel.fromMock(40);
 
   final List<GlobalKey> _keys= List.generate(3, (index) => GlobalKey());
+  final GlobalKey<FooterState> _footerKey = GlobalKey<FooterState>();
 
   List<AppInfo> appInfos = [];
   bool _isAnimating = false;
@@ -57,10 +58,11 @@ class _HomePageState extends State<HomePage> {
                   _isScrolling = true;
                   await widget.scrollController.animateTo(
                     0,
-                    duration: $style.times.fast,
-                    curve: Curves.easeInOut
+                    duration: $style.times.med,
+                    curve: Curves.easeOutSine
                   );
                   _isScrolling = false;
+                  _footerKey.currentState?.show();
                 }
               },
               onExpanded: () {
@@ -73,26 +75,61 @@ class _HomePageState extends State<HomePage> {
               onFocused: () async {
                 var context = _keys[1].currentContext;
                 if (context != null) {
+                  Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(null);
                   _isScrolling = true;
                   await Scrollable.ensureVisible(
                     context,
                     alignment: 0,
-                    duration: $style.times.fast,
+                    duration: $style.times.med,
                     curve: Curves.easeInOut
                   );
                   _isScrolling = false;
-                  Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(null);
+                  _footerKey.currentState?.hide();
                 }
               }
             ),
-            // footer 
-            SizedBox(
-              height: 500, 
-              child: Container(
-                // color: Colors.red,
-              ),
-            )
+            Footer(key: _footerKey)
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class Footer extends StatefulWidget {
+  const Footer({super.key});
+
+  @override
+  State<Footer> createState() => FooterState();
+}
+
+class FooterState extends State<Footer> {
+
+  bool _isVisible = true;
+
+  void show() {
+    setState(() {
+      _isVisible = true;
+    });
+  }
+
+  void hide() {
+    setState(() {
+      _isVisible = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: _isVisible ? 500 : 0,
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Container(
+          child: Icon(
+            Icons.keyboard_arrow_down,
+            size: 30,
+          ),
         ),
       ),
     );

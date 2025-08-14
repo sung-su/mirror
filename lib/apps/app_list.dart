@@ -24,15 +24,18 @@ class _AppListState extends State<AppList> {
   final double _itemRatio = 16/9;
   final double _width = 960;
 
-  final double _minimumHeight = 150;
+  final double _minimumHeight = 130;
   final double _vPadding = 10;
   final double _hPadding = 58;
 
   bool _isFocused = false;
+  bool _isPopupOpened = false;
   int _itemCount = 0;
   double get itemHeight => _itemWidth / _itemRatio + 30;
   int get columnCount => (_width < 152) ? 1: (_width - 116) ~/ 162;
   int get rowCount => (_itemCount % columnCount) > 0 ? (_itemCount ~/ columnCount) + 1 : _itemCount ~/ columnCount;
+
+  double _scrollOffset = 0;
 
   List<AppInfo> appinfos = [];
 
@@ -56,25 +59,55 @@ class _AppListState extends State<AppList> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 60, vertical: _isFocused ? 9 : 0),
-          child: Text(
-            'Your Apps',
-            style: TextStyle(
-              fontSize: _isFocused ? 30 : 15
+    double height = (itemHeight + 30) * rowCount;
+    height = height < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.height : height;
+
+    return SizedBox(
+      height: _isFocused ? height : _minimumHeight,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //Header
+          SizedBox(
+            height: _isFocused ? 100 : 25,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 60),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_isFocused)
+                  Container(
+                    height: 40, 
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 10, 0 ,0),
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: Container(
+                          child: Icon(
+                            Icons.keyboard_arrow_up,
+                            size: 30,
+                          ),
+                        ),
+                      ),
+                    )
+                  ),
+                  Text(
+                    'Your Apps',
+                    style: TextStyle(
+                      fontSize: _isFocused ? 30 : 15
+                    ),
+                    ),
+                ],
+              ),
             ),
-            ),
-        ),
-        SizedBox(
-          height: _isFocused ? (itemHeight * rowCount + _vPadding) : _minimumHeight,
-          child: Container(
+          ),
+          //GridView
+          Expanded(
             child: SelectableGridView(
               key: _gridKey,
-              padding: EdgeInsets.symmetric(horizontal: _hPadding, vertical: _isFocused ? _vPadding * 2 : _vPadding),
-              itemCount: _isFocused ? appinfos.length : 5,
+              scrollController: widget.scrollController!,
+              padding: EdgeInsets.symmetric(horizontal: _hPadding, vertical: _isFocused ? _vPadding : _vPadding),
+              itemCount: _isFocused ? appinfos.length : appinfos.length < 5 ? appinfos.length : 5,
               itemRatio: _itemRatio,
               onFocused: () {
                 setState(() {
@@ -83,12 +116,15 @@ class _AppListState extends State<AppList> {
                 widget.onFocused?.call();
               },
               onUnfocused: (){
-                setState(() {;
-                  _isFocused = false;
-                });
+                if(!_isPopupOpened)
+                {
+                  setState(() {
+                    _isFocused = false;
+                  });  
+                }
               },
               onItemSelected: (selected) {
-                _showFullScrennPopup(context, appinfos[selected]);
+                _showFullScreenPopup(context, appinfos[selected]);
               },
               itemBuilder: (context, index, selectedIndex, key) {
                 return Center(
@@ -110,26 +146,22 @@ class _AppListState extends State<AppList> {
                     },
                   ),
                 );
-                },
+              },
             ),
           ),
-        ),
-        SizedBox(
-          height: 30,
-          child: Container(
-            child: _isFocused ? null: Icon(
-              Icons.keyboard_arrow_down,
-              size: 30,
-            ),
-          ),
-        )
-      ],
+        ],
+      ),
     );
   }
 
-  void _showFullScrennPopup (BuildContext context, AppInfo app) {
+  void _showFullScreenPopup (BuildContext context, AppInfo app) {
+    _scrollOffset = widget.scrollController?.offset ?? 0;
+    setState(() {
+      _isPopupOpened = true;
+    });
     showGeneralDialog(
       context: context,
+      useRootNavigator: false,
       barrierDismissible: true,
       barrierLabel: '',
       transitionDuration: const Duration(milliseconds: 80),
@@ -142,7 +174,13 @@ class _AppListState extends State<AppList> {
           child: child,
         );
       },
-    );
+    ).then((_){
+      setState(() {
+        _isPopupOpened = false;
+      });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.scrollController?.jumpTo(_scrollOffset);
+      });
+    });
   }
-
 }
