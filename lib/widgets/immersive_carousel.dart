@@ -129,14 +129,14 @@ class ImmersiveCarouselState extends State<ImmersiveCarousel> {
 
     final double leftOffset = 58;
     final double rightOffset = 58;
-    final double bottomOffset = 24.0;
+    final double bottomOffset = 40.0;
 
     return Stack(
         children: [
           Align(
             alignment: Alignment.bottomLeft,
             child: Padding(
-            padding: EdgeInsets.only(left: leftOffset, bottom: bottomOffset),
+              padding: EdgeInsets.only(left: leftOffset, bottom: bottomOffset),
               child: AnimatedSwitcher(
                 duration: $style.times.fast,
                 transitionBuilder: (Widget child, Animation<double> animation) {

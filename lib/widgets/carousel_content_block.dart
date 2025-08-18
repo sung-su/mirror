@@ -17,7 +17,7 @@ class ContentBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 500,
+      width: 600,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -31,6 +31,7 @@ class ContentBlock extends StatelessWidget {
           const SizedBox(height: 20),
           SizedBox(
             height: 40,
+            width: 500,
             child: Text(item.description, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.white70)),
           ),
           AnimatedSize(
