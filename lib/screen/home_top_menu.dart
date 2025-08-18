@@ -23,8 +23,8 @@ class HomeTopMenu extends StatefulWidget {
 }
 
 class _HomeTopMenuState extends State<HomeTopMenu> {
-  final List<String> pages = ['QA', 'Home', 'Mock'];
-  final int _itemCount = 4;
+  final List<String> pages = ['QA', 'Home', 'Media'];
+  final int _itemCount = 5;
 
   int _selected = 1;
 
@@ -51,40 +51,47 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
         _movePage(_selected - 1);
       }
       else if (_selected == 0) {
-        showAccountPanel();
+        _showAccountPanel();
+      }
+      else if (_selected == _itemCount -1) {
+        _showNotificationPanel();
       }
     }
   }
 
-  void showNotificationPanel() {
+  void _showNotificationPanel() {
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
       barrierLabel: "Close",
       barrierColor: Colors.transparent,
       transitionDuration: const Duration(milliseconds: 80),
-      pageBuilder: (BuildContext buildContext, Animation animation,
-          Animation secondaryAnimation) {
-            return NotificationsPanel();
-          },
-        transitionBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
+      pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
+        return NotificationsPanel();
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(1, 0),
+            end: Offset.zero,
+          ).animate(animation),
+          child: FadeTransition(
             opacity: animation,
             child: child,
-          );
-        },
+          ),
+        );
+      },
     );
   }
 
-  void showAccountPanel() {
+  void _showAccountPanel() {
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
       barrierLabel: "Close",
       barrierColor: Colors.transparent,
       transitionDuration: const Duration(milliseconds: 80),
-      pageBuilder: (BuildContext buildContext, Animation animation,
-          Animation secondaryAnimation) {
+      pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
             return AccountPanel();
           },
         transitionBuilder: (context, animation, secondaryAnimation, child) {
@@ -113,19 +120,18 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
         setSelected((_selected > 0) ? (_selected - 1) : _selected);
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-        setSelected(
-            (_selected < _itemCount - 1) ? (_selected + 1) : _selected);
+        setSelected((_selected < _itemCount - 1) ? (_selected + 1) : _selected);
         return KeyEventResult.handled;
       }
       else if (event.logicalKey == LogicalKeyboardKey.enter) {
         if (_selected == 0) {
           AppRouter.router.push(ScreenPaths.poc);
         }
-        if(_selected == 2) {
+        if(_selected == 3) {
           AppRouter.router.push(ScreenPaths.settings);
         }
-        if(_selected == 3) {
-          showNotificationPanel();
+        if(_selected == 4) {
+          _showNotificationPanel();
         }
         return KeyEventResult.handled;
       }
@@ -165,28 +171,37 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
                   setSelected(1);
                 }
               ),
+              TopMenuButtonItem(
+                text: pages[2],
+                isSelected: 2 == _selected,
+                isFocused: Focus.of(context).hasFocus,
+                onPressed: () {
+                  Focus.of(context).requestFocus();
+                  setSelected(2);
+                }
+              ),
               const Spacer(),
               Row(
                 spacing: 10,
                 children: [
                   TopMenuIconItem(
                     icon: Icons.settings_outlined,
-                    isSelected: 2 == _selected,
-                    hasFocus: Focus.of(context).hasFocus,
-                    onPressed: () {
-                      Focus.of(context).requestFocus();
-                      setSelected(2);
-                      AppRouter.router.push(ScreenPaths.settings);
-                    }
-                  ),
-                  TopMenuIconItem(
-                    icon: Icons.notifications_none_outlined,
                     isSelected: 3 == _selected,
                     hasFocus: Focus.of(context).hasFocus,
                     onPressed: () {
                       Focus.of(context).requestFocus();
                       setSelected(3);
-                      showNotificationPanel();
+                      AppRouter.router.push(ScreenPaths.settings);
+                    }
+                  ),
+                  TopMenuIconItem(
+                    icon: Icons.notifications_none_outlined,
+                    isSelected: 4 == _selected,
+                    hasFocus: Focus.of(context).hasFocus,
+                    onPressed: () {
+                      Focus.of(context).requestFocus();
+                      setSelected(4);
+                      _showNotificationPanel();
                     }
                   ),
                   Text(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tizen_fs/screen/mock_apps_page.dart';
+import 'package:tizen_fs/poc/mock_apps_page.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
 class TwoPageNavigation extends StatefulWidget {

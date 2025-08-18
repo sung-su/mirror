@@ -20,7 +20,7 @@ namespace Runner
             {
                 switch (call.Method)
                 {
-                    case "getAboutDeviceInfo":
+                    case "getDeviceInfo":
                     {
                         var m = new SystemMemoryUsage();
                             m.Update();

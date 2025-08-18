@@ -31,8 +31,8 @@ class ContentBlock extends StatelessWidget {
           const SizedBox(height: 20),
           SizedBox(
             height: 40,
-            width: 500,
-            child: Text(item.description, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.white70)),
+            width: 700,
+            child: Text(item.description, softWrap: true, overflow: TextOverflow.visible, style: const TextStyle(color: Colors.white70)),
           ),
           AnimatedSize(
             duration: $style.times.fast,

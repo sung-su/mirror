@@ -23,9 +23,7 @@ class ImmersiveCarouselContent {
     return ImmersiveCarouselContent(
       overline: json['overline'] as String,
       title: json['title'] as String,
-      description: (json['description'] as String).length > 100
-          ? '${json['description'].substring(0, 100)}...'
-          : json['description'] as String,
+      description: json['description'] as String,
       backdrop: json['backdrop'] as String,
       buttonText: json['buttonText'] as String,
     );

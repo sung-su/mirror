@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
 import 'home_top_menu.dart';
@@ -38,7 +40,14 @@ class _MainContentState extends State<MainContent> {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
-      scrollBehavior: ScrollBehavior().copyWith(scrollbars: false, overscroll: false),
+      scrollBehavior: ScrollBehavior().copyWith(
+        scrollbars: false,
+        overscroll: false,
+        dragDevices: {
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.touch
+        }
+      ),
       controller: _scrollController,
       primary: false,
       slivers: [
@@ -54,8 +63,8 @@ class _MainContentState extends State<MainContent> {
         ),
         SliverToBoxAdapter(
           child: MainContentView(
-              pageController: _pageController,
-              scrollController: _scrollController,
+            pageController: _pageController,
+            scrollController: _scrollController,
           )
         )
       ],

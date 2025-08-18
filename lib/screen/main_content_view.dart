@@ -4,7 +4,7 @@ import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/screen/home_page.dart';
-import 'package:tizen_fs/screen/mock_apps_page.dart';
+import 'package:tizen_fs/screen/media_page.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
 class MainContentView extends StatefulWidget {
@@ -43,8 +43,7 @@ class _MainContentViewState extends State<MainContentView> {
       physics: const NeverScrollableScrollPhysics(),
       children: [
         _buildFadingPage(index: 0, child: HomePage(scrollController: widget.scrollController)),
-        _buildFadingPage(index: 1, child: Mockpage()),
-        // _buildFadingPage(index: 2, child: MockAppsPage(isHorizontal: true)),
+        _buildFadingPage(index: 1, child: MediaPage()),
       ]);
   }
 
@@ -56,28 +55,5 @@ class _MainContentViewState extends State<MainContentView> {
       opacity: opacity,
       child: child,
     );
-  }
-}
-
-class Mockpage extends StatefulWidget{
-  @override
-  State<Mockpage> createState() => _MockpageState();
-}
-
-class _MockpageState extends State<Mockpage> {
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(null);
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }

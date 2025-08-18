@@ -25,22 +25,22 @@ class SettingPages {
         title: 'Profile',
         children: [
           PageNode(
-            id: 'profile_menu1',
+            id: 'profile_tizen',
             title: 'Tizen',
             icon: IconData(0x0054, fontFamily: 'MaterialIcons'), //unicode T: 0054
             children: [
               PageNode(
-                id: 'profile_menu1_1',
+                id: 'profile_tizen_active',
                 title: 'Active',
               ),
               PageNode(
-                id: 'profile_menu1_2',
+                id: 'profile_tizen_remove',
                 title: 'Remove',
               ),
             ]
           ),
           PageNode(
-            id: 'profile_menu2',
+            id: 'profile_add',
             title: 'Add a profile',
           ),
         ],
@@ -51,20 +51,20 @@ class SettingPages {
       PageNode(
         id: 'about_device',
         icon: Icons.info_outline,
-        title: 'About device',
+        title: 'About Device',
         children: [
           PageNode(
-            id: 'about_device_menu1',
+            id: 'about_device_device_info',
             title: 'Device info',
             builder: (context, node, isEnabled) => DeviceInfoPage(node: node, isEnabled: isEnabled),
           ),
           PageNode(
-            id: 'about_device_menu2',
+            id: 'about_device_opensource_license',
             title: 'Open source license',
             builder: (context, node, isEnabled) => EmptyPage(node: node, isEnabled: isEnabled),
           ),
           PageNode(
-            id: 'about_device_menu3',
+            id: 'about_device_manager_certificates',
             title: 'Manage certificates',
           ),
         ],
@@ -112,11 +112,11 @@ class SettingPages {
         title: 'Display',
         children: [
           PageNode(
-            id: 'display_menu1',
+            id: 'display_brigetness',
             title: 'Brightness',
           ),
           PageNode(
-            id: 'display_menu2',
+            id: 'display_font_size',
             title: 'Font Size',
           ),
         ],
@@ -138,11 +138,11 @@ class SettingPages {
         title: 'Date & Time',
         children: [
           PageNode(
-            id: 'date_time_menu1',
+            id: 'date_time_auto',
             title: 'Auto update',
           ),
           PageNode(
-            id: 'date_time_menu2',
+            id: 'date_time_set_time',
             title: 'Set time',
           ),
         ],
