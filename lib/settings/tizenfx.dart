@@ -13,8 +13,8 @@ class TizenFx {
     return Map<String, int>.from(m ?? const {});
   }
 
-  static Future<Map<String, double>> getAboutDeviceInfo() async {
-    final m = await _ch.invokeMapMethod<String, double>('getAboutDeviceInfo');
+  static Future<Map<String, double>> getDeviceInfo() async {
+    final m = await _ch.invokeMapMethod<String, double>('getDeviceInfo');
     return Map<String, double>.from(m ?? const {});
   }
 }

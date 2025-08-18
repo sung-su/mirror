@@ -1,9 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/page_node.dart';
-import 'package:tizen_fs/poc/buttons_page.dart';
 import 'package:tizen_fs/poc/empty_page.dart';
-import 'package:tizen_fs/settings/about_device.dart';
+import 'package:tizen_fs/settings/device_info_page.dart';
 
 class SettingPages {
   late final PageNode _root;
@@ -57,7 +56,7 @@ class SettingPages {
           PageNode(
             id: 'about_device_menu1',
             title: 'Device info',
-            builder: (context, node, isEnabled) => AboutDevice(node: node, isEnabled: isEnabled),
+            builder: (context, node, isEnabled) => DeviceInfoPage(node: node, isEnabled: isEnabled),
           ),
           PageNode(
             id: 'about_device_menu2',
@@ -126,14 +125,6 @@ class SettingPages {
 
     settings.children.add(
       PageNode(
-        id: 'wallpaper',
-        icon: Icons.format_paint_outlined,
-        title: 'Wallpaper',
-      ),
-    );
-
-    settings.children.add(
-      PageNode(
         id: 'sound',
         icon: Icons.volume_up_outlined,
         title: 'Sound',
@@ -163,14 +154,6 @@ class SettingPages {
         id: 'language_input',
         icon: Icons.language_outlined,
         title: 'Language & Input',
-      ),
-    );
-
-    settings.children.add(
-      PageNode(
-        id: 'accessibility',
-        icon: Icons.accessibility_outlined,
-        title: 'Accessibility',
       ),
     );
 

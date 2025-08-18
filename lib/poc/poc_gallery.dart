@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tizen_fs/models/settings_pages.dart';
+import 'package:tizen_fs/models/settings_menus.dart';
 import 'package:tizen_fs/poc/adaptive_grid.dart';
 import 'package:tizen_fs/poc/disable_auto_scroll.dart';
 import 'package:tizen_fs/poc/color_table.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_fs/models/page_node.dart';
-import 'package:tizen_fs/models/settings_pages.dart';
+import 'package:tizen_fs/models/settings_menus.dart';
 import 'package:tizen_fs/settings/setting_page.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 

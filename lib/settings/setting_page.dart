@@ -94,6 +94,17 @@ class SettingPageState extends State<SettingPage>
     double titleHeight = 100;
     double titleFontSize = 35;
 
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: widget.node?.title ?? '',
+        style: TextStyle(fontSize: titleFontSize),
+      ),
+      textDirection: TextDirection.ltr,
+      maxLines: 2, 
+    )..layout(maxWidth: 240);
+
+    final neededHeight = textPainter.size.height;
+
     return Container(
       color:
           widget.isEnabled
@@ -104,22 +115,26 @@ class SettingPageState extends State<SettingPage>
         duration: $style.times.med,
         curve: Curves.easeInOut,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //title
-            Padding(
-              padding: // title up/left padding
-                  widget.isEnabled
-                      ? EdgeInsets.fromLTRB(120, 20, 0, 0)
-                      : EdgeInsets.fromLTRB(80, 20, 0, 0),
-              child: SizedBox(
-                height: titleHeight,
+            SizedBox(
+              height: neededHeight + 50 < titleHeight ? titleHeight : titleHeight + neededHeight,
+              width: 400,
+              child: AnimatedPadding(
+                duration: $style.times.med,
+                padding: // title up/left padding
+                    widget.isEnabled
+                        ? EdgeInsets.fromLTRB(120, 60, 40, 0)
+                        : EdgeInsets.fromLTRB(80, 60, 80, 0),
                 child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Container(
-                    child: Text(
-                      widget.node?.title ?? '',
-                      style: TextStyle(fontSize: titleFontSize),
-                    ),
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    widget.node?.title ?? '',
+                    softWrap: true,
+                    overflow: TextOverflow.visible,
+                    maxLines: 2,
+                    style: TextStyle(fontSize: titleFontSize),
                   ),
                 ),
               ),
@@ -129,7 +144,8 @@ class SettingPageState extends State<SettingPage>
               Expanded(
                 child: Align(
                   alignment: Alignment.topLeft,
-                  child: Padding(
+                  child: AnimatedPadding(
+                  duration: $style.times.med,
                     padding: // item left/right padding
                         widget.isEnabled
                             ? const EdgeInsets.symmetric(horizontal: 80, vertical: 10)
