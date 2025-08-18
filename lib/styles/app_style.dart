@@ -25,14 +25,48 @@ class LinearGradientColors {
     4 : [Color(0xFF29d256), Color(0xFFdea23b)],
   };
 
-  LinearGradient generateLinearGradient(int num) {
+  LinearGradient getGradient(int num) {
     return LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: _colorMap[num]!
     );
   }
+
+  LinearGradient generateLinearGradient(Color start, Color end) {
+    return LinearGradient(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+      colors: [
+        start.withAlphaF(0.6),
+        start.withAlphaF(0.5),
+        start.withAlphaF(0.4),
+        start.withAlphaF(0.3),
+        start.withAlphaF(0.2),
+        end.withAlphaF(0.2),
+        end.withAlphaF(0.3),
+        end.withAlphaF(0.4),
+        end.withAlphaF(0.5),
+        end.withAlphaF(0.6),
+      ],
+      stops: [
+        0.0,
+        0.05,
+        0.1,
+        0.15,
+        0.2,
+        0.5,
+        0.7,
+        0.8,
+        0.9,
+        1.0
+      ]
+    );
+  }
+
 }
+
+
 
 class AppColors {
   final Color primary = Color(0xFF1A1C1E);

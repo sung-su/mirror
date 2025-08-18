@@ -21,7 +21,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ImmersiveCarouselModel _immersiveCarouselModel = ImmersiveCarouselModel.fromMock();
-  final AppInfoModel _appInfoModel = AppInfoModel.fromMock(40);
+  final AppInfoModel _appInfoModel = AppInfoModel.fromMock(20);
 
   final List<GlobalKey> _keys= List.generate(3, (index) => GlobalKey());
   final GlobalKey<FooterState> _footerKey = GlobalKey<FooterState>();

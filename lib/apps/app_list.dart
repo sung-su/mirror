@@ -4,6 +4,7 @@ import 'package:tizen_fs/apps/app_popup.dart';
 import 'package:tizen_fs/models/app_info.dart';
 import 'package:tizen_fs/models/app_list.dart';
 import 'package:tizen_fs/styles/app_style.dart';
+import 'package:tizen_fs/widgets/app_tile.dart';
 import 'package:tizen_fs/widgets/media_card.dart';
 import 'package:tizen_fs/widgets/selectable_gridview.dart';
 
@@ -132,14 +133,15 @@ class _AppListState extends State<AppList> {
                     key: key,
                     width: _itemWidth,
                     imageUrl: '',
-                    content: Container(
-                      decoration: BoxDecoration(
-                        gradient: $style.gradients.generateLinearGradient(index % 5)
-                      ),
-                      child: Center(
-                        child: Text(appinfos[index].name),
-                      )
-                    ),
+                    content: AppTile(app: appinfos[index]),
+                    // content: Container(
+                    //   decoration: BoxDecoration(
+                    //     gradient: $style.gradients.getGradient((index + index ~/ 5)  % 5)
+                    //   ),
+                    //   child: Center(
+                    //     child: Text(appinfos[index].name),
+                    //   )
+                    // ),
                     isSelected: index == selectedIndex,
                     onRequestSelect: () {
                       _gridKey.currentState?.selectTo(index);

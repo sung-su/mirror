@@ -182,7 +182,6 @@ class _AdaptiveGridPageState extends State<AdaptiveGridPage> {
                 onKeyEvent: _handleKey,
                 onFocusChange: _onFocusChanged,
                 child: GridView.builder(
-                  // clipBehavior: Clip.none,
                   controller: _scrollController,
                   padding: EdgeInsets.symmetric(horizontal: _padding, vertical: 30),
                   physics: const ClampingScrollPhysics(),
@@ -202,7 +201,7 @@ class _AdaptiveGridPageState extends State<AdaptiveGridPage> {
                           imageUrl: '',
                           content: Container(
                             decoration: BoxDecoration(
-                              gradient: $style.gradients.generateLinearGradient(index % 5)
+                              gradient: $style.gradients.getGradient(index % 5)
                             ),
                           ),
                           isSelected: index == _selectedIndex,

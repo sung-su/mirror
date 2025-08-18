@@ -43,7 +43,7 @@ class _CreateProfilePopupState extends State<CreateProfilePopup> {
         onKeyEvent: _onKeyEvent,
         child: Container(
           decoration: BoxDecoration(
-            gradient: generateGradient()
+            gradient: $style.gradients.generateLinearGradient(Colors.black, Colors.blue.shade900),
           ),
           child: Row(
             children: [
@@ -109,33 +109,6 @@ class _CreateProfilePopupState extends State<CreateProfilePopup> {
           ),
         )
       )
-    );
-  }
-
-  LinearGradient generateGradient() {
-    return LinearGradient(
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-      colors: [
-        Colors.black.withAlphaF(0.7),
-        Colors.black.withAlphaF(0.5),
-        Colors.black.withAlphaF(0.5),
-        Colors.black.withAlphaF(0.4),
-        Colors.black.withAlphaF(0.3),
-        Colors.black.withAlphaF(0.2),
-        Colors.blue.shade900.withAlphaF(0.3),
-        Colors.blue.shade900.withAlphaF(0.5),
-      ],
-      stops: [
-        0.0,
-        0.05,
-        0.1,
-        0.15,
-        0.2,
-        0.3,
-        0.7,
-        1.0
-      ]
     );
   }
 }

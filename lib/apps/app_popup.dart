@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_fs/models/app_info.dart';
-import 'package:tizen_fs/styles/app_style.dart';
+import 'package:tizen_fs/widgets/app_tile.dart';
 
 class AppPopup extends StatefulWidget {
   const AppPopup({ super.key, required this.app});
@@ -55,14 +55,10 @@ class _AppPopupState extends State<AppPopup> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     spacing: 10,
                     children: [
-                      AppTile(app: widget.app),
-                      Container(          
-                        child: Text(
-                          widget.app.name,
-                          style: TextStyle(
-                            fontSize: 15
-                          ),
-                        )
+                      SizedBox(
+                        width: 152 * 1.3,
+                        height: 86 * 1.3,
+                        child: AppTile(app: widget.app)
                       ),
                     ]
                   ),
@@ -75,8 +71,8 @@ class _AppPopupState extends State<AppPopup> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     spacing: 20,
                     children: [
-                      ItemView(text: 'Move', isSelected: _selected == 0,),
-                      ItemView(text: 'Uninstall', isSelected: _selected == 1,),
+                      PopupButton(text: 'Move', isSelected: _selected == 0,),
+                      PopupButton(text: 'Uninstall', isSelected: _selected == 1,),
                     ]
                   ),
                 ),
@@ -89,29 +85,8 @@ class _AppPopupState extends State<AppPopup> {
   }
 }
 
-class AppTile extends StatelessWidget {
-  AppTile({super.key, required this.app});
-
-  final AppInfo app;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 152 * 1.3,
-      height: 86 * 1.3,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        gradient: $style.gradients.generateLinearGradient(int.parse(app.appId) % 5)
-      ),
-      child: Center(
-        child: Text(app.name),
-      )
-    );
-  }
-}
-
-class ItemView extends StatelessWidget{
-  const ItemView({super.key, this.isSelected = false, required this.text});
+class PopupButton extends StatelessWidget{
+  const PopupButton({super.key, this.isSelected = false, required this.text});
 
   final bool isSelected;
   final String text;

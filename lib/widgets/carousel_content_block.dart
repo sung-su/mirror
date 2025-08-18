@@ -43,7 +43,7 @@ class ContentBlock extends StatelessWidget {
                 SizedBox(height: isFocused ? 28 : 0),
                 AnimatedOpacity(
                   opacity: isFocused ? 1.0 : 0.0,
-                  duration: $style.times.fast,
+                  duration: $style.times.med,
                   curve: Curves.easeInOut,
                   child: SizedBox(
                     height: isExpanded ? 40 : 0,
