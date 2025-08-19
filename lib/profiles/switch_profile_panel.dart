@@ -20,7 +20,7 @@ class _AccountPanelState extends State<AccountPanel> {
     return Material(
       type: MaterialType.transparency,
       child: Container(
-        color: Colors.black.withAlphaF(0.7),
+        color: Colors.black.withAlphaF(0.8),
         child: FocusScope(
           autofocus: true,
           onKeyEvent: (node, event) {
@@ -84,7 +84,7 @@ class _AccountPanelState extends State<AccountPanel> {
                     animationDuration: const Duration(milliseconds: 100),
                   ),
                   child: const Text(
-                    'Create new profile',
+                    'Switch profiles',
                     style: TextStyle(
                       fontSize: 12,
                     ),

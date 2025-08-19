@@ -4,9 +4,10 @@ import 'package:tizen_fs/models/app_info.dart';
 import 'package:tizen_fs/widgets/app_tile.dart';
 
 class AppPopup extends StatefulWidget {
-  const AppPopup({ super.key, required this.app});
+  const AppPopup({ super.key, required this.app, required this.onRemovePressed});
 
   final AppInfo app;
+  final VoidCallback? onRemovePressed;
   @override
   State<AppPopup> createState() => _AppPopupState();
 }
@@ -14,7 +15,6 @@ class AppPopup extends StatefulWidget {
 class _AppPopupState extends State<AppPopup> {
 
   int _selected = 0;
-
 
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
     if (event is KeyDownEvent) {
@@ -31,10 +31,18 @@ class _AppPopupState extends State<AppPopup> {
         return KeyEventResult.handled;
       } 
       else if (event.logicalKey == LogicalKeyboardKey.enter) {
+        _callPressed();
         return KeyEventResult.handled;
       }
     }
     return KeyEventResult.ignored;
+  }
+
+  void _callPressed() {
+    if(_selected == 1) {
+      widget.onRemovePressed?.call();
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -72,8 +80,18 @@ class _AppPopupState extends State<AppPopup> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     spacing: 20,
                     children: [
-                      PopupButton(text: 'Move', isSelected: _selected == 0,),
-                      PopupButton(text: 'Uninstall', isSelected: _selected == 1,),
+                      PopupButton(
+                        text: 'Move',
+                        isSelected: _selected == 0,
+                        onPressed: (){}
+                      ),
+                      PopupButton(
+                        text: 'Uninstall',
+                        isSelected: _selected == 1,
+                        onPressed: () {
+                          _callPressed();
+                        },
+                      ),
                     ]
                   ),
                 ),
@@ -87,47 +105,53 @@ class _AppPopupState extends State<AppPopup> {
 }
 
 class PopupButton extends StatelessWidget{
-  const PopupButton({super.key, this.isSelected = false, required this.text});
+  const PopupButton({super.key, this.isSelected = false, required this.text, required this.onPressed});
 
   final bool isSelected;
   final String text;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 250,
-      height: 50,
-      child: AnimatedScale(
-        scale: isSelected ? 1.1 : 1,
-        duration: const Duration(milliseconds: 80),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surfaceContainerHighest,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              spacing: 15,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 3,
+    return GestureDetector(
+      onTap: onPressed,
+      child: KeyedSubtree(
+        child: SizedBox(
+          width: 250,
+          height: 50,
+          child: AnimatedScale(
+            scale: isSelected ? 1.1 : 1,
+            duration: const Duration(milliseconds: 80),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surfaceContainerHighest,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  spacing: 15,
                   children: [
-                    Text(
-                      text,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.primary,
-                      )
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 3,
+                      children: [
+                        Text(
+                          text,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.primary,
+                          )
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              )
             ),
-          )
+          ),
         ),
       ),
     );

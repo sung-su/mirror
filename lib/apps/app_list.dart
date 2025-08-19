@@ -151,6 +151,10 @@ class AppListState extends State<AppList> {
     );
   }
 
+  void _removeApp(AppInfo app) {
+    Provider.of<AppInfoModel>(context, listen: false).removeApp(app);
+  }
+
   void _showFullScreenPopup (BuildContext context, AppInfo app) {
     _scrollOffset = widget.scrollController?.offset ?? 0;
     setState(() {
@@ -163,7 +167,12 @@ class AppListState extends State<AppList> {
       barrierLabel: '',
       transitionDuration: const Duration(milliseconds: 80),
       pageBuilder: (context, animation, secondaryAnimation) {
-        return AppPopup(app: app);
+        return AppPopup(
+          app: app,
+          onRemovePressed: () {
+            _removeApp(app);
+          },
+        );
       },
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(

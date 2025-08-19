@@ -29,7 +29,7 @@ class TopMenuAvatarItem extends StatelessWidget {
               backgroundColor: Theme.of(context).colorScheme.secondary,
               backgroundImage:
                   imageUrl != null ? NetworkImage(imageUrl!) : null,
-              child: (imageUrl == null && text != null) ? Text(text!) : null,
+              child: (imageUrl == null && text != null) ? Text(text!.substring(0, 1)) : null,
             )));
   }
 }

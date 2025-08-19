@@ -48,7 +48,9 @@ class _ProfilesState extends State<Profiles> {
         return KeyEventResult.handled;
       } 
       else if (event.logicalKey == LogicalKeyboardKey.enter) {
-        _showFullScrennPopup(context);
+        if(_selected == 1) {
+          _showFullScrennPopup(context);
+        }
         return KeyEventResult.handled;
       }
     }

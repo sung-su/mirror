@@ -8,7 +8,7 @@ import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/top_menu_avatar_item.dart';
 import 'package:tizen_fs/widgets/top_menu_button_item.dart';
 import 'package:tizen_fs/widgets/top_menu_icon_item.dart';
-import 'account_panel.dart';
+import 'package:tizen_fs/profiles/switch_profile_panel.dart';
 
 class HomeTopMenu extends StatefulWidget {
   const HomeTopMenu({
@@ -23,7 +23,7 @@ class HomeTopMenu extends StatefulWidget {
 }
 
 class _HomeTopMenuState extends State<HomeTopMenu> {
-  final List<String> pages = ['T', 'Home', 'Media'];
+  final List<String> pages = ['Tizen', 'Home', 'Media'];
   final int _itemCount = 5;
 
   int _selected = 1;
@@ -53,9 +53,6 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
       else if (_selected == 0) {
         _showAccountPanel();
       }
-      else if (_selected == _itemCount -1) {
-        _showNotificationPanel();
-      }
     }
   }
 
@@ -65,14 +62,14 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
       barrierDismissible: true,
       barrierLabel: "Close",
       barrierColor: Colors.transparent,
-      transitionDuration: const Duration(milliseconds: 80),
+      transitionDuration: $style.times.pageTransition,
       pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
         return NotificationsPanel();
       },
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         return SlideTransition(
           position: Tween<Offset>(
-            begin: const Offset(1, 0),
+            begin: const Offset(0.5, 0),
             end: Offset.zero,
           ).animate(animation),
           child: FadeTransition(
@@ -81,7 +78,11 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
           ),
         );
       },
-    );
+    ).then((_){
+      setState(() {
+        _selected = _itemCount-2;
+      });
+    });
   }
 
   void _showAccountPanel() {
@@ -120,7 +121,13 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
         setSelected((_selected > 0) ? (_selected - 1) : _selected);
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-        setSelected((_selected < _itemCount - 1) ? (_selected + 1) : _selected);
+        final selected = (_selected < _itemCount - 1) ? (_selected + 1) : _selected;
+        if (selected == _itemCount - 1) {
+          _showNotificationPanel();
+        }
+        else {
+          setSelected(selected);
+        }
         return KeyEventResult.handled;
       }
       else if (event.logicalKey == LogicalKeyboardKey.enter) {
@@ -129,9 +136,6 @@ class _HomeTopMenuState extends State<HomeTopMenu> {
         }
         if(_selected == 3) {
           AppRouter.router.push(ScreenPaths.settings);
-        }
-        if(_selected == 4) {
-          _showNotificationPanel();
         }
         return KeyEventResult.handled;
       }

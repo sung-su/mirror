@@ -56,4 +56,9 @@ class AppInfoModel extends ChangeNotifier {
     }
     return appInfos[_selectedIndex];
   }
+
+  void removeApp(AppInfo app) {
+    notifyListeners();
+    appInfos.remove(app);
+  }
 }
