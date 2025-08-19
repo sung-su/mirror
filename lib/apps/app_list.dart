@@ -3,22 +3,21 @@ import 'package:provider/provider.dart';
 import 'package:tizen_fs/apps/app_popup.dart';
 import 'package:tizen_fs/models/app_info.dart';
 import 'package:tizen_fs/models/app_list.dart';
-import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/app_tile.dart';
 import 'package:tizen_fs/widgets/media_card.dart';
 import 'package:tizen_fs/widgets/selectable_gridview.dart';
 
 class AppList extends StatefulWidget {
-  const AppList({super.key, this.onFocused, this.scrollController});
+  const AppList({super.key, this.onFocusChanged, this.scrollController});
 
-  final VoidCallback? onFocused;
+  final Function(bool)? onFocusChanged;
   final ScrollController? scrollController;
 
   @override
-  State<AppList> createState() => _AppListState();
+  State<AppList> createState() => AppListState();
 }
 
-class _AppListState extends State<AppList> {
+class AppListState extends State<AppList> {
   final GlobalKey<SelectableGridViewState> _gridKey = GlobalKey<SelectableGridViewState>();
 
   final double _itemWidth = 150;
@@ -62,7 +61,6 @@ class _AppListState extends State<AppList> {
   Widget build(BuildContext context) {
     double height = (itemHeight + 30) * rowCount;
     height = height < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.height : height;
-
     return SizedBox(
       height: _isFocused ? height : _minimumHeight,
       child: Column(
@@ -114,14 +112,15 @@ class _AppListState extends State<AppList> {
                 setState(() {
                   _isFocused = true;
                 });
-                widget.onFocused?.call();
+                widget.onFocusChanged?.call(true);
               },
               onUnfocused: (){
                 if(!_isPopupOpened)
                 {
                   setState(() {
                     _isFocused = false;
-                  });  
+                  });
+                  widget.onFocusChanged?.call(false);
                 }
               },
               onItemSelected: (selected) {
@@ -134,17 +133,13 @@ class _AppListState extends State<AppList> {
                     width: _itemWidth,
                     imageUrl: '',
                     content: AppTile(app: appinfos[index]),
-                    // content: Container(
-                    //   decoration: BoxDecoration(
-                    //     gradient: $style.gradients.getGradient((index + index ~/ 5)  % 5)
-                    //   ),
-                    //   child: Center(
-                    //     child: Text(appinfos[index].name),
-                    //   )
-                    // ),
                     isSelected: index == selectedIndex,
                     onRequestSelect: () {
-                      _gridKey.currentState?.selectTo(index);
+                      _gridKey.currentState?.setFocus();
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _gridKey.currentState?.selectTo(index);
+                        _gridKey.currentState?.scrollToSelected(index);
+                      });
                     },
                   ),
                 );

@@ -57,9 +57,16 @@ class SelectableGridViewState extends State<SelectableGridView> {
     super.dispose();
   }
 
+  void setFocus() {
+    if (!_focusNode.hasFocus) {
+      _focusNode.requestFocus();
+      setState(() { });
+    }
+  }
+
   void selectTo(int index) async {
     if (index >= 0 && index < widget.itemCount) {
-      int current = await _scrollToSelected(index);
+      int current = await scrollToSelected(index);
       setState(() {
         if (_selectedIndex != current)
           _selectedIndex = current;  
@@ -67,7 +74,7 @@ class SelectableGridViewState extends State<SelectableGridView> {
     }
   }
 
-  Future<int> _scrollToSelected(var index) async {
+  Future<int> scrollToSelected(var index) async {
     final context = _itemKeys[index].currentContext;
     if (context != null) {
       final row = index ~/ columnCount;

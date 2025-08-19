@@ -23,7 +23,8 @@ class _HomePageState extends State<HomePage> {
   final ImmersiveCarouselModel _immersiveCarouselModel = ImmersiveCarouselModel.fromMock();
   final AppInfoModel _appInfoModel = AppInfoModel.fromMock(20);
 
-  final List<GlobalKey> _keys= List.generate(3, (index) => GlobalKey());
+  final GlobalKey<ImmersiveAreaState> _carouselKey = GlobalKey<ImmersiveAreaState>();
+  final GlobalKey<AppListState> _applistKey = GlobalKey<AppListState>();
   final GlobalKey<FooterState> _footerKey = GlobalKey<FooterState>();
 
   List<AppInfo> appInfos = [];
@@ -51,7 +52,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             ImmersiveArea(
-              key: _keys[0],
+              key: _carouselKey,
               onFocusChanged: (hasFocus) async {
                 if(hasFocus) {
                   _isAnimating = true;
@@ -70,21 +71,27 @@ class _HomePageState extends State<HomePage> {
               }
             ),
             AppList(
-              key: _keys[1],
+              key: _applistKey,
               scrollController: widget.scrollController,
-              onFocused: () async {
-                var context = _keys[1].currentContext;
-                if (context != null) {
-                  Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(null);
-                  _isScrolling = true;
-                  await Scrollable.ensureVisible(
-                    context,
-                    alignment: 0,
-                    duration: $style.times.med,
-                    curve: Curves.easeInOut
-                  );
-                  _isScrolling = false;
-                  _footerKey.currentState?.hide();
+              onFocusChanged: (hasFocus) async {
+                if (hasFocus) {
+                  _carouselKey.currentState?.stopAutoScroll();
+                  WidgetsBinding.instance.addPostFrameCallback((_) async {
+                    var context = _applistKey.currentContext;
+                    if (context != null) {
+                      _isScrolling = true;
+                      await Scrollable.ensureVisible(
+                        context,
+                        alignment: 0,
+                        duration: $style.times.med,
+                        curve: Curves.easeInOut
+                      );
+                      _isScrolling = false;
+                      _footerKey.currentState?.hide();
+                    }
+                  });
+                } else {
+                  _carouselKey.currentState?.restartAutoScroll();
                 }
               }
             ),
@@ -144,10 +151,10 @@ class ImmersiveArea extends StatefulWidget {
   final VoidCallback? onExpanded;
 
   @override
-  State<ImmersiveArea> createState() => _ImmersiveAreaState();
+  State<ImmersiveArea> createState() => ImmersiveAreaState();
 }
 
-class _ImmersiveAreaState extends State<ImmersiveArea> with SingleTickerProviderStateMixin{
+class ImmersiveAreaState extends State<ImmersiveArea> with SingleTickerProviderStateMixin{
   final _carouselKey = GlobalKey<ImmersiveCarouselState>();
   late final AnimationController _animationController;
   late final Animation<double> _heightAnimation;
@@ -180,6 +187,17 @@ class _ImmersiveAreaState extends State<ImmersiveArea> with SingleTickerProvider
     });
   }
 
+  void stopAutoScroll() {
+    Provider.of<BackdropProvider>(context, listen: false).updateBackdrop(null);
+    _carouselKey.currentState?.stopAutoScroll();
+  }
+
+  void restartAutoScroll() {
+    _carouselKey.currentState?.resetAutoScroll();
+    _carouselKey.currentState?.updateBackdrop();
+  }
+
+
   @override
   void dispose() {
     _focusNode.dispose();
@@ -199,8 +217,7 @@ class _ImmersiveAreaState extends State<ImmersiveArea> with SingleTickerProvider
             _isfocused = true;
           });
           _animationController.forward();
-          _carouselKey.currentState?.resetAutoScroll();
-          _carouselKey.currentState?.updateBackdrop();
+          restartAutoScroll();
         }
         else {
           if ((_focusNode.parent != null) && (!_focusNode.parent!.hasFocus)) {
@@ -215,7 +232,7 @@ class _ImmersiveAreaState extends State<ImmersiveArea> with SingleTickerProvider
               _isfocused = false;
             });
             _animationController.forward();
-            _carouselKey.currentState?.stopAutoScroll();
+            stopAutoScroll();
           }
         }
         widget.onFocusChanged?.call(hasFocus);
@@ -232,6 +249,11 @@ class _ImmersiveAreaState extends State<ImmersiveArea> with SingleTickerProvider
               key: _carouselKey,
               isExpanded: _isExpanded,
               isFocused: _isfocused,
+              onTap: () {
+                if (!_focusNode.hasFocus) {
+                  _focusNode.requestFocus();
+                }
+              }
             ),
           );
         }

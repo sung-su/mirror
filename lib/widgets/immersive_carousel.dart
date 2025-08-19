@@ -10,11 +10,13 @@ import 'package:tizen_fs/providers/backdrop_provider.dart';
 class ImmersiveCarousel extends StatefulWidget {
   final bool isExpanded;
   final bool isFocused;
+  final VoidCallback? onTap;
 
   const ImmersiveCarousel({
     super.key,
     this.isExpanded = false,
-    this.isFocused = false
+    this.isFocused = false,
+    this.onTap
   });
 
   @override
@@ -185,7 +187,8 @@ class ImmersiveCarouselState extends State<ImmersiveCarousel> {
                     item: Provider.of<ImmersiveCarouselModel>(context, listen: false).getSelectedContent(),
                     isFocused: widget.isFocused,
                     isExpanded: widget.isExpanded,
-                  ),
+                    onTap: widget.onTap
+                  )
                 )
               ),
             )

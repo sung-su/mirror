@@ -60,6 +60,7 @@ class _AppPopupState extends State<AppPopup> {
                         height: 86 * 1.3,
                         child: AppTile(app: widget.app)
                       ),
+                      Text(widget.app.name)
                     ]
                   ),
                 ),
