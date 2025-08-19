@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/page_node.dart';
 import 'package:device_info_plus_tizen/device_info_plus_tizen.dart';
+import 'package:tizen_fs/settings/tizenfx.dart';
 
 class DeviceInfoPage extends StatefulWidget {
   final PageNode node;
@@ -13,13 +14,17 @@ class DeviceInfoPage extends StatefulWidget {
 }
 
 class DeviceInfoPageState extends State<DeviceInfoPage> {
-  double ram = 3969856;
-  double width = 1280;
-  double height = 720;
+  double ram = -1;
+  double width = -1;
+  double height = -1;
   late Future<TizenDeviceInfo> _deviceInfo;
 
   Future<TizenDeviceInfo> _getDeviceInfo() async {
     final plugin = DeviceInfoPluginTizen();
+    final info = await TizenFx.getDeviceInfo();
+    ram = info['Total'] ?? 3969856;
+    width = info['Width']?? 1280;
+    height = info['Height']?? 720;
     return await plugin.tizenInfo;
   }
 
@@ -57,13 +62,13 @@ class DeviceInfoPageState extends State<DeviceInfoPage> {
           return Padding(
             padding:
                 widget.isEnabled
-                    ? EdgeInsets.fromLTRB(120, 60, 0, 0)
-                    : EdgeInsets.fromLTRB(80, 60, 0, 0),
+                    ? EdgeInsets.fromLTRB(120, 60, 40, 0)
+                    : EdgeInsets.fromLTRB(80, 60, 80, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 30,
+              spacing: 15,
               children: [
-                Text("Device info", style: TextStyle(fontSize: 35)),
+                Text("Device info", style: TextStyle(fontSize: 26)),
                 createKeyValue("Name", info?.platformName ?? "Unknown"),
                 createKeyValue("Model", info?.modelName ?? "Unknown"),
                 createKeyValue("Tizen version", info?.platformVersion ?? "Unknown",),
@@ -81,6 +86,7 @@ class DeviceInfoPageState extends State<DeviceInfoPage> {
                     : EdgeInsets.fromLTRB(80, 60, 0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 15,
               children: [
                 Text("Device info", style: TextStyle(fontSize: 24)),
                 createKeyValue("Name", "Loading"),

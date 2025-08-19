@@ -21,8 +21,8 @@ namespace Runner
                 switch (call.Method)
                 {
                     case "getDeviceInfo":
-                    {
-                        var m = new SystemMemoryUsage();
+                        {
+                            var m = new SystemMemoryUsage();
                             m.Update();
                             var ram = m.Total / (1024 * 1024);
                             Information.TryGetValue("http://tizen.org/feature/screen.width", out int width);
@@ -34,11 +34,10 @@ namespace Runner
                                 ["Free"] = m.Free,
                                 ["Cache"] = m.Cache,
                                 ["Swap"] = m.Swap,
-                                ["Ram"] = ram,
-                                ["width"] = width,
-                                ["height"] = height,
+                                ["Width"] = width,
+                                ["Height"] = height,
                             };
-                    }
+                        }
                     case "getSystemMemoryUsage":
                         {
                             var m = new SystemMemoryUsage();
@@ -60,8 +59,8 @@ namespace Runner
                             Information.TryGetValue("http://tizen.org/feature/screen.height", out int height);
                             return new Dictionary<string, int>
                             {
-                                ["width"] = width,
-                                ["height"] = height,
+                                ["Width"] = width,
+                                ["Height"] = height,
                             };
                         }
                     default:

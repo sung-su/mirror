@@ -92,7 +92,7 @@ class SettingPageState extends State<SettingPage>
     }
 
     double titleHeight = 100;
-    double titleFontSize = 35;
+    double titleFontSize = 26;
 
     final textPainter = TextPainter(
       text: TextSpan(
@@ -100,7 +100,7 @@ class SettingPageState extends State<SettingPage>
         style: TextStyle(fontSize: titleFontSize),
       ),
       textDirection: TextDirection.ltr,
-      maxLines: 2, 
+      maxLines: 2,
     )..layout(maxWidth: 240);
 
     final neededHeight = textPainter.size.height;

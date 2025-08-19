@@ -106,9 +106,7 @@ class ItemView extends StatelessWidget{
         ),
         child: Padding(
           padding: // left padding of item inside
-              isFocused
-                  ? EdgeInsets.symmetric(horizontal: 20)//innerPadding * 1.5)
-                  : EdgeInsets.symmetric(horizontal: innerPadding),
+              EdgeInsets.symmetric(horizontal: innerPadding),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             spacing: 15,//innerPadding * 0.75, // between icon-text spacing
@@ -147,16 +145,11 @@ class ItemView extends StatelessWidget{
                     ),
                   ),
                   if (node.description != null)
-                  Padding(
-                    padding: // subtitle left padding
-                      EdgeInsets.only(left: 10),
-                    child :
-                    Text(
-                      node.description!,
-                      style: TextStyle(
-                        fontSize: subtitleFontSize,
-                        color:Color(0xFF979AA0),
-                      ),
+                  Text(
+                    node.description!,
+                    style: TextStyle(
+                      fontSize: subtitleFontSize,
+                      color:Color(0xFF979AA0),
                     ),
                   )
                 ],
