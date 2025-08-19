@@ -23,7 +23,7 @@ class HomeTopMenu extends StatefulWidget {
 }
 
 class _HomeTopMenuState extends State<HomeTopMenu> {
-  final List<String> pages = ['QA', 'Home', 'Media'];
+  final List<String> pages = ['T', 'Home', 'Media'];
   final int _itemCount = 5;
 
   int _selected = 1;

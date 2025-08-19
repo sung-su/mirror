@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
@@ -130,7 +132,14 @@ class SelectableListViewState extends State<SelectableListView> {
   @override
   Widget build(BuildContext context) {
     return ScrollConfiguration(
-      behavior: ScrollBehavior().copyWith(scrollbars: false, overscroll: false),
+      behavior: ScrollBehavior().copyWith(
+        scrollbars: false,
+        overscroll: false,
+        dragDevices: {
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.touch
+        }
+      ),
       child: ListView.builder(
         padding: widget.padding,
         scrollDirection: _scrollDirection,

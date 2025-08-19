@@ -61,13 +61,13 @@ class _AccountPanelState extends State<AccountPanel> {
                   children: [
                     TopMenuAvatarItem(
                       imageUrl: null,
-                      text: 'QA',
+                      text: 'T',
                       isSelected: _iconSelected,
                     ),
                     SizedBox(
                       height: 15,
                     ),
-                    Text('QA', style: TextStyle(fontSize: 15)),
+                    Text('Tizen', style: TextStyle(fontSize: 15)),
                     SizedBox(
                       height: 10,
                     )

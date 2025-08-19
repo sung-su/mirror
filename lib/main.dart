@@ -20,6 +20,19 @@ class App extends StatelessWidget {
       theme: $style.colors.toLightThemeData(),
       darkTheme: $style.colors.toDarkThemeData(),
       routerConfig: AppRouter.router,
+      // scrollBehavior: MouseDraggableScrollBehavior()
     );
   }
 }
+
+
+// class MouseDraggableScrollBehavior extends ScrollBehavior {
+//   @override
+//   // Add mouse drag on desktop for easier responsive testing
+//   Set<PointerDeviceKind> get dragDevices {
+//     final devices = Set<PointerDeviceKind>.from(super.dragDevices);
+//     devices.add(PointerDeviceKind.mouse);
+//     devices.add(PointerDeviceKind.touch);
+//     return devices;
+//   }
+// }

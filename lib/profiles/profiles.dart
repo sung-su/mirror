@@ -107,7 +107,7 @@ class _ProfilesState extends State<Profiles> {
                   children: [
                     CircleItem(
                       icon: null,
-                      text: 'T',
+                      text: 'Tizen',
                       selectedColor: Theme.of(context).colorScheme.secondary,
                       unselectedColor: Theme.of(context).colorScheme.secondary.withAlphaF(0.7),
                       isSelected: 0 == _selected,
@@ -239,7 +239,7 @@ class CircleItem extends StatelessWidget {
             child: Center(
               child: (icon == null) ? 
               Text(
-                text!,
+                text!.substring(0, 1),
                 style: TextStyle(
                   fontSize: 35,
                 ),
