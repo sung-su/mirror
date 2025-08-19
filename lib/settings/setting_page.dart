@@ -91,7 +91,7 @@ class SettingPageState extends State<SettingPage>
       );
     }
 
-    double titleHeight = 120;
+    double titleHeight = 100;
     double titleFontSize = 35;
 
     final textPainter = TextPainter(
@@ -103,7 +103,7 @@ class SettingPageState extends State<SettingPage>
       maxLines: 2,
     )..layout(maxWidth: 240);
 
-    final neededHeight = textPainter.size.height;
+    final neededHeight = textPainter.size.height - 25;
 
     return Container(
       color:
@@ -115,6 +115,7 @@ class SettingPageState extends State<SettingPage>
         duration: $style.times.med,
         curve: Curves.easeInOut,
         child: Column(
+          spacing: 10,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //title
@@ -126,7 +127,7 @@ class SettingPageState extends State<SettingPage>
                 padding: // title up/left padding
                     widget.isEnabled
                         ? EdgeInsets.fromLTRB(120, 60, 40, 0)
-                        : EdgeInsets.fromLTRB(80, 60, 0, 0),
+                        : EdgeInsets.fromLTRB(80, 60, 80, 0),
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: Text(

@@ -145,11 +145,14 @@ class ItemView extends StatelessWidget{
                     ),
                   ),
                   if (node.description != null)
-                  Text(
-                    node.description!,
-                    style: TextStyle(
-                      fontSize: subtitleFontSize,
-                      color:Color(0xFF979AA0),
+                  Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Text(
+                      node.description!,
+                      style: TextStyle(
+                        fontSize: subtitleFontSize,
+                        color:Color(0xFF979AA0),
+                      ),
                     ),
                   )
                 ],

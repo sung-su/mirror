@@ -62,11 +62,11 @@ class DeviceInfoPageState extends State<DeviceInfoPage> {
           return Padding(
             padding:
                 widget.isEnabled
-                    ? EdgeInsets.fromLTRB(120, 60, 40, 0)
-                    : EdgeInsets.fromLTRB(80, 60, 80, 0),
+                    ? EdgeInsets.fromLTRB(120, 60, 0, 0)
+                    : EdgeInsets.fromLTRB(80, 60, 0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 15,
+              spacing: 30,
               children: [
                 Text("Device info", style: TextStyle(fontSize: 35)),
                 createKeyValue("Name", info?.platformName ?? "Unknown"),
@@ -86,9 +86,8 @@ class DeviceInfoPageState extends State<DeviceInfoPage> {
                     : EdgeInsets.fromLTRB(80, 60, 0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 15,
               children: [
-                Text("Device info", style: TextStyle(fontSize: 24)),
+                Text("Device info", style: TextStyle(fontSize: 35)),
                 createKeyValue("Name", "Loading"),
                 createKeyValue("Model", "Loading"),
                 createKeyValue("Tizen version", "Loading",),
