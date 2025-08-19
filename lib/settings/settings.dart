@@ -40,13 +40,24 @@ class SettingsState extends State<Settings> {
 
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
     if (event is KeyDownEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+      if (event.logicalKey == LogicalKeyboardKey.arrowRight ||
+      event.logicalKey == LogicalKeyboardKey.enter) {
         setState(() {
           _current = (_current < _pages.length - 2) ? _current + 1 : _current;
         });
         move();
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+        setState(() {
+          _current = (_current > 0) ? _current - 1 : _current;
+        });
+        move();
+        return KeyEventResult.handled;
+      }
+      else if (event.logicalKey == LogicalKeyboardKey.goBack ||
+          event.logicalKey == LogicalKeyboardKey.escape ||
+          event.physicalKey == PhysicalKeyboardKey.escape) {
+        if (_current == 0) Navigator.pop(context);
         setState(() {
           _current = (_current > 0) ? _current - 1 : _current;
         });
@@ -101,37 +112,42 @@ class SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:Focus(
-        focusNode: _focusNode,
-        onKeyEvent: _onKeyEvent,
-        child: PageView.builder(
-          controller: _pageController,
-          padEnds: false,
-          scrollDirection: Axis.horizontal,
-          itemCount: _pages.length,
-          physics: NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            if (_pages[index] == null) {
-              return Container(
-                color: Theme.of(context).colorScheme.onTertiary
-              );
-            } else {
-              return GestureDetector(
-                onTap: () {
-                  _selectTo(index);
-                },
-                child: SettingPage(
-                  key: _itemKeys[index],
-                  node: _pages[index]!,
-                  isEnabled: index <= _current,
-                  onSelectionChanged: (selected) {
-                    _updatePages(_pages[index], selected);
+      body:BackButtonListener(
+        onBackButtonPressed: () async {
+          return true;
+        },
+        child: Focus(
+          focusNode: _focusNode,
+          onKeyEvent: _onKeyEvent,
+          child: PageView.builder(
+            controller: _pageController,
+            padEnds: false,
+            scrollDirection: Axis.horizontal,
+            itemCount: _pages.length,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              if (_pages[index] == null) {
+                return Container(
+                  color: Theme.of(context).colorScheme.onTertiary
+                );
+              } else {
+                return GestureDetector(
+                  onTap: () {
+                    _selectTo(index);
                   },
-                ),
-              );
-            }
-          },
-        )
+                  child: SettingPage(
+                    key: _itemKeys[index],
+                    node: _pages[index]!,
+                    isEnabled: index <= _current,
+                    onSelectionChanged: (selected) {
+                      _updatePages(_pages[index], selected);
+                    },
+                  ),
+                );
+              }
+            },
+          )
+        ),
       )
     );
   }
