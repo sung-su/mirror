@@ -68,7 +68,7 @@ class DeviceInfoPageState extends State<DeviceInfoPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 15,
               children: [
-                Text("Device info", style: TextStyle(fontSize: 26)),
+                Text("Device info", style: TextStyle(fontSize: 35)),
                 createKeyValue("Name", info?.platformName ?? "Unknown"),
                 createKeyValue("Model", info?.modelName ?? "Unknown"),
                 createKeyValue("Tizen version", info?.platformVersion ?? "Unknown",),

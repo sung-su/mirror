@@ -91,8 +91,8 @@ class SettingPageState extends State<SettingPage>
       );
     }
 
-    double titleHeight = 100;
-    double titleFontSize = 26;
+    double titleHeight = 120;
+    double titleFontSize = 35;
 
     final textPainter = TextPainter(
       text: TextSpan(
@@ -126,7 +126,7 @@ class SettingPageState extends State<SettingPage>
                 padding: // title up/left padding
                     widget.isEnabled
                         ? EdgeInsets.fromLTRB(120, 60, 40, 0)
-                        : EdgeInsets.fromLTRB(80, 60, 80, 0),
+                        : EdgeInsets.fromLTRB(80, 60, 0, 0),
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: Text(
