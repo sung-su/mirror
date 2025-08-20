@@ -85,6 +85,8 @@ flutter:
     - assets/images/maxresdefault.jpg
     - assets/images/sdc2024.png
     - assets/mock/mock_carousel_content.json
+    - assets/LICENSE
+    - assets/license.html
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -4,6 +4,7 @@ import 'package:tizen_fs/models/page_node.dart';
 import 'package:tizen_fs/poc/empty_page.dart';
 import 'package:tizen_fs/settings/device_info_page.dart';
 import 'package:tizen_fs/settings/profile_active_page.dart';
+import 'package:tizen_fs/settings/open_source_license_page.dart';
 
 class SettingPages {
   late final PageNode _root;
@@ -66,7 +67,7 @@ class SettingPages {
           PageNode(
             id: 'about_device_opensource_license',
             title: 'Open source license',
-            // builder: (context, node, isEnabled) => EmptyPage(node: node, isEnabled: isEnabled),
+            builder: (context, node, isEnabled) => OpenSourceLicensePage(node: node, isEnabled: isEnabled),
           ),
           PageNode(
             id: 'about_device_certificates',
