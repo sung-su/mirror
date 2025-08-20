@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/app_list.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
-import 'home_top_menu.dart';
+import 'main_top_menu.dart';
 import 'main_content_view.dart';
 
 class MainScreen extends StatelessWidget {
@@ -62,7 +62,7 @@ class _MainContentState extends State<MainContent> {
             automaticallyImplyLeading: false,
             toolbarHeight: 80,
             backgroundColor: Colors.transparent,
-            title: HomeTopMenu(
+            title: MainTopMenu(
               pageController: _pageController,
             ),
           ),

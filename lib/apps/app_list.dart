@@ -133,19 +133,22 @@ class AppListState extends State<AppList> {
               },
               itemBuilder: (context, index, selectedIndex, key) {
                 return Center(
-                  child: MediaCard(
-                    key: key,
-                    width: _itemWidth,
-                    imageUrl: '',
-                    content: AppTile(app: appinfos[index]),
-                    isSelected: index == selectedIndex,
-                    onRequestSelect: () {
-                      _gridKey.currentState?.setFocus();
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        _gridKey.currentState?.selectTo(index);
-                        _gridKey.currentState?.scrollToSelected(index);
-                      });
-                    },
+                  child: GestureDetector(
+                    onDoubleTap: () => _showFullScreenPopup(context, appinfos[index]),
+                    child: MediaCard(
+                      key: key,
+                      width: _itemWidth,
+                      imageUrl: '',
+                      content: AppTile(app: appinfos[index]),
+                      isSelected: index == selectedIndex,
+                      onRequestSelect: () {
+                        _gridKey.currentState?.setFocus();
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          _gridKey.currentState?.selectTo(index);
+                          _gridKey.currentState?.scrollToSelected(index);
+                        });
+                      },
+                    ),
                   ),
                 );
               },

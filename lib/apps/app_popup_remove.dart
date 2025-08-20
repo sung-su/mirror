@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tizen_fs/apps/app_popup_remove.dart';
 import 'package:tizen_fs/models/app_info.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/app_tile.dart';
 
-class AppPopup extends StatefulWidget {
-  const AppPopup({ super.key, required this.app, required this.onRemovePressed});
+class AppPopupRemove extends StatefulWidget {
+  const AppPopupRemove({ super.key, required this.app, required this.onConfirm});
 
   final AppInfo app;
-  final VoidCallback? onRemovePressed;
+  final VoidCallback? onConfirm;
   @override
-  State<AppPopup> createState() => _AppPopupState();
+  State<AppPopupRemove> createState() => _AppPopupRemoveState();
 }
 
-class _AppPopupState extends State<AppPopup> {
+class _AppPopupRemoveState extends State<AppPopupRemove> {
 
   int _selected = 0;
 
@@ -33,35 +32,14 @@ class _AppPopupState extends State<AppPopup> {
         return KeyEventResult.handled;
       } 
       else if (event.logicalKey == LogicalKeyboardKey.enter) {
-        _showAppRemovePopup();
+        if (_selected == 0) {
+          widget.onConfirm?.call();
+        }
+        Navigator.of(context).pop();
         return KeyEventResult.handled;
       }
     }
     return KeyEventResult.ignored;
-  }
-
-  void _showAppRemovePopup() {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: "Close",
-      barrierColor: Colors.transparent,
-      transitionDuration: $style.times.pageTransition,
-      pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
-        return AppPopupRemove(app: widget.app,
-          onConfirm: (){
-            widget.onRemovePressed?.call();
-            Navigator.of(context).pop();
-          }
-        );
-      },
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-            opacity: animation,
-            child: child,
-        );
-      },
-    );
   }
 
   void _select(int index) {
@@ -106,18 +84,20 @@ class _AppPopupState extends State<AppPopup> {
                     spacing: 20,
                     children: [
                       PopupButton(
-                        text: 'Move',
+                        text: 'OK',
                         isSelected: _selected == 0,
                         onPressed: (){
                           _select(0);
+                          widget.onConfirm?.call();
+                          Navigator.of(context).pop();
                         }
                       ),
                       PopupButton(
-                        text: 'Uninstall',
+                        text: 'Cancel',
                         isSelected: _selected == 1,
                         onPressed: () {
                           _select(1);
-                          _showAppRemovePopup();
+                          Navigator.of(context).pop();
                         },
                       ),
                     ]
@@ -139,7 +119,7 @@ class PopupButton extends StatelessWidget{
   final String text;
   final VoidCallback? onPressed;
   final double width;
-  final double height;
+  final double height; 
 
   @override
   Widget build(BuildContext context) {

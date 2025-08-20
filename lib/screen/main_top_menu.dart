@@ -10,8 +10,8 @@ import 'package:tizen_fs/widgets/top_menu_button_item.dart';
 import 'package:tizen_fs/widgets/top_menu_icon_item.dart';
 import 'package:tizen_fs/profiles/switch_profile_panel.dart';
 
-class HomeTopMenu extends StatefulWidget {
-  const HomeTopMenu({
+class MainTopMenu extends StatefulWidget {
+  const MainTopMenu({
     super.key,
     required this.pageController,
   });
@@ -19,10 +19,10 @@ class HomeTopMenu extends StatefulWidget {
   final PageController pageController;
 
   @override
-  State<HomeTopMenu> createState() => _HomeTopMenuState();
+  State<MainTopMenu> createState() => _MainTopMenuState();
 }
 
-class _HomeTopMenuState extends State<HomeTopMenu> {
+class _MainTopMenuState extends State<MainTopMenu> {
   final List<String> pages = ['Tizen', 'Home', 'Media'];
   final int _itemCount = 5;
 
