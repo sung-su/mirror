@@ -1,4 +1,5 @@
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -268,14 +269,38 @@ class ImmersiveAreaState extends State<ImmersiveArea> with SingleTickerProviderS
     );
   }
 
+  void _stopRepeating() {
+    _initialDelayTimer?.cancel();
+    _repeatingTimer?.cancel();
+    _initialDelayTimer = null;
+    _repeatingTimer = null;
+  }
+
+  Timer? _initialDelayTimer;
+  Timer? _repeatingTimer;
+  void _startRepeating(VoidCallback action) {
+    action();
+    _initialDelayTimer?.cancel();
+    _initialDelayTimer = Timer(const Duration(milliseconds: 300), () {
+      _repeatingTimer =
+          Timer.periodic(const Duration(milliseconds: 100), (timer) {
+        action();
+      });
+    });
+  }
+
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
-    if (event is KeyDownEvent) {
+    if (event is KeyDownEvent || event is KeyRepeatEvent) {
       if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-          _carouselKey.currentState?.moveCarousel(1);
+          _startRepeating(() {
+            _carouselKey.currentState?.moveCarousel(1);
+          });
 
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-          _carouselKey.currentState?.moveCarousel(-1);
+          _startRepeating(() {
+            _carouselKey.currentState?.moveCarousel(-1);
+          });
 
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.select) {
@@ -287,7 +312,11 @@ class ImmersiveAreaState extends State<ImmersiveArea> with SingleTickerProviderS
         return KeyEventResult.handled;
       }
       return KeyEventResult.ignored;
-    } 
+    }
+    else if (event is KeyUpEvent) {
+      _stopRepeating();
+      return KeyEventResult.handled;
+    }
     return KeyEventResult.ignored;
   }
 }

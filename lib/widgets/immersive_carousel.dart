@@ -102,16 +102,15 @@ class ImmersiveCarouselState extends State<ImmersiveCarousel> {
         key: ValueKey(_selectedIndex),
         alignment: Alignment.topRight,
         child: SizedBox(
-          width: 1920,
-          height: 1080,
-          // width: MediaQuery.of(context).size.width, //TODO
-          // height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
           child: CinematicScrim(
             image: Image.asset('assets/images/${Provider.of<ImmersiveCarouselModel>(context, listen: false).getSelectedContent().backdrop}',
             width: 1920,
             height: 1080,
-                // cacheWidth: (MediaQuery.of(context).size.width * 2).round(),
-                // width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height,
+                cacheWidth: (MediaQuery.of(context).size.width * 2).round(),
+                // width: MediaQuery.of(context).size.width,
+                // height: MediaQuery.of(context).size.height,
                 fit: BoxFit.cover),
           ),
         ));
@@ -140,7 +139,7 @@ class ImmersiveCarouselState extends State<ImmersiveCarousel> {
             child: Padding(
               padding: EdgeInsets.only(left: leftOffset, bottom: bottomOffset),
               child: AnimatedSwitcher(
-                duration: $style.times.fast,
+                duration: const Duration(milliseconds: 200),
                 transitionBuilder: (Widget child, Animation<double> animation) {
                   bool isForward = isMovingForward(_prevIndex, _selectedIndex, _itemCount);
                   final incoming = child.key == ValueKey(Provider.of<ImmersiveCarouselModel>(context, listen: false).getSelectedContent().title);

@@ -50,7 +50,7 @@ class ContentBlock extends StatelessWidget {
                     duration: $style.times.med,
                     curve: Curves.easeInOut,
                     child: SizedBox(
-                      height: isExpanded ? 40 : 0,
+                      height: isFocused ? 40 : 0,
                       child:
                         ElevatedButton(
                           onPressed: isFocused ? () {} : null,
