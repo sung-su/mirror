@@ -9,6 +9,7 @@ import 'package:tizen_fs/poc/page_tree.dart';
 import 'package:tizen_fs/poc/reoder_grid_test.dart';
 import 'package:tizen_fs/poc/reoder_grid_test2.dart';
 import 'package:tizen_fs/poc/setting_page_test.dart';
+import 'package:tizen_fs/poc/webview.dart';
 import 'package:tizen_fs/settings/settings.dart';
 import 'package:tizen_fs/poc/shimmerloading.dart';
 import 'package:tizen_fs/poc/two_page_navi.dart';
@@ -183,6 +184,19 @@ class PocGalleryPage extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) =>
                           HomeScreenSizeWrapper(SettingPageTest(node: SettingPages().getRoot())),
+                    ));
+              },
+            ),
+            ListTile(
+              title: const Text('Webview test'),
+              subtitle: const Text('Webview test'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreenSizeWrapper(WebViewExample()),
                     ));
               },
             ),

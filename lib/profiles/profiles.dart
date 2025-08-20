@@ -17,7 +17,7 @@ class _ProfilesState extends State<Profiles> {
   int _selected = 0;
   int _lastSelected = -1;
 
-  void setSelected(int index) {
+  void _select(int index) {
     if (_selected != index) {
       setState(() {
         _selected = index;
@@ -28,10 +28,10 @@ class _ProfilesState extends State<Profiles> {
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
     if (event is KeyDownEvent) {
       if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-        setSelected((_selected > 0) ? (_selected - 1) : _selected);
+        _select((_selected > 0) ? (_selected - 1) : _selected);
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-        setSelected((_selected < _itemCount - 1) ? (_selected + 1) : _selected);
+        _select((_selected < _itemCount - 1) ? (_selected + 1) : _selected);
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
         _lastSelected = _lastSelected == -1 ? _selected : _lastSelected;
@@ -49,7 +49,7 @@ class _ProfilesState extends State<Profiles> {
       } 
       else if (event.logicalKey == LogicalKeyboardKey.enter) {
         if(_selected == 1) {
-          _showFullScrennPopup(context);
+          _showFullScreenPopup(context);
         }
         return KeyEventResult.handled;
       }
@@ -57,7 +57,7 @@ class _ProfilesState extends State<Profiles> {
     return KeyEventResult.ignored;
   }
 
-  void _showFullScrennPopup (BuildContext context) {
+  void _showFullScreenPopup (BuildContext context) {
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -113,9 +113,16 @@ class _ProfilesState extends State<Profiles> {
                       selectedColor: Theme.of(context).colorScheme.secondary,
                       unselectedColor: Theme.of(context).colorScheme.secondary.withAlphaF(0.7),
                       isSelected: 0 == _selected,
+                      onPressed: () {
+                        _select(0);
+                      },
                     ),
                     AddProfileCircleItem(
                       isSelected: 1 == _selected,
+                      onPressed: () {
+                        _select(1);
+                        _showFullScreenPopup(context);
+                      },
                     )
                   ],
                 ),

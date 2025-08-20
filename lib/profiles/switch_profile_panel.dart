@@ -29,7 +29,7 @@ class _AccountPanelState extends State<AccountPanel> {
               return KeyEventResult.handled;
             } else if (event is KeyDownEvent &&
                 event.logicalKey == LogicalKeyboardKey.enter) {
-              AppRouter.router.push(ScreenPaths.account);
+              AppRouter.router.push(ScreenPaths.profile);
               return KeyEventResult.ignored;
             } else if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.arrowDown) {
               if(_iconSelected) {
@@ -63,6 +63,7 @@ class _AccountPanelState extends State<AccountPanel> {
                       imageUrl: null,
                       text: 'T',
                       isSelected: _iconSelected,
+                      onPressed: () { AppRouter.router.push(ScreenPaths.poc); },
                     ),
                     SizedBox(
                       height: 15,
@@ -77,7 +78,7 @@ class _AccountPanelState extends State<AccountPanel> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(52, 0, 0, 0),
                 child: TextButton (
-                  onPressed: () { AppRouter.router.push(ScreenPaths.poc); },
+                  onPressed: () { AppRouter.router.push(ScreenPaths.profile); },
                   style: TextButton.styleFrom(
                     backgroundColor: _buttonSelected ? Colors.white : Colors.transparent,
                     foregroundColor: _buttonSelected ? Colors.black : Colors.white,

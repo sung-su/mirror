@@ -3,14 +3,16 @@ import 'package:provider/provider.dart';
 import 'package:tizen_fs/apps/app_popup.dart';
 import 'package:tizen_fs/models/app_info.dart';
 import 'package:tizen_fs/models/app_list.dart';
+import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/app_tile.dart';
 import 'package:tizen_fs/widgets/media_card.dart';
 import 'package:tizen_fs/widgets/selectable_gridview.dart';
 
 class AppList extends StatefulWidget {
-  const AppList({super.key, this.onFocusChanged, this.scrollController});
+  const AppList({super.key, this.onFocusChanged, this.onScrollup ,this.scrollController});
 
   final Function(bool)? onFocusChanged;
+  final VoidCallback? onScrollup;
   final ScrollController? scrollController;
 
   @override
@@ -82,9 +84,12 @@ class AppListState extends State<AppList> {
                       child: Align(
                         alignment: Alignment.topCenter,
                         child: Container(
-                          child: Icon(
-                            Icons.keyboard_arrow_up,
-                            size: 30,
+                          child: GestureDetector(
+                            onTap: widget.onScrollup,
+                            child: Icon(
+                              Icons.keyboard_arrow_up,
+                              size: 30,
+                            ),
                           ),
                         ),
                       ),

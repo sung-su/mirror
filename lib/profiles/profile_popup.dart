@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_fs/styles/app_style.dart';
+import 'package:tizen_fs/widgets/setting_list_view.dart';
 
 class CreateProfilePopup extends StatefulWidget {
   const CreateProfilePopup({ super.key });
@@ -12,7 +13,6 @@ class CreateProfilePopup extends StatefulWidget {
 class _CreateProfilePopupState extends State<CreateProfilePopup> {
 
   int _selected = 0;
-
 
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
     if (event is KeyDownEvent) {
@@ -33,6 +33,12 @@ class _CreateProfilePopupState extends State<CreateProfilePopup> {
       }
     }
     return KeyEventResult.ignored;
+  }
+
+  void _select(int index) {
+    setState(() {
+      _selected = index;
+    });
   }
 
   @override
@@ -99,8 +105,16 @@ class _CreateProfilePopupState extends State<CreateProfilePopup> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 25,
                     children: [
-                      ItemView(text: 'Create new profile', isSelected: _selected == 0,),
-                      ItemView(text: 'Create new profile for kid', isSelected: _selected == 1,),
+                      ItemView(
+                        text: 'Create new profile',
+                        isSelected: _selected == 0,
+                        onPressed: ()=> _select(0)
+                      ),
+                      ItemView(
+                        text: 'Create new profile for kid',
+                        isSelected: _selected == 1,
+                        onPressed: ()=> _select(1)
+                      )
                     ]
                   ),
                 ),
@@ -116,50 +130,54 @@ class _CreateProfilePopupState extends State<CreateProfilePopup> {
 
 
 class ItemView extends StatelessWidget{
-  const ItemView({super.key, this.isSelected = false, required this.text});
+  const ItemView({super.key, this.isSelected = false, required this.text, this.onPressed});
 
   final bool isSelected;
   final String text;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 300,
-      height: 60,
-      child: AnimatedScale(
-        scale: isSelected ? 1.1 : 1,
-        duration: $style.times.fast,
-        child: AnimatedOpacity(
-          opacity: isSelected ? 1 : 0.6,
+    return GestureDetector(
+      onTap: onPressed,
+      child: SizedBox(
+        width: 300,
+        height: 60,
+        child: AnimatedScale(
+          scale: isSelected ? 1.1 : 1,
           duration: $style.times.fast,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                spacing: 15,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 3,
-                    children: [
-                      Text(
-                        text,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Theme.of(context).colorScheme.onTertiary,
-                        )
-                      ),
-                    ],
-                  ),
-                ],
+          child: AnimatedOpacity(
+            opacity: isSelected ? 1 : 0.6,
+            duration: $style.times.fast,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Theme.of(context).colorScheme.primary,
               ),
-            )
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  spacing: 15,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 3,
+                      children: [
+                        Text(
+                          text,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Theme.of(context).colorScheme.onTertiary,
+                          )
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              )
+            ),
           ),
         ),
       ),

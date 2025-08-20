@@ -3,14 +3,13 @@ import 'package:go_router/go_router.dart';
 import 'package:tizen_fs/poc/poc_gallery.dart';
 import 'package:tizen_fs/screen/main_screen.dart';
 import 'package:tizen_fs/settings/settings.dart';
-
 import 'profiles/profiles.dart';
 
 class ScreenPaths {
   static const String main = '/';
   static const String settings = '/settings';
   static const String poc = '/poc';
-  static const String account = '/account';
+  static const String profile = '/profile';
 }
 
 final RouteObserver<ModalRoute<void>> routeObserver =
@@ -32,7 +31,7 @@ class AppRouter {
         builder: (context, state) => Settings(),
       ),
       GoRoute(
-        path: ScreenPaths.account,
+        path: ScreenPaths.profile,
         builder: (context, state) => Profiles(),
       ),
     ],

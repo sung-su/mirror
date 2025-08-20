@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/app_info.dart';
-import 'package:tizen_fs/models/app_list.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/utils/noscroll_focustraversal_policy.dart';
 import 'package:tizen_fs/apps/app_list.dart';
 import 'package:tizen_fs/widgets/immersive_carousel.dart';
 import 'package:tizen_fs/models/immersive_carosel_model.dart';
+import 'package:tizen_fs/poc/webview.dart';
+import 'package:tizen_fs/widgets/home_screen_size_wrapper.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.scrollController});
@@ -21,8 +22,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ImmersiveCarouselModel _immersiveCarouselModel = ImmersiveCarouselModel.fromMock();
-  final AppInfoModel _appInfoModel = AppInfoModel.fromMock(20);
-
   final GlobalKey<ImmersiveAreaState> _carouselKey = GlobalKey<ImmersiveAreaState>();
   final GlobalKey<AppListState> _applistKey = GlobalKey<AppListState>();
   final GlobalKey<FooterState> _footerKey = GlobalKey<FooterState>();
@@ -43,9 +42,6 @@ class _HomePageState extends State<HomePage> {
         ChangeNotifierProvider( 
           create: (context) => _immersiveCarouselModel,
         ),
-        ChangeNotifierProvider(
-          create: (context) => _appInfoModel,
-        )
       ],
       child: FocusTraversalGroup(
         policy: NoScrollFocusTraversalPolicy(() => _isAnimating || _isScrolling),
@@ -93,7 +89,15 @@ class _HomePageState extends State<HomePage> {
                 } else {
                   _carouselKey.currentState?.restartAutoScroll();
                 }
-              }
+              },
+              onScrollup: () async {
+                await widget.scrollController.animateTo(
+                  0,
+                  duration: $style.times.med,
+                  curve: Curves.easeInOut
+                );
+                _carouselKey.currentState?.initFocus();
+              },
             ),
             Footer(key: _footerKey)
           ],
@@ -197,6 +201,9 @@ class ImmersiveAreaState extends State<ImmersiveArea> with SingleTickerProviderS
     _carouselKey.currentState?.updateBackdrop();
   }
 
+  void initFocus() {
+    _focusNode.requestFocus();
+  }
 
   @override
   void dispose() {
@@ -273,6 +280,10 @@ class ImmersiveAreaState extends State<ImmersiveArea> with SingleTickerProviderS
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.select) {
         // widget.onItemSelected?.call(_carouselKey.currentState?.selectedIndex ?? 0);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => HomeScreenSizeWrapper(WebViewExample())),
+        );
         return KeyEventResult.handled;
       }
       return KeyEventResult.ignored;

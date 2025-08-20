@@ -14,7 +14,7 @@ class AppInfoModel extends ChangeNotifier {
     _isLoading = false;
   }
 
-  List<AppInfo> _generateMockContent(int itemcount) {
+  static List<AppInfo> _generateMockContent(int itemcount) {
     return List.generate(
       itemcount,
       (index) => AppInfo(
