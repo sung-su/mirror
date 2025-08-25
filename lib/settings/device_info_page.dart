@@ -87,8 +87,10 @@ class DeviceInfoPageState extends State<DeviceInfoPage> {
                     : EdgeInsets.fromLTRB(80, 60, 0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 20,
               children: [
-                Text("Device info", style: TextStyle(fontSize: 24)),
+                Text("Device info", style: TextStyle(fontSize: 35)),
+                SizedBox(height: 5),
                 createKeyValue("Name", "Loading"),
                 createKeyValue("Model", "Loading"),
                 createKeyValue("Tizen version", "Loading",),
