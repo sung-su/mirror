@@ -30,7 +30,7 @@ class AppListState extends State<AppList> {
   final double _vPadding = 10;
   final double _hPadding = 58;
 
-  bool _isFocused = false;
+  bool _isOpen = false;
   bool _isPopupOpened = false;
   int _itemCount = 0;
   double get itemHeight => _itemWidth / _itemRatio + 30;
@@ -65,19 +65,19 @@ class AppListState extends State<AppList> {
     height = height < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.height : height;
 
     return SizedBox(
-      height: _isFocused ? height : _minimumHeight,
+      height: _isOpen ? height : _minimumHeight,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //Header
           SizedBox(
-            height: _isFocused ? 100 : 25,
+            height: _isOpen ? 100 : 25,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 60),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (_isFocused)
+                  if (_isOpen)
                   Container(
                     height: 40, 
                     child: Padding(
@@ -99,7 +99,7 @@ class AppListState extends State<AppList> {
                   Text(
                     'Your Apps',
                     style: TextStyle(
-                      fontSize: _isFocused ? 30 : 15
+                      fontSize: _isOpen ? 30 : 15
                     ),
                     ),
                 ],
@@ -111,12 +111,12 @@ class AppListState extends State<AppList> {
             child: SelectableGridView(
               key: _gridKey,
               scrollController: widget.scrollController!,
-              padding: EdgeInsets.symmetric(horizontal: _hPadding, vertical: _isFocused ? _vPadding : _vPadding),
-              itemCount: _isFocused ? apps.length : apps.length < 5 ? apps.length : 5,
+              padding: EdgeInsets.symmetric(horizontal: _hPadding, vertical: _isOpen ? _vPadding : _vPadding),
+              itemCount: _isOpen ? apps.length : apps.length < 5 ? apps.length : 5,
               itemRatio: _itemRatio,
               onFocused: () {
                 setState(() {
-                  _isFocused = true;
+                  _isOpen = true;
                 });
                 widget.onFocusChanged?.call(true);
               },
@@ -124,7 +124,7 @@ class AppListState extends State<AppList> {
                 if(!_isPopupOpened)
                 {
                   setState(() {
-                    _isFocused = false;
+                    _isOpen = false;
                   });
                   widget.onFocusChanged?.call(false);
                 }
@@ -166,6 +166,16 @@ class AppListState extends State<AppList> {
 
   void _removeApp(AppData app) {
     ApplicationManager.uninstallPackage(app.packageName);
+  }
+
+  void setOpenState(bool isOpen) {
+    setState(() {
+      _isOpen = isOpen;
+    });
+  }
+
+  void setFocus() {
+    _gridKey.currentState?.setFocus();
   }
 
   void _showFullScreenPopup (BuildContext context, AppData app) {
