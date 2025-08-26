@@ -10,7 +10,7 @@ import 'package:tizen_fs/utils/noscroll_focustraversal_policy.dart';
 import 'package:tizen_fs/apps/app_list.dart';
 import 'package:tizen_fs/widgets/immersive_carousel.dart';
 import 'package:tizen_fs/models/immersive_carosel_model.dart';
-import 'package:tizen_fs/poc/webview.dart';
+// import 'package:tizen_fs/poc/webview.dart';
 import 'package:tizen_fs/widgets/home_screen_size_wrapper.dart';
 
 class HomePage extends StatefulWidget {
@@ -305,10 +305,10 @@ class ImmersiveAreaState extends State<ImmersiveArea> with SingleTickerProviderS
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.select) {
         // widget.onItemSelected?.call(_carouselKey.currentState?.selectedIndex ?? 0);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => HomeScreenSizeWrapper(WebViewExample())),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (_) => HomeScreenSizeWrapper(WebViewExample())),
+        // );
         return KeyEventResult.handled;
       }
       return KeyEventResult.ignored;
