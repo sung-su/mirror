@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/page_node.dart';
 import 'package:device_info_plus_tizen/device_info_plus_tizen.dart';
 import 'package:tizen_fs/settings/tizenfx.dart';
+import 'dart:ffi';
+import 'package:ffi/ffi.dart';
+import 'package:flutter/material.dart';
+import 'package:tizen_interop/9.0/tizen.dart' as tz;
 
 class DeviceInfoPage extends StatefulWidget {
   final PageNode node;
@@ -14,17 +18,41 @@ class DeviceInfoPage extends StatefulWidget {
 }
 
 class DeviceInfoPageState extends State<DeviceInfoPage> {
-  double ram = -1;
-  double width = -1;
-  double height = -1;
+  int ram = -1;
+  int width = -1;
+  int height = -1;
   late Future<TizenDeviceInfo> _deviceInfo;
+
+  int getPlatformInt(String key) {
+    return using((Arena arena) {
+      Pointer<Char> ptrKey = key.toNativeChar(allocator: arena);
+      Pointer<Int> ptrValue = arena();
+      if (tz.tizen.system_info_get_platform_int(ptrKey, ptrValue) == 0) {
+        return ptrValue.value ?? 0;
+      }
+      return 0;
+    });
+  }
 
   Future<TizenDeviceInfo> _getDeviceInfo() async {
     final plugin = DeviceInfoPluginTizen();
-    final info = await TizenFx.getDeviceInfo();
-    ram = info['Total'] ?? 3969856;
-    width = info['Width']?? 1280;
-    height = info['Height']?? 720;
+
+    if (ram < 1) {
+      ram = using((Arena arena) {
+        Pointer<tz.runtime_memory_info_s> pMemInfo = arena();
+        if (tz.tizen.runtime_info_get_system_memory_info(pMemInfo) == 0) {
+          return pMemInfo.ref.total;
+        }
+        return 0;
+      });
+    }
+    if (height < 1) {
+      height = getPlatformInt("tizen.org/feature/screen.height");
+    }
+    if (width < 1) {
+      width = getPlatformInt("tizen.org/feature/screen.width");
+    }
+
     return await plugin.tizenInfo;
   }
 
