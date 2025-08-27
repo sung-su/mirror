@@ -9,6 +9,7 @@ import 'package:tizen_fs/poc/page_tree.dart';
 import 'package:tizen_fs/poc/reoder_grid_test.dart';
 import 'package:tizen_fs/poc/reoder_grid_test2.dart';
 import 'package:tizen_fs/poc/setting_page_test.dart';
+import 'package:tizen_fs/poc/app_list.dart';
 import 'package:tizen_fs/poc/webview.dart';
 import 'package:tizen_fs/settings/settings.dart';
 import 'package:tizen_fs/poc/shimmerloading.dart';
@@ -31,6 +32,19 @@ class PocGalleryPage extends StatelessWidget {
       body: Center(
         child: ListView(
           children: <Widget>[
+            ListTile(
+              title: const Text('App List'),
+              subtitle: const Text('get app list'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreenSizeWrapper(AppListPage()),
+                    ));
+              },
+            ),
             ListTile(
               title: const Text('Home'),
               subtitle: const Text('go to home'),
