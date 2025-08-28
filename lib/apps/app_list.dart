@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tizen_fs/apps/app_popup.dart';
 import 'package:tizen_fs/models/app_info.dart';
 import 'package:tizen_fs/models/app_info_model.dart';
+import 'package:tizen_fs/native/app_launcher.dart';
 import 'package:tizen_fs/widgets/app_tile.dart';
 import 'package:tizen_fs/widgets/media_card.dart';
 import 'package:tizen_fs/widgets/selectable_gridview.dart';
@@ -129,12 +130,16 @@ class AppListState extends State<AppList> {
                 }
               },
               onItemSelected: (selected) {
+                AppLauncher.launch(appinfos[selected].appId);
+              },
+              onItemLongPressed: (selected) {
                 _showFullScreenPopup(context, appinfos[selected]);
               },
               itemBuilder: (context, index, selectedIndex, key) {
                 return Center(
                   child: GestureDetector(
-                    onDoubleTap: () => _showFullScreenPopup(context, appinfos[index]),
+                    onDoubleTap: () => AppLauncher.launch(appinfos[index].appId),
+                    onLongPress: () => _showFullScreenPopup(context, appinfos[index]),
                     child: MediaCard(
                       key: key,
                       width: _itemWidth,

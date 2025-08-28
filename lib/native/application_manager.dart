@@ -41,24 +41,23 @@ class ApplicationManager {
   static Future<List<AppInfo>> _loadApps(dynamic _) async {
     using((Arena arena) {
       final filterHandlePtr = arena<app_info_filter_h>();
-      final result = tizen.app_info_filter_create(filterHandlePtr);
+      int ret = tizen.app_info_filter_create(filterHandlePtr);
+      if(ret != 0) return false;
 
-      if (result == 0) { // 0 == TIZEN_ERROR_NONE
-        final filterHandle = filterHandlePtr.value;
-        tizen.app_info_filter_add_bool(filterHandlePtr.value, PACKAGE_INFO_PROP_APP_NODISPLAY.toNativeChar(), false);
-        final filterCallback = Pointer.fromFunction<app_info_filter_cbFunction>(_getappInfowithFilter, false);
+      final filterHandle = filterHandlePtr.value;
+      ret = tizen.app_info_filter_add_bool(filterHandle, PACKAGE_INFO_PROP_APP_NODISPLAY.toNativeChar(), false);
+      if(ret != 0) return false;
 
-        tizen.app_info_filter_foreach_appinfo(
-          filterHandle,
-          filterCallback,
-          nullptr
-        );
+      final filterCallback = Pointer.fromFunction<app_info_filter_cbFunction>(_getappInfowithFilter, false);
+      ret = tizen.app_info_filter_foreach_appinfo(
+        filterHandle,
+        filterCallback,
+        nullptr
+      );
+      if(ret != 0) return false;
 
-        tizen.app_info_filter_destroy(filterHandle);
-      }
-      else {
-        debugPrint('Failed to create filter, error: $result');
-      }
+      tizen.app_info_filter_destroy(filterHandle);
+      return true;
     });
     return appInfos;
   }
