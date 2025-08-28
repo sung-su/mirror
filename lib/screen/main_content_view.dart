@@ -1,8 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
-import 'package:provider/provider.dart';
-import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/screen/home_page.dart';
 import 'package:tizen_fs/screen/media_page.dart';
 import 'package:tizen_fs/styles/app_style.dart';

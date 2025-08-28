@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/apps/app_popup.dart';
 import 'package:tizen_fs/models/app_info.dart';
-import 'package:tizen_fs/models/app_list.dart';
-import 'package:tizen_fs/styles/app_style.dart';
+import 'package:tizen_fs/models/app_info_model.dart';
 import 'package:tizen_fs/widgets/app_tile.dart';
 import 'package:tizen_fs/widgets/media_card.dart';
 import 'package:tizen_fs/widgets/selectable_gridview.dart';
@@ -44,7 +43,6 @@ class AppListState extends State<AppList> {
   @override
   void initState() {
     super.initState();
-    _itemCount = appinfos.length;
   }
 
   @override
@@ -55,14 +53,16 @@ class AppListState extends State<AppList> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appinfos = Provider.of<AppInfoModel>(context).appInfos;
-    _itemCount = appinfos.length;
   }
 
   @override
   Widget build(BuildContext context) {
+    appinfos = context.watch<AppInfoModel>().appInfos;
+
+    _itemCount = appinfos.length;
     double height = (itemHeight + 30) * rowCount;
     height = height < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.height : height;
+
     return SizedBox(
       height: _isFocused ? height : _minimumHeight,
       child: Column(
@@ -139,7 +139,7 @@ class AppListState extends State<AppList> {
                       key: key,
                       width: _itemWidth,
                       imageUrl: '',
-                      content: AppTile(app: appinfos[index]),
+                      content: AppTile(app: appinfos[index], index: index),
                       isSelected: index == selectedIndex,
                       onRequestSelect: () {
                         _gridKey.currentState?.setFocus();

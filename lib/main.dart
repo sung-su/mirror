@@ -1,10 +1,21 @@
-import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tizen_fs/models/app_info_model.dart';
 import 'package:tizen_fs/router.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
 void main() {
-  runApp(const App());
+  runApp(
+    MultiProvider (
+      providers: [
+        ChangeNotifierProvider<AppInfoModel>(
+          create: (context) => AppInfoModel(),
+        ),
+      ],
+      child: const App()
+    )
+  );
 }
 
 class App extends StatelessWidget {
@@ -23,7 +34,6 @@ class App extends StatelessWidget {
     );
   }
 }
-
 
 // class MouseDraggableScrollBehavior extends ScrollBehavior {
 //   @override

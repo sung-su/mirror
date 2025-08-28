@@ -1,15 +1,16 @@
 
 class AppInfo {
-  final String appId;
-  final String name;
-  final String icon;
-  
-  final String resourcePath;
+  String appId;
+  String name;
+  String icon;
+  String packageName;
+  String resourcePath;
 
   AppInfo({
-    required this.appId,
-    required this.name,
-    required this.icon,
-    required this.resourcePath,
+    this.appId = '',
+    this.name = '',
+    this.packageName= '',
+    this.icon = '',
+    this.resourcePath = '',
   });
 }

@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tizen_fs/models/app_list.dart';
+import 'package:tizen_fs/models/app_info_model.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
 import 'main_top_menu.dart';
 import 'main_content_view.dart';
@@ -26,7 +26,6 @@ class MainContent extends StatefulWidget {
 class _MainContentState extends State<MainContent> {
   final ScrollController _scrollController = ScrollController(keepScrollOffset: true);
   final PageController _pageController = PageController(initialPage: 0);
-  final AppInfoModel _appInfoModel = AppInfoModel.fromMock(20);
 
   @override
   void initState() {
@@ -42,38 +41,35 @@ class _MainContentState extends State<MainContent> {
     
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => _appInfoModel,
-      child: CustomScrollView(
-        scrollBehavior: ScrollBehavior().copyWith(
-          scrollbars: false,
-          overscroll: false,
-          dragDevices: {
-            PointerDeviceKind.mouse,
-            PointerDeviceKind.touch
-          }
-        ),
-        controller: _scrollController,
-        primary: false,
-        slivers: [
-          SliverAppBar(
-            pinned: false,
-            floating: false,
-            automaticallyImplyLeading: false,
-            toolbarHeight: 80,
-            backgroundColor: Colors.transparent,
-            title: MainTopMenu(
-              pageController: _pageController,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: MainContentView(
-              pageController: _pageController,
-              scrollController: _scrollController,
-            )
-          )
-        ],
+    return CustomScrollView(
+      scrollBehavior: ScrollBehavior().copyWith(
+        scrollbars: false,
+        overscroll: false,
+        dragDevices: {
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.touch
+        }
       ),
+      controller: _scrollController,
+      primary: false,
+      slivers: [
+        SliverAppBar(
+          pinned: false,
+          floating: false,
+          automaticallyImplyLeading: false,
+          toolbarHeight: 80,
+          backgroundColor: Colors.transparent,
+          title: MainTopMenu(
+            pageController: _pageController,
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: MainContentView(
+            pageController: _pageController,
+            scrollController: _scrollController,
+          )
+        )
+      ],
     );
   }
 }

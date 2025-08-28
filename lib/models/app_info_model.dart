@@ -1,29 +1,27 @@
-import 'package:flutter/material.dart';
+
+import 'package:flutter/foundation.dart';
+import 'package:tizen_fs/native/application_manager.dart';
 import 'package:tizen_fs/models/app_info.dart';
+import 'package:tizen_fs/native/package_manager.dart';
 
 class AppInfoModel extends ChangeNotifier {
-  late List<AppInfo> appInfos;
+  List<AppInfo> appInfos = [];
   bool _isLoading = false;
   int _selectedIndex = 0;
+  bool _initialized = false;
 
-  AppInfoModel(this.appInfos);
-
-  AppInfoModel.fromMock(int itemcount) {
-    _isLoading = true;
-    appInfos = _generateMockContent(itemcount);
-    _isLoading = false;
+  AppInfoModel() {
+    loadInstalledApps();
   }
 
-  static List<AppInfo> _generateMockContent(int itemcount) {
-    return List.generate(
-      itemcount,
-      (index) => AppInfo(
-        appId: '$index',
-        name: 'App $index',
-        icon: 'icon $index',
-        resourcePath: 'resource path $index',
-      ),
-    );
+  void loadInstalledApps() async {
+    if(_initialized) return;
+
+    _isLoading = true;
+    appInfos = await ApplicationManager.loadApps();
+    _isLoading = false;
+    _initialized = true;
+    notifyListeners();
   }
 
   int get selectedIndex => _selectedIndex;
@@ -33,6 +31,7 @@ class AppInfoModel extends ChangeNotifier {
   }
 
   int get itemCount => _isLoading ? 0 : appInfos.length;
+
   AppInfo getAppInfo(int index) {
     if (_isLoading) {
       return AppInfo(
@@ -57,8 +56,12 @@ class AppInfoModel extends ChangeNotifier {
     return appInfos[_selectedIndex];
   }
 
-  void removeApp(AppInfo app) {
-    notifyListeners();
-    appInfos.remove(app);
+  void removeApp(AppInfo app) async {
+    final ret = await PackageManager.uninstallPackage(app.packageName);
+    
+    if (ret) {
+      appInfos.remove(app);
+      notifyListeners();
+    } 
   }
 }

@@ -34,7 +34,7 @@ class _AppListPageState extends State<AppListPage> {
 
   static bool _getappInfo(Pointer<app_info_s> app_info, Pointer<Void> user_data) {
     final appInfo = app_info.cast<app_info_s>();
-    using((arena) {
+    using((Arena arena) {
       final pId = arena<Pointer<Char>>();
       if (tizen.app_info_get_app_id(appInfo, pId) == 0) {
         final id = pId.value.toDartString();
@@ -46,32 +46,34 @@ class _AppListPageState extends State<AppListPage> {
 
   static bool _getappInfowithFilter(Pointer<app_info_s> app_info, Pointer<Void> user_data) {
     final appInfo = app_info.cast<app_info_s>();
-    using((arena) {
+    using((Arena arena) {
       final pId = arena<Pointer<Char>>();
       if (tizen.app_info_get_app_id(appInfo, pId) == 0) {
         final id = pId.value.toDartString();
-        debugPrint('####### app id: $id');
       }
 
       final label = arena<Pointer<Char>>();
       if(tizen.app_info_get_label(app_info, label) == 0) {
         final name = label.value.toDartString();
         appIds.add(name);
-        debugPrint('####### name: $name');
+      }
+
+      final icon = arena<Pointer<Char>>();
+      if(tizen.app_info_get_icon(app_info, icon) == 0) {
+        final iconpath = icon.value.toDartString();
       }
     });
     return true;
   }
 
   void _loadApps() {
-    using((arena) {
+    using((Arena arena) {
       final filterHandlePtr = arena<app_info_filter_h>();
 
       final result = tizen.app_info_filter_create(filterHandlePtr);
 
       if (result == 0) { // 0 == TIZEN_ERROR_NONE
         final filterHandle = filterHandlePtr.value;
-        print('Filter created: $filterHandle');
 
         tizen.app_info_filter_add_bool(filterHandlePtr.value, PACKAGE_INFO_PROP_APP_NODISPLAY.toNativeChar(), false);
         final filterCallback = Pointer.fromFunction<app_info_filter_cbFunction>(_getappInfowithFilter, false);
@@ -81,8 +83,10 @@ class _AppListPageState extends State<AppListPage> {
           filterCallback,
           nullptr
         );
+
         tizen.app_info_filter_destroy(filterHandle);
-      } else {
+      }
+      else {
         print('Failed to create filter, error: $result');
       }
     });
