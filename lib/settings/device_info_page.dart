@@ -1,118 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/page_node.dart';
-import 'package:device_info_plus_tizen/device_info_plus_tizen.dart';
-import 'package:tizen_fs/settings/tizenfx.dart';
-import 'dart:ffi';
-import 'package:ffi/ffi.dart';
-import 'package:flutter/material.dart';
-import 'package:tizen_interop/9.0/tizen.dart' as tz;
+import 'package:tizen_fs/providers/device_info_provider.dart';
 
 class DeviceInfoPage extends StatefulWidget {
   final PageNode node;
   final bool isEnabled;
 
-  const DeviceInfoPage({super.key, required this.node, required this.isEnabled});
+  const DeviceInfoPage({
+    super.key,
+    required this.node,
+    required this.isEnabled,
+  });
 
   @override
   State<DeviceInfoPage> createState() => DeviceInfoPageState();
 }
 
 class DeviceInfoPageState extends State<DeviceInfoPage> {
-  int ram = -1;
-  int width = -1;
-  int height = -1;
-  late Future<TizenDeviceInfo> _deviceInfo;
-
-  int getPlatformInt(String key) {
-    return using((Arena arena) {
-      Pointer<Char> ptrKey = key.toNativeChar(allocator: arena);
-      Pointer<Int> ptrValue = arena();
-      if (tz.tizen.system_info_get_platform_int(ptrKey, ptrValue) == 0) {
-        return ptrValue.value ?? 0;
-      }
-      return 0;
-    });
-  }
-
-  Future<TizenDeviceInfo> _getDeviceInfo() async {
-    final plugin = DeviceInfoPluginTizen();
-
-    if (ram < 1) {
-      ram = using((Arena arena) {
-        Pointer<tz.runtime_memory_info_s> pMemInfo = arena();
-        if (tz.tizen.runtime_info_get_system_memory_info(pMemInfo) == 0) {
-          return pMemInfo.ref.total;
-        }
-        return 0;
-      });
-    }
-    if (height < 1) {
-      height = getPlatformInt("tizen.org/feature/screen.height");
-    }
-    if (width < 1) {
-      width = getPlatformInt("tizen.org/feature/screen.width");
-    }
-
-    return await plugin.tizenInfo;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _deviceInfo = _getDeviceInfo();
-  }
-
-  @override
-  void didUpdateWidget(var oldWidget) {
-    super.didUpdateWidget(oldWidget);
-  }
-
   Widget createKeyValue(String key, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(key, style: TextStyle(fontSize: 13)),
-        Text(
-          value,
-          style: TextStyle(fontSize: 11, color: Color(0xFF979AA0)),
-        ),
+        Text(value, style: TextStyle(fontSize: 11, color: Color(0xFF979AA0))),
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<TizenDeviceInfo>(
-      future: _deviceInfo,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          final info = snapshot.data;
+    return Consumer<DeviceInfoProvider>(
+      builder: (context, deviceInfoProvider, child) {
+        final padding = widget.isEnabled
+            ? EdgeInsets.fromLTRB(120, 60, 0, 0)
+            : EdgeInsets.fromLTRB(80, 60, 0, 0);
+
+        if (deviceInfoProvider.isLoading) {
           return Padding(
-            padding:
-                widget.isEnabled
-                    ? EdgeInsets.fromLTRB(120, 60, 0, 0)
-                    : EdgeInsets.fromLTRB(80, 60, 0, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 20,
-              children: [
-                Text("Device info", style: TextStyle(fontSize: 35)),
-                SizedBox(height: 5),
-                createKeyValue("Name", info?.platformName ?? "Unknown"),
-                createKeyValue("Model", info?.modelName ?? "Unknown"),
-                createKeyValue("Tizen version", info?.platformVersion ?? "Unknown",),
-                createKeyValue("CPU", info?.platformProcessor ?? "Unknown"),
-                createKeyValue("RAM", (ram / (1024 * 1024)).toStringAsFixed(1) + 'GB',),
-                createKeyValue("Resolution", width.toStringAsFixed(0) + 'x' + height.toStringAsFixed(0),),
-              ],
-            ),
-          );
-        } else {
-          return Padding(
-            padding:
-                widget.isEnabled
-                    ? EdgeInsets.fromLTRB(120, 60, 0, 0)
-                    : EdgeInsets.fromLTRB(80, 60, 0, 0),
+            padding: padding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 20,
@@ -121,10 +47,58 @@ class DeviceInfoPageState extends State<DeviceInfoPage> {
                 SizedBox(height: 5),
                 createKeyValue("Name", "Loading"),
                 createKeyValue("Model", "Loading"),
-                createKeyValue("Tizen version", "Loading",),
+                createKeyValue("Tizen version", "Loading"),
                 createKeyValue("CPU", "Loading"),
-                createKeyValue("RAM", 'Loading',),
+                createKeyValue("RAM", 'Loading'),
                 createKeyValue("Resolution", 'Loading'),
+              ],
+            ),
+          );
+        } else if (deviceInfoProvider.error != null) {
+          return Padding(
+            padding: padding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 20,
+              children: [
+                Text("Device info", style: TextStyle(fontSize: 35)),
+                SizedBox(height: 5),
+                Text("Error loading device information.",
+                    style: TextStyle(color: Colors.red)),
+                Text(deviceInfoProvider.error.toString()),
+              ],
+            ),
+          );
+        } else {
+          final info = deviceInfoProvider.tizenDeviceInfo;
+          final ram = deviceInfoProvider.ram;
+          final width = deviceInfoProvider.width;
+          final height = deviceInfoProvider.height;
+          return Padding(
+            padding: padding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 20,
+              children: [
+                Text("Device info", style: TextStyle(fontSize: 35)),
+                SizedBox(height: 5),
+                createKeyValue("Name", info?.platformName ?? "Unknown"),
+                createKeyValue("Model", info?.modelName ?? "Unknown"),
+                createKeyValue(
+                  "Tizen version",
+                  info?.platformVersion ?? "Unknown",
+                ),
+                createKeyValue("CPU", info?.platformProcessor ?? "Unknown"),
+                createKeyValue(
+                  "RAM",
+                  ram > 0 ? (ram / (1024 * 1024)).toStringAsFixed(1) + 'GB' : 'Unknown',
+                ),
+                createKeyValue(
+                  "Resolution",
+                  width > 0 && height > 0
+                      ? '${width.toStringAsFixed(0)}x${height.toStringAsFixed(0)}'
+                      : 'Unknown',
+                ),
               ],
             ),
           );

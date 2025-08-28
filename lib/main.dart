@@ -5,8 +5,11 @@ import 'package:tizen_fs/locator.dart';
 import 'package:tizen_fs/models/app_data_model.dart';
 import 'package:tizen_fs/router.dart';
 import 'package:tizen_fs/styles/app_style.dart';
+import 'package:provider/provider.dart';
+import 'package:tizen_fs/providers/device_info_provider.dart';
 
 void main() {
+<<<<<<< HEAD
   WidgetsFlutterBinding.ensureInitialized();
   setupAppModel();
 
@@ -15,10 +18,12 @@ void main() {
       providers: [
         ChangeNotifierProvider<AppDataModel>(
           create: (context) => getIt<AppDataModel>(),
+        ChangeNotifierProvider(
+          create: (context) => DeviceInfoProvider()..loadDeviceInfo(),
         ),
       ],
-      child: const App()
-    )
+      child: const App(),
+    ),
   );
 }
 
