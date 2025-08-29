@@ -144,7 +144,7 @@ class AppListState extends State<AppList> {
                       key: key,
                       width: _itemWidth,
                       imageUrl: '',
-                      content: AppTile(app: apps[index], index: index),
+                      content: AppTile(app: apps[index]),
                       isSelected: index == selectedIndex,
                       onRequestSelect: () {
                         _gridKey.currentState?.setFocus();
