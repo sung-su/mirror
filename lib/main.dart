@@ -1,16 +1,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tizen_fs/models/app_info_model.dart';
+import 'package:tizen_fs/locator.dart';
+import 'package:tizen_fs/models/app_data_model.dart';
 import 'package:tizen_fs/router.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  setupAppModel();
+
   runApp(
     MultiProvider (
       providers: [
-        ChangeNotifierProvider<AppInfoModel>(
-          create: (context) => AppInfoModel(),
+        ChangeNotifierProvider<AppDataModel>(
+          create: (context) => getIt<AppDataModel>(),
         ),
       ],
       child: const App()
@@ -28,6 +32,7 @@ class App extends StatelessWidget {
       title: 'Tizen First Screen',
       themeMode: ThemeMode.dark,
       theme: $style.colors.toLightThemeData(),
+
       darkTheme: $style.colors.toDarkThemeData(),
       routerConfig: AppRouter.router,
       // scrollBehavior: MouseDraggableScrollBehavior()

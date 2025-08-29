@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tizen_fs/models/app_info.dart';
+import 'package:tizen_fs/models/app_data.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
 class AppTile extends StatelessWidget {
   AppTile({super.key, required this.app, this.index = 0});
 
-  final AppInfo app;
+  final AppData app;
   final int index;
   late final Widget foreground;
   late final Widget background;

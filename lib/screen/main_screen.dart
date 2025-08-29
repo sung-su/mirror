@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tizen_fs/models/app_info_model.dart';
+import 'package:tizen_fs/models/app_data_model.dart';
 import 'package:tizen_fs/widgets/backdrop_scaffold.dart';
 import 'main_top_menu.dart';
 import 'main_content_view.dart';

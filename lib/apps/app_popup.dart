@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_fs/apps/app_popup_remove.dart';
-import 'package:tizen_fs/models/app_info.dart';
+import 'package:tizen_fs/models/app_data.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/app_tile.dart';
 
 class AppPopup extends StatefulWidget {
   const AppPopup({ super.key, required this.app, required this.onRemovePressed});
 
-  final AppInfo app;
+  final AppData app;
   final VoidCallback? onRemovePressed;
   @override
   State<AppPopup> createState() => _AppPopupState();

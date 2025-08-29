@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/apps/app_popup.dart';
-import 'package:tizen_fs/models/app_info.dart';
-import 'package:tizen_fs/models/app_info_model.dart';
-import 'package:tizen_fs/native/app_launcher.dart';
+import 'package:tizen_fs/models/app_data.dart';
+import 'package:tizen_fs/models/app_data_model.dart';
+import 'package:tizen_fs/native/app_manager.dart';
 import 'package:tizen_fs/widgets/app_tile.dart';
 import 'package:tizen_fs/widgets/media_card.dart';
 import 'package:tizen_fs/widgets/selectable_gridview.dart';
@@ -39,7 +39,7 @@ class AppListState extends State<AppList> {
 
   double _scrollOffset = 0;
 
-  List<AppInfo> appinfos = [];
+  List<AppData> AppDatas = [];
 
   @override
   void initState() {
@@ -58,9 +58,9 @@ class AppListState extends State<AppList> {
 
   @override
   Widget build(BuildContext context) {
-    appinfos = context.watch<AppInfoModel>().appInfos;
+    AppDatas = context.watch<AppDataModel>().appInfos;
 
-    _itemCount = appinfos.length;
+    _itemCount = AppDatas.length;
     double height = (itemHeight + 30) * rowCount;
     height = height < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.height : height;
 
@@ -112,7 +112,7 @@ class AppListState extends State<AppList> {
               key: _gridKey,
               scrollController: widget.scrollController!,
               padding: EdgeInsets.symmetric(horizontal: _hPadding, vertical: _isFocused ? _vPadding : _vPadding),
-              itemCount: _isFocused ? appinfos.length : appinfos.length < 5 ? appinfos.length : 5,
+              itemCount: _isFocused ? AppDatas.length : AppDatas.length < 5 ? AppDatas.length : 5,
               itemRatio: _itemRatio,
               onFocused: () {
                 setState(() {
@@ -130,21 +130,21 @@ class AppListState extends State<AppList> {
                 }
               },
               onItemSelected: (selected) {
-                AppLauncher.launch(appinfos[selected].appId);
+                ApplicationManager.launch(AppDatas[selected].appId);
               },
               onItemLongPressed: (selected) {
-                _showFullScreenPopup(context, appinfos[selected]);
+                _showFullScreenPopup(context, AppDatas[selected]);
               },
               itemBuilder: (context, index, selectedIndex, key) {
                 return Center(
                   child: GestureDetector(
-                    onDoubleTap: () => AppLauncher.launch(appinfos[index].appId),
-                    onLongPress: () => _showFullScreenPopup(context, appinfos[index]),
+                    onDoubleTap: () => ApplicationManager.launch(AppDatas[index].appId),
+                    onLongPress: () => _showFullScreenPopup(context, AppDatas[index]),
                     child: MediaCard(
                       key: key,
                       width: _itemWidth,
                       imageUrl: '',
-                      content: AppTile(app: appinfos[index], index: index),
+                      content: AppTile(app: AppDatas[index], index: index),
                       isSelected: index == selectedIndex,
                       onRequestSelect: () {
                         _gridKey.currentState?.setFocus();
@@ -164,11 +164,11 @@ class AppListState extends State<AppList> {
     );
   }
 
-  void _removeApp(AppInfo app) {
-    Provider.of<AppInfoModel>(context, listen: false).removeApp(app);
+  void _removeApp(AppData app) {
+    ApplicationManager.uninstallPackage(app.packageName);
   }
 
-  void _showFullScreenPopup (BuildContext context, AppInfo app) {
+  void _showFullScreenPopup (BuildContext context, AppData app) {
     _scrollOffset = widget.scrollController?.offset ?? 0;
     setState(() {
       _isPopupOpened = true;

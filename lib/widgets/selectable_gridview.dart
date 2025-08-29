@@ -136,6 +136,9 @@ class SelectableGridViewState extends State<SelectableGridView> {
     }
     else if (event is KeyUpEvent) {
       if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.select) {
+        if (_pressedAt == null)
+          return KeyEventResult.handled;
+          
         final duration = DateTime.now().difference(_pressedAt!);
         if (duration >= longPressThreshold) { //longpress
           widget.onItemLongPressed?.call(_selectedIndex);

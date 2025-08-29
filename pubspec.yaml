@@ -49,6 +49,9 @@ dependencies:
   device_info_plus_tizen: ^1.2.1
   ffi: ^2.0.1
   tizen_interop: ^0.4.1
+  tizen_package_manager: ^0.3.0
+  tizen_app_control: ^0.2.3
+  tizen_app_manager: ^0.1.5
 
 dev_dependencies:
   flutter_test:
