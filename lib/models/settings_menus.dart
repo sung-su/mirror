@@ -27,7 +27,7 @@ class SettingPages {
           PageNode(
             id: 'profile_tizen',
             title: 'Tizen',
-            icon: IconData(0x0054, fontFamily: 'MaterialIcons'), //unicode T: 0054
+            // icon: IconData(0x0054, fontFamily: 'MaterialIcons'), //unicode T: 0054
             children: [
               PageNode(
                 id: 'profile_tizen_active',
