@@ -52,6 +52,7 @@ dependencies:
   tizen_package_manager: ^0.3.0
   tizen_app_control: ^0.2.3
   tizen_app_manager: ^0.1.5
+  get_it: ^8.2.0
 
 dev_dependencies:
   flutter_test:

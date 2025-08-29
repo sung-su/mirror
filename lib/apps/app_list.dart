@@ -39,7 +39,7 @@ class AppListState extends State<AppList> {
 
   double _scrollOffset = 0;
 
-  List<AppData> AppDatas = [];
+  List<AppData> apps = [];
 
   @override
   void initState() {
@@ -58,9 +58,9 @@ class AppListState extends State<AppList> {
 
   @override
   Widget build(BuildContext context) {
-    AppDatas = context.watch<AppDataModel>().appInfos;
+    apps = context.watch<AppDataModel>().appInfos;
 
-    _itemCount = AppDatas.length;
+    _itemCount = apps.length;
     double height = (itemHeight + 30) * rowCount;
     height = height < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.height : height;
 
@@ -112,7 +112,7 @@ class AppListState extends State<AppList> {
               key: _gridKey,
               scrollController: widget.scrollController!,
               padding: EdgeInsets.symmetric(horizontal: _hPadding, vertical: _isFocused ? _vPadding : _vPadding),
-              itemCount: _isFocused ? AppDatas.length : AppDatas.length < 5 ? AppDatas.length : 5,
+              itemCount: _isFocused ? apps.length : apps.length < 5 ? apps.length : 5,
               itemRatio: _itemRatio,
               onFocused: () {
                 setState(() {
@@ -130,21 +130,21 @@ class AppListState extends State<AppList> {
                 }
               },
               onItemSelected: (selected) {
-                ApplicationManager.launch(AppDatas[selected].appId);
+                ApplicationManager.launch(apps[selected].appId);
               },
               onItemLongPressed: (selected) {
-                _showFullScreenPopup(context, AppDatas[selected]);
+                _showFullScreenPopup(context, apps[selected]);
               },
               itemBuilder: (context, index, selectedIndex, key) {
                 return Center(
                   child: GestureDetector(
-                    onDoubleTap: () => ApplicationManager.launch(AppDatas[index].appId),
-                    onLongPress: () => _showFullScreenPopup(context, AppDatas[index]),
+                    onDoubleTap: () => ApplicationManager.launch(apps[index].appId),
+                    onLongPress: () => _showFullScreenPopup(context, apps[index]),
                     child: MediaCard(
                       key: key,
                       width: _itemWidth,
                       imageUrl: '',
-                      content: AppTile(app: AppDatas[index], index: index),
+                      content: AppTile(app: apps[index], index: index),
                       isSelected: index == selectedIndex,
                       onRequestSelect: () {
                         _gridKey.currentState?.setFocus();
