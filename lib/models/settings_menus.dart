@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/page_node.dart';
 import 'package:tizen_fs/poc/empty_page.dart';
 import 'package:tizen_fs/settings/device_info_page.dart';
+import 'package:tizen_fs/settings/profile_active_page.dart';
 
 class SettingPages {
   late final PageNode _root;
@@ -18,6 +19,7 @@ class SettingPages {
       title: 'Settings',
       children: []
     );
+
     settings.children.add(
       PageNode(
         id: 'profile',
@@ -32,10 +34,13 @@ class SettingPages {
               PageNode(
                 id: 'profile_tizen_active',
                 title: 'Active',
+                isEnd: true,
+                builder: (context, node, isEnabled) => ProfileActivePage(node: node, isEnabled: isEnabled),
               ),
               PageNode(
                 id: 'profile_tizen_remove',
                 title: 'Remove',
+                isEnd: true,
               ),
             ]
           ),

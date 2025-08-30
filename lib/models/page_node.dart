@@ -8,6 +8,7 @@ class PageNode {
   final List<PageNode> children;
   final Widget Function(BuildContext context, PageNode node, bool isEnabled)?
   builder;
+  final bool isEnd;
 
   PageNode({
     required this.id,
@@ -16,5 +17,6 @@ class PageNode {
     this.icon,
     this.builder,
     this.children = const [],
+    this.isEnd = false
   });
 }

@@ -88,8 +88,13 @@ class SettingsState extends State<Settings> {
     var current = _current;
     List newItems = [];
 
-    newItems = [node.children[selected], null];
-    final List newKeys = List.generate(2, (_) => GlobalKey());
+    newItems = [node.children[selected]];
+    final List newKeys = List.generate(1, (_) => GlobalKey());
+
+    if(!node.children[selected].isEnd) {
+      newItems.add(null);
+      newKeys.add(GlobalKey());
+    }
 
     setState(() {
       _itemKeys = [..._itemKeys.sublist(0, current + 1), ...newKeys];
