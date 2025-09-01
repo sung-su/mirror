@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
+import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:tizen_fs/screen/home_page.dart';
 import 'package:tizen_fs/screen/media_page.dart';
 import 'package:tizen_fs/styles/app_style.dart';
@@ -10,10 +12,14 @@ class MainContentView extends StatefulWidget {
     super.key,
     required this.pageController,
     required this.scrollController,
+    required this.register,
+    required this.unregister,
   });
 
   final PageController pageController;
   final ScrollController scrollController;
+  final void Function(int, Function(ScrollDirection, bool)) register;
+  final void Function(int) unregister;
 
   @override
   State<MainContentView> createState() => _MainContentViewState();
@@ -40,7 +46,10 @@ class _MainContentViewState extends State<MainContentView> {
       controller: _controller,
       physics: const NeverScrollableScrollPhysics(),
       children: [
-        _buildFadingPage(index: 0, child: HomePage(scrollController: widget.scrollController)),
+        _buildFadingPage(index: 0, child: HomePage(
+          scrollController: widget.scrollController, 
+          register: widget.register,
+          unregister: widget.unregister,)),
         _buildFadingPage(index: 1, child: MediaPage()),
       ]);
   }

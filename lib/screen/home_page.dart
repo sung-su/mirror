@@ -1,6 +1,7 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
@@ -11,9 +12,12 @@ import 'package:tizen_fs/widgets/immersive_carousel.dart';
 import 'package:tizen_fs/models/immersive_carosel_model.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.scrollController});
+  const HomePage({super.key, required this.scrollController, required this.register, required this.unregister});
 
   final ScrollController scrollController;
+  final void Function(int, Function(ScrollDirection, bool)) register;
+  final void Function(int) unregister;
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -30,6 +34,59 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    widget.register(0 ,_scrollEnd);
+  }
+
+  @override
+  void dispose() {
+    widget.unregister(0);
+    super.dispose();
+  }
+
+  void _scrollEnd(ScrollDirection direction, bool scrollEnd) {
+    final context = _applistKey.currentContext;
+    if (context != null) {
+      final screenHeight = MediaQuery.of(context).size.height;
+      final applistBox = context.findRenderObject() as RenderBox;
+      final dy = applistBox.localToGlobal(Offset.zero).dy;
+      final threshold = screenHeight / 2;
+
+      if (scrollEnd) {
+        if (dy < threshold) {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            _isScrolling = true;
+            await widget.scrollController.animateTo(
+              430,
+              duration: $style.times.med,
+              curve: Curves.easeOutSine
+            );
+            _isScrolling = false;
+            _footerKey.currentState?.hide();
+            _applistKey.currentState?.setFocus();
+          });
+        } else {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            _isScrolling = true;
+            await widget.scrollController.animateTo(
+              0,
+              duration: $style.times.med,
+              curve: Curves.easeOutSine
+            );
+            _isScrolling = false;
+            _footerKey.currentState?.show();
+           _carouselKey.currentState?.initFocus();
+          });
+        }
+      } else {
+        if (dy < threshold) {
+            _carouselKey.currentState?.stopAutoScroll();
+            _applistKey.currentState?.setOpenState(true);
+        } else {
+          _carouselKey.currentState?.restartAutoScroll();
+          _applistKey.currentState?.setOpenState(false);
+        }
+      }
+    }
   }
 
   @override
@@ -69,20 +126,17 @@ class _HomePageState extends State<HomePage> {
               onFocusChanged: (hasFocus) async {
                 if (hasFocus) {
                   _carouselKey.currentState?.stopAutoScroll();
-                  WidgetsBinding.instance.addPostFrameCallback((_) async {
-                    var context = _applistKey.currentContext;
-                    if (context != null) {
-                      _isScrolling = true;
-                      await Scrollable.ensureVisible(
-                        context,
-                        alignment: 0,
-                        duration: $style.times.med,
-                        curve: Curves.easeInOut
-                      );
-                      _isScrolling = false;
-                      _footerKey.currentState?.hide();
-                    }
-                  });
+                  var context = _applistKey.currentContext;
+                  if (context != null) {
+                    _isScrolling = true;
+                    await widget.scrollController.animateTo(
+                      430,
+                      duration: $style.times.fast,
+                      curve: Curves.easeInOut
+                    );
+                    _isScrolling = false;
+                    _footerKey.currentState?.hide();
+                  }
                 } else {
                   _carouselKey.currentState?.restartAutoScroll();
                 }
@@ -114,6 +168,7 @@ class Footer extends StatefulWidget {
 class FooterState extends State<Footer> {
 
   bool _isVisible = true;
+  bool get isVisible => _isVisible;
 
   void show() {
     setState(() {
