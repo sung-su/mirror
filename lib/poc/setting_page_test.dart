@@ -9,7 +9,7 @@ class SettingPageTest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: node.builder?.call(context, node, false),
+      body: node.builder?.call(context, node, false, (_){}),
     );
   }
 }

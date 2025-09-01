@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/page_node.dart';
+import 'package:tizen_fs/settings/setting_page_interface.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/setting_list_view.dart';
 
@@ -20,7 +21,7 @@ class SettingPage extends StatefulWidget {
 }
 
 class SettingPageState extends State<SettingPage>
-    with AutomaticKeepAliveClientMixin {
+  with AutomaticKeepAliveClientMixin implements SettingPageInterface{
   GlobalKey<SettingListViewState> _listKey = GlobalKey<SettingListViewState>();
 
   double _opacity = 0;
@@ -43,10 +44,12 @@ class SettingPageState extends State<SettingPage>
     }
   }
 
+  @override
   void initFocus() {
     _listKey.currentState?.initFocus();
   }
 
+  @override
   void hidePage() {
     setState(() {
       _opacity = 0;
@@ -73,6 +76,15 @@ class SettingPageState extends State<SettingPage>
     }
 
     if (widget.node!.builder != null) {
+      var page = widget.node!.builder?.call(
+        context,
+        widget.node!,
+        widget.isEnabled,
+        (selected) {
+          widget.onSelectionChanged?.call(selected);
+        }
+      );
+
       return Container(
         color:
             widget.isEnabled
@@ -82,11 +94,7 @@ class SettingPageState extends State<SettingPage>
           duration: $style.times.fast,
           opacity: _opacity,
           curve: Curves.easeInOut,
-          child: widget.node!.builder?.call(
-            context,
-            widget.node!,
-            widget.isEnabled,
-          ),
+          child: page,
         ),
       );
     }

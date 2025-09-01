@@ -8,7 +8,7 @@ class PageTreeTest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: node.builder?.call(context, node, false),
+      body: node.builder?.call(context, node, false, (_){}),
     );
   }
 }
@@ -16,46 +16,46 @@ class PageTreeTest extends StatelessWidget {
 final PageNode rootNode = PageNode(
   id: 'page_tree',
   title: 'Page Tree Test',
-  builder: (context, node, isEnabled) => RootPageWidget(node: node),
+  builder: (context, node, isEnabled, onItemSelected) => RootPageWidget(node: node),
   children: [
     PageNode(
       id: 'page1',
       title: 'Page 1',
-      builder: (context, node, isEnabled) => Page1Widget(node: node),
+      builder: (context, node, isEnabled, onItemSelected) => Page1Widget(node: node),
       children: [
         PageNode(
           id: 'page1-1',
           title: 'Page 1-1',
-          builder: (context, node, isEnabled) => LeafPageWidget(node: node),
+          builder: (context, node, isEnabled, onItemSelected) => LeafPageWidget(node: node),
         ),
         PageNode(
           id: 'page1-2',
           title: 'Page 1-2',
-          builder: (context, node, isEnabled) => LeafPageWidget(node: node),
+          builder: (context, node, isEnabled, onItemSelected) => LeafPageWidget(node: node),
         ),
       ],
     ),
     PageNode(
       id: 'page2',
       title: 'Page 2',
-      builder: (context, node, isEnabled) => Page2Widget(node: node),
+      builder: (context, node, isEnabled, onItemSelected) => Page2Widget(node: node),
       children: [
         PageNode(
           id: 'page2-1',
           title: 'Page 2-1',
-          builder: (context, node, isEnabled) => LeafPageWidget(node: node),
+          builder: (context, node, isEnabled, onItemSelected) => LeafPageWidget(node: node),
         ),
       ],
     ),
     PageNode(
       id: 'page3',
       title: 'Page 3',
-      builder: (context, node, isEnabled) => Page3Widget(node: node),
+      builder: (context, node, isEnabled, onItemSelected) => Page3Widget(node: node),
       children: [
         PageNode(
           id: 'page3-1',
           title: 'Page 3-1',
-          builder: (context, node, isEnabled) => LeafPageWidget(node: node),
+          builder: (context, node, isEnabled, onItemSelected) => LeafPageWidget(node: node),
         ),
       ],
     ),
