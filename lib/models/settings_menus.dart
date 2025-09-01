@@ -35,7 +35,7 @@ class SettingPages {
                 id: 'profile_tizen_active',
                 title: 'Active',
                 isEnd: true,
-                builder: (context, node, isEnabled) => ProfileActivePage(node: node, isEnabled: isEnabled),
+                builder: (context, node, isEnabled, onItemSelected) => ProfileActivePage(node: node, isEnabled: isEnabled),
               ),
               PageNode(
                 id: 'profile_tizen_remove',
@@ -61,7 +61,7 @@ class SettingPages {
           PageNode(
             id: 'about_device_device_info',
             title: 'Device info',
-            builder: (context, node, isEnabled) => DeviceInfoPage(node: node, isEnabled: isEnabled),
+            builder: (context, node, isEnabled, onItemSelected) => DeviceInfoPage(node: node, isEnabled: isEnabled),
           ),
           PageNode(
             id: 'about_device_opensource_license',

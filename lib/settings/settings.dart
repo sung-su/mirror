@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_fs/models/page_node.dart';
 import 'package:tizen_fs/models/settings_menus.dart';
+import 'package:tizen_fs/settings/setting_page_interface.dart';
 import 'package:tizen_fs/settings/setting_page.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
@@ -80,9 +81,9 @@ class SettingsState extends State<Settings> {
   void _updatePages(PageNode? node, int selected){
     if(node == null) return;
 
-    final currentState = _itemKeys[_current + 1]?.currentState;
-    if(currentState is SettingPageState) {
-      currentState.hidePage();
+    final state = _itemKeys[_current + 1]?.currentState;
+    if(state is SettingPageInterface) {
+      (state as SettingPageInterface)?.hidePage();
     }
 
     var current = _current;
