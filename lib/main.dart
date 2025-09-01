@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:tizen_fs/providers/device_info_provider.dart';
 
 void main() {
-<<<<<<< HEAD
   WidgetsFlutterBinding.ensureInitialized();
   setupAppModel();
 
@@ -18,6 +17,7 @@ void main() {
       providers: [
         ChangeNotifierProvider<AppDataModel>(
           create: (context) => getIt<AppDataModel>(),
+        ),
         ChangeNotifierProvider(
           create: (context) => DeviceInfoProvider()..loadDeviceInfo(),
         ),

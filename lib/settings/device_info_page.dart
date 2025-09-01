@@ -72,8 +72,8 @@ class DeviceInfoPageState extends State<DeviceInfoPage> {
         } else {
           final info = deviceInfoProvider.tizenDeviceInfo;
           final ram = deviceInfoProvider.ram;
-          final width = deviceInfoProvider.width;
-          final height = deviceInfoProvider.height;
+          final width = deviceInfoProvider.tizenDeviceInfo?.screenWidth ?? 1;
+          final height = deviceInfoProvider.tizenDeviceInfo?.screenHeight ?? 1;
           return Padding(
             padding: padding,
             child: Column(
