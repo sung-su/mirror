@@ -12,7 +12,8 @@ class SelectableGridView extends StatefulWidget {
     this.padding,
     this.onFocused,
     this.onUnfocused,
-    this.onItemSelected
+    this.onItemSelected,
+    this.onItemLongPressed
   });
 
   final int itemCount;
@@ -22,6 +23,7 @@ class SelectableGridView extends StatefulWidget {
   final VoidCallback? onFocused;
   final VoidCallback? onUnfocused;
   final Function(int)? onItemSelected;
+  final Function(int)? onItemLongPressed;
   final ScrollController scrollController;
 
   @override
@@ -32,6 +34,9 @@ class SelectableGridViewState extends State<SelectableGridView> {
   final FocusNode _focusNode = FocusNode();
   final GlobalKey _gridKey = GlobalKey();
   late List<GlobalKey> _itemKeys;
+
+  DateTime? _pressedAt;
+  final Duration longPressThreshold = const Duration(milliseconds: 600);
 
   int _selectedIndex = -1;
   int _lastSelected = 0;
@@ -125,9 +130,26 @@ class SelectableGridViewState extends State<SelectableGridView> {
         return KeyEventResult.handled;
       }
       else if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.select) {
-        widget.onItemSelected?.call(_selectedIndex);
+        _pressedAt = DateTime.now();
         return KeyEventResult.handled;
       }
+    }
+    else if (event is KeyUpEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.select) {
+        if (_pressedAt == null)
+          return KeyEventResult.handled;
+          
+        final duration = DateTime.now().difference(_pressedAt!);
+        if (duration >= longPressThreshold) { //longpress
+          widget.onItemLongPressed?.call(_selectedIndex);
+        }
+        else {
+          widget.onItemSelected?.call(_selectedIndex);
+        }
+        _pressedAt = null;
+        return KeyEventResult.handled;
+      }
+
     }
     return KeyEventResult.ignored;
   }

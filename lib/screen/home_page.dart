@@ -3,15 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:tizen_fs/models/app_info.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/utils/noscroll_focustraversal_policy.dart';
 import 'package:tizen_fs/apps/app_list.dart';
 import 'package:tizen_fs/widgets/immersive_carousel.dart';
 import 'package:tizen_fs/models/immersive_carosel_model.dart';
-// import 'package:tizen_fs/poc/webview.dart';
-import 'package:tizen_fs/widgets/home_screen_size_wrapper.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.scrollController});
@@ -27,7 +24,6 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<AppListState> _applistKey = GlobalKey<AppListState>();
   final GlobalKey<FooterState> _footerKey = GlobalKey<FooterState>();
 
-  List<AppInfo> appInfos = [];
   bool _isAnimating = false;
   bool _isScrolling = false;
 

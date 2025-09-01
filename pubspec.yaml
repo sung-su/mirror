@@ -37,7 +37,7 @@ dependencies:
   go_router: ^13.0.0
   provider:
   path_provider: ^2.1.4
-  path_provider_tizen: ^2.2.0
+  path_provider_tizen: ^2.0.3
   expandable_page_view: ^1.0.17
   flutter_reorderable_grid_view: ^5.5.0 #1
   reorderable_grid_view: ^2.2.6 #2
@@ -47,6 +47,12 @@ dependencies:
   webview_flutter_lwe:
 
   device_info_plus_tizen: ^1.2.1
+  ffi: ^2.0.1
+  tizen_interop: ^0.4.1
+  tizen_package_manager: ^0.3.0
+  tizen_app_control: ^0.2.3
+  tizen_app_manager: ^0.1.5
+  get_it: ^8.2.0
 
 dev_dependencies:
   flutter_test:
