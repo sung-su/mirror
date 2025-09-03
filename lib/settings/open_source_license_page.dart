@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/page_node.dart';
-import 'package:device_info_plus_tizen/device_info_plus_tizen.dart';
-import 'package:tizen_fs/settings/tizenfx.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:tizen_fs/providers/license_provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class OpenSourceLicensePage extends StatefulWidget {
   final PageNode node;
@@ -21,114 +19,61 @@ class OpenSourceLicensePage extends StatefulWidget {
 }
 
 class OpenSourceLicensePageState extends State<OpenSourceLicensePage> {
-  late Future<String> _lisence;
-
-  Future<String> loadLicense() async {
-    return await rootBundle.loadString('assets/LICENSE');
-  }
-
-  Future<String> readLicenseHtml() async {
-    return await File('/usr/share/license.html').readAsString();
-  }
-
-  String _title = "Open source license";
-  double _titleFontSize = 35;
-  double _titleHeight = 100;
+  late final LicenseProvider _licenseProvider;
+  Future<WebViewWidget?>? _webViewFuture;
 
   @override
   void initState() {
     super.initState();
-    _lisence = loadLicense();
+    _licenseProvider = Provider.of<LicenseProvider>(context, listen: false);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _startWebViewInitialization();
+    });
+  }
+
+  void _startWebViewInitialization() {
+    _licenseProvider.resetState();
+    setState(() {
+      _webViewFuture = _licenseProvider.initializeWebView();
+    });
   }
 
   @override
-  void didUpdateWidget(var oldWidget) {
-    super.didUpdateWidget(oldWidget);
+  void dispose() {
+    _webViewFuture = null;
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final textPainter = TextPainter(
-      text: TextSpan(text: _title, style: TextStyle(fontSize: _titleFontSize)),
-      textDirection: TextDirection.ltr,
-      maxLines: 2,
-    )..layout(maxWidth: 240);
-
-    final neededHeight = textPainter.size.height - 25;
-
-    return FutureBuilder<String>(
-      future: _lisence,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          final info = snapshot.data;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 20,
-            children: [
-              SizedBox(
-                height:
-                    widget.isEnabled
-                        ? _titleHeight
-                        : neededHeight + 50 < _titleHeight
-                        ? _titleHeight
-                        : _titleHeight + neededHeight,
-                width: widget.isEnabled ? 600 : 400,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(80, 60, 80, 0),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      _title,
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
-                      maxLines: 2,
-                      style: TextStyle(fontSize: _titleFontSize),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView (
-                  scrollDirection: Axis.vertical,
-                  child: Padding(
-                    padding:
-                      widget.isEnabled
-                      ? EdgeInsets.fromLTRB(80, 10, 80, 0)
-                      : EdgeInsets.fromLTRB(80, 10, 220, 0),
-                    child: Text(
-                      info ?? "Unknown",
-                      style: TextStyle(fontSize: 11, color: Color(0xFF979AA0)),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        } else {
-          return SizedBox(
-            height:
-                widget.isEnabled
-                    ? _titleHeight
-                    : neededHeight + 50 < _titleHeight
-                    ? _titleHeight
-                    : _titleHeight + neededHeight,
-            width: widget.isEnabled ? 600 : 400,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(80, 60, 80, 0),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  _title,
-                  softWrap: true,
-                  overflow: TextOverflow.visible,
-                  maxLines: 2,
-                  style: TextStyle(fontSize: _titleFontSize),
-                ),
+    return Scaffold(
+      body: Container(
+        padding: const EdgeInsets.fromLTRB(80, 60, 80, 60),
+        width: widget.isEnabled ? 600 : 400,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 20,
+          children: [
+            Text(
+              widget.node.title,
+              style: const TextStyle(fontSize: 35),
+            ),
+            Expanded(
+              child: FutureBuilder<WebViewWidget?>(
+                future: _webViewFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return snapshot.data!;
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
               ),
             ),
-          );
-        }
-      },
+          ],
+        ),
+      ),
     );
   }
 }

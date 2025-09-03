@@ -67,7 +67,7 @@ class SettingPages {
           PageNode(
             id: 'about_device_opensource_license',
             title: 'Open source license',
-            builder: (context, node, isEnabled) => OpenSourceLicensePage(node: node, isEnabled: isEnabled),
+            builder: (context, node, isEnabled, onItemSelected) => OpenSourceLicensePage(node: node, isEnabled: isEnabled),
           ),
           PageNode(
             id: 'about_device_certificates',
