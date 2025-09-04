@@ -44,7 +44,7 @@ dependencies:
   shimmer: ^3.0.0
   cached_network_image: ^3.4.1
   webview_flutter: ^4.10.0
-  webview_flutter_tizen: ^0.9.6
+  webview_flutter_lwe:
 
   device_info_plus_tizen: ^1.2.1
   ffi: ^2.0.1

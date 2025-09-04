@@ -5,11 +5,6 @@ import 'package:tizen_fs/locator.dart';
 import 'package:tizen_fs/models/app_data_model.dart';
 import 'package:tizen_fs/router.dart';
 import 'package:tizen_fs/styles/app_style.dart';
-import 'package:provider/provider.dart';
-import 'package:tizen_fs/providers/license_provider.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
-import 'package:webview_flutter_tizen/webview_flutter_tizen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,9 +14,6 @@ void main() {
       providers: [
         ChangeNotifierProvider<AppDataModel>(
           create: (context) => getIt<AppDataModel>(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => LicenseProvider(),
         ),
       ],
       child: const App(),
