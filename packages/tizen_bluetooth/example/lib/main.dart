@@ -249,6 +249,14 @@ class _MyAppState extends State<MyApp> {
                   const SizedBox(width: 10),
                   TextButton(
                     onPressed: () {
+                      debugPrint('call btDeviceCancelBonding()');
+                      TizenBluetoothManager.btDeviceCancelBonding();
+                    },
+                    child: const Text('btDeviceCancelBonding()'),
+                  ),
+                  const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: () {
                       debugPrint('call btDeviceSetBondDestroyedCallback()');
                       /*TizenBluetoothManager.btDeviceSetBondDestroyedCallback((
                         int result,

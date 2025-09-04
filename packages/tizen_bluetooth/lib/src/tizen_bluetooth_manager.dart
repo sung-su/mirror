@@ -380,6 +380,16 @@ class TizenBluetoothManager {
     _btDeviceSetBondCreatedCallback = null;
   }
 
+  static void btDeviceCancelBonding() {
+    if (!initialized) return;
+    int ret = tizen.bt_device_cancel_bonding();
+    if (ret != 0) {
+      throw Exception(
+        'Failed to bt_device_cancel_bonding. Error code: ${tizen.get_error_message(ret).toDartString()}',
+      );
+    }
+  }
+
   /*
   static void onBtDeviceSetBondDestroyedCallback(
     int result,
