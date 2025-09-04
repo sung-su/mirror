@@ -70,6 +70,16 @@ namespace
              flutter::EncodableValue(info.appearance)},
             {flutter::EncodableValue("serviceCount"),
              flutter::EncodableValue(info.serviceCount)},
+            {flutter::EncodableValue("serviceUuid"),
+             flutter::EncodableValue([&info]()
+                                     {
+               flutter::EncodableList serviceUuidList;
+               for (const auto& uuid : info.serviceUuid) {
+                 serviceUuidList.push_back(flutter::EncodableValue(uuid));
+               }
+               return serviceUuidList; }())},
+            {flutter::EncodableValue("manufacturerData"),
+             flutter::EncodableValue(info.manufacturerData)},
             //  serviceUuid: map['serviceUuid'] as List<String>,
             //  manufacturerDataLen: map['manufacturerDataLen'] as int,
             // manufacturerData: map['manufacturerData'] as String,

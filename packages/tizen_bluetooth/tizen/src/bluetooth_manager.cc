@@ -36,13 +36,13 @@ static void bt_adapter_device_discovery_state_changed_callback(int result, bt_ad
     info.rssi = discovery_info->rssi;
     info.isBonded = discovery_info->is_bonded;
     info.appearance = discovery_info->appearance;
-    // char **service_uuid = discovery_info->service_uuid;
-    // info.serviceCount = discovery_info->service_count;
-    // for (int i = 0; i < discovery_info->service_count; i++)
-    // {
-    //   serviceUuid.push_back(service_uuid[i]);
-    // }
-    // info.manufacturerData = strndup(discovery_info->manufacturer_data, discovery_info->manufacturer_data_len);
+    char **service_uuid = discovery_info->service_uuid;
+    info.serviceCount = discovery_info->service_count;
+    for (int i = 0; i < discovery_info->service_count; i++)
+    {
+      info.serviceUuid.push_back(service_uuid[i]);
+    }
+    info.manufacturerData = strndup(discovery_info->manufacturer_data, discovery_info->manufacturer_data_len);
 
     self->device_discovery_info_state_changed_callback_(result, (int)discovery_state, info);
   }

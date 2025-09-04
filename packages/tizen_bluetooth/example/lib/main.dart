@@ -113,13 +113,24 @@ class _MyAppState extends State<MyApp> {
                             '${deviceDiscoveryInfo.btClass.majorServiceClassMask} /'
                             'isBonded :${deviceDiscoveryInfo.isBonded} /'
                             'rssi :${deviceDiscoveryInfo.rssi} /'
-                            'appearance :${deviceDiscoveryInfo.appearance} /',
+                            'appearance :${deviceDiscoveryInfo.appearance} /'
+                            'serviceUuid :${deviceDiscoveryInfo.serviceUuid} /'
+                            'manufacturerData :${deviceDiscoveryInfo.manufacturerData} /'
+                            'manufacturerDataLen :${deviceDiscoveryInfo.manufacturerDataLen} /',
                           );
                         }
                       });
                     },
                     child: const Text(
                       'btAdapterSetDeviceDiscoveryStateChangedCallback',
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      await TizenBluetoothManager.btAdapterUnsetDeviceDiscoveryStateChangedCallback();
+                    },
+                    child: const Text(
+                      'btAdapterUnsetDeviceDiscoveryStateChangedCallback',
                     ),
                   ),
                 ],

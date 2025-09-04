@@ -227,7 +227,7 @@ class DeviceDiscoveryInfo {
       rssi: map['rssi'] != null ? map['rssi'] as int : 0,
       isBonded: map['isBonded'] != null ? map['isBonded'] as bool : false,
       serviceUuid: map['serviceUuid'] != null
-          ? map['serviceUuid'] as List<String>
+          ? List<String>.from(map['serviceUuid'] as List)
           : [],
       serviceCount: map['serviceCount'] != null
           ? map['serviceCount'] as int

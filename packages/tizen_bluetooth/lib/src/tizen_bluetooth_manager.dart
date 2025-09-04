@@ -149,12 +149,32 @@ class TizenBluetoothManager {
     );
   }
 
+  static Future<void>
+  btAdapterUnsetDeviceDiscoveryStateChangedCallback() async {
+    if (!initialized) return;
+    int ret = tizen.bt_adapter_unset_device_discovery_state_changed_cb();
+    if (ret != 0) {
+      throw Exception(
+        'Failed to bt_adapter_unset_device_discovery_state_changed_cb. Error code: ${tizen.get_error_message(ret).toDartString()}',
+      );
+    }
+
+    _deviceDiscoveryStateChangedSubscription?.cancel();
+    _deviceDiscoveryStateChangedSubscription = null;
+    _btAdapterDeviceDiscoveryStateChangedCallback = null;
+  }
+
   static Future<void> btAdapterStartDeviceDiscovery() async {
     if (!initialized) return;
 
+    if (_btAdapterDeviceDiscoveryStateChangedCallback == null) {
+      debugPrint('No callback');
+      return;
+    }
+
     _deviceDiscoveryStateChangedSubscription = deviceDiscoveryStateChangedStream
         .listen((DeviceDiscoveryInfo info) {
-          print(
+          debugPrint(
             'call _btAdapterDeviceDiscoveryStateChangedCallback result ${info.result} state ${info.state}',
           );
           if (_btAdapterDeviceDiscoveryStateChangedCallback != null) {
@@ -179,6 +199,11 @@ class TizenBluetoothManager {
 
   static Future<void> btAdapterStopDeviceDiscovery() async {
     if (!initialized) return;
+
+    if (_btAdapterDeviceDiscoveryStateChangedCallback == null) {
+      debugPrint('No callback');
+      return;
+    }
 
     int ret = tizen.bt_adapter_stop_device_discovery();
     if (ret != 0) {
