@@ -118,42 +118,37 @@ class SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:BackButtonListener(
-        onBackButtonPressed: () async {
-          return true;
-        },
-        child: Focus(
-          focusNode: _focusNode,
-          onKeyEvent: _onKeyEvent,
-          child: PageView.builder(
-            controller: _pageController,
-            padEnds: false,
-            scrollDirection: Axis.horizontal,
-            itemCount: _pages.length,
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              if (_pages[index] == null) {
-                return Container(
-                  color: Theme.of(context).colorScheme.onTertiary
-                );
-              } else {
-                return GestureDetector(
-                  onTap: () {
-                    _selectTo(index);
+      body:Focus(
+        focusNode: _focusNode,
+        onKeyEvent: _onKeyEvent,
+        child: PageView.builder(
+          controller: _pageController,
+          padEnds: false,
+          scrollDirection: Axis.horizontal,
+          itemCount: _pages.length,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            if (_pages[index] == null) {
+              return Container(
+                color: Theme.of(context).colorScheme.onTertiary
+              );
+            } else {
+              return GestureDetector(
+                onTap: () {
+                  _selectTo(index);
+                },
+                child: SettingPage(
+                  key: _itemKeys[index],
+                  node: _pages[index]!,
+                  isEnabled: index <= _current,
+                  onSelectionChanged: (selected) {
+                    _updatePages(_pages[index], selected);
                   },
-                  child: SettingPage(
-                    key: _itemKeys[index],
-                    node: _pages[index]!,
-                    isEnabled: index <= _current,
-                    onSelectionChanged: (selected) {
-                      _updatePages(_pages[index], selected);
-                    },
-                  ),
-                );
-              }
-            },
-          )
-        ),
+                ),
+              );
+            }
+          },
+        )
       )
     );
   }
