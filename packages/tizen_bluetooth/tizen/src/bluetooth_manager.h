@@ -32,6 +32,23 @@ struct DeviceDiscoveryInfo
 using OnDeviceDiscoveryInfoStateChangedEvent =
     std::function<void(int result, int state, DeviceDiscoveryInfo info)>;
 
+struct DeviceInfo
+{
+  std::string remoteAddress;            /**< The address of remote device */
+  std::string remoteName;               /**< The name of remote device */
+  bt_class_s btClass;                   /**< The Bluetooth classes */
+  std::vector<std::string> serviceUuid; /**< The UUID list of service */
+  int serviceCount;                     /**< The number of services */
+  bool isBonded;                        /**< The bonding state */
+  bool isConnected;                     /**< The connection state */
+  bool isAuthorized;                    /**< The authorization state */
+  int manufacturerDataLen;              /**< manufacturer specific data length */
+  std::string manufacturerData;         /**< manufacturer specific data */
+};
+
+using OnDeviceSetBondCreatedEvent =
+    std::function<void(int result, DeviceInfo info)>;
+
 class TizenBluetoothManager
 {
 public:
@@ -49,12 +66,14 @@ public:
   TizenBluetoothManager &operator=(TizenBluetoothManager const &) = delete;
 
   void SetDeviceDiscoveryInfoStateChangedHandler(OnDeviceDiscoveryInfoStateChangedEvent on_event);
+  void SetDeviceSetBondCreatedHandler(OnDeviceSetBondCreatedEvent on_event);
 
   int GetLastError() { return last_error_; }
 
   std::string GetLastErrorString() { return get_error_message(last_error_); }
 
   OnDeviceDiscoveryInfoStateChangedEvent device_discovery_info_state_changed_callback_ = nullptr;
+  OnDeviceSetBondCreatedEvent device_set_bond_created_callback_ = nullptr;
 
 private:
   explicit TizenBluetoothManager();

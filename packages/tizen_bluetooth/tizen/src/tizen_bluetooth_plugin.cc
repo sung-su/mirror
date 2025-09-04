@@ -80,10 +80,6 @@ namespace
                return serviceUuidList; }())},
             {flutter::EncodableValue("manufacturerData"),
              flutter::EncodableValue(info.manufacturerData)},
-            //  serviceUuid: map['serviceUuid'] as List<String>,
-            //  manufacturerDataLen: map['manufacturerDataLen'] as int,
-            // manufacturerData: map['manufacturerData'] as String,
-
         };
         events_->Success(flutter::EncodableValue(map));
       };
@@ -101,6 +97,79 @@ namespace
       TizenBluetoothManager &bluetooth_manager = TizenBluetoothManager::GetInstance();
 
       bluetooth_manager.SetDeviceDiscoveryInfoStateChangedHandler(nullptr);
+
+      events_.reset();
+      return nullptr;
+    }
+
+  private:
+    std::unique_ptr<FlEventSink> events_;
+  };
+
+  class DeviceSetBondCreatedEventStreamHandler : public FlStreamHandler
+  {
+  public:
+    DeviceSetBondCreatedEventStreamHandler() {}
+
+  protected:
+    std::unique_ptr<FlStreamHandlerError> OnListenInternal(
+        const flutter::EncodableValue *arguments,
+        std::unique_ptr<FlEventSink> &&events) override
+    {
+      events_ = std::move(events);
+
+      OnDeviceSetBondCreatedEvent callback =
+          [this](int result, DeviceInfo info)
+      {
+        flutter::EncodableMap map = {
+            {flutter::EncodableValue("result"),
+             flutter::EncodableValue(result)},
+            {flutter::EncodableValue("remoteAddress"),
+             flutter::EncodableValue(info.remoteAddress)},
+            {flutter::EncodableValue("remoteName"),
+             flutter::EncodableValue(info.remoteName)},
+            {flutter::EncodableValue("btClass_majorDeviceClass"),
+             flutter::EncodableValue(info.btClass.major_device_class)},
+            {flutter::EncodableValue("btClass_minorDeviceClass"),
+             flutter::EncodableValue(info.btClass.minor_device_class)},
+            {flutter::EncodableValue("btClass_majorServiceClassMask"),
+             flutter::EncodableValue(info.btClass.major_service_class_mask)},
+            {flutter::EncodableValue("isAuthorized"),
+             flutter::EncodableValue(info.isAuthorized)},
+            {flutter::EncodableValue("isBonded"),
+             flutter::EncodableValue(info.isBonded)},
+            {flutter::EncodableValue("isConnected"),
+             flutter::EncodableValue(info.isConnected)},
+            {flutter::EncodableValue("serviceCount"),
+             flutter::EncodableValue(info.serviceCount)},
+            {flutter::EncodableValue("serviceUuid"),
+             flutter::EncodableValue([&info]()
+                                     {
+               flutter::EncodableList serviceUuidList;
+               for (const auto& uuid : info.serviceUuid) {
+                 serviceUuidList.push_back(flutter::EncodableValue(uuid));
+               }
+               return serviceUuidList; }())},
+            {flutter::EncodableValue("manufacturerData"),
+             flutter::EncodableValue(info.manufacturerData)},
+
+        };
+        events_->Success(flutter::EncodableValue(map));
+      };
+
+      TizenBluetoothManager &bluetooth_manager = TizenBluetoothManager::GetInstance();
+
+      bluetooth_manager.SetDeviceSetBondCreatedHandler(callback);
+
+      return nullptr;
+    }
+
+    std::unique_ptr<FlStreamHandlerError> OnCancelInternal(
+        const flutter::EncodableValue *arguments) override
+    {
+      TizenBluetoothManager &bluetooth_manager = TizenBluetoothManager::GetInstance();
+
+      bluetooth_manager.SetDeviceSetBondCreatedHandler(nullptr);
 
       events_.reset();
       return nullptr;
@@ -186,7 +255,6 @@ namespace
       }
       else if (method_name == "init_device_discovery_state_changed_cb")
       {
-
         device_discovery_state_changed_event_channel_ = std::make_unique<FlEventChannel>(
             registrar_->messenger(), "tizen/bluetooth/device_discovery_state_changed",
             &flutter::StandardMethodCodec::GetInstance());
@@ -195,7 +263,16 @@ namespace
 
         result->Success();
       }
+      else if (method_name == "init_bt_device_set_bond_created_cb")
+      {
+        device_set_bond_created_event_channel_ = std::make_unique<FlEventChannel>(
+            registrar_->messenger(), "tizen/bluetooth/device_bond_created",
+            &flutter::StandardMethodCodec::GetInstance());
+        device_set_bond_created_event_channel_->SetStreamHandler(
+            std::make_unique<DeviceSetBondCreatedEventStreamHandler>());
 
+        result->Success();
+      }
       // else if (method_name == "bt_enable")
       // {
       //   int ret = bt_deinitialize();
@@ -213,6 +290,7 @@ namespace
       }
     }
 
+    std::unique_ptr<FlEventChannel> device_set_bond_created_event_channel_;
     std::unique_ptr<FlEventChannel> device_discovery_state_changed_event_channel_;
     flutter::PluginRegistrar *registrar_;
   };

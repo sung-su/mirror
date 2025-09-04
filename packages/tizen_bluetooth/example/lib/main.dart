@@ -27,6 +27,8 @@ class _MyAppState extends State<MyApp> {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {}
 
+  String targetBondAdress = 'none';
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -168,6 +170,106 @@ class _MyAppState extends State<MyApp> {
                   //   },
                   //   child: const Text('btAdapterSetStateChangedCallback'),
                   // ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      debugPrint('call btInitialize()');
+                      TizenBluetoothAudioManager.btInitialize();
+                    },
+                    child: const Text('btInitialize'),
+                  ),
+                  const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: () {
+                      debugPrint('call btDeinitialize()');
+                      TizenBluetoothAudioManager.btDeinitialize();
+                    },
+                    child: const Text('btDeinitialize'),
+                  ),
+                  const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: () {
+                      debugPrint(
+                        'call btAudioConnect(\'$targetBondAdress\', )',
+                      );
+                      TizenBluetoothAudioManager.btAudioConnect(
+                        targetBondAdress,
+                        BluetoothAudioProfileType.profileTypeAll,
+                      );
+                    },
+                    child: Text('btAudioConnect(\'$targetBondAdress\', All)'),
+                  ),
+                  const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: () {
+                      debugPrint(
+                        'call btAudioDisconnect(\'$targetBondAdress\', )',
+                      );
+                      TizenBluetoothAudioManager.btAudioDisconnect(
+                        targetBondAdress,
+                        BluetoothAudioProfileType.profileTypeAll,
+                      );
+                    },
+                    child: Text(
+                      'btAudioDisconnect(\'$targetBondAdress\', All)',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: () {
+                      debugPrint('call btDeviceBondCreatedCallback()');
+                      TizenBluetoothManager.btDeviceSetBondCreatedCallback((
+                        int result,
+                        BluetoothDeviceInfo deviceInfo,
+                      ) {
+                        debugPrint(
+                          'btDeviceBondCreatedCallback: result : $result / ${deviceInfo.remoteName}(${deviceInfo.remoteAddress})',
+                        );
+                        setState(() {
+                          targetBondAdress = deviceInfo.remoteAddress; //정상 동작
+                        });
+                      });
+
+                      debugPrint(
+                        'call btDeviceCreateBond(\'54:10:4F:D2:74:4F\', )',
+                      );
+                      TizenBluetoothManager.btDeviceCreateBond(
+                        '54:10:4F:D2:74:4F',
+                      );
+                    },
+                    child: const Text(
+                      'btDeviceCreateBond(\'54:10:4F:D2:74:4F\')',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: () {
+                      debugPrint('call btDeviceSetBondDestroyedCallback()');
+                      /*TizenBluetoothManager.btDeviceSetBondDestroyedCallback((
+                        int result,
+                        String remoteAddress,
+                      ) {
+                        debugPrint(
+                          'btDeviceSetBondDestroyedCallback: result : $result / $remoteAddress)',
+                        );
+                      });*/
+
+                      debugPrint(
+                        'call btDeviceDestroyBond(\'54:10:4F:D2:74:4F\', )',
+                      );
+                      TizenBluetoothManager.btDeviceDestroyBond(
+                        '54:10:4F:D2:74:4F',
+                      );
+                    },
+                    child: const Text(
+                      'btDeviceDestroyBond(\'54:10:4F:D2:74:4F\')',
+                    ),
+                  ),
                 ],
               ),
             ],

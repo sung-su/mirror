@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:typed_data';
 
@@ -6,6 +7,23 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_interop/9.0/tizen.dart';
 import 'package:tizen_interop_callbacks/tizen_interop_callbacks.dart';
+
+enum BluetoothAudioProfileType {
+  /// < All supported profiles related with audio (Both Host and Device role)
+  profileTypeAll,
+
+  /// < local device AG and remote device HF Client (Host role, ex: mobile)
+  profileTypeHSPHFP,
+
+  /// < A2DP Source Connection, remote device is A2DP Sink (Host role, ex: mobile)
+  profileTypeA2DP,
+
+  /// < local device HF Client and remote device AG (Device role, ex: headset)
+  profileTypeAG,
+
+  /// < A2DP Sink Connection, remote device is A2DP Source (Device role, ex: headset)
+  profileTypeA2DPSink,
+}
 
 class BluetoothClass {
   /// < Major device class.
@@ -26,6 +44,8 @@ class BluetoothClass {
 }
 
 class BluetoothDeviceInfo {
+  int result;
+
   /// < The address of remote device
   String remoteAddress;
 
@@ -57,6 +77,7 @@ class BluetoothDeviceInfo {
   String manufacturerData;
 
   BluetoothDeviceInfo({
+    this.result = 0,
     this.remoteAddress = '',
     this.remoteName = '',
     BluetoothClass? btClass,
@@ -75,22 +96,18 @@ class BluetoothDeviceInfo {
   ) {
     // Convert native structure to Dart object
     BluetoothDeviceInfo deviceInfo = BluetoothDeviceInfo();
-
     if (info.remote_address != nullptr) {
       deviceInfo.remoteAddress = info.remote_address.toDartString();
     }
-
     if (info.remote_name != nullptr) {
       deviceInfo.remoteName = info.remote_name.toDartString();
     }
-
     // Convert Bluetooth class
     deviceInfo.btClass = BluetoothClass(
       majorDeviceClass: info.bt_class.major_device_class,
       minorDeviceClass: info.bt_class.minor_device_class,
       majorServiceClassMask: info.bt_class.major_service_class_mask,
     );
-
     // Convert service UUIDs
     deviceInfo.serviceCount = info.service_count;
     if (info.service_uuid != nullptr && deviceInfo.serviceCount > 0) {
@@ -102,13 +119,52 @@ class BluetoothDeviceInfo {
         }
       }
     }
-
     deviceInfo.isBonded = info.is_bonded;
     deviceInfo.isConnected = info.is_connected;
     deviceInfo.isAuthorized = info.is_authorized;
-    deviceInfo.manufacturerDataLen = info.manufacturer_data_len;
+    deviceInfo.manufacturerData = info.manufacturer_data.toDartString();
 
     return deviceInfo;
+  }
+
+  static BluetoothDeviceInfo fromMap(Map<String, dynamic> map) {
+    return BluetoothDeviceInfo(
+      result: map['result'] != null ? map['result'] as int : 0,
+      remoteAddress: map['remoteAddress'] != null
+          ? map['remoteAddress'] as String
+          : '',
+      remoteName: map['remoteName'] != null ? map['remoteName'] as String : '',
+      btClass: BluetoothClass(
+        majorDeviceClass: map['btClass_majorDeviceClass'] != null
+            ? map['btClass_majorDeviceClass'] as int
+            : 0,
+        minorDeviceClass: map['btClass_minorDeviceClass'] != null
+            ? map['btClass_minorDeviceClass'] as int
+            : 0,
+        majorServiceClassMask: map['btClass_majorServiceClassMask'] != null
+            ? map['btClass_majorServiceClassMask'] as int
+            : 0,
+      ),
+      isConnected: map['isConnected'] != null
+          ? map['isConnected'] as bool
+          : false,
+      isBonded: map['isBonded'] != null ? map['isBonded'] as bool : false,
+      serviceUuid: map['serviceUuid'] != null
+          ? List<String>.from(map['serviceUuid'] as List)
+          : [],
+      serviceCount: map['serviceCount'] != null
+          ? map['serviceCount'] as int
+          : 0,
+      isAuthorized: map['isAuthorized'] != null
+          ? map['isAuthorized'] as bool
+          : false,
+      manufacturerDataLen: map['manufacturerDataLen'] != null
+          ? map['manufacturerDataLen'] as int
+          : 0,
+      manufacturerData: map['manufacturerData'] != null
+          ? map['manufacturerData'] as String
+          : '',
+    );
   }
 }
 
