@@ -15,7 +15,7 @@ class CategorySelectableListView extends StatefulWidget {
     this.scrollOffset = 300,
   });
 
-  final List<DeviceListItem> itemSource;
+  final Map<String, Object> itemSource;
   final EdgeInsets? padding;
   final double? alignment;
   final Axis? scrollDirection;
@@ -26,12 +26,24 @@ class CategorySelectableListView extends StatefulWidget {
   State<CategorySelectableListView> createState() => CategorySelectableListViewState();
 }
 
+class _Item {
+  final bool isKey;
+  final String item;
+
+  _Item({required this.isKey, required this.item});
+}
+
 class CategorySelectableListViewState extends State<CategorySelectableListView> {
   late final ScrollController _controller;
   late List<GlobalKey> _itemKeys;
 
   int _selectedIndex = 0;
   Axis _scrollDirection = Axis.horizontal;
+
+  final _flattened = <_Item>[];
+
+  int _itemCount = 0;
+  int get itemCount => _itemCount;
 
   @override
   void initState() {
@@ -43,23 +55,50 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
       _scrollDirection = widget.scrollDirection!;
     }
 
+    widget.itemSource.forEach((key, list) {
+      debugPrint('#### ${key} :');
+      _flattened.add(_Item(isKey: true, item: key));
+      if(list is List) {
+        for(var item in list) {
+          debugPrint('######## ${item} ???');
+          _flattened.add(_Item(isKey: false, item: item));
+        }
+      }
+    });
+
+    debugPrint("#### itemcount: ${_flattened.length}");
+    _itemCount = _flattened.length;
+
+    // _flattened..forEach((key, values) {
+    //   _flattened.add(_Item(isKey: true, item: key));
+    //   for (final v in values) {
+    //     _flattened.add(_Item(isKey: false, item: v));
+    //   }
+    // });
+
     _itemKeys = List.generate(
-      widget.itemSource.length,
+      _flattened.length,
       (index) => GlobalKey(),
     );
 
-    debugPrint('init itemcount = $itemCount');
+
+
+
+        // key와 value를 하나의 List<String>으로 풀어서 연결
+    // final flattened = <_Item>[];
+
+
   }
 
   @override
   void didUpdateWidget(covariant CategorySelectableListView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.itemSource.length != widget.itemSource.length) {
-      _itemKeys = List.generate(
-        widget.itemSource.length,
-        (index) => GlobalKey(),
-      );
-    }
+    // super.didUpdateWidget(oldWidget);
+    // if (oldWidget.itemCount != itemCount) {
+    //   _itemKeys = List.generate(
+    //     _flattened.length,
+    //     (index) => GlobalKey(),
+    //   );
+    // }
   }
 
   @override
@@ -76,8 +115,6 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
     });
     _scrollToSelected(_selectedIndex, previousIndex);
   }
-
-  int get itemCount => widget.itemSource.length;
 
   Future<int> _scrollToSelected(int duration, int fallbackSelection) async {
     debugPrint('_scrollToSelected, $_selectedIndex');
@@ -108,7 +145,7 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
       throw RangeError('Index out of range: $index');
     }
 
-    if(widget.itemSource[index] != null && widget.itemSource[index].isHeader) {
+    if(_flattened[index] != null && _flattened[index].isKey) {
       index++; 
     }
     final int previousIndex = _selectedIndex;
@@ -118,14 +155,14 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
 
   Future<int> next({bool fast = false}) async {
     debugPrint('### selectable listview next :next=$_selectedIndex, widget.itemCount - 1=${itemCount - 1}');
-    int end = widget.itemSource.length - 1;
-    if (widget.itemSource[end] != null && widget.itemSource[end].isHeader) {
+    int end = _flattened.length - 1;
+    if (_flattened[end] != null && _flattened[end].isKey) {
       end--;
     }
     if (_selectedIndex < end) {
       int previousIndex = _selectedIndex;
       _selectedIndex++;
-      if(widget.itemSource[_selectedIndex].isHeader) {
+      if(_flattened[_selectedIndex].isKey) {
         previousIndex = _selectedIndex;
         _selectedIndex++;
       }
@@ -139,13 +176,13 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
   Future<int> previous({bool fast = false}) async {
     debugPrint('### selectable listview next :previous=$_selectedIndex');
     int start = 0;
-    if (widget.itemSource[start] != null && widget.itemSource[start].isHeader) {
+    if (_flattened[start] != null && _flattened[start].isKey) {
       start++;
     }
     if (_selectedIndex > start) {
       int previousIndex = _selectedIndex;
       _selectedIndex--;
-      if(widget.itemSource[_selectedIndex].isHeader) {
+      if(_flattened[_selectedIndex].isKey) {
         previousIndex = _selectedIndex;
         _selectedIndex--;
       }
@@ -159,7 +196,7 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
   @override
   Widget build(BuildContext context) {
 
-    debugPrint('### selectable listview: widget.itemSource.length=${widget.itemSource.length}');
+    debugPrint('### selectable listview: _flattened.length=${_flattened.length}');
     debugPrint('### selectable listview: itemCount=${itemCount}');
 
     return ScrollConfiguration(
@@ -176,17 +213,20 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
         scrollDirection: _scrollDirection,
         // clipBehavior: Clip.none,
         controller: _controller,
-        itemCount: widget.itemSource.length,
+        itemCount: itemCount,
         itemBuilder: (context, index) {
-          final item = widget.itemSource[index];
-          if (item.isHeader) {
-            return Text(
-              key : _itemKeys[index],
-              item.label,
-              style: TextStyle(
-                fontSize: Focus.of(context).hasFocus && index == selectedIndex ? 20 : 15,
-                color:Color.fromARGB(117, 151, 154, 160),
-              )
+          final item = _flattened[index];
+          if (item.isKey) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Text(
+                key : _itemKeys[index],
+                item.item,
+                style: TextStyle(
+                  fontSize: Focus.of(context).hasFocus && index == selectedIndex ? 20 : 15,
+                  color:Color.fromARGB(117, 151, 154, 160),
+                )
+              ),
             );
           }
           else {
@@ -202,7 +242,7 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
                   Focus.of(context).requestFocus();
                 },
                 child: DeviceItemListView(
-                  item: widget.itemSource[index],
+                  item: _flattened[index].item,
                   isFocused: Focus.of(context).hasFocus && index == selectedIndex
                   )
               ),

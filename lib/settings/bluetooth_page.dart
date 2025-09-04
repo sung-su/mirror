@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tizen_fs/models/bt_model.dart';
 import 'package:tizen_fs/models/page_node.dart';
 import 'package:tizen_fs/profiles/profile_popup.dart';
 import 'package:tizen_fs/styles/app_style.dart';
@@ -22,12 +24,12 @@ class BluetoothPage extends StatefulWidget {
 }
 
 class BluetoothPageState extends State<BluetoothPage> {
-
+  final BtModel _btModel = BtModel.fromMock();
   GlobalKey<DeviceListViewState> _listKey = GlobalKey<DeviceListViewState>();
-  final categories = {
-    "Paired devices ": ["AAA", "BBB", "CCC"],
-    "Available devcies": ["QLED", "55\" Neo QLED", "AI Home REference", "MR Music Frame", "43\" Neo QLED"],
-  };
+  // final categories = {
+  //   "Paired devices ": ["AAA", "BBB", "CCC"],
+  //   "Available devcies": ["QLED", "55\" Neo QLED", "AI Home REference", "MR Music Frame", "43\" Neo QLED"],
+  // };
 
   @override
   void initState() {
@@ -56,26 +58,26 @@ class BluetoothPageState extends State<BluetoothPage> {
   @override
   Widget build(BuildContext context) {
 
-    // 아이템 카테고리 하나로 합쳐서 
-    final List<DeviceListItem> entries = [];
-    for (var entry in categories.entries) {
-      entries.add(DeviceListItem.header(entry.key));
-      for (var item in entry.value) {
-        entries.add(DeviceListItem.item(item));
-      }
-    }
+    // // 아이템 카테고리 하나로 합쳐서 
+    // final List<DeviceListItem> entries = [];
+    // for (var entry in categories.entries) {
+    //   entries.add(DeviceListItem.header(entry.key));
+    //   for (var item in entry.value) {
+    //     entries.add(DeviceListItem.item(item));
+    //   }
+    // }
 
     double titleHeight = 100;
     double titleFontSize = 35;
 
-    return Column(
-      spacing: 10,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        //title
-        Container(
-          color: Colors.blue,
-          child: SizedBox(
+    return ChangeNotifierProvider (
+      create: (context) => _btModel,
+      child: Column(
+        spacing: 10,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //title
+          SizedBox(
             height: titleHeight,
             width: 400,
             child: AnimatedPadding(
@@ -96,34 +98,35 @@ class BluetoothPageState extends State<BluetoothPage> {
               ),
             ),
           ),
-        ),
-        //list
-        if (!widget.node!.children.isEmpty)
-          Expanded(
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: AnimatedPadding(
-              duration: $style.times.med,
-                padding: // item left/right padding
-                    widget.isEnabled
-                        ? const EdgeInsets.symmetric(horizontal: 80, vertical: 10)
-                        : const EdgeInsets.symmetric(horizontal: 40),
-                child: DeviceListView(
-                  key: _listKey,
-                  itemSource: entries,
-                  onSelectionChanged: (selected) {
-                    debugPrint('### selected=$selected');
-                    // widget.onSelectionChanged?.call(selected);
-                    _showFullScreenPopup(context);
-
-                  },
+          //list
+          if (!widget.node!.children.isEmpty)
+            Expanded(
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: AnimatedPadding(
+                duration: $style.times.med,
+                  padding: // item left/right padding
+                      widget.isEnabled
+                          ? const EdgeInsets.symmetric(horizontal: 80, vertical: 10)
+                          : const EdgeInsets.symmetric(horizontal: 40),
+                  child: DeviceListView(
+                    key: _listKey,
+                    // itemSource: entries,
+                    onSelectionChanged: (selected) {
+                      debugPrint('### selected=$selected');
+                      // widget.onSelectionChanged?.call(selected);
+                      _showFullScreenPopup(context);
+      
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
+
   void _showFullScreenPopup (BuildContext context) {
     showGeneralDialog(
       context: context,

@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:tizen_fs/models/bt_model.dart';
 import 'package:tizen_fs/widgets/category_selectable_listview.dart';
 import 'package:tizen_fs/widgets/focus_selectable2.dart';
 
-class DeviceListItem {
-  final String label;
-  final bool isHeader;
+// class DeviceListItem {
+//   final String label;
+//   final bool isHeader;
 
-  DeviceListItem.header(this.label) : isHeader = true;
-  DeviceListItem.item(this.label) : isHeader = false;
-}
+//   DeviceListItem.header(this.label) : isHeader = true;
+//   DeviceListItem.item(this.label) : isHeader = false;
+// }
 
 class DeviceListView extends StatefulWidget{
-  const DeviceListView({super.key, required this.itemSource, this.onSelectionChanged});
+  const DeviceListView({super.key, this.onSelectionChanged});
 
-  final List<DeviceListItem> itemSource;
+  // final List<DeviceListItem> itemSource;
   final Function(int)? onSelectionChanged;
 
   @override
@@ -56,6 +58,11 @@ class DeviceListViewState extends State<DeviceListView> with FocusSelectable2<De
   }
 
   Widget build(BuildContext context) {
+
+    var model = Provider.of<BtModel>(context);
+    debugPrint('### device list: ${model.data.length}');
+
+
     return Focus(
       focusNode: focusNode,
       onFocusChange: (hasfocus) {
@@ -71,7 +78,7 @@ class DeviceListViewState extends State<DeviceListView> with FocusSelectable2<De
         //between item and item
         padding: const EdgeInsets.symmetric(vertical: 10),
         alignment: 0.5,
-        itemSource: widget.itemSource,
+        itemSource: model.data,
         scrollDirection: Axis.vertical,
         onSelectionChanged: (selected) {
           _selected = selected;
@@ -85,7 +92,7 @@ class DeviceListViewState extends State<DeviceListView> with FocusSelectable2<De
 class DeviceItemListView extends StatelessWidget{
   const DeviceItemListView({super.key, required this.item, required this.isFocused});
 
-  final DeviceListItem item;
+  final String item;
   final bool isFocused;
 
   final double titleFontSize = 15;
@@ -137,7 +144,7 @@ class DeviceItemListView extends StatelessWidget{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    item.label,
+                    item,
                     style: TextStyle(
                       fontSize: titleFontSize,
                       color:
