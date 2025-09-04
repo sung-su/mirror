@@ -11,6 +11,8 @@ import 'package:tizen_interop_callbacks/tizen_interop_callbacks.dart';
 import 'tizen_bluetooth_manager_type.dart';
 
 typedef BtAdapterBondedDeviceCallback = void Function(BluetoothDeviceInfo);
+typedef BtAdapterSetStateChangedCallback = void Function(int, int);
+
 typedef BtAdapterDeviceDiscoveryStateChangedCallback =
     void Function(int, int, DeviceDiscoveryInfo);
 
@@ -22,9 +24,13 @@ class TizenBluetoothManager {
       {};
   static int _bondedDeviceCallbackIdCounter = 0;
 
+  static final Map<int, BtAdapterSetStateChangedCallback>
+  _btAdapterSetStateChangedCallbackCallbacks = {};
+  static int _btAdapterSetStateChangedCallbackIdCounter = 0;
+
   static final methodChannel = const MethodChannel('tizen/bluetooth');
 
-  static Future<void> btInitialize() async {
+  static void btInitialize() {
     if (initialized) return;
     // await methodChannel.invokeMethod<String>('bt_initialize');
 
@@ -38,7 +44,7 @@ class TizenBluetoothManager {
     initialized = true;
   }
 
-  static Future<void> btDeinitialize() async {
+  static void btDeinitialize() {
     if (!initialized) return;
     int ret = tizen.bt_deinitialize();
     if (ret != 0) {
@@ -49,7 +55,7 @@ class TizenBluetoothManager {
     initialized = false;
   }
 
-  static Future<void> btAdapterEnable() async {
+  static void btAdapterEnable() {
     if (!initialized) return;
 
     int ret = tizen.bt_adapter_enable();
@@ -60,7 +66,7 @@ class TizenBluetoothManager {
     }
   }
 
-  static Future<void> btAdapterDisable() async {
+  static void btAdapterDisable() {
     if (!initialized) return;
 
     int ret = tizen.bt_adapter_disable();
@@ -96,9 +102,9 @@ class TizenBluetoothManager {
     return true;
   }
 
-  static Future<void> btAdapterForeachBondedDevice(
+  static void btAdapterForeachBondedDevice(
     BtAdapterBondedDeviceCallback callback,
-  ) async {
+  ) {
     final callbackId = _bondedDeviceCallbackIdCounter++;
     _bondedDeviceCallbacks[callbackId] = callback;
 
@@ -137,7 +143,6 @@ class TizenBluetoothManager {
         ),
       );
 
-  /// TODO: service_uuid and manufacturer_data are not supported yet.
   static Future<void> btAdapterSetDeviceDiscoveryStateChangedCallback(
     BtAdapterDeviceDiscoveryStateChangedCallback callback,
   ) async {
@@ -149,8 +154,7 @@ class TizenBluetoothManager {
     );
   }
 
-  static Future<void>
-  btAdapterUnsetDeviceDiscoveryStateChangedCallback() async {
+  static void btAdapterUnsetDeviceDiscoveryStateChangedCallback() {
     if (!initialized) return;
     int ret = tizen.bt_adapter_unset_device_discovery_state_changed_cb();
     if (ret != 0) {
@@ -164,7 +168,7 @@ class TizenBluetoothManager {
     _btAdapterDeviceDiscoveryStateChangedCallback = null;
   }
 
-  static Future<void> btAdapterStartDeviceDiscovery() async {
+  static void btAdapterStartDeviceDiscovery() {
     if (!initialized) return;
 
     if (_btAdapterDeviceDiscoveryStateChangedCallback == null) {
@@ -197,7 +201,7 @@ class TizenBluetoothManager {
     }
   }
 
-  static Future<void> btAdapterStopDeviceDiscovery() async {
+  static void btAdapterStopDeviceDiscovery() {
     if (!initialized) return;
 
     if (_btAdapterDeviceDiscoveryStateChangedCallback == null) {
@@ -211,8 +215,74 @@ class TizenBluetoothManager {
         'Failed to bt_adapter_stop_device_discovery. Error code: ${tizen.get_error_message(ret).toDartString()}',
       );
     }
-
-    // _deviceDiscoveryStateChangedSubscription = null;
-    // _btAdapterDeviceDiscoveryStateChangedCallback = null;
   }
+
+  static void onBtAdapterSetStateChangedCallback(
+    int result,
+    int state,
+    Pointer<Void> userData,
+  ) {
+    debugPrint('CalledonBtAdapterSetStateChangedCallback');
+
+    final callbackId = TizenInteropCallbacks.getUserObject<int>(userData)!;
+
+    final BtAdapterSetStateChangedCallback? callback =
+        _btAdapterSetStateChangedCallbackCallbacks[callbackId];
+
+    if (callback != null) {
+      callback(result, state);
+    } else {
+      debugPrint('Callback not found for id: $callbackId');
+    }
+
+    return;
+  }
+
+  static void btAdapterSetStateChangedCallback(
+    BtAdapterSetStateChangedCallback callback,
+  ) {
+    if (!initialized) return;
+
+    final callbackId = _btAdapterSetStateChangedCallbackIdCounter++;
+    _btAdapterSetStateChangedCallbackCallbacks[callbackId] = callback;
+
+    final Pointer<Int> idPtr = calloc<Int>();
+    idPtr.value = callbackId;
+
+    final stateChangedCallback = callbacks
+        .register<bt_adapter_state_changed_cbFunction>(
+          'bt_adapter_state_changed_cb',
+          Pointer.fromFunction(onBtAdapterSetStateChangedCallback),
+          userObject: callbackId,
+          blocking: false,
+        );
+    int ret = tizen.bt_adapter_set_state_changed_cb(
+      stateChangedCallback.interopCallback,
+      stateChangedCallback.interopUserData,
+    );
+
+    if (ret != 0) {
+      _btAdapterSetStateChangedCallbackCallbacks.remove(callbackId);
+      calloc.free(idPtr);
+      throw Exception(
+        'Failed to bt_adapter_set_state_changed_cb. Error code: ${tizen.get_error_message(ret).toDartString()}',
+      );
+    }
+  }
+
+  static void btAdapterUnsetStateChangedCallback() {
+    if (!initialized) return;
+    int ret = tizen.bt_adapter_unset_state_changed_cb();
+    if (ret != 0) {
+      throw Exception(
+        'Failed to bt_adapter_unset_state_changed_cb. Error code: ${tizen.get_error_message(ret).toDartString()}',
+      );
+    }
+
+    _btAdapterSetStateChangedCallbackIdCounter = 0;
+    _btAdapterSetStateChangedCallbackCallbacks.clear();
+  }
+
+  // _deviceDiscoveryStateChangedSubscription = null;
+  // _btAdapterDeviceDiscoveryStateChangedCallback = null;
 }

@@ -39,29 +39,42 @@ class _MyAppState extends State<MyApp> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   TextButton(
-                    onPressed: () async {
-                      await TizenBluetoothManager.btInitialize();
+                    onPressed: () {
+                      debugPrint('call btInitialize()');
+                      TizenBluetoothManager.btInitialize();
+                      debugPrint('call btAdapterSetStateChangedCallback()');
+                      TizenBluetoothManager.btAdapterSetStateChangedCallback((
+                        int result,
+                        int state,
+                      ) {
+                        debugPrint(
+                          'btAdapterSetStateChangedCallback : result $result / state $state',
+                        );
+                      });
                     },
                     child: const Text('btInitialize'),
                   ),
                   const SizedBox(width: 10),
                   TextButton(
-                    onPressed: () async {
-                      await TizenBluetoothManager.btDeinitialize();
+                    onPressed: () {
+                      debugPrint('call btDeinitialize()');
+                      TizenBluetoothManager.btDeinitialize();
                     },
                     child: const Text('btDeinitialize'),
                   ),
                   const SizedBox(width: 10),
                   TextButton(
-                    onPressed: () async {
-                      await TizenBluetoothManager.btAdapterEnable();
+                    onPressed: () {
+                      debugPrint('call btAdapterEnable()');
+                      TizenBluetoothManager.btAdapterEnable();
                     },
                     child: const Text('btAdapterEnable'),
                   ),
                   const SizedBox(width: 10),
                   TextButton(
-                    onPressed: () async {
-                      await TizenBluetoothManager.btAdapterDisable();
+                    onPressed: () {
+                      debugPrint('call btAdapterDisable()');
+                      TizenBluetoothManager.btAdapterDisable();
                     },
                     child: const Text('btAdapterDisable'),
                   ),
@@ -72,22 +85,25 @@ class _MyAppState extends State<MyApp> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   TextButton(
-                    onPressed: () async {
-                      await TizenBluetoothManager.btAdapterStartDeviceDiscovery();
+                    onPressed: () {
+                      debugPrint('call btAdapterStartDeviceDiscovery()');
+                      TizenBluetoothManager.btAdapterStartDeviceDiscovery();
                     },
                     child: const Text('btAdapterStartDeviceDiscovery'),
                   ),
                   const SizedBox(width: 10),
                   TextButton(
-                    onPressed: () async {
-                      await TizenBluetoothManager.btAdapterStopDeviceDiscovery();
+                    onPressed: () {
+                      debugPrint('call btAdapterStopDeviceDiscovery()');
+                      TizenBluetoothManager.btAdapterStopDeviceDiscovery();
                     },
                     child: const Text('btAdapterStopDeviceDiscovery'),
                   ),
                   const SizedBox(width: 10),
                   TextButton(
-                    onPressed: () async {
-                      await TizenBluetoothManager.btAdapterForeachBondedDevice((
+                    onPressed: () {
+                      debugPrint('call btAdapterForeachBondedDevice()');
+                      TizenBluetoothManager.btAdapterForeachBondedDevice((
                         BluetoothDeviceInfo deviceInfo,
                       ) {
                         debugPrint(
@@ -100,6 +116,9 @@ class _MyAppState extends State<MyApp> {
                   const SizedBox(width: 10),
                   TextButton(
                     onPressed: () async {
+                      debugPrint(
+                        'call btAdapterSetDeviceDiscoveryStateChangedCallback()',
+                      );
                       await TizenBluetoothManager.btAdapterSetDeviceDiscoveryStateChangedCallback((
                         int result,
                         int discoveryState,
@@ -126,13 +145,29 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () async {
-                      await TizenBluetoothManager.btAdapterUnsetDeviceDiscoveryStateChangedCallback();
+                    onPressed: () {
+                      debugPrint(
+                        'call btAdapterUnsetDeviceDiscoveryStateChangedCallback()',
+                      );
+                      TizenBluetoothManager.btAdapterUnsetDeviceDiscoveryStateChangedCallback();
                     },
                     child: const Text(
                       'btAdapterUnsetDeviceDiscoveryStateChangedCallback',
                     ),
                   ),
+                  // TextButton(
+                  //   onPressed: () async {
+                  //     TizenBluetoothManager.btAdapterSetStateChangedCallback((
+                  //       int result,
+                  //       int state,
+                  //     ) {
+                  //       debugPrint(
+                  //         'btAdapterSetStateChangedCallback : result $result / state $state',
+                  //       );
+                  //     });
+                  //   },
+                  //   child: const Text('btAdapterSetStateChangedCallback'),
+                  // ),
                 ],
               ),
             ],
@@ -142,4 +177,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-//D4:20:9E:A5:E8:9E
