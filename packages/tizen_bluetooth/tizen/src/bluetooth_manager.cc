@@ -50,6 +50,15 @@ static void bt_adapter_device_discovery_state_changed_callback(int result, bt_ad
 
 void TizenBluetoothManager::SetDeviceDiscoveryInfoStateChangedHandler(OnDeviceDiscoveryInfoStateChangedEvent on_event)
 {
+  if (device_discovery_info_state_changed_callback_ != nullptr || on_event == nullptr)
+  {
+    bt_adapter_unset_device_discovery_state_changed_cb();
+  }
+  if (on_event == nullptr)
+  {
+    return;
+  }
+
   device_discovery_info_state_changed_callback_ = on_event;
 
   int ret = bt_adapter_set_device_discovery_state_changed_cb(bt_adapter_device_discovery_state_changed_callback, this);
@@ -86,6 +95,14 @@ static void bt_device_bond_created_callback(int result, bt_device_info_s *device
 
 void TizenBluetoothManager::SetDeviceSetBondCreatedHandler(OnDeviceSetBondCreatedEvent on_event)
 {
+  if (device_set_bond_created_callback_ != nullptr || on_event == nullptr)
+  {
+    bt_device_unset_bond_created_cb();
+  }
+  if (on_event == nullptr)
+  {
+    return;
+  }
   device_set_bond_created_callback_ = on_event;
 
   int ret = bt_device_set_bond_created_cb(bt_device_bond_created_callback, this);
@@ -109,6 +126,14 @@ static void bt_device_bond_destroyed_callback(int result, char *remote_address, 
 
 void TizenBluetoothManager::SetDeviceSetBondDestroyedHandler(OnDeviceSetBondDestroyedEvent on_event)
 {
+  if (device_set_bond_destroyed_callback_ != nullptr || on_event == nullptr)
+  {
+    bt_device_unset_bond_destroyed_cb();
+  }
+  if (on_event == nullptr)
+  {
+    return;
+  }
   device_set_bond_destroyed_callback_ = on_event;
 
   int ret = bt_device_set_bond_destroyed_cb(bt_device_bond_destroyed_callback, this);
@@ -134,6 +159,14 @@ static void bt_audio_connection_state_changed_callback(int result, bool connecte
 
 void TizenBluetoothManager::SetAudioSetConnectionStateChangedEvent(OnAudioSetConnectionStateChangedEvent on_event)
 {
+  if (audio_set_connection_state_changed_callback_ || on_event == nullptr)
+  {
+    bt_audio_unset_connection_state_changed_cb();
+  }
+  if (on_event == nullptr)
+  {
+    return;
+  }
   audio_set_connection_state_changed_callback_ = on_event;
 
   int ret = bt_audio_set_connection_state_changed_cb(bt_audio_connection_state_changed_callback, this);
@@ -161,6 +194,10 @@ static void bt_hid_host_connection_state_changed_callback(int result, bool conne
 void TizenBluetoothManager::SetHidHostConnectionStateChangedEvent(OnHidConnectionStateChangedEvent on_event)
 {
   hid_host_connection_state_changed_callback_ = on_event;
+  if (on_event == nullptr)
+  {
+    return;
+  }
 
   int ret = bt_hid_host_initialize(bt_hid_host_connection_state_changed_callback, this);
   LOG_ERROR("bt_hid_host_initialize(): %s", get_error_message(ret));
@@ -188,6 +225,10 @@ static void bt_hid_device_connection_state_changed_callback(int result,
 void TizenBluetoothManager::SetHidDeviceConnectionStateChangedEvent(OnHidConnectionStateChangedEvent on_event)
 {
   hid_device_connection_state_changed_callback_ = on_event;
+  if (on_event == nullptr)
+  {
+    return;
+  }
 
   int ret = bt_hid_device_activate(bt_hid_device_connection_state_changed_callback, this);
   LOG_ERROR("bt_hid_host_initialize(): %s", get_error_message(ret));
