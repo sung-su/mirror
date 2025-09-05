@@ -53,6 +53,12 @@ struct AudioConnectionInfo
   int type;
 };
 
+struct ConnectionInfo
+{
+  std::string remoteAddress; /**< The address of remote device */
+  bool connected;
+};
+
 using OnDeviceSetBondCreatedEvent =
     std::function<void(int result, DeviceInfo info)>;
 
@@ -61,6 +67,10 @@ using OnDeviceSetBondDestroyedEvent =
 
 using OnAudioSetConnectionStateChangedEvent =
     std::function<void(int result, AudioConnectionInfo info)>;
+
+using OnHidConnectionStateChangedEvent =
+    std::function<void(int result, ConnectionInfo info)>;
+
 class TizenBluetoothManager
 {
 public:
@@ -81,6 +91,8 @@ public:
   void SetDeviceSetBondCreatedHandler(OnDeviceSetBondCreatedEvent on_event);
   void SetDeviceSetBondDestroyedHandler(OnDeviceSetBondDestroyedEvent on_event);
   void SetAudioSetConnectionStateChangedEvent(OnAudioSetConnectionStateChangedEvent on_event);
+  void SetHidHostConnectionStateChangedEvent(OnHidConnectionStateChangedEvent on_event);
+  void SetHidDeviceConnectionStateChangedEvent(OnHidConnectionStateChangedEvent on_event);
 
   int GetLastError() { return last_error_; }
 
@@ -90,6 +102,8 @@ public:
   OnDeviceSetBondCreatedEvent device_set_bond_created_callback_ = nullptr;
   OnDeviceSetBondDestroyedEvent device_set_bond_destroyed_callback_ = nullptr;
   OnAudioSetConnectionStateChangedEvent audio_set_connection_state_changed_callback_ = nullptr;
+  OnHidConnectionStateChangedEvent hid_host_connection_state_changed_callback_ = nullptr;
+  OnHidConnectionStateChangedEvent hid_device_connection_state_changed_callback_ = nullptr;
 
 private:
   explicit TizenBluetoothManager();

@@ -139,3 +139,56 @@ void TizenBluetoothManager::SetAudioSetConnectionStateChangedEvent(OnAudioSetCon
   int ret = bt_audio_set_connection_state_changed_cb(bt_audio_connection_state_changed_callback, this);
   LOG_ERROR("bt_audio_set_connection_state_changed_cb(): %s", get_error_message(ret));
 }
+
+static void bt_hid_host_connection_state_changed_callback(int result, bool connected, const char *remote_address, void *user_data)
+{
+  auto *self = static_cast<TizenBluetoothManager *>(user_data);
+
+  if (result != 0 && self->hid_host_connection_state_changed_callback_ != nullptr)
+    return;
+
+  ConnectionInfo info = ConnectionInfo();
+
+  if (remote_address)
+    info.remoteAddress = remote_address;
+  info.connected = connected;
+
+  LOG_ERROR("info.remoteAddress %s connected %d", info.remoteAddress.c_str(), connected);
+
+  self->hid_host_connection_state_changed_callback_(result, info);
+}
+
+void TizenBluetoothManager::SetHidHostConnectionStateChangedEvent(OnHidConnectionStateChangedEvent on_event)
+{
+  hid_host_connection_state_changed_callback_ = on_event;
+
+  int ret = bt_hid_host_initialize(bt_hid_host_connection_state_changed_callback, this);
+  LOG_ERROR("bt_hid_host_initialize(): %s", get_error_message(ret));
+}
+
+static void bt_hid_device_connection_state_changed_callback(int result,
+                                                            bool connected, const char *remote_address, void *user_data)
+{
+  auto *self = static_cast<TizenBluetoothManager *>(user_data);
+
+  if (result != 0 && self->hid_host_connection_state_changed_callback_ != nullptr)
+    return;
+
+  ConnectionInfo info = ConnectionInfo();
+
+  if (remote_address)
+    info.remoteAddress = remote_address;
+  info.connected = connected;
+
+  LOG_ERROR("info.remoteAddress %s connected %d", info.remoteAddress.c_str(), connected);
+
+  self->hid_device_connection_state_changed_callback_(result, info);
+}
+
+void TizenBluetoothManager::SetHidDeviceConnectionStateChangedEvent(OnHidConnectionStateChangedEvent on_event)
+{
+  hid_device_connection_state_changed_callback_ = on_event;
+
+  int ret = bt_hid_device_activate(bt_hid_device_connection_state_changed_callback, this);
+  LOG_ERROR("bt_hid_host_initialize(): %s", get_error_message(ret));
+}

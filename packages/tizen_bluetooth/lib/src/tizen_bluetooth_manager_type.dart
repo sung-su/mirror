@@ -199,6 +199,31 @@ class AudioConnectionInfo {
   }
 }
 
+class ConnectionInfo {
+  int result;
+
+  /// < The address of remote device
+  String remoteAddress;
+
+  bool connected;
+
+  ConnectionInfo({
+    this.result = 0,
+    this.remoteAddress = '',
+    this.connected = false,
+  }) {}
+
+  static ConnectionInfo fromMap(Map<String, dynamic> map) {
+    return ConnectionInfo(
+      result: map['result'] != null ? map['result'] as int : 0,
+      remoteAddress: map['remoteAddress'] != null
+          ? map['remoteAddress'] as String
+          : '',
+      connected: map['connected'] != null ? map['connected'] as bool : false,
+    );
+  }
+}
+
 class DeviceDiscoveryInfo {
   int result;
   int state;

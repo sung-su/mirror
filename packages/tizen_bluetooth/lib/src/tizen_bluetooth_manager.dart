@@ -31,15 +31,10 @@ class TizenBluetoothManager {
   _btAdapterSetStateChangedCallbackCallbacks = {};
   static int _btAdapterSetStateChangedCallbackIdCounter = 0;
 
-  static final Map<int, BtDeviceBondDestroyedCallback>
-  _deviceBondDestroyedCallbacks = {};
-  static int _deviceBondDestroyedIdCounter = 0;
-
   static final methodChannel = const MethodChannel('tizen/bluetooth');
 
   static void btInitialize() {
     if (initialized) return;
-    // await methodChannel.invokeMethod<String>('bt_initialize');
 
     int ret = tizen.bt_initialize();
     if (ret != 0) {
@@ -448,60 +443,20 @@ class TizenBluetoothManager {
     }
   }
 
-  /*
-  static void onBtDeviceSetBondDestroyedCallback(
-    int result,
-    Pointer<Char> remoteAddress,
-    Pointer<Void> userData,
-  ) {
-    debugPrint('[Start] onBtDeviceSetBondDestroyedCallback');
+  static void btDeviceSetAlias(String remoteAddress, String alias) {
+    if (!initialized) return;
 
-    final callbackId = TizenInteropCallbacks.getUserObject<int>(userData)!;
-
-    final BtDeviceBondDestroyedCallback? callback =
-        _deviceBondDestroyedCallbacks.remove(callbackId);
-    String stringValue = '';
-    debugPrint('check 1');
-    if (remoteAddress != null) {
-      debugPrint('check 2');
-      stringValue = remoteAddress.toDartString();
-      debugPrint('check 3');
-    }
-    debugPrint('check 4');
-    if (callback != null) {
-      callback(result, stringValue);
-    } else {
-      debugPrint('Callback not found for id: $callbackId');
-    }
-
-    return;
-  }
-
-  static void btDeviceSetBondDestroyedCallback(
-    BtDeviceBondDestroyedCallback callback,
-  ) {
-    final callbackId = _deviceBondDestroyedIdCounter++;
-    _deviceBondDestroyedCallbacks[callbackId] = callback;
-
-    final Pointer<Int> idPtr = calloc<Int>();
-    idPtr.value = callbackId;
-
-    final bondDestroyedCallback = callbacks
-        .register<bt_device_bond_destroyed_cbFunction>(
-          'bt_device_bond_destroyed_cb',
-          Pointer.fromFunction(onBtDeviceSetBondDestroyedCallback),
-          userObject: callbackId,
-        );
-    int ret = tizen.bt_device_set_bond_destroyed_cb(
-      bondDestroyedCallback.interopCallback,
-      bondDestroyedCallback.interopUserData,
-    );
-
+    final int ret = using((Arena arena) {
+      final int ret = tizen.bt_device_set_alias(
+        remoteAddress.toNativeChar(allocator: arena),
+        alias.toNativeChar(allocator: arena),
+      );
+      return ret;
+    });
     if (ret != 0) {
-      _deviceBondDestroyedCallbacks.remove(callbackId);
-      throw Exception(
-        'Failed to bt_device_set_bond_created_cb. Error code: ${tizen.get_error_message(ret).toDartString()}',
+      debugPrint(
+        'Failed to bt_device_set_alias. Error code: ${tizen.get_error_message(ret).toDartString()}',
       );
     }
-  }*/
+  }
 }

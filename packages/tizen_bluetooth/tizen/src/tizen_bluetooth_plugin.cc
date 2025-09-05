@@ -275,6 +275,102 @@ namespace
     std::unique_ptr<FlEventSink> events_;
   };
 
+  class HidHostConnectionStateChangedEventStreamHandler : public FlStreamHandler
+  {
+  public:
+    HidHostConnectionStateChangedEventStreamHandler() {}
+
+  protected:
+    std::unique_ptr<FlStreamHandlerError> OnListenInternal(
+        const flutter::EncodableValue *arguments,
+        std::unique_ptr<FlEventSink> &&events) override
+    {
+      events_ = std::move(events);
+
+      OnHidConnectionStateChangedEvent callback =
+          [this](int result, ConnectionInfo info)
+      {
+        flutter::EncodableMap map = {
+            {flutter::EncodableValue("result"),
+             flutter::EncodableValue(result)},
+            {flutter::EncodableValue("remoteAddress"),
+             flutter::EncodableValue(info.remoteAddress)},
+            {flutter::EncodableValue("connected"),
+             flutter::EncodableValue(info.connected)},
+        };
+        events_->Success(flutter::EncodableValue(map));
+      };
+
+      TizenBluetoothManager &bluetooth_manager = TizenBluetoothManager::GetInstance();
+
+      bluetooth_manager.SetHidHostConnectionStateChangedEvent(callback);
+
+      return nullptr;
+    }
+
+    std::unique_ptr<FlStreamHandlerError> OnCancelInternal(
+        const flutter::EncodableValue *arguments) override
+    {
+      TizenBluetoothManager &bluetooth_manager = TizenBluetoothManager::GetInstance();
+
+      bluetooth_manager.SetHidHostConnectionStateChangedEvent(nullptr);
+
+      events_.reset();
+      return nullptr;
+    }
+
+  private:
+    std::unique_ptr<FlEventSink> events_;
+  };
+
+  class HidDeviceConnectionStateChangedEventStreamHandler : public FlStreamHandler
+  {
+  public:
+    HidDeviceConnectionStateChangedEventStreamHandler() {}
+
+  protected:
+    std::unique_ptr<FlStreamHandlerError> OnListenInternal(
+        const flutter::EncodableValue *arguments,
+        std::unique_ptr<FlEventSink> &&events) override
+    {
+      events_ = std::move(events);
+
+      OnHidConnectionStateChangedEvent callback =
+          [this](int result, ConnectionInfo info)
+      {
+        flutter::EncodableMap map = {
+            {flutter::EncodableValue("result"),
+             flutter::EncodableValue(result)},
+            {flutter::EncodableValue("remoteAddress"),
+             flutter::EncodableValue(info.remoteAddress)},
+            {flutter::EncodableValue("connected"),
+             flutter::EncodableValue(info.connected)},
+        };
+        events_->Success(flutter::EncodableValue(map));
+      };
+
+      TizenBluetoothManager &bluetooth_manager = TizenBluetoothManager::GetInstance();
+
+      bluetooth_manager.SetHidDeviceConnectionStateChangedEvent(callback);
+
+      return nullptr;
+    }
+
+    std::unique_ptr<FlStreamHandlerError> OnCancelInternal(
+        const flutter::EncodableValue *arguments) override
+    {
+      TizenBluetoothManager &bluetooth_manager = TizenBluetoothManager::GetInstance();
+
+      bluetooth_manager.SetHidDeviceConnectionStateChangedEvent(nullptr);
+
+      events_.reset();
+      return nullptr;
+    }
+
+  private:
+    std::unique_ptr<FlEventSink> events_;
+  };
+
   class TizenBluetoothPlugin : public flutter::Plugin
   {
   public:
@@ -302,6 +398,28 @@ namespace
           [plugin_pointer = plugin.get()](const auto &call, auto result)
           {
             plugin_pointer->AudioHandleMethodCall(call, std::move(result));
+          });
+
+      auto hid_host_channel =
+          std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
+              registrar->messenger(), "tizen/bluetooth_hid_host",
+              &flutter::StandardMethodCodec::GetInstance());
+
+      hid_host_channel->SetMethodCallHandler(
+          [plugin_pointer = plugin.get()](const auto &call, auto result)
+          {
+            plugin_pointer->HidHostHandleMethodCall(call, std::move(result));
+          });
+
+      auto hid_device_channel =
+          std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
+              registrar->messenger(), "tizen/bluetooth_hid_device",
+              &flutter::StandardMethodCodec::GetInstance());
+
+      hid_device_channel->SetMethodCallHandler(
+          [plugin_pointer = plugin.get()](const auto &call, auto result)
+          {
+            plugin_pointer->HidDeviceHandleMethodCall(call, std::move(result));
           });
 
       registrar->AddPlugin(std::move(plugin));
@@ -391,10 +509,56 @@ namespace
       }
     }
 
+    void HidHostHandleMethodCall(
+        const flutter::MethodCall<flutter::EncodableValue> &method_call,
+        std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result)
+    {
+      const auto &method_name = method_call.method_name();
+
+      if (method_name == "init_bt_hid_host_initialize")
+      {
+        hid_host_connection_state_changed_event_channel_ = std::make_unique<FlEventChannel>(
+            registrar_->messenger(), "tizen/bluetooth/hid_host_connection_state_changed",
+            &flutter::StandardMethodCodec::GetInstance());
+        hid_host_connection_state_changed_event_channel_->SetStreamHandler(
+            std::make_unique<HidHostConnectionStateChangedEventStreamHandler>());
+
+        result->Success();
+      }
+      else
+      {
+        result->NotImplemented();
+      }
+    }
+
+    void HidDeviceHandleMethodCall(
+        const flutter::MethodCall<flutter::EncodableValue> &method_call,
+        std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result)
+    {
+      const auto &method_name = method_call.method_name();
+
+      if (method_name == "init_bt_hid_device_activate")
+      {
+        hid_device_connection_state_changed_event_channel_ = std::make_unique<FlEventChannel>(
+            registrar_->messenger(), "tizen/bluetooth/hid_device_connection_state_changed",
+            &flutter::StandardMethodCodec::GetInstance());
+        hid_device_connection_state_changed_event_channel_->SetStreamHandler(
+            std::make_unique<HidDeviceConnectionStateChangedEventStreamHandler>());
+
+        result->Success();
+      }
+      else
+      {
+        result->NotImplemented();
+      }
+    }
+
     std::unique_ptr<FlEventChannel> device_discovery_state_changed_event_channel_;
     std::unique_ptr<FlEventChannel> device_set_bond_created_event_channel_;
     std::unique_ptr<FlEventChannel> device_set_bond_destroyed_event_channel_;
     std::unique_ptr<FlEventChannel> audio_connection_state_changed_event_channel_;
+    std::unique_ptr<FlEventChannel> hid_host_connection_state_changed_event_channel_;
+    std::unique_ptr<FlEventChannel> hid_device_connection_state_changed_event_channel_;
     flutter::PluginRegistrar *registrar_;
   };
 

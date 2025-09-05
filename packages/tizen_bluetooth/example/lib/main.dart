@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {}
 
-  String targetBondAdress = 'none';
+  String targetRemoteAddress = 'none';
 
   @override
   Widget build(BuildContext context) {
@@ -208,28 +208,30 @@ class _MyAppState extends State<MyApp> {
                         );
                       });
                       debugPrint(
-                        'call btAudioConnect(\'$targetBondAdress\', )',
+                        'call btAudioConnect(\'$targetRemoteAddress\', )',
                       );
                       TizenBluetoothAudioManager.btAudioConnect(
-                        targetBondAdress,
+                        targetRemoteAddress,
                         BluetoothAudioProfileType.profileTypeAll,
                       );
                     },
-                    child: Text('btAudioConnect(\'$targetBondAdress\', All)'),
+                    child: Text(
+                      'btAudioConnect(\'$targetRemoteAddress\', All)',
+                    ),
                   ),
                   const SizedBox(width: 10),
                   TextButton(
                     onPressed: () {
                       debugPrint(
-                        'call btAudioDisconnect(\'$targetBondAdress\', )',
+                        'call btAudioDisconnect(\'$targetRemoteAddress\', )',
                       );
                       TizenBluetoothAudioManager.btAudioDisconnect(
-                        targetBondAdress,
+                        targetRemoteAddress,
                         BluetoothAudioProfileType.profileTypeAll,
                       );
                     },
                     child: Text(
-                      'btAudioDisconnect(\'$targetBondAdress\', All)',
+                      'btAudioDisconnect(\'$targetRemoteAddress\', All)',
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -259,20 +261,19 @@ class _MyAppState extends State<MyApp> {
                           'btDeviceBondCreatedCallback: result : $result / ${deviceInfo.remoteName}(${deviceInfo.remoteAddress})',
                         );
                         setState(() {
-                          targetBondAdress = deviceInfo.remoteAddress; //정상 동작
+                          targetRemoteAddress =
+                              deviceInfo.remoteAddress; //정상 동작
                         });
                       });
 
                       debugPrint(
-                        'call btDeviceCreateBond(\'54:10:4F:D2:74:4F\', )',
+                        'call btDeviceCreateBond(\'$targetRemoteAddress\')',
                       );
                       TizenBluetoothManager.btDeviceCreateBond(
-                        '54:10:4F:D2:74:4F',
+                        targetRemoteAddress,
                       );
                     },
-                    child: const Text(
-                      'btDeviceCreateBond(\'54:10:4F:D2:74:4F\')',
-                    ),
+                    child: Text('btDeviceCreateBond(\'$targetRemoteAddress\')'),
                   ),
                   const SizedBox(width: 10),
                   TextButton(
@@ -296,14 +297,216 @@ class _MyAppState extends State<MyApp> {
                       });
 
                       debugPrint(
-                        'call btDeviceDestroyBond(\'54:10:4F:D2:74:4F\', )',
+                        'call btDeviceDestroyBond(\'$targetRemoteAddress\', )',
                       );
                       TizenBluetoothManager.btDeviceDestroyBond(
-                        '54:10:4F:D2:74:4F',
+                        targetRemoteAddress,
+                      );
+                    },
+                    child: Text(
+                      'btDeviceDestroyBond(\'$targetRemoteAddress\')',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      debugPrint(
+                        'call TizenBluetoothHidHostManager.btInitialize()',
+                      );
+                      TizenBluetoothHidHostManager.btInitialize((
+                        int result,
+                        bool connected,
+                        String remoteAddress,
+                      ) {
+                        debugPrint(
+                          'call TizenBluetoothHidHostManager.btInitialize callback result : $result, connected : $connected, remoteAddress : $remoteAddress',
+                        );
+                      });
+                    },
+                    child: const Text(
+                      'TizenBluetoothHidHostManager.btInitialize()',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: () {
+                      debugPrint(
+                        'call TizenBluetoothHidHostManager.btDeinitialize()',
+                      );
+
+                      TizenBluetoothHidHostManager.btDeinitialize();
+                    },
+                    child: const Text(
+                      'TizenBluetoothHidHostManager.btDeinitialize',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: () {
+                      debugPrint(
+                        'call TizenBluetoothHidHostManager.btConnect(\'$targetRemoteAddress\')',
+                      );
+                      TizenBluetoothHidHostManager.btConnect(
+                        targetRemoteAddress,
+                      );
+                    },
+                    child: Text(
+                      'TizenBluetoothHidHostManager.btConnect(\'$targetRemoteAddress\')',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: () {
+                      debugPrint(
+                        'call TizenBluetoothHidHostManager.btDisconnect(\'$targetRemoteAddress\')',
+                      );
+
+                      TizenBluetoothHidHostManager.btDisconnect(
+                        targetRemoteAddress,
+                      );
+                    },
+                    child: Text(
+                      'TizenBluetoothHidHostManager.btDisconnect(\'$targetRemoteAddress\')',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      debugPrint(
+                        'call TizenBluetoothHidDeviceManager.btActivate()',
+                      );
+                      TizenBluetoothHidDeviceManager.btActivate((
+                        int result,
+                        bool connected,
+                        String remoteAddress,
+                      ) {
+                        debugPrint(
+                          'call TizenBluetoothHidDeviceManager.btActivate callback result : $result, connected : $connected, remoteAddress : $remoteAddress',
+                        );
+                      });
+                    },
+                    child: const Text(
+                      'TizenBluetoothHidDeviceManager.btActivate()',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: () {
+                      debugPrint(
+                        'call TizenBluetoothHidDeviceManager.btDeactivate()',
+                      );
+
+                      TizenBluetoothHidDeviceManager.btDeactivate();
+                    },
+                    child: const Text(
+                      'TizenBluetoothHidDeviceManager.btDeactivate',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: () {
+                      debugPrint(
+                        'call TizenBluetoothHidDeviceManager.btConnect(\'$targetRemoteAddress\')',
+                      );
+                      TizenBluetoothHidDeviceManager.btConnect(
+                        targetRemoteAddress,
                       );
                     },
                     child: const Text(
-                      'btDeviceDestroyBond(\'54:10:4F:D2:74:4F\')',
+                      'TizenBluetoothHidDeviceManager.btConnect(\'targetBondAdress\')',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: () {
+                      debugPrint(
+                        'call TizenBluetoothHidDeviceManager.btDisconnect(\'$targetRemoteAddress\')',
+                      );
+
+                      TizenBluetoothHidDeviceManager.btDisconnect(
+                        targetRemoteAddress,
+                      );
+                    },
+                    child: Text(
+                      'TizenBluetoothHidDeviceManager.btDisconnect(\'$targetRemoteAddress\')',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      debugPrint(
+                        'call TizenBluetoothHidDeviceManager.btDeviceSetAlias(\'5C:B4:7E:1D:AB:F4\', \'COMPANY-PC\',)',
+                      );
+
+                      TizenBluetoothManager.btDeviceSetAlias(
+                        '5C:B4:7E:1D:AB:F4',
+                        'COMPANY-PC',
+                      );
+                      setState(() {
+                        targetRemoteAddress = 'COMPANY-PC';
+                      });
+                    },
+                    child: const Text(
+                      'TizenBluetoothHidDeviceManager.btDeviceSetAlias(\'5C:B4:7E:1D:AB:F4\', \'COMPANY-PC\',)',
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      debugPrint(
+                        'call TizenBluetoothHidDeviceManager.btDeviceSetAlias(\'54:10:4F:D2:74:4F\', \'Buds\',)',
+                      );
+
+                      TizenBluetoothManager.btDeviceSetAlias(
+                        '54:10:4F:D2:74:4F',
+                        'Buds',
+                      );
+                      setState(() {
+                        targetRemoteAddress = 'Buds';
+                      });
+                    },
+                    child: const Text(
+                      'TizenBluetoothHidDeviceManager.btDeviceSetAlias(\'54:10:4F:D2:74:4F\', \'Buds\',)',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        targetRemoteAddress = '5C:B4:7E:1D:AB:F4';
+                      });
+                    },
+                    child: const Text(
+                      'targetRemoteAddress \'5C:B4:7E:1D:AB:F4\' (COMPANY-PC)',
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        targetRemoteAddress = '54:10:4F:D2:74:4F';
+                      });
+                    },
+                    child: const Text(
+                      'targetRemoteAddress \'54:10:4F:D2:74:4F\' (Buds)',
                     ),
                   ),
                 ],
