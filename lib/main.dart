@@ -40,7 +40,6 @@ class App extends StatelessWidget {
       title: 'Tizen First Screen',
       themeMode: ThemeMode.dark,
       theme: $style.colors.toLightThemeData(),
-
       darkTheme: $style.colors.toDarkThemeData(),
       routerConfig: AppRouter.router,
       // scrollBehavior: MouseDraggableScrollBehavior()

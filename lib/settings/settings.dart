@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:tizen_fs/models/bt_model.dart';
 import 'package:tizen_fs/models/page_node.dart';
 import 'package:tizen_fs/models/settings_menus.dart';
 import 'package:tizen_fs/settings/setting_page_interface.dart';
@@ -14,6 +16,7 @@ class Settings extends StatefulWidget {
 }
 
 class SettingsState extends State<Settings> {
+  final BtModel _btModel = BtModel.fromMock();
   final FocusNode _focusNode = FocusNode();
   late final PageController _pageController;
   PageNode _pageTree = SettingPages().getRoot();
@@ -117,39 +120,46 @@ class SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body:Focus(
-        focusNode: _focusNode,
-        onKeyEvent: _onKeyEvent,
-        child: PageView.builder(
-          controller: _pageController,
-          padEnds: false,
-          scrollDirection: Axis.horizontal,
-          itemCount: _pages.length,
-          physics: NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            if (_pages[index] == null) {
-              return Container(
-                color: Theme.of(context).colorScheme.onTertiary
-              );
-            } else {
-              return GestureDetector(
-                onTap: () {
-                  _selectTo(index);
-                },
-                child: SettingPage(
-                  key: _itemKeys[index],
-                  node: _pages[index]!,
-                  isEnabled: index <= _current,
-                  onSelectionChanged: (selected) {
-                    _updatePages(_pages[index], selected);
+    return MultiProvider (
+      providers: [
+        ChangeNotifierProvider<BtModel>(
+          create: (context) => _btModel,
+        ),
+      ],
+      child: Scaffold(
+        body:Focus(
+          focusNode: _focusNode,
+          onKeyEvent: _onKeyEvent,
+          child: PageView.builder(
+            controller: _pageController,
+            padEnds: false,
+            scrollDirection: Axis.horizontal,
+            itemCount: _pages.length,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              if (_pages[index] == null) {
+                return Container(
+                  color: Theme.of(context).colorScheme.onTertiary
+                );
+              } else {
+                return GestureDetector(
+                  onTap: () {
+                    _selectTo(index);
                   },
-                ),
-              );
-            }
-          },
+                  child: SettingPage(
+                    key: _itemKeys[index],
+                    node: _pages[index]!,
+                    isEnabled: index <= _current,
+                    onSelectionChanged: (selected) {
+                      _updatePages(_pages[index], selected);
+                    },
+                  ),
+                );
+              }
+            },
+          )
         )
-      )
+      ),
     );
   }
 }

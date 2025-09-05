@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/page_node.dart';
 import 'package:tizen_fs/poc/empty_page.dart';
+import 'package:tizen_fs/settings/bluetooth_description_page.dart';
 import 'package:tizen_fs/settings/bluetooth_page.dart';
 import 'package:tizen_fs/settings/device_info_page.dart';
 import 'package:tizen_fs/settings/end_page.dart';
@@ -109,23 +110,19 @@ class SettingPages {
         icon: Icons.bluetooth_outlined,
         title: 'Bluetooth',
         builder: (context, node, isEnabled, onItemSelected) => BluetoothPage(node: node, isEnabled: isEnabled, onSelectionChanged: onItemSelected),
+        // isEnd: true,
         children: [
           PageNode(
             id: 'bluetooth_menu1',
             title: 'Bluetooth 1 ',
-            isEnd: true
+            isEnd: true,
+            // builder: (context, node, isEnabled, onItemSelected) => BluetoothActivePage(node: node, isEnabled: isEnabled),
           ),
-          // PageNode(
-          //   id: 'bluetooth_menu2',
-          //   title: 'Bluetooth 2',
-          //   // isEnd: true
-          // ),
         ],
       ),
     );
 
-    settings.children.add(
-      PageNode(
+    settings.children.add(     PageNode(
         id: 'display',
         icon: Icons.light_mode_outlined,
         title: 'Display',

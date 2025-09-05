@@ -1,8 +1,8 @@
 
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:tizen_bluetooth/tizen_bluetooth.dart';
-import 'package:tizen_fs/native/bt_manager.dart';
-import 'package:tizen_interop/6.0/tizen.dart';
 
 class BtDevice {
   String remoteName;
@@ -22,41 +22,51 @@ class BtModel extends ChangeNotifier {
   List<String> _foundDevices = [];
   List<String> _devices = [];
   
-  bool _isOn = false;
-  bool _isLoading = false;
-  bool _initialized = false;
-
-  
   List<String> get devices => _devices;
 
-  // BtModel(this.contents);
-
+  bool _isEnabled = false;
+  bool get isEnabled => _isEnabled;
+  
   BtModel.fromMock() {
-    _initialized = true;
-    _isOn = false;
     _connectedDevices = ["Device1", "Device2"];
     _foundDevices = ["QLED", "55\" Neo QLED", "AI Home REference", "MR Music Frame", "43\" Neo QLED"];
 
     _devices = [..._connectedDevices, ..._foundDevices];
 
     _data = {
-      'Bluetooth' : ['Bluetooth on/off'],
-      'Connected Devices': [..._connectedDevices],
+      'Your device(Tizen) in currentrly visible to nearby devices.' : ['Bluetooth'],
+      'Paired Devices': [..._connectedDevices],
       'Available Devices': [..._foundDevices],
     };
-    //notify
   }
 
+  Future<void> enable() async {
+    debugPrint('bt enable: TizenBluetoothManager.initialized=${TizenBluetoothManager.initialized}');
+    Timeline.startSync('BtModel.enable ');
+    if(!TizenBluetoothManager.initialized) {
+      debugPrint('bt enable: initialize');
+      await TizenBluetoothManager.btInitialize();
+    }
+
+    debugPrint('bt enable: enable call');
+    await TizenBluetoothManager.btAdapterEnable();
+    _isEnabled = true;
+    Timeline.finishSync();
+    notifyListeners();
+  }
   
-  void initialize() async {
-    if(_initialized) return;
+  Future<void> disable() async {
+    debugPrint('bt disable: TizenBluetoothManager.initialized=${TizenBluetoothManager.initialized}');
+    Timeline.startSync('BtModel.disable ');
+    if(!TizenBluetoothManager.initialized) {
+      debugPrint('bt enable: initialize');
+      return;
+    }
 
-    await TizenBluetoothManager.btInitialize();
-    
-    int state = BtManager.getState();
-    debugPrint(' bet state = $state');
-
-    _initialized = true;
+    debugPrint('bt enable: disable call');
+    await TizenBluetoothManager.btAdapterDisable();
+    _isEnabled = false;
+    Timeline.finishSync();
+    notifyListeners();
   }
-
 }

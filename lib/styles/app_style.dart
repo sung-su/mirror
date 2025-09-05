@@ -128,7 +128,8 @@ class AppColors {
     );
     
     var t = ThemeData.from(
-      colorScheme: colorScheme, useMaterial3: true
+      colorScheme: colorScheme,
+      useMaterial3: true,
     ).copyWith(
       textSelectionTheme: TextSelectionThemeData(cursorColor: sblue),
       highlightColor: sblue,
