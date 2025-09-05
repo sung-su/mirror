@@ -23,9 +23,7 @@ typedef BtDeviceBondDestroyedCallback = void Function(int, String);
 class TizenBluetoothManager {
   static bool initialized = false;
 
-  static final Map<int, BtAdapterBondedDeviceCallback> _bondedDeviceCallbacks =
-      {};
-  static int _bondedDeviceCallbackIdCounter = 0;
+  static late BtAdapterBondedDeviceCallback _bondedDeviceCallback;
 
   static final Map<int, BtAdapterSetStateChangedCallback>
   _btAdapterSetStateChangedCallbackCallbacks = {};
@@ -80,17 +78,10 @@ class TizenBluetoothManager {
     final BluetoothDeviceInfo bluetoothDeviceInfo =
         BluetoothDeviceInfo.deviceInfoSToBluetoothDeviceInfo(deviceInfo.ref);
 
-    final Pointer<Int> idPtr = userData.cast<Int>();
-    final callbackId = idPtr.value;
-
-    final BtAdapterBondedDeviceCallback? callback = _bondedDeviceCallbacks
-        .remove(callbackId);
-    calloc.free(idPtr);
-
-    if (callback != null) {
-      callback(bluetoothDeviceInfo);
+    if (_bondedDeviceCallback != null) {
+      _bondedDeviceCallback(bluetoothDeviceInfo);
     } else {
-      debugPrint('Callback not found for id: $callbackId');
+      debugPrint('Callback not found.');
     }
 
     return true;
@@ -99,25 +90,19 @@ class TizenBluetoothManager {
   static void btAdapterForeachBondedDevice(
     BtAdapterBondedDeviceCallback callback,
   ) {
-    final callbackId = _bondedDeviceCallbackIdCounter++;
-    _bondedDeviceCallbacks[callbackId] = callback;
-
-    final Pointer<Int> idPtr = calloc<Int>();
-    idPtr.value = callbackId;
+    _bondedDeviceCallback = callback;
 
     int ret = tizen.bt_adapter_foreach_bonded_device(
       Pointer.fromFunction<bt_adapter_bonded_device_cbFunction>(
         onBtAdapterBondedDeviceCallback,
         false,
       ),
-      idPtr.cast<Void>(),
+      nullptr,
     );
 
     if (ret != 0) {
       final error = tizen.get_error_message(ret).toDartString();
       debugPrint('Failed to bt_adapter_foreach_bonded_device: $error');
-      _bondedDeviceCallbacks.remove(callbackId);
-      calloc.free(idPtr);
     }
   }
 
