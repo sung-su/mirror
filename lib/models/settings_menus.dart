@@ -1,10 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/page_node.dart';
-import 'package:tizen_fs/poc/empty_page.dart';
+import 'package:tizen_fs/settings/about_device_page.dart';
 import 'package:tizen_fs/settings/device_info_page.dart';
+import 'package:tizen_fs/settings/end_page.dart';
 import 'package:tizen_fs/settings/profile_active_page.dart';
-import 'package:tizen_fs/settings/open_source_license_page.dart';
 
 class SettingPages {
   late final PageNode _root;
@@ -58,6 +58,7 @@ class SettingPages {
         id: 'about_device',
         icon: Icons.info_outline,
         title: 'About Device',
+        builder: (context, node, isEnabled, onItemSelected) => AboutDevicePage(node: node, isEnabled: isEnabled, onSelectionChanged: onItemSelected),
         children: [
           PageNode(
             id: 'about_device_device_info',
@@ -67,7 +68,8 @@ class SettingPages {
           PageNode(
             id: 'about_device_opensource_license',
             title: 'Open source license',
-            builder: (context, node, isEnabled, onItemSelected) => OpenSourceLicensePage(node: node, isEnabled: isEnabled),
+            builder: (context, node, isEnabled, onItemSelected) => EndPage(node: node, isEnabled: isEnabled),
+            isEnd: true,
           ),
           PageNode(
             id: 'about_device_certificates',
@@ -75,13 +77,16 @@ class SettingPages {
             children: [
               PageNode(
                 id: 'about_device_certificates_AAA',
-                title: 'AAA service',
+                title: 'AAA certificates',
+                builder: (context, node, isEnabled, onItemSelected) => EndPage(node: node, isEnabled: isEnabled),
+
               ),
               PageNode(
                 id: 'about_device_certificates_ANF',
-                title: 'ANF server',
+                title: 'ANF certificates',
+                builder: (context, node, isEnabled, onItemSelected) => EndPage(node: node, isEnabled: isEnabled),
               ),
-            ],
+            ]
           ),
         ],
       ),
