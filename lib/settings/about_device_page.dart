@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/page_node.dart';
 import 'package:tizen_fs/settings/open_source_license_popup.dart';
 import 'package:tizen_fs/styles/app_style.dart';
-import 'package:tizen_fs/widgets/custom_info_list_view.dart';
+import 'package:tizen_fs/widgets/setting_action_list_view.dart';
 
 class AboutDevicePage extends StatefulWidget {
   const AboutDevicePage({
@@ -21,14 +21,8 @@ class AboutDevicePage extends StatefulWidget {
 }
 
 class AboutDevicePageState extends State<AboutDevicePage> {
-  GlobalKey<CustomInfoListViewState> _listKey =
-      GlobalKey<CustomInfoListViewState>();
-
-  List<CustomInfo> menu = [
-    CustomInfo("Device info"),
-    CustomInfo("Open source license", popup: OpenSourceLicensePopup()),
-    CustomInfo("Manage certificates"),
-  ];
+  GlobalKey<SettingActionListViewState> _listKey =
+      GlobalKey<SettingActionListViewState>();
 
   @override
   void initState() {
@@ -55,8 +49,6 @@ class AboutDevicePageState extends State<AboutDevicePage> {
 
   @override
   Widget build(BuildContext context) {
-    double titleHeight = 100;
-    double titleFontSize = 35;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,11 +66,11 @@ class AboutDevicePageState extends State<AboutDevicePage> {
             child: Align(
               alignment: Alignment.topLeft,
               child: Text(
-                "About device",
+                widget.node?.title ?? "",
                 softWrap: true,
                 overflow: TextOverflow.visible,
                 maxLines: 2,
-                style: TextStyle(fontSize: titleFontSize),
+                style: TextStyle(fontSize: 35),
               ),
             ),
           ),
@@ -96,17 +88,17 @@ class AboutDevicePageState extends State<AboutDevicePage> {
                           vertical: 10,
                         )
                         : const EdgeInsets.symmetric(horizontal: 40),
-                child: CustomInfoListView(
+                child: SettingActionListView(
                   key: _listKey,
-                  itemSource: menu,
-                  onFocusChanged: (focusd) {
-                    print("@ focusd[${focusd}]");
-                    widget.onSelectionChanged?.call(focusd);
-                  },
+                  node: widget.node!,
                   onSelectionChanged: (selected) {
                     print("@ selected[${selected}]");
-                    menu[selected].popup != null
-                        ? _showFullScreenPopup(context, menu[selected].popup!)
+                    widget.onSelectionChanged?.call(selected);
+                  },
+                  onAction: (selected) {
+                    print("@ action[${selected}]");
+                    widget.node?.children[selected].id == "about_device_opensource_license"
+                        ? _showFullScreenPopup(context, OpenSourceLicensePopup())
                         : null;
                   },
                 ),

@@ -68,7 +68,7 @@ class SettingPages {
           PageNode(
             id: 'about_device_opensource_license',
             title: 'Open source license',
-            builder: (context, node, isEnabled, onItemSelected) => EndPage(node: node, isEnabled: isEnabled),
+            builder: (context, node, isEnabled, onItemSelected) => EndPage(),
             isEnd: true,
           ),
           PageNode(
@@ -78,13 +78,13 @@ class SettingPages {
               PageNode(
                 id: 'about_device_certificates_AAA',
                 title: 'AAA certificates',
-                builder: (context, node, isEnabled, onItemSelected) => EndPage(node: node, isEnabled: isEnabled),
+                builder: (context, node, isEnabled, onItemSelected) => EndPage(),
 
               ),
               PageNode(
                 id: 'about_device_certificates_ANF',
                 title: 'ANF certificates',
-                builder: (context, node, isEnabled, onItemSelected) => EndPage(node: node, isEnabled: isEnabled),
+                builder: (context, node, isEnabled, onItemSelected) => EndPage(),
               ),
             ]
           ),
