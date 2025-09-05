@@ -91,3 +91,51 @@ void TizenBluetoothManager::SetDeviceSetBondCreatedHandler(OnDeviceSetBondCreate
   int ret = bt_device_set_bond_created_cb(bt_device_bond_created_callback, this);
   LOG_ERROR("bt_device_bond_created_callback(): %s", get_error_message(ret));
 }
+
+static void bt_device_bond_destroyed_callback(int result, char *remote_address, void *user_data)
+{
+  auto *self = static_cast<TizenBluetoothManager *>(user_data);
+
+  if (result != 0 && self->device_set_bond_destroyed_callback_ != nullptr)
+    return;
+
+  DeviceInfo info = DeviceInfo();
+
+  if (remote_address)
+    info.remoteAddress = remote_address;
+
+  self->device_set_bond_destroyed_callback_(result, info);
+}
+
+void TizenBluetoothManager::SetDeviceSetBondDestroyedHandler(OnDeviceSetBondDestroyedEvent on_event)
+{
+  device_set_bond_destroyed_callback_ = on_event;
+
+  int ret = bt_device_set_bond_destroyed_cb(bt_device_bond_destroyed_callback, this);
+  LOG_ERROR("bt_device_set_bond_destroyed_cb(): %s", get_error_message(ret));
+}
+
+static void bt_audio_connection_state_changed_callback(int result, bool connected, const char *remote_address, bt_audio_profile_type_e type, void *user_data)
+{
+  auto *self = static_cast<TizenBluetoothManager *>(user_data);
+
+  if (result != 0 && self->device_set_bond_destroyed_callback_ != nullptr)
+    return;
+
+  AudioConnectionInfo info = AudioConnectionInfo();
+
+  if (remote_address)
+    info.remoteAddress = remote_address;
+  info.connected = connected;
+  info.type = type;
+
+  self->audio_set_connection_state_changed_callback_(result, info);
+}
+
+void TizenBluetoothManager::SetAudioSetConnectionStateChangedEvent(OnAudioSetConnectionStateChangedEvent on_event)
+{
+  audio_set_connection_state_changed_callback_ = on_event;
+
+  int ret = bt_audio_set_connection_state_changed_cb(bt_audio_connection_state_changed_callback, this);
+  LOG_ERROR("bt_audio_set_connection_state_changed_cb(): %s", get_error_message(ret));
+}

@@ -195,6 +195,19 @@ class _MyAppState extends State<MyApp> {
                   TextButton(
                     onPressed: () {
                       debugPrint(
+                        'call btAudioSetConnectionStateChangedCallback()',
+                      );
+                      TizenBluetoothAudioManager.btAudioSetConnectionStateChangedCallback((
+                        int result,
+                        bool connected,
+                        String remoteAddress,
+                        BluetoothAudioProfileType type,
+                      ) {
+                        debugPrint(
+                          'call on btAudioSetConnectionStateChangedCallback() result : $result /  connected : $connected / remoteAddress : $remoteAddress / type : $type',
+                        );
+                      });
+                      debugPrint(
                         'call btAudioConnect(\'$targetBondAdress\', )',
                       );
                       TizenBluetoothAudioManager.btAudioConnect(
@@ -220,6 +233,21 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ),
                   const SizedBox(width: 10),
+                  TextButton(
+                    onPressed: () {
+                      debugPrint(
+                        'call btAudioUnsetConnectionStateChangedCallback()',
+                      );
+                      TizenBluetoothAudioManager.btAudioUnsetConnectionStateChangedCallback();
+                    },
+                    child: Text('btAudioUnsetConnectionStateChangedCallback()'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   TextButton(
                     onPressed: () {
                       debugPrint('call btDeviceBondCreatedCallback()');
@@ -258,14 +286,14 @@ class _MyAppState extends State<MyApp> {
                   TextButton(
                     onPressed: () {
                       debugPrint('call btDeviceSetBondDestroyedCallback()');
-                      /*TizenBluetoothManager.btDeviceSetBondDestroyedCallback((
+                      TizenBluetoothManager.btDeviceSetBondDestroyedCallback((
                         int result,
                         String remoteAddress,
                       ) {
                         debugPrint(
                           'btDeviceSetBondDestroyedCallback: result : $result / $remoteAddress)',
                         );
-                      });*/
+                      });
 
                       debugPrint(
                         'call btDeviceDestroyBond(\'54:10:4F:D2:74:4F\', )',

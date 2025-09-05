@@ -10,8 +10,10 @@ import 'package:tizen_interop_callbacks/tizen_interop_callbacks.dart';
 
 import 'tizen_bluetooth_manager_type.dart';
 
+typedef BtAudioConnectionStateChangedCallback =
+    void Function(int, bool, String, BluetoothAudioProfileType);
+
 class TizenBluetoothAudioManager {
-  static final TizenInteropCallbacks callbacks = TizenInteropCallbacks();
   static bool initialized = false;
 
   static final methodChannel = const MethodChannel('tizen/bluetooth_audio');
@@ -45,6 +47,26 @@ class TizenBluetoothAudioManager {
     BluetoothAudioProfileType type,
   ) {
     if (!initialized) return;
+
+    if (_btAudioConnectionStateChangedCallback == null) {
+      debugPrint('No callback');
+      return;
+    }
+
+    _audioConnectionStateChangedSubscription = audioConnectionStateChangedStream
+        .listen((AudioConnectionInfo info) {
+          debugPrint(
+            'call _btDeviceSetBondCreatedCallback result ${info.result}',
+          );
+          if (_btAudioConnectionStateChangedCallback != null) {
+            _btAudioConnectionStateChangedCallback!(
+              info.result,
+              info.connected,
+              info.remoteAddress,
+              BluetoothAudioProfileType.values[info.type],
+            );
+          }
+        });
 
     final int ret = using((Arena arena) {
       final int connectResult = tizen.bt_audio_connect(
@@ -82,5 +104,48 @@ class TizenBluetoothAudioManager {
         'Failed to bt_audio_connect. Error code: ${tizen.get_error_message(ret).toDartString()}',
       );
     }
+  }
+
+  // bt_audio_set_connection_state_changed_cb (*: Pointer)
+  // bt_audio_unset_connection_state_changed_cb
+  static const EventChannel _audioConnectionStateChangedEventChannel =
+      EventChannel('tizen/bluetooth/audio_connection_state_changed');
+
+  static late StreamSubscription<AudioConnectionInfo>?
+  _audioConnectionStateChangedSubscription;
+
+  static late BtAudioConnectionStateChangedCallback?
+  _btAudioConnectionStateChangedCallback;
+
+  static Stream<AudioConnectionInfo> get audioConnectionStateChangedStream =>
+      _audioConnectionStateChangedEventChannel.receiveBroadcastStream().map(
+        (dynamic event) => AudioConnectionInfo.fromMap(
+          (event as Map<dynamic, dynamic>).cast<String, dynamic>(),
+        ),
+      );
+
+  static Future<void> btAudioSetConnectionStateChangedCallback(
+    BtAudioConnectionStateChangedCallback callback,
+  ) async {
+    if (!initialized) return;
+
+    _btAudioConnectionStateChangedCallback = callback;
+    await methodChannel.invokeMethod<String>(
+      'init_bt_audio_set_connection_state_changed_cb',
+    );
+  }
+
+  static void btAudioUnsetConnectionStateChangedCallback() {
+    if (!initialized) return;
+    int ret = tizen.bt_audio_unset_connection_state_changed_cb();
+    if (ret != 0) {
+      throw Exception(
+        'Failed to bt_audio_unset_connection_state_changed_cb. Error code: ${tizen.get_error_message(ret).toDartString()}',
+      );
+    }
+
+    _audioConnectionStateChangedSubscription?.cancel();
+    _audioConnectionStateChangedSubscription = null;
+    _btAudioConnectionStateChangedCallback = null;
   }
 }

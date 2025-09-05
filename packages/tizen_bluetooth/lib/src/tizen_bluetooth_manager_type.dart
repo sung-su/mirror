@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:tizen_interop/9.0/tizen.dart';
 import 'package:tizen_interop_callbacks/tizen_interop_callbacks.dart';
 
+final TizenInteropCallbacks tizenInteropCallbacks = TizenInteropCallbacks();
+
 enum BluetoothAudioProfileType {
   /// < All supported profiles related with audio (Both Host and Device role)
   profileTypeAll,
@@ -164,6 +166,35 @@ class BluetoothDeviceInfo {
       manufacturerData: map['manufacturerData'] != null
           ? map['manufacturerData'] as String
           : '',
+    );
+  }
+}
+
+class AudioConnectionInfo {
+  int result;
+
+  /// < The address of remote device
+  String remoteAddress;
+
+  bool connected;
+
+  int type;
+
+  AudioConnectionInfo({
+    this.result = 0,
+    this.remoteAddress = '',
+    this.connected = false,
+    this.type = 0,
+  }) {}
+
+  static AudioConnectionInfo fromMap(Map<String, dynamic> map) {
+    return AudioConnectionInfo(
+      result: map['result'] != null ? map['result'] as int : 0,
+      remoteAddress: map['remoteAddress'] != null
+          ? map['remoteAddress'] as String
+          : '',
+      connected: map['connected'] != null ? map['connected'] as bool : false,
+      type: map['type'] != null ? map['type'] as int : 0,
     );
   }
 }

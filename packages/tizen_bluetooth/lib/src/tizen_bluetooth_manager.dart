@@ -21,7 +21,6 @@ typedef BtDeviceSetBondCreatedCallback =
 typedef BtDeviceBondDestroyedCallback = void Function(int, String);
 
 class TizenBluetoothManager {
-  static final TizenInteropCallbacks callbacks = TizenInteropCallbacks();
   static bool initialized = false;
 
   static final Map<int, BtAdapterBondedDeviceCallback> _bondedDeviceCallbacks =
@@ -254,10 +253,7 @@ class TizenBluetoothManager {
     final callbackId = _btAdapterSetStateChangedCallbackIdCounter++;
     _btAdapterSetStateChangedCallbackCallbacks[callbackId] = callback;
 
-    final Pointer<Int> idPtr = calloc<Int>();
-    idPtr.value = callbackId;
-
-    final stateChangedCallback = callbacks
+    final stateChangedCallback = tizenInteropCallbacks
         .register<bt_adapter_state_changed_cbFunction>(
           'bt_adapter_state_changed_cb',
           Pointer.fromFunction(onBtAdapterSetStateChangedCallback),
@@ -271,7 +267,6 @@ class TizenBluetoothManager {
 
     if (ret != 0) {
       _btAdapterSetStateChangedCallbackCallbacks.remove(callbackId);
-      calloc.free(idPtr);
       throw Exception(
         'Failed to bt_adapter_set_state_changed_cb. Error code: ${tizen.get_error_message(ret).toDartString()}',
       );
@@ -290,6 +285,10 @@ class TizenBluetoothManager {
     _btAdapterSetStateChangedCallbackIdCounter = 0;
     _btAdapterSetStateChangedCallbackCallbacks.clear();
   }
+
+  // [bt_device_create_bond]
+  // [bt_device_set_bond_create_cb]
+  // [bt_device_unset_bond_create_cb]
 
   static const EventChannel _deviceSetBondCreatedEventChannel = EventChannel(
     'tizen/bluetooth/device_bond_created',
@@ -318,9 +317,7 @@ class TizenBluetoothManager {
     _deviceSetBondCreatedSubscription = deviceBondCreatedStream.listen((
       BluetoothDeviceInfo info,
     ) {
-      debugPrint(
-        'call _btAdapterDeviceDiscoveryStateChangedCallback result ${info.result}',
-      );
+      debugPrint('call _btDeviceSetBondCreatedCallback result ${info.result}');
       if (_btDeviceSetBondCreatedCallback != null) {
         _btDeviceSetBondCreatedCallback!(info.result, info);
       }
@@ -335,22 +332,6 @@ class TizenBluetoothManager {
     if (ret != 0) {
       debugPrint(
         'Failed to bt_device_create_bond. Error code: ${tizen.get_error_message(ret).toDartString()}',
-      );
-    }
-  }
-
-  static void btDeviceDestroyBond(String remoteAddress) {
-    if (!initialized) return;
-
-    final int ret = using((Arena arena) {
-      final int ret = tizen.bt_device_destroy_bond(
-        remoteAddress.toNativeChar(allocator: arena),
-      );
-      return ret;
-    });
-    if (ret != 0) {
-      debugPrint(
-        'Failed to bt_device_destroy_bond. Error code: ${tizen.get_error_message(ret).toDartString()}',
       );
     }
   }
@@ -378,6 +359,83 @@ class TizenBluetoothManager {
     _deviceSetBondCreatedSubscription?.cancel();
     _deviceSetBondCreatedSubscription = null;
     _btDeviceSetBondCreatedCallback = null;
+  }
+
+  // [bt_device_destroy_bond]
+  // [bt_device_set_bond_destroyed_cb]
+  // [bt_device_unset_bond_destroyed_cb]
+
+  static const EventChannel _deviceSetBondDestroyedEventChannel = EventChannel(
+    'tizen/bluetooth/device_bond_destroyed',
+  );
+
+  static late StreamSubscription<BluetoothDeviceInfo>?
+  _deviceSetBondDestroyedSubscription;
+
+  static late BtDeviceBondDestroyedCallback? _btDeviceSetBondDestroyedCallback;
+
+  static Stream<BluetoothDeviceInfo> get deviceBondDestroyedStream =>
+      _deviceSetBondDestroyedEventChannel.receiveBroadcastStream().map(
+        (dynamic event) => BluetoothDeviceInfo.fromMap(
+          (event as Map<dynamic, dynamic>).cast<String, dynamic>(),
+        ),
+      );
+
+  static void btDeviceDestroyBond(String remoteAddress) {
+    if (!initialized) return;
+
+    if (_btDeviceSetBondDestroyedCallback == null) {
+      debugPrint('No callback');
+      return;
+    }
+
+    _deviceSetBondDestroyedSubscription = deviceBondDestroyedStream.listen((
+      BluetoothDeviceInfo info,
+    ) {
+      debugPrint(
+        'call _btDeviceSetBondDestroyedCallback result ${info.result}',
+      );
+      if (_btDeviceSetBondDestroyedCallback != null) {
+        _btDeviceSetBondDestroyedCallback!(info.result, info.remoteAddress);
+      }
+    });
+
+    final int ret = using((Arena arena) {
+      final int ret = tizen.bt_device_destroy_bond(
+        remoteAddress.toNativeChar(allocator: arena),
+      );
+      return ret;
+    });
+    if (ret != 0) {
+      debugPrint(
+        'Failed to bt_device_destroy_bond. Error code: ${tizen.get_error_message(ret).toDartString()}',
+      );
+    }
+  }
+
+  static Future<void> btDeviceSetBondDestroyedCallback(
+    BtDeviceBondDestroyedCallback callback,
+  ) async {
+    if (!initialized) return;
+
+    _btDeviceSetBondDestroyedCallback = callback;
+    await methodChannel.invokeMethod<String>(
+      'init_bt_device_set_bond_destroyed_cb',
+    );
+  }
+
+  static void btDeviceUnsetBondDestroyedCallback() {
+    if (!initialized) return;
+    int ret = tizen.bt_device_unset_bond_destroyed_cb();
+    if (ret != 0) {
+      throw Exception(
+        'Failed to bt_device_unset_bond_destroyed_cb. Error code: ${tizen.get_error_message(ret).toDartString()}',
+      );
+    }
+
+    _deviceSetBondDestroyedSubscription?.cancel();
+    _deviceSetBondDestroyedSubscription = null;
+    _btDeviceSetBondDestroyedCallback = null;
   }
 
   static void btDeviceCancelBonding() {
