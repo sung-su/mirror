@@ -451,7 +451,30 @@ namespace
     {
       const auto &method_name = method_call.method_name();
 
-      if (method_name == "init_device_discovery_state_changed_cb")
+      if (method_name == "bt_initialize")
+      {
+        int ret = bt_initialize();
+        LOG_ERROR("bt_initialize() ret: %s", get_error_message(ret));
+        if (ret != BT_ERROR_NONE)
+        {
+          result->Error(std::string(get_error_message(ret)), "Failed to bt_deinitialize().");
+          return;
+        }
+        result->Success();
+      }
+      else if (method_name == "bt_deinitialize")
+      {
+        int ret = bt_deinitialize();
+        LOG_ERROR("bt_deinitialize() ret: %s", get_error_message(ret));
+        if (ret != BT_ERROR_NONE)
+        {
+          result->Error(std::string(get_error_message(ret)), "Failed to bt_deinitialize().");
+          return;
+        }
+        result->Success();
+      }
+
+      else if (method_name == "init_device_discovery_state_changed_cb")
       {
         device_discovery_state_changed_event_channel_ = std::make_unique<FlEventChannel>(
             registrar_->messenger(), "tizen/bluetooth/device_discovery_state_changed",

@@ -33,27 +33,19 @@ class TizenBluetoothManager {
 
   static final methodChannel = const MethodChannel('tizen/bluetooth');
 
-  static void btInitialize() {
+  static void btInitialize() async {
     if (initialized) return;
 
-    int ret = tizen.bt_initialize();
-    if (ret != 0) {
-      throw Exception(
-        'Failed to initialize Bluetooth. Error code: ${tizen.get_error_message(ret).toDartString()}',
-      );
-    }
+    await methodChannel.invokeMethod<String>('bt_initialize');
 
     initialized = true;
   }
 
-  static void btDeinitialize() {
+  static void btDeinitialize() async {
     if (!initialized) return;
-    int ret = tizen.bt_deinitialize();
-    if (ret != 0) {
-      throw Exception(
-        'Failed to deinitialize Bluetooth. Error code: ${tizen.get_error_message(ret).toDartString()}',
-      );
-    }
+
+    await methodChannel.invokeMethod<String>('bt_deinitialize');
+
     initialized = false;
   }
 
