@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:ffi';
-import 'dart:typed_data';
 
-import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_interop/9.0/tizen.dart';
 import 'package:tizen_interop_callbacks/tizen_interop_callbacks.dart';
+import 'package:ffi/ffi.dart';
 
 import 'tizen_bluetooth_manager_type.dart';
 
@@ -21,6 +20,8 @@ typedef BtDeviceSetBondCreatedCallback =
 typedef BtDeviceBondDestroyedCallback = void Function(int, String);
 
 class TizenBluetoothManager {
+  static final TizenInteropCallbacks tizenBluetoothInteropCallbacks =
+      TizenInteropCallbacks();
   static bool initialized = false;
 
   static late BtAdapterBondedDeviceCallback _bondedDeviceCallback;
@@ -225,7 +226,7 @@ class TizenBluetoothManager {
     final callbackId = _btAdapterSetStateChangedCallbackIdCounter++;
     _btAdapterSetStateChangedCallbackCallbacks[callbackId] = callback;
 
-    final stateChangedCallback = tizenInteropCallbacks
+    final stateChangedCallback = tizenBluetoothInteropCallbacks
         .register<bt_adapter_state_changed_cbFunction>(
           'bt_adapter_state_changed_cb',
           Pointer.fromFunction(onBtAdapterSetStateChangedCallback),

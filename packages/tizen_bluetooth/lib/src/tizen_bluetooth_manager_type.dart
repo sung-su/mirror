@@ -1,14 +1,5 @@
-import 'dart:convert';
 import 'dart:ffi';
-import 'dart:typed_data';
-
-import 'package:ffi/ffi.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:tizen_interop/9.0/tizen.dart';
-import 'package:tizen_interop_callbacks/tizen_interop_callbacks.dart';
-
-final TizenInteropCallbacks tizenInteropCallbacks = TizenInteropCallbacks();
 
 enum BluetoothAudioProfileType {
   /// < All supported profiles related with audio (Both Host and Device role)
