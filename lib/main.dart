@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/locator.dart';
 import 'package:tizen_fs/models/app_data_model.dart';
+import 'package:tizen_fs/providers/wifi_provider.dart';
 import 'package:tizen_fs/router.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
@@ -15,6 +16,9 @@ void main() {
       providers: [
         ChangeNotifierProvider<AppDataModel>(
           create: (context) => getIt<AppDataModel>(),
+        ),
+        ChangeNotifierProvider<WifiProvider>(
+          create: (context) => WifiProvider(),
         ),
       ],
       child: const App()
