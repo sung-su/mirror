@@ -98,7 +98,7 @@ class SettingPages {
         id: 'wifi',
         icon: Icons.wifi_outlined,
         title: 'Wi-Fi',
-        builder: (context, node, isEnabled, onItemSelected) => WifiPage(node: node, isEnabled: isEnabled),
+        builder: (context, node, isEnabled, onItemSelected) => WifiPage(node: node, isEnabled: isEnabled, onSelectionChanged: onItemSelected,),
       ),
     );
 
