@@ -5,6 +5,7 @@ import 'package:tizen_fs/settings/about_device_page.dart';
 import 'package:tizen_fs/settings/device_info_page.dart';
 import 'package:tizen_fs/settings/end_page.dart';
 import 'package:tizen_fs/settings/profile_active_page.dart';
+import 'package:tizen_fs/settings/wifi_page.dart';
 
 class SettingPages {
   late final PageNode _root;
@@ -97,17 +98,7 @@ class SettingPages {
         id: 'wifi',
         icon: Icons.wifi_outlined,
         title: 'Wi-Fi',
-
-        children: [
-          PageNode(
-            id: 'wifi_menu1',
-            title: 'Wi-Fi',
-          ),
-          PageNode(
-            id: 'wifi_menu2',
-            title: 'Advanced',
-          ),
-        ],
+        builder: (context, node, isEnabled, onItemSelected) => WifiPage(node: node, isEnabled: isEnabled, onSelectionChanged: onItemSelected,),
       ),
     );
 
