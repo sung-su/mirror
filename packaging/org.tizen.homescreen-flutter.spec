@@ -1,5 +1,5 @@
-Name:       org.tizen.homescreen-flutter
-Summary:    org.tizen.homescreen-flutter
+Name:       org.tizen.tizen-fs
+Summary:    org.tizen.tizen-fs
 Version:    1.0.0
 Release:    1
 Group:      N/A
