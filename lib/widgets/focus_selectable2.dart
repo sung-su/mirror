@@ -3,12 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:tizen_fs/widgets/category_selectable_listview.dart';
 import 'package:tizen_fs/widgets/selectable_listview.dart';
 
-mixin FocusSelectable<T extends StatefulWidget> on State<T> {
-  final GlobalKey<SelectableListViewState> _listState =
-      GlobalKey<SelectableListViewState>();
+mixin FocusSelectable2<T extends StatefulWidget> on State<T> {
+  final GlobalKey<CategorySelectableListViewState> _listState =
+      GlobalKey<CategorySelectableListViewState>();
   final FocusNode _focusNode = FocusNode();
 
-  GlobalKey<SelectableListViewState> get listKey => _listState;
+  GlobalKey<CategorySelectableListViewState> get listKey => _listState;
   FocusNode get focusNode => _focusNode;
   int get selectedIndex => _listState.currentState?.selectedIndex ?? 0;
 
