@@ -30,6 +30,7 @@ class WifiManager {
   void dispose() {
     if (_initialized) {
       tz.tizen.wifi_manager_deinitialize(wifiManagerHandle.value);
+      calloc.free(wifiManagerHandle);
     }
   }
 
@@ -41,7 +42,8 @@ class WifiManager {
 
     wifiManagerHandle = calloc<tz.wifi_manager_h>();
     final ret = tz.tizen.wifi_manager_initialize(wifiManagerHandle);
-    _initialized = true;
+    if (ret == 0)
+      _initialized = true;
     print("@ Wi-Fi Native Initialized");
   }
 
@@ -57,6 +59,7 @@ class WifiManager {
       result = true;
     }
     print("@ Wi-Fi Native isActivated=[${result}]");
+    calloc.free(activated);
     return result;
   }
 
@@ -104,17 +107,28 @@ class WifiManager {
   }
 
   void scan() {
-    final callback2 = callbacks.register<Void Function(Int32, Pointer<Void>)>(
+    final callback = callbacks.register<Void Function(Int32, Pointer<Void>)>(
       'wifi_manager_scan_finished_cb',
       Pointer.fromFunction(_scanFinishedCallback),
     );
     print("@ Wi-Fi Native Scan Call");
     final ret = tz.tizen.wifi_manager_scan(
       wifiManagerHandle.value,
-      callback2.interopCallback,
-      callback2.interopUserData,
+      callback.interopCallback,
+      callback.interopUserData,
     );
     print("@ Wi-Fi Native Scan Called");
+  }
+
+  static String findIdByHandle(Pointer<Void> handle) {
+    Pointer<Pointer<Char>> essid = calloc<Pointer<Char>>();
+    var ret = tz.tizen.wifi_manager_ap_get_essid(handle, essid);
+    String id = "";
+    if (ret == 0) {
+      id = essid.value.toDartString();
+    }
+    calloc.free(essid);
+    return id;
   }
 
   static bool _foreachFoundApCallback(
@@ -147,7 +161,10 @@ class WifiManager {
         handle: ap,
       ),
     );
-
+    calloc.free(id);
+    calloc.free(state);
+    calloc.free(frequency);
+    calloc.free(rssi);
     return true;
   }
 
@@ -189,17 +206,20 @@ class WifiManager {
     bool result = false;
     if (ret == 0 && isRequired.value == true) result = true;
     print("@ Wi-Fi Native PassphraseRequired=[${result}]");
+    calloc.free(isRequired);
     return result;
   }
 
   bool setPassphrase(Pointer<Void> ap, String passphrase) {
+    var password = passphrase.toNativeChar();
     final ret = tz.tizen.wifi_manager_ap_set_passphrase(
       ap,
-      passphrase.toNativeChar(),
+      password,
     );
     bool result = false;
     if (ret == 0) result = true;
     print("@ Wi-Fi Native SetPassphrase=[${result}]");
+    calloc.free(password);
     return result;
   }
 
@@ -254,7 +274,7 @@ class WifiManager {
     final apHandle = getConnectedAp();
     final callback = callbacks.register<Void Function(Int32, Pointer<Void>)>(
       'wifi_manager_disconnected_cb',
-      Pointer.fromFunction(_connectedCallback),
+      Pointer.fromFunction(_disconnectedCallback),
     );
 
     print("@ Wi-Fi Native Disconnect call");

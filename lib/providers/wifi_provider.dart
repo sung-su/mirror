@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/settings/wifi.dart';
 
@@ -44,7 +45,7 @@ class WifiProvider with ChangeNotifier {
   bool _isDisconnecting = false;
   bool get isDisconnecting => _isDisconnecting;
 
-  WifiAP? _connectedAp;
+  WifiAP? _connectedAp = null;
   WifiAP? get connectedAp => _connectedAp;
 
   WifiProvider() {
@@ -54,49 +55,53 @@ class WifiProvider with ChangeNotifier {
   }
 
   void _setupCallbacks() {
-    WifiManager.onActivated = (int result) {
+    WifiManager.onActivated = (int result) async {
+      print("@ onActivated[${result}]");
       _isActivating = false;
-      _isActivated = true;
-      scanAndRefresh();
-      notifyListeners();
+      _isActivated = result == 0;
+      if (_isActivated) await scanAndRefresh();
+      else notifyListeners();
     };
 
     WifiManager.onDeactivated = (int result) {
       _isDeactivating = false;
       _isActivated = false;
+      _connectedAp = null;
+      WifiManager.apList.clear();
       notifyListeners();
     };
 
-    WifiManager.onScanFinished = (int result) {
-      if (result == 0) {
-        _updateApListAndCurrentAp();
-      }
+    WifiManager.onScanFinished = (int result) async {
       _isScanning = false;
-      notifyListeners();
+      if (result == 0) _updateApListAndCurrentAp();
+      else notifyListeners();
     };
 
     WifiManager.onConnected = (int result) {
-      if (result == 0) {
-        _updateApListAndCurrentAp();
-      }
       _isConnecting = false;
-      notifyListeners();
+      if (result == 0) _updateApListAndCurrentAp();
+      else notifyListeners();
     };
 
     WifiManager.onDisconnected = (int result) {
+      _isDisconnecting = false;
       if (result == 0) {
         _connectedAp = null;
         _updateApListAndCurrentAp();
       }
-      _isDisconnecting = false;
-      notifyListeners();
+      else notifyListeners();
     };
   }
 
   @override
   void dispose() {
-    super.dispose();
+    WifiManager.onActivated = null;
+    WifiManager.onDeactivated = null;
+    WifiManager.onScanFinished = null;
+    WifiManager.onConnected = null;
+    WifiManager.onDisconnected = null;
     _wifiManager.dispose();
+    super.dispose();
   }
 
   Future<bool> wifiOn() async {
@@ -145,36 +150,66 @@ class WifiProvider with ChangeNotifier {
     }
   }
 
-  void _updateApListAndCurrentAp() {
-    final oldApList = List<WifiAP>.from(WifiManager.apList);
-    final oldConnectedAp = _connectedAp;
-
-    WifiManager.updateApList();
+  void getCurrentAp() {
     final connectedApHandle = _wifiManager.getConnectedAp();
-
-    // AP 목록이 변경되었는지 확인
-    final apListChanged = oldApList.length != WifiManager.apList.length ||
-        !oldApList.every((oldAp) => WifiManager.apList.any((newAp) => newAp.handle == oldAp.handle));
+    var id = WifiManager.findIdByHandle(connectedApHandle);
+    print("@ getCurrentAp1 handle[${connectedApHandle}]");
+    print("@ getCurrentAp1 id[${id}]");
 
     if (connectedApHandle != nullptr) {
-      for (var ap in WifiManager.apList) {
-        if (ap.handle == connectedApHandle) {
+      for (var ap in apList) {
+        if (ap.essid == id) {
           _connectedAp = ap;
-          // 연결 상태가 변경되었거나 AP 목록이 변경되었을 때 notify
-          if (oldConnectedAp?.handle != _connectedAp?.handle || apListChanged) {
-            notifyListeners();
-          }
+          print("@ getCurrentAp2 handle[${_connectedAp?.essid}]");
+          print("@ getCurrentAp2 id[${_connectedAp?.handle}]");
+          notifyListeners();
           return;
         }
       }
     }
+    print("@ getCurrentAp3 fail [${_connectedAp?.handle}]");
 
-    // 연결이 해제되었거나 AP 목록이 변경되었을 때 notify
-    final connectionChanged = oldConnectedAp != null && _connectedAp == null;
-    if (connectionChanged || apListChanged) {
-      _connectedAp = null;
-      notifyListeners();
+    _connectedAp = null;
+    notifyListeners();
+    return;
+  }
+
+  Future waitDisconnect() async {
+    print("@ connetToAp 4-1");
+
+    final completer = Completer();
+    bool fired = false;
+
+    final prev = WifiManager.onDisconnected;
+    WifiManager.onDisconnected = (int result) {
+      if (!fired) {
+        fired = true;
+        completer.complete();
+      }
+      prev?.call(result);
+    };
+    print("@ connetToAp 4-2");
+
+    try {
+      await disconnectFromCurrentAp();
+    print("@ connetToAp 4-3");
+
+      await completer.future.timeout(Duration(seconds: 3));
+    print("@ connetToAp 4-4");
+
+    } finally {
+    print("@ connetToAp 4-5");
+
+      WifiManager.onDisconnected = prev;
     }
+
+  }
+
+  void _updateApListAndCurrentAp() {
+    WifiManager.updateApList();
+    final connectedApHandle = _wifiManager.getConnectedAp();
+    getCurrentAp();
+    notifyListeners();
   }
 
   Future<bool> connectToAp(String essid, {String? password}) async {
@@ -184,12 +219,20 @@ class WifiProvider with ChangeNotifier {
     print("@ connetToAp 2");
 
     try {
+      if(_connectedAp?.essid == essid) {
+        return true;
+      }
+
       _isConnecting = true;
       notifyListeners();
 
-      if (_connectedAp != null) await disconnectFromCurrentAp();
+      if (_connectedAp != null && _connectedAp?.essid != essid) {
+        print("@ connetToAp 3");
+        await waitDisconnect();
+      }
+      print("@ connetToAp 5");
       await _wifiManager.connect(essid, password ?? "");
-
+      print("@ connetToAp 6");
       return true;
     } catch (e) {
       _isConnecting = false;

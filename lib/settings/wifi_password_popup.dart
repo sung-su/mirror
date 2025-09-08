@@ -8,10 +8,12 @@ class WifiPasswordPopup extends StatefulWidget {
     super.key,
     required this.ap,
     required this.onConnect,
+    required this.onDisconnect,
   });
 
   final WifiAP ap;
   final Function(String password) onConnect;
+  final Function() onDisconnect;
 
   @override
   State<WifiPasswordPopup> createState() => _WifiPasswordPopupState();
@@ -21,6 +23,7 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
   final TextEditingController _passwordController = TextEditingController();
   final FocusNode _passwordFocusNode = FocusNode();
   final FocusNode _connectFocusNode = FocusNode();
+  final FocusNode _disconnectFocusNode = FocusNode();
   final FocusNode _cancelFocusNode = FocusNode();
   int _selected = 0;
 
@@ -37,6 +40,7 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
     _passwordController.dispose();
     _passwordFocusNode.dispose();
     _connectFocusNode.dispose();
+    _disconnectFocusNode.dispose();
     _cancelFocusNode.dispose();
     super.dispose();
   }
@@ -45,20 +49,23 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
     if (event is KeyDownEvent) {
       if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
         setState(() {
-          _selected = (_selected + 1).clamp(0, 2);
+          _selected = (_selected + 1).clamp(0, 3);
           _updateFocus();
         });
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
         setState(() {
-          _selected = (_selected - 1).clamp(0, 2);
+          _selected = (_selected - 1).clamp(0, 3);
           _updateFocus();
         });
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.enter) {
+        print("_onKeyEvent enter[${_selected}]");
         if (_selected == 1) {
           _handleConnect();
         } else if (_selected == 2) {
+          _handleDisconnect();
+        } else if (_selected == 3) {
           Navigator.of(context).pop();
         }
         return KeyEventResult.handled;
@@ -71,6 +78,7 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
   }
 
   void _updateFocus() {
+    print("_updateFocus[${_selected}]");
     switch (_selected) {
       case 0:
         _passwordFocusNode.requestFocus();
@@ -79,16 +87,24 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
         _connectFocusNode.requestFocus();
         break;
       case 2:
+        _disconnectFocusNode.requestFocus();
+        break;
+      case 3:
         _cancelFocusNode.requestFocus();
         break;
     }
   }
 
   void _handleConnect() {
-    if (_passwordController.text.isNotEmpty) {
-      widget.onConnect(_passwordController.text);
-      Navigator.of(context).pop();
-    }
+    print("_handleConnect");
+    widget.onConnect(_passwordController.text);
+    Navigator.of(context).pop();
+  }
+
+  void _handleDisconnect() {
+    print("_handleDisconnect");
+    widget.onDisconnect();
+    Navigator.of(context).pop();
   }
 
   void _select(int index) {
@@ -198,11 +214,20 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
                         },
                       ),
                       PopupButton(
-                        focusNode: _cancelFocusNode,
-                        text: 'Cancel',
+                        focusNode: _disconnectFocusNode,
+                        text: 'Disconnect',
                         isSelected: _selected == 2,
                         onPressed: () {
                           _select(2);
+                          _handleConnect();
+                        },
+                      ),
+                      PopupButton(
+                        focusNode: _cancelFocusNode,
+                        text: 'Cancel',
+                        isSelected: _selected == 3,
+                        onPressed: () {
+                          _select(3);
                           Navigator.of(context).pop();
                         },
                       ),

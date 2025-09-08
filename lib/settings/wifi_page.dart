@@ -154,6 +154,11 @@ class WifiListViewState extends State<WifiListView>
           ap: ap,
           onConnect: (password) async {
             await wifiProvider.connectToAp(ap.essid, password: password);
+            wifiProvider.scanAndRefresh();
+          },
+          onDisconnect: () async {
+            await wifiProvider.disconnectFromCurrentAp();
+            wifiProvider.scanAndRefresh();
           },
         );
       },
@@ -182,11 +187,7 @@ class WifiListViewState extends State<WifiListView>
           final apIndex = _selected - 1;
           if (apIndex < wifiProvider.apList.length) {
             final selectedAp = wifiProvider.apList[apIndex];
-            if (selectedAp == wifiProvider.connectedAp) {
-              wifiProvider.disconnectFromCurrentAp();
-            } else {
-              _showWifiPasswordPopup(selectedAp);
-            }
+            _showWifiPasswordPopup(selectedAp);
           }
         }
         return KeyEventResult.handled;
@@ -206,10 +207,8 @@ class WifiListViewState extends State<WifiListView>
             wifiProvider.scanAndRefresh();
           });
         }
-
         final itemCount =
             1 + (wifiProvider.isActivated ? wifiProvider.apList.length : 0);
-
         return Focus(
           focusNode: focusNode,
           onFocusChange: (hasfocus) {
@@ -254,6 +253,7 @@ class WifiListViewState extends State<WifiListView>
                             wifiProvider: wifiProvider,
                           )
                           : WifiApItem(
+                            // node: widget.node.children[index],
                             isFocused:
                                 Focus.of(context).hasFocus &&
                                 index == selectedIndex,
@@ -289,6 +289,18 @@ class WifiSwitchItem extends StatelessWidget {
   final double itemHeight = 65;
   final double iconSize = 25;
 
+  String _getWifiStatusText() {
+    if (wifiProvider.isActivating) {
+      return 'Activating...';
+    } else if (wifiProvider.isDeactivating) {
+      return 'Deactivating...';
+    } else if (wifiProvider.isActivated) {
+      return 'On';
+    } else {
+      return 'Off';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -320,6 +332,16 @@ class WifiSwitchItem extends StatelessWidget {
                             isFocused
                                 ? Theme.of(context).colorScheme.onTertiary
                                 : Theme.of(context).colorScheme.tertiary,
+                      ),
+                    ),
+                    Text(
+                      _getWifiStatusText(),
+                      style: TextStyle(
+                        fontSize: subtitleFontSize,
+                        color:
+                            isFocused
+                                ? Theme.of(context).colorScheme.onTertiary.withOpacity(0.8)
+                                : Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
                       ),
                     ),
                   ],
@@ -382,7 +404,7 @@ class WifiApItem extends StatelessWidget {
 
     final ap = wifiProvider.apList[apIndex];
     final isConnected = ap.state == 1;
-    final isConnectedToThisAp = wifiProvider.connectedAp?.handle == ap.handle;
+    final isConnectedToThisAp = wifiProvider.connectedAp?.essid == ap.essid;
 
     return SizedBox(
       height: itemHeight,
@@ -431,20 +453,26 @@ class WifiApItem extends StatelessWidget {
                                 : Theme.of(context).colorScheme.tertiary,
                       ),
                     ),
+                    Text(
+                      _getApStateText(ap),
+                      style: TextStyle(
+                        fontSize: subtitleFontSize,
+                        color:
+                            isFocused
+                                ? Theme.of(context).colorScheme.onTertiary.withOpacity(0.8)
+                                : Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
+                      ),
+                    ),
                   ],
                 ),
               ),
               if (isConnectedToThisAp)
-                Theme(
-                  data: Theme.of(context).copyWith(useMaterial3: false),
-                  child: Switch(
-                    value: true,
-                    onChanged: null,
-                    activeColor: Color(0xF04285F4),
-                    inactiveThumbColor: Color(0xF0AEB2B9),
-                  ),
+                Icon(
+                  Icons.check,
+                  size: iconSize,
+                  color: isFocused ? Color(0xF04285F4) : Color(0xF0AEB2B9),
                 )
-              else if (wifiProvider.isConnecting && wifiProvider.connectedAp?.handle == ap.handle)
+              else if (wifiProvider.isConnecting)
                 SizedBox(
                   width: 20,
                   height: 20,
@@ -460,17 +488,30 @@ class WifiApItem extends StatelessWidget {
     );
   }
 
+  String _getApStateText(WifiAP ap) {
+    final isConnectedToThisAp = wifiProvider.connectedAp?.handle == ap.handle;
+    if (wifiProvider.isConnecting) {
+      return 'Connecting...';
+    } else if (wifiProvider.isDisconnecting && isConnectedToThisAp) {
+      return 'Disconnecting...';
+    } else if (isConnectedToThisAp || ap.state == 1) {
+      return 'Connected';
+    } else if (ap.state == 2) {
+      return 'Authentication failed';
+    } else if (ap.state == 3) {
+      return 'Association failed';
+    } else {
+      return 'Available';
+    }
+  }
+
   IconData _getWifiIcon(int rssi) {
-    if (rssi > -50) {
+    if (rssi > -40) {
       return Icons.wifi;
     } else if (rssi > -60) {
-      return Icons.network_wifi_3_bar;
-    } else if (rssi > -70) {
       return Icons.wifi_2_bar;
-    } else if (rssi > -80) {
-      return Icons.wifi_1_bar;
     } else {
-      return Icons.wifi_off;
+      return Icons.wifi_1_bar;
     }
   }
 }
