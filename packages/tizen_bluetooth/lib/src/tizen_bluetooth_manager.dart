@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:ffi';
 
 import 'package:flutter/foundation.dart';
@@ -109,10 +110,10 @@ class TizenBluetoothManager {
       EventChannel('tizen/bluetooth/device_discovery_state_changed');
 
   static late StreamSubscription<DeviceDiscoveryInfo>?
-  _deviceDiscoveryStateChangedSubscription;
+  _deviceDiscoveryStateChangedSubscription = null;
 
   static late BtAdapterDeviceDiscoveryStateChangedCallback?
-  _btAdapterDeviceDiscoveryStateChangedCallback;
+  _btAdapterDeviceDiscoveryStateChangedCallback = null;
 
   static Stream<DeviceDiscoveryInfo> get deviceDiscoveryStateChangedStream =>
       _deviceDiscoveryStateChangedEventChannel.receiveBroadcastStream().map(
@@ -221,6 +222,7 @@ class TizenBluetoothManager {
   ) {
     if (!initialized) return;
 
+    
     final callbackId = _btAdapterSetStateChangedCallbackIdCounter++;
     _btAdapterSetStateChangedCallbackCallbacks[callbackId] = callback;
 
@@ -288,7 +290,6 @@ class TizenBluetoothManager {
     _deviceSetBondCreatedSubscription = deviceBondCreatedStream.listen((
       BluetoothDeviceInfo info,
     ) {
-      debugPrint('call _btDeviceSetBondCreatedCallback result ${info.result}');
       if (_btDeviceSetBondCreatedCallback != null) {
         _btDeviceSetBondCreatedCallback!(info.result, info);
       }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/settings_menus.dart';
 import 'package:tizen_fs/poc/adaptive_grid.dart';
+import 'package:tizen_fs/poc/bt_test.dart';
 import 'package:tizen_fs/poc/disable_auto_scroll.dart';
 import 'package:tizen_fs/poc/color_table.dart';
 import 'package:tizen_fs/poc/list_poc.dart';
@@ -32,6 +33,19 @@ class PocGalleryPage extends StatelessWidget {
       body: Center(
         child: ListView(
           children: <Widget>[
+            ListTile(
+              title: const Text('bluetooth List'),
+              subtitle: const Text('bluetooth list'),
+              leading: const Icon(Icons.subscriptions),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreenSizeWrapper(BtTestPage()),
+                    ));
+              },
+            ),
             ListTile(
               title: const Text('App List'),
               subtitle: const Text('get app list'),

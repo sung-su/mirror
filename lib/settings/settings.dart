@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:tizen_fs/locator.dart';
+import 'package:tizen_fs/models/bt_model.dart';
 import 'package:tizen_fs/models/page_node.dart';
 import 'package:tizen_fs/models/settings_menus.dart';
 import 'package:tizen_fs/settings/setting_page_interface.dart';
@@ -37,6 +40,10 @@ class SettingsState extends State<Settings> {
     super.initState();
     _pageController = PageController(viewportFraction: viewportFraction, keepPage: false);
     _pages = [_pageTree, null];
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setupBtModel();
+    });
   }
 
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {

@@ -87,6 +87,26 @@ class TizenBluetoothAudioManager {
     BluetoothAudioProfileType type,
   ) {
     if (!initialized) return;
+    
+    if (_btAudioConnectionStateChangedCallback == null) {
+      debugPrint('No callback');
+      return;
+    }
+
+    _audioConnectionStateChangedSubscription = audioConnectionStateChangedStream
+        .listen((AudioConnectionInfo info) {
+          debugPrint(
+            'call _btDeviceSetBondCreatedCallback result ${info.result}',
+          );
+          if (_btAudioConnectionStateChangedCallback != null) {
+            _btAudioConnectionStateChangedCallback!(
+              info.result,
+              info.connected,
+              info.remoteAddress,
+              BluetoothAudioProfileType.values[info.type],
+            );
+          }
+        });
 
     final int ret = using((Arena arena) {
       final int connectResult = tizen.bt_audio_disconnect(

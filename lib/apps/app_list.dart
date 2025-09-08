@@ -52,11 +52,6 @@ class AppListState extends State<AppList> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
     apps = context.watch<AppDataModel>().appInfos;
 
