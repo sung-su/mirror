@@ -37,6 +37,10 @@ class BtDeviceListViewState extends State<BtDeviceListView> with BtFocusSelectab
     listKey.currentState?.selectTo(index);
   }
 
+  void forceScrollTo(int index) {
+    listKey.currentState?.forceScrollTo(index);
+  }
+
   void action(int index) {
     listKey.currentState?.onAction(index);
   }
@@ -72,9 +76,6 @@ class BtDeviceListViewState extends State<BtDeviceListView> with BtFocusSelectab
         onAction: widget.onAction,
         onSelectionChanged: (selected) {
           _selected = selected;
-          // if(selected == 1) {
-          //   widget.onSelectionChanged?.call(selected);  
-          // }
         },
       ),
     );

@@ -5,11 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:tizen_fs/locator.dart';
 import 'package:tizen_fs/models/bt_model.dart';
 import 'package:tizen_fs/models/page_node.dart';
-import 'package:tizen_fs/profiles/profile_popup.dart';
 import 'package:tizen_fs/settings/bt_popup.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/bt_list_view.dart';
-import 'package:tizen_interop/9.0/tizen.dart';
 
 class BluetoothPage extends StatefulWidget {
   const BluetoothPage({
@@ -158,24 +156,37 @@ class BluetoothPageState extends State<BluetoothPage> {
             onUnpair: () async {
               debugPrint('unpair');
               final result = await getIt<BtModel>().Unpair(btDevice);
-              debugPrint('device unpaired');
               Navigator.of(context).pop();
-              _listKey.currentState?.selectTo(1);
+              debugPrint('device unpaired, index');
+              final index = getIt<BtModel>().getDevcieIndex(btDevice);
+              WidgetsBinding.instance.addPostFrameCallback((_){
+                _listKey.currentState?.forceScrollTo(index);
+              });
             },
             onConnect: () async {
               debugPrint('connect');
-              // Provider.of<BtModel>(context, listen: false).connect(btDevice);
               final result = await getIt<BtModel>().connect(btDevice);
-              debugPrint('device connected');
               Navigator.of(context).pop();
-              _listKey.currentState?.selectTo(1);
+              debugPrint('device connected');
+              final index = getIt<BtModel>().getDevcieIndex(btDevice);
+              WidgetsBinding.instance.addPostFrameCallback((_){
+                _listKey.currentState?.forceScrollTo(index);
+              });
             },
             onDisConnect: () async{
               debugPrint('disconnect');
               final result = await getIt<BtModel>().disconnect(btDevice);
-              debugPrint('device disconnect');
               Navigator.of(context).pop();
-              _listKey.currentState?.selectTo(1);
+              debugPrint('device disconnected');
+              final index = getIt<BtModel>().getDevcieIndex(btDevice);
+              WidgetsBinding.instance.addPostFrameCallback((_){
+                _listKey.currentState?.forceScrollTo(index);
+              });
+            },
+            onCancel: () async {
+              Navigator.of(context).pop();
+              // debugPrint('######## cancel!! _listKey.currentState=${_listKey.currentState == null}');
+              // _listKey.currentState?.forceScrollTo(0);
             },
           );
         },

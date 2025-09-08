@@ -105,6 +105,14 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
     widget.onAction?.call(index);
   }
 
+  Future<void> forceScrollTo(int index) async{
+    // to scroll to outside of screen
+    // _selectedIndex = index;
+    debugPrint('jump to $index , itemCount=$itemCount');
+    _controller.jumpTo((index - 2) * 65);
+    await selectTo(index);
+  }
+
   Future<int> selectTo(int index) {
     if (index < 0 || index >= itemCount) {
       throw RangeError('Index out of range: $index');

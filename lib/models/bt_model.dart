@@ -32,7 +32,6 @@ class BtDevice {
   }) : serviceMask = getMaskFromUuid(serviceUuid, serviceCount, remoteName);
   
   static int getMaskFromUuid(List<String> serviceUuid, int serviceCount, String name) {
-    debugPrint('!!!!!!!!!!!!!!!!!!!!!!!name: $name');
 
     return using((Arena arena) {
       final uuidsPtr = arena<Pointer<Char>>(serviceCount);
@@ -61,10 +60,9 @@ class Item {
 
 class BtModel extends ChangeNotifier {
   Map<String, List> _data = {};
-  // Map<String, Object> get model => _data;
-  
+
   List<Item> _flattened = [];
-  List<Item> get data => _flattenData();
+  List<Item> get data => _flattened;
 
   List get _connectedDevices => _data['Paired Devices'] as List;
   List get _foundDevices => _data['Available Devices'] as List;
@@ -74,7 +72,9 @@ class BtModel extends ChangeNotifier {
   bool _isEnabled = false;
   bool get isEnabled => _isEnabled;
 
-  List<Item> _flattenData() {
+  void _flattenData() {
+    debugPrint('update _flatten');
+
     _flattened = <Item>[];
 
     _data.forEach((key, list) {
@@ -86,7 +86,7 @@ class BtModel extends ChangeNotifier {
       }
     });
     
-    return _flattened;
+    notifyListeners();
   }
 
   BtDevice? getDevice(int index) {
@@ -96,22 +96,19 @@ class BtModel extends ChangeNotifier {
     return null;
   }
 
-  BtModel.fromMock() {
-    // Timeline.startSync('BtModel_fromMock');
-
-    _data = {
-      'Your device(Tizen) in currentrly visible to nearby devices.' : ['Bluetooth'],
-      'Paired Devices': [],
-      'Available Devices': [],
-    };
-
-    debugPrint('BtModel.fromMock call: btInitialize');
-    TizenBluetoothManager.btInitialize();
-
-  }
+  int getDevcieIndex(BtDevice device) {
+    for(int i = 0 ; i < _flattened.length; i++) {
+      if(_flattened[i].item is BtDevice) {
+        if ((_flattened[i].item as BtDevice).remoteAddress == device.remoteAddress) {
+          return i;
+        }
+      }
+    }
+    return 0;
+  } 
 
   BtModel.init() {
-    if(_isEnabled) return;
+    if(_initialized) return;
 
     _data = {
       'Your device(Tizen) in currentrly visible to nearby devices.' : ['Bluetooth'],
@@ -120,7 +117,10 @@ class BtModel extends ChangeNotifier {
     };
 
     debugPrint('BtModel.fromMock call: btInitialize');
+    setCallback();
     TizenBluetoothManager.btInitialize();    
+    _initialized = true;
+    _flattenData();
   }
 
   // 0 - disabled, 1-enabled
@@ -142,27 +142,17 @@ class BtModel extends ChangeNotifier {
           serviceUuid: deviceInfo.serviceUuid
         )
       );
-      notifyListeners();
+      _flattenData();
+      // notifyListeners();
     }
   }
 
   Future<void> setCallback() async {
-    // Timeline.startSync('BtModel_setCallback');
     debugPrint('set callback');
 
     TizenBluetoothManager.btAdapterSetStateChangedCallback(_btAdapterStateChanged);
     TizenBluetoothManager.btAdapterSetDeviceDiscoveryStateChangedCallback(_deviceDiscoveryStateChanged);
-    // Timeline.finishSync();
   }
-
-  // void _safeCall(VoidCallback callback) {
-  //   try {
-  //     callback();
-  //   }
-  //   catch(e, stack) {
-  //     debugPrint('$e, $stack');
-  //   }
-  // }
 
   Future<void> unsetCallback() async {
     debugPrint('unset callback');
@@ -187,13 +177,13 @@ class BtModel extends ChangeNotifier {
       ));
     });
 
-    notifyListeners();
+    _flattenData();
   }
 
   Future<void> enable() async {
     debugPrint('bt enable: _initialized=${_initialized}');
 
-    setCallback();
+    // setCallback();
 
     // 0-disable, 1-enable
     final state = BtManager.getState();
@@ -216,7 +206,7 @@ class BtModel extends ChangeNotifier {
     }
 
     _isEnabled = true;
-    notifyListeners();
+    // notifyListeners();
 
     debugPrint('bt enable: scan start');
     _foundDevices.clear();
@@ -256,7 +246,7 @@ class BtModel extends ChangeNotifier {
     _connectedDevices.clear();
     _foundDevices.clear();
 
-    notifyListeners();
+    _flattenData();
   }
 
   Future<bool> pair(BtDevice device) async {
@@ -274,6 +264,7 @@ class BtModel extends ChangeNotifier {
         device.isBonded = true;
         _connectedDevices.add(device);
         _foundDevices.remove(device);
+        _flattenData();
         completer.complete(true);
       }
       else {
@@ -288,6 +279,8 @@ class BtModel extends ChangeNotifier {
   Future<bool> connect(BtDevice device) async {
     final completer = Completer<bool>();
     debugPrint(' connect to device : ${device.remoteName}');
+
+    await stopDiscovery();
 
     bool paired = device.isBonded;
     if(!paired) {
@@ -468,6 +461,7 @@ class BtModel extends ChangeNotifier {
         device.isBonded= false;
         _foundDevices.insert(0, device);
         _connectedDevices.remove(device);
+        _flattenData();
         completer.complete(true);
       }
       else {
@@ -477,11 +471,6 @@ class BtModel extends ChangeNotifier {
     debugPrint('bond destroy');
     TizenBluetoothManager.btDeviceDestroyBond(device.remoteAddress); 
     return completer.future;
-  }
-
-  void moveToPaired(String remoteAddress) {
-    
-    notifyListeners();
   }
 
 }

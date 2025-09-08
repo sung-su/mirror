@@ -9,7 +9,7 @@ class BtTestPage extends StatefulWidget {
 
 class _BtTestPageState extends State<BtTestPage> {
 
-  BtModel _model = BtModel.fromMock();
+  BtModel _model = BtModel.init();
 
   @override
   Widget build(BuildContext context) {
