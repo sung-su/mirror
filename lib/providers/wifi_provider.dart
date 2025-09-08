@@ -1,7 +1,7 @@
 import 'dart:ffi';
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:tizen_fs/settings/wifi.dart';
+import 'package:tizen_fs/native/wifi.dart';
 
 class WifiAP {
   final Pointer<Void> handle;
