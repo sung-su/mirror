@@ -1,0 +1,142 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/material.dart';
+
+Stream<String> _xmpChunkStream(
+  String path, {
+  required int linesPerChunk,
+}) async* {
+  final lower = (String s) => s.toLowerCase();
+  final src = File(
+    path,
+  ).openRead().transform(utf8.decoder).transform(const LineSplitter());
+
+  var inXmp = false;
+  var buf = StringBuffer();
+  var count = 0;
+
+  await for (final line in src) {
+    final ll = lower(line);
+
+    if (!inXmp) {
+      final openIdx = ll.indexOf('<xmp');
+      if (openIdx >= 0) {
+        final gt = ll.indexOf('>', openIdx);
+        final after = gt >= 0 ? line.substring(gt + 1) : '';
+        if (after.isNotEmpty) {
+          buf.writeln(after);
+          if (++count % linesPerChunk == 0) {
+            yield buf.toString();
+            buf.clear();
+          }
+        }
+        inXmp = true;
+      }
+      continue;
+    }
+
+    final closeIdx = ll.indexOf('</xmp>');
+    if (closeIdx >= 0) {
+      final before = line.substring(0, closeIdx);
+      if (before.isNotEmpty) {
+        buf.writeln(before);
+        count++;
+      }
+      if (buf.isNotEmpty) {
+        yield buf.toString();
+        buf.clear();
+      }
+      count = 0;
+      inXmp = false;
+      continue;
+    }
+
+    buf.writeln(line);
+    if (++count % linesPerChunk == 0) {
+      yield buf.toString();
+      buf.clear();
+    }
+  }
+
+  if (inXmp && buf.isNotEmpty) yield buf.toString();
+
+}
+
+class OpenSourceLicensePopup extends StatefulWidget {
+  const OpenSourceLicensePopup({super.key});
+
+  @override
+  State<OpenSourceLicensePopup> createState() => _OpenSourceLicensePopupState();
+}
+
+class _OpenSourceLicensePopupState extends State<OpenSourceLicensePopup> {
+  static const _path = '/usr/share/license.html';
+  static const _linesPerChunk = 50;
+
+  final List<String> _chunks = [];
+  bool _loading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _listen();
+  }
+
+  void _listen() {
+    _xmpChunkStream(_path, linesPerChunk: _linesPerChunk).listen(
+      (c) => setState(() => _chunks.add(c)),
+      onError:
+          (e) => setState(() {
+            _error = '$e';
+            _loading = false;
+          }),
+      onDone: () => setState(() => _loading = false),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Open Source License')),
+      body:
+          _error != null
+              ? Center(
+                child: Text(_error!, style: const TextStyle(color: Colors.red)),
+              )
+              : _loading && _chunks.isEmpty
+              ? const Center(child: CircularProgressIndicator())
+              : ListView.builder(
+                padding: const EdgeInsets.all(12),
+                itemCount: _chunks.length + (_loading ? 1 : 0),
+                itemBuilder: (_, i) {
+                  if (_loading && i == _chunks.length) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.all(12),
+                    color: const Color(0xFF101010),
+                    child: SelectableText(
+                      _chunks[i],
+                      style: const TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 13,
+                        height: 1.35,
+                        color: Colors.white,
+                      ),
+                    ),
+                  );
+                },
+              ),
+    );
+  }
+}
