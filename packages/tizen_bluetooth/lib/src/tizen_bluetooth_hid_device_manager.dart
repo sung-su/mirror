@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
@@ -11,7 +12,6 @@ typedef BtHidDeviceConnectionStateChangedCallback =
     void Function(int, bool, String);
 
 class TizenBluetoothHidDeviceManager {
-  static bool initialized = false;
 
   static final methodChannel = const MethodChannel(
     'tizen/bluetooth_hid_device',
@@ -37,8 +37,6 @@ class TizenBluetoothHidDeviceManager {
       );
 
   static void btActivate(BtHidDeviceConnectionStateChangedCallback callback) {
-    if (initialized) return;
-
     _btHidDeviceConnectionStateChangedCallback = callback;
     methodChannel.invokeMethod<String>('init_bt_hid_device_activate');
 
@@ -55,48 +53,42 @@ class TizenBluetoothHidDeviceManager {
             );
           }
         });
-
-    initialized = true;
   }
 
-  static void btDeactivate() {
-    if (!initialized) return;
+  static int btDeactivate() {
     int ret = tizen.bt_hid_device_deactivate();
     if (ret != 0) {
-      throw Exception(
+      debugPrint(
         'Failed to bt_hid_device_deactivate. Error code: ${tizen.get_error_message(ret).toDartString()}',
       );
+      return ret;
     }
 
     _hidDeviceConnectionStateChangedSubscription?.cancel();
     _hidDeviceConnectionStateChangedSubscription = null;
     _btHidDeviceConnectionStateChangedCallback = null;
-
-    initialized = false;
+    return ret;
   }
 
-  static void btConnect(String remoteAddress) {
-    if (!initialized) return;
-
+  static int btConnect(String remoteAddress) {
     final int ret = using((Arena arena) {
       final int connectResult = tizen.bt_hid_device_connect(
         remoteAddress.toNativeChar(allocator: arena),
       );
       if (connectResult != 0) {
-        throw Exception(
+        debugPrint(
           'Failed to bt_hid_device_connect. Error code: ${tizen.get_error_message(connectResult).toDartString()}',
         );
       }
       return connectResult;
     });
     if (ret != 0) {
-      throw Exception('Failed to btConnect.');
+      debugPrint('Failed to btConnect.');
     }
+    return ret;
   }
 
-  static void btDisconnect(String remoteAddress) {
-    if (!initialized) return;
-
+  static int btDisconnect(String remoteAddress) {
     final int ret = using((Arena arena) {
       final int ret = tizen.bt_hid_device_disconnect(
         remoteAddress.toNativeChar(allocator: arena),
@@ -108,5 +100,6 @@ class TizenBluetoothHidDeviceManager {
         'Failed to bt_hid_device_connect. Error code: ${tizen.get_error_message(ret).toDartString()}',
       );
     }
+    return ret;
   }
 }

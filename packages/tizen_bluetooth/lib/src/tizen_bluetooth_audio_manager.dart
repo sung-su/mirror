@@ -11,43 +11,37 @@ typedef BtAudioConnectionStateChangedCallback =
     void Function(int, bool, String, BluetoothAudioProfileType);
 
 class TizenBluetoothAudioManager {
-  static bool initialized = false;
 
   static final methodChannel = const MethodChannel('tizen/bluetooth_audio');
 
-  static void btInitialize() {
-    if (initialized) return;
-
+  static int btInitialize() {
     int ret = tizen.bt_audio_initialize();
     if (ret != 0) {
-      throw Exception(
+      debugPrint(
         'Failed to bt_audio_initialize. Error code: ${tizen.get_error_message(ret).toDartString()}',
       );
     }
-
-    initialized = true;
+    return ret;
   }
 
-  static void btDeinitialize() {
-    if (!initialized) return;
+  static int btDeinitialize() {
     int ret = tizen.bt_audio_deinitialize();
     if (ret != 0) {
-      throw Exception(
+      debugPrint(
         'Failed to bt_audio_deinitialize. Error code: ${tizen.get_error_message(ret).toDartString()}',
       );
     }
-    initialized = false;
+    return ret;
   }
 
-  static void btAudioConnect(
+  static int btAudioConnect(
     String remoteAddress,
     BluetoothAudioProfileType type,
   ) {
-    if (!initialized) return;
 
     if (_btAudioConnectionStateChangedCallback == null) {
       debugPrint('No callback');
-      return;
+      return -1;
     }
 
     _audioConnectionStateChangedSubscription = audioConnectionStateChangedStream
@@ -71,26 +65,26 @@ class TizenBluetoothAudioManager {
         type.index,
       );
       if (connectResult != 0) {
-        throw Exception(
+        debugPrint(
           'Failed to bt_audio_connect. Error code: ${tizen.get_error_message(connectResult).toDartString()}',
         );
       }
       return connectResult;
     });
     if (ret != 0) {
-      throw Exception('Failed to btAudioConnect.');
+      debugPrint('Failed to btAudioConnect.');
     }
+    return ret;
   }
 
-  static void btAudioDisconnect(
+  static int btAudioDisconnect(
     String remoteAddress,
     BluetoothAudioProfileType type,
   ) {
-    if (!initialized) return;
     
     if (_btAudioConnectionStateChangedCallback == null) {
       debugPrint('No callback');
-      return;
+      return -1;
     }
 
     _audioConnectionStateChangedSubscription = audioConnectionStateChangedStream
@@ -117,10 +111,11 @@ class TizenBluetoothAudioManager {
     });
 
     if (ret != 0) {
-      throw Exception(
+      debugPrint(
         'Failed to bt_audio_connect. Error code: ${tizen.get_error_message(ret).toDartString()}',
       );
     }
+    return ret;
   }
 
   // bt_audio_set_connection_state_changed_cb (*: Pointer)
@@ -144,8 +139,6 @@ class TizenBluetoothAudioManager {
   static void btAudioSetConnectionStateChangedCallback(
     BtAudioConnectionStateChangedCallback callback,
   ) {
-    if (!initialized) return;
-
     _btAudioConnectionStateChangedCallback = callback;
     methodChannel.invokeMethod<String>(
       'init_bt_audio_set_connection_state_changed_cb',
@@ -153,10 +146,9 @@ class TizenBluetoothAudioManager {
   }
 
   static void btAudioUnsetConnectionStateChangedCallback() {
-    if (!initialized) return;
     int ret = tizen.bt_audio_unset_connection_state_changed_cb();
     if (ret != 0) {
-      throw Exception(
+      debugPrint(
         'Failed to bt_audio_unset_connection_state_changed_cb. Error code: ${tizen.get_error_message(ret).toDartString()}',
       );
     }

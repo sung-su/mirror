@@ -69,6 +69,8 @@ class BtModel extends ChangeNotifier {
   List get _connectedDevices => _data['Paired Devices'] as List;
   List get _foundDevices => _data['Available Devices'] as List;
 
+  bool _initialized = false;
+
   bool _isEnabled = false;
   bool get isEnabled => _isEnabled;
 
@@ -153,15 +155,14 @@ class BtModel extends ChangeNotifier {
     // Timeline.finishSync();
   }
 
-  void _safeCall(VoidCallback callback) {
-    try {
-      callback();
-    }
-    catch(e, stack) {
-      debugPrint('$e, $stack');
-    }
-  }
-
+  // void _safeCall(VoidCallback callback) {
+  //   try {
+  //     callback();
+  //   }
+  //   catch(e, stack) {
+  //     debugPrint('$e, $stack');
+  //   }
+  // }
 
   Future<void> unsetCallback() async {
     debugPrint('unset callback');
@@ -190,7 +191,7 @@ class BtModel extends ChangeNotifier {
   }
 
   Future<void> enable() async {
-    debugPrint('bt enable: TizenBluetoothManager.initialized=${TizenBluetoothManager.initialized}');
+    debugPrint('bt enable: _initialized=${_initialized}');
 
     setCallback();
 
@@ -201,17 +202,16 @@ class BtModel extends ChangeNotifier {
       updateConnectedDevices();
     } 
     else {
-      if(!TizenBluetoothManager.initialized) {
+      if(!_initialized) {
         debugPrint('bt enable: initialize');
         TizenBluetoothManager.btInitialize();
+        _initialized = true;
       }
       
       debugPrint('bt enable: enable call');
       // Timeline.startSync('BtModel.enable');
 
-      _safeCall((){
-        TizenBluetoothManager.btAdapterEnable();
-      });
+      TizenBluetoothManager.btAdapterEnable();
       // Timeline.finishSync();
     }
 
@@ -220,34 +220,28 @@ class BtModel extends ChangeNotifier {
 
     debugPrint('bt enable: scan start');
     _foundDevices.clear();
-    _safeCall((){
-      TizenBluetoothManager.btAdapterStartDeviceDiscovery();
-    });
+    TizenBluetoothManager.btAdapterStartDeviceDiscovery();
   }
 
   Future<void> stopDiscovery() async {
     debugPrint('bt stopDiscovery');
-    if(!TizenBluetoothManager.initialized) {
+    if(!_initialized) {
       debugPrint('bt not initialized');
       return;
     }
 
-    _safeCall((){
-      TizenBluetoothManager.btAdapterStopDeviceDiscovery();
-    });    
+    TizenBluetoothManager.btAdapterStopDeviceDiscovery();
   }
   
   Future<void> disable() async {
-    debugPrint('bt disable: TizenBluetoothManager.initialized=${TizenBluetoothManager.initialized}');
+    debugPrint('bt disable: _initialized=${_initialized}');
     // Timeline.startSync('BtModel.disable ');
-    if(!TizenBluetoothManager.initialized) {
-      debugPrint('bt enable: initialize');
+    if(!_initialized) {
+      debugPrint('bt disable: not initializes');
       return;
     }
 
-    _safeCall((){
-      TizenBluetoothManager.btAdapterStopDeviceDiscovery();
-    });
+    TizenBluetoothManager.btAdapterStopDeviceDiscovery();
 
     unsetCallback();
 
@@ -359,7 +353,7 @@ class BtModel extends ChangeNotifier {
 
         TizenBluetoothAudioManager.btAudioUnsetConnectionStateChangedCallback();
         if (result == 0) {
-          device.isConnected = connected;
+          device.isConnected = false;
           notifyListeners();
           completer.complete(true);
         }
@@ -369,7 +363,7 @@ class BtModel extends ChangeNotifier {
       }
     );
 
-    debugPrint('###### disconnect to audio call: device-${device.remoteName}');
+    debugPrint('###### disconnect to audio call: device: ${device.remoteName}');
     TizenBluetoothAudioManager.btAudioDisconnect(device.remoteAddress, BluetoothAudioProfileType.profileTypeA2DP);
     return completer.future;
   }
