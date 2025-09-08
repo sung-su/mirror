@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tizen_fs/widgets/bt_selectable_listview.dart';
-import 'package:tizen_fs/widgets/selectable_listview.dart';
 
-mixin FocusSelectable2<T extends StatefulWidget> on State<T> {
+mixin BtFocusSelectable<T extends StatefulWidget> on State<T> {
   final GlobalKey<CategorySelectableListViewState> _listState =
       GlobalKey<CategorySelectableListViewState>();
   final FocusNode _focusNode = FocusNode();

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/bt_model.dart';
 import 'package:tizen_fs/widgets/bt_selectable_listview.dart';
-import 'package:tizen_fs/widgets/focus_selectable2.dart';
+import 'package:tizen_fs/widgets/bt_focus_selectable.dart';
 
 class BtDeviceListView extends StatefulWidget{
   const BtDeviceListView({super.key, this.onSelectionChanged, this.onAction});
@@ -15,7 +15,7 @@ class BtDeviceListView extends StatefulWidget{
   State<BtDeviceListView> createState() => BtDeviceListViewState();
 }
 
-class BtDeviceListViewState extends State<BtDeviceListView> with FocusSelectable2<BtDeviceListView> {
+class BtDeviceListViewState extends State<BtDeviceListView> with BtFocusSelectable<BtDeviceListView> {
 
   int _selected = 1;
 

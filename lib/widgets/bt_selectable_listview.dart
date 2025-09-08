@@ -3,9 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/bt_model.dart';
-import 'package:tizen_fs/settings/bt_provider.dart';
 import 'package:tizen_fs/styles/app_style.dart';
-import 'package:tizen_fs/widgets/bt_list_view.dart';
 
 class CategorySelectableListView extends StatefulWidget {
   const CategorySelectableListView({

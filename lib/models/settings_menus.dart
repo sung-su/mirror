@@ -1,13 +1,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/page_node.dart';
-import 'package:tizen_fs/poc/empty_page.dart';
-import 'package:tizen_fs/settings/bluetooth_description_page.dart';
 import 'package:tizen_fs/settings/bluetooth_page.dart';
 import 'package:tizen_fs/settings/device_info_page.dart';
 import 'package:tizen_fs/settings/end_page.dart';
 import 'package:tizen_fs/settings/profile_active_page.dart';
 import 'package:tizen_fs/settings/wifi_page.dart';
+import 'package:tizen_fs/settings/about_device_page.dart';
 
 class SettingPages {
   late final PageNode _root;
@@ -33,7 +32,7 @@ class SettingPages {
           PageNode(
             id: 'profile_tizen',
             title: 'Tizen',
-            // icon: const IconData(0x0054, fontFamily: 'MaterialIcons'), //unicode T: 0054
+            icon: const IconData(0x0054), //unicode T: 0054
             children: [
               PageNode(
                 id: 'profile_tizen_active',

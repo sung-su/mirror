@@ -6,7 +6,7 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tizen_bluetooth/tizen_bluetooth.dart';
-import 'package:tizen_fs/native/bt_managet.dart';
+import 'package:tizen_fs/native/bt_manager.dart';
 import 'package:tizen_interop/9.0/tizen.dart';
 
 class BtDevice {
@@ -149,7 +149,7 @@ class BtModel extends ChangeNotifier {
     debugPrint('set callback');
 
     TizenBluetoothManager.btAdapterSetStateChangedCallback(_btAdapterStateChanged);
-    await TizenBluetoothManager.btAdapterSetDeviceDiscoveryStateChangedCallback(_deviceDiscoveryStateChanged);
+    TizenBluetoothManager.btAdapterSetDeviceDiscoveryStateChangedCallback(_deviceDiscoveryStateChanged);
     // Timeline.finishSync();
   }
 
@@ -398,7 +398,7 @@ class BtModel extends ChangeNotifier {
     debugPrint('### initializeHid');
     // final completer = Completer<bool>();
 
-    await TizenBluetoothHidHostManager.btInitialize(_onHidConnectStateChanged);
+    TizenBluetoothHidHostManager.btInitialize(_onHidConnectStateChanged);
     _hidInitialized = true;
 
     // return completer.future;
