@@ -117,11 +117,11 @@ class _MyAppState extends State<MyApp> {
                   ),
                   const SizedBox(width: 10),
                   TextButton(
-                    onPressed: () async {
+                    onPressed: () {
                       debugPrint(
                         'call btAdapterSetDeviceDiscoveryStateChangedCallback()',
                       );
-                      await TizenBluetoothManager.btAdapterSetDeviceDiscoveryStateChangedCallback((
+                      TizenBluetoothManager.btAdapterSetDeviceDiscoveryStateChangedCallback((
                         int result,
                         int discoveryState,
                         DeviceDiscoveryInfo deviceDiscoveryInfo,

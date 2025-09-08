@@ -32,19 +32,17 @@ class TizenBluetoothManager {
 
   static final methodChannel = const MethodChannel('tizen/bluetooth');
 
-  static void btInitialize() async {
+  static void btInitialize() {
     if (initialized) return;
 
-    await methodChannel.invokeMethod<String>('bt_initialize');
-
+    methodChannel.invokeMethod<String>('bt_initialize');
     initialized = true;
   }
 
-  static void btDeinitialize() async {
+  static void btDeinitialize() {
     if (!initialized) return;
 
-    await methodChannel.invokeMethod<String>('bt_deinitialize');
-
+    methodChannel.invokeMethod<String>('bt_deinitialize');
     initialized = false;
   }
 
@@ -123,13 +121,13 @@ class TizenBluetoothManager {
         ),
       );
 
-  static Future<void> btAdapterSetDeviceDiscoveryStateChangedCallback(
+  static void btAdapterSetDeviceDiscoveryStateChangedCallback(
     BtAdapterDeviceDiscoveryStateChangedCallback callback,
-  ) async {
+  ) {
     if (!initialized) return;
 
     _btAdapterDeviceDiscoveryStateChangedCallback = callback;
-    await methodChannel.invokeMethod<String>(
+    methodChannel.invokeMethod<String>(
       'init_device_discovery_state_changed_cb',
     );
   }
@@ -309,15 +307,13 @@ class TizenBluetoothManager {
     }
   }
 
-  static Future<void> btDeviceSetBondCreatedCallback(
+  static void btDeviceSetBondCreatedCallback(
     BtDeviceSetBondCreatedCallback callback,
-  ) async {
+  ) {
     if (!initialized) return;
 
     _btDeviceSetBondCreatedCallback = callback;
-    await methodChannel.invokeMethod<String>(
-      'init_bt_device_set_bond_created_cb',
-    );
+    methodChannel.invokeMethod<String>('init_bt_device_set_bond_created_cb');
   }
 
   static void btDeviceUnsetBondCreatedCallback() {
@@ -386,15 +382,13 @@ class TizenBluetoothManager {
     }
   }
 
-  static Future<void> btDeviceSetBondDestroyedCallback(
+  static void btDeviceSetBondDestroyedCallback(
     BtDeviceBondDestroyedCallback callback,
-  ) async {
+  ) {
     if (!initialized) return;
 
     _btDeviceSetBondDestroyedCallback = callback;
-    await methodChannel.invokeMethod<String>(
-      'init_bt_device_set_bond_destroyed_cb',
-    );
+    methodChannel.invokeMethod<String>('init_bt_device_set_bond_destroyed_cb');
   }
 
   static void btDeviceUnsetBondDestroyedCallback() {

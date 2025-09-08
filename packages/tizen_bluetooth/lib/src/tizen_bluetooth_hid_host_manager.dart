@@ -34,13 +34,11 @@ class TizenBluetoothHidHostManager {
         ),
       );
 
-  static Future<void> btInitialize(
-    BtHidHostConnectionStateChangedCallback callback,
-  ) async {
+  static void btInitialize(BtHidHostConnectionStateChangedCallback callback) {
     if (initialized) return;
 
     _btHidHostConnectionStateChangedCallback = callback;
-    await methodChannel.invokeMethod<String>('init_bt_hid_host_initialize');
+    methodChannel.invokeMethod<String>('init_bt_hid_host_initialize');
 
     _hidHostConnectionStateChangedSubscription =
         hidHostConnectionStateChangedStream.listen((ConnectionInfo info) {

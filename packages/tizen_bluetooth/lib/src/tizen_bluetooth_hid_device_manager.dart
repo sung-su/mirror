@@ -36,13 +36,11 @@ class TizenBluetoothHidDeviceManager {
         ),
       );
 
-  static Future<void> btActivate(
-    BtHidDeviceConnectionStateChangedCallback callback,
-  ) async {
+  static void btActivate(BtHidDeviceConnectionStateChangedCallback callback) {
     if (initialized) return;
 
     _btHidDeviceConnectionStateChangedCallback = callback;
-    await methodChannel.invokeMethod<String>('init_bt_hid_device_activate');
+    methodChannel.invokeMethod<String>('init_bt_hid_device_activate');
 
     _hidDeviceConnectionStateChangedSubscription =
         hidDeviceConnectionStateChangedStream.listen((ConnectionInfo info) {

@@ -121,13 +121,13 @@ class TizenBluetoothAudioManager {
         ),
       );
 
-  static Future<void> btAudioSetConnectionStateChangedCallback(
+  static void btAudioSetConnectionStateChangedCallback(
     BtAudioConnectionStateChangedCallback callback,
-  ) async {
+  ) {
     if (!initialized) return;
 
     _btAudioConnectionStateChangedCallback = callback;
-    await methodChannel.invokeMethod<String>(
+    methodChannel.invokeMethod<String>(
       'init_bt_audio_set_connection_state_changed_cb',
     );
   }
