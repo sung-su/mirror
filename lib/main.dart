@@ -11,7 +11,6 @@ import 'package:tizen_fs/providers/device_info_provider.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   setupAppModel();
-
   runApp(
     MultiProvider (
       providers: [
