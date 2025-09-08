@@ -5,18 +5,9 @@ import 'package:tizen_fs/models/bt_model.dart';
 import 'package:tizen_fs/widgets/bt_selectable_listview.dart';
 import 'package:tizen_fs/widgets/focus_selectable2.dart';
 
-// class DeviceListItem {
-//   final String label;
-//   final bool isHeader;
-
-//   DeviceListItem.header(this.label) : isHeader = true;
-//   DeviceListItem.item(this.label) : isHeader = false;
-// }
-
 class BtDeviceListView extends StatefulWidget{
   const BtDeviceListView({super.key, this.onSelectionChanged, this.onAction});
 
-  // final List<DeviceListItem> itemSource;
   final Function(int)? onSelectionChanged;
   final Function(int)? onAction;
 
@@ -54,7 +45,6 @@ class BtDeviceListViewState extends State<BtDeviceListView> with FocusSelectable
   KeyEventResult onKeyEvent(FocusNode focusNode, KeyEvent event) {
     if (event is KeyDownEvent || event is KeyRepeatEvent) {
       if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.select) {
-        debugPrint("enter: select ${_selected} !!!");
         action(_selected);
         return KeyEventResult.handled;
       } 
@@ -63,10 +53,6 @@ class BtDeviceListViewState extends State<BtDeviceListView> with FocusSelectable
   }
 
   Widget build(BuildContext context) {
-
-    var model = Provider.of<BtModel>(context);
-    // debugPrint('### device list: ${model.data.length}');
-
     return Focus(
       focusNode: focusNode,
       onFocusChange: (hasfocus) {
@@ -82,7 +68,6 @@ class BtDeviceListViewState extends State<BtDeviceListView> with FocusSelectable
         //between item and item
         padding: const EdgeInsets.symmetric(vertical: 10),
         alignment: 0.5,
-        itemSource: model.data,
         scrollDirection: Axis.vertical,
         onAction: widget.onAction,
         onSelectionChanged: (selected) {

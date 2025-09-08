@@ -2,11 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tizen_fs/locator.dart';
 import 'package:tizen_fs/models/bt_model.dart';
 import 'package:tizen_fs/models/page_node.dart';
 import 'package:tizen_fs/profiles/profile_popup.dart';
+import 'package:tizen_fs/settings/bt_popup.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/bt_list_view.dart';
+import 'package:tizen_interop/9.0/tizen.dart';
 
 class BluetoothPage extends StatefulWidget {
   const BluetoothPage({
@@ -28,17 +31,31 @@ class BluetoothPageState extends State<BluetoothPage> {
   GlobalKey<BtDeviceListViewState> _listKey = GlobalKey<BtDeviceListViewState>();
 
   bool _btEnabled = false;
+  bool _isCallbackSet = false;
 
   @override
   void initState() {
     super.initState();
+  }
 
-    if (widget.isEnabled) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        initFocus();
-      });
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    debugPrint('didChangeDependencies : ${widget.isEnabled}');
+    if(widget.isEnabled) {
+      //setcallback
+    }
+    else {
+      // unsetcallback
     }
   }
+
 
   @override
   void initFocus() {
@@ -46,8 +63,9 @@ class BluetoothPageState extends State<BluetoothPage> {
   }
 
   @override
-  void didUpdateWidget(covariant BluetoothPage oldWidget) {
+  void didUpdateWidget(BluetoothPage oldWidget) {
     super.didUpdateWidget(oldWidget);
+    debugPrint('didUpdateWidget: isEnabled: =${widget.isEnabled}');
     if (widget.isEnabled) {
       initFocus();
     }
@@ -103,7 +121,7 @@ class BluetoothPageState extends State<BluetoothPage> {
                       _enableBt(_btEnabled);
                     }
                     else {
-                      _showFullScreenPopup(context);
+                      _showFullScreenPopup(context, index);
                     }
                   },
                   onSelectionChanged: (selected) {
@@ -125,22 +143,50 @@ class BluetoothPageState extends State<BluetoothPage> {
     } 
   }
 
-  void _showFullScreenPopup (BuildContext context) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: '',
-      transitionDuration: const Duration(milliseconds: 80),
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return CreateProfilePopup();
-      },
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
-      },
-    );
+  void _showFullScreenPopup (BuildContext context, int index) {
+
+    final btDevice = Provider.of<BtModel>(context, listen: false).getDevice(index);
+    if(btDevice != null) {
+      showGeneralDialog(
+        context: context,
+        barrierDismissible: true,
+        barrierLabel: '',
+        transitionDuration: const Duration(milliseconds: 80),
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return BtConnectingPopup(
+            device: btDevice,
+            onUnpair: () async {
+              debugPrint('unpair');
+              final result = await getIt<BtModel>().Unpair(btDevice);
+              debugPrint('device unpaired');
+              Navigator.of(context).pop();
+              _listKey.currentState?.selectTo(1);
+            },
+            onConnect: () async {
+              debugPrint('connect');
+              // Provider.of<BtModel>(context, listen: false).connect(btDevice);
+              final result = await getIt<BtModel>().connect(btDevice);
+              debugPrint('device connected');
+              Navigator.of(context).pop();
+              _listKey.currentState?.selectTo(1);
+            },
+            onDisConnect: () async{
+              debugPrint('disconnect');
+              final result = await getIt<BtModel>().disconnect(btDevice);
+              debugPrint('device disconnect');
+              Navigator.of(context).pop();
+              _listKey.currentState?.selectTo(1);
+            },
+          );
+        },
+        transitionBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+      );
+    }
   }
 
 }

@@ -10,7 +10,6 @@ import 'package:tizen_fs/widgets/bt_list_view.dart';
 class CategorySelectableListView extends StatefulWidget {
   const CategorySelectableListView({
     super.key,
-    required this.itemSource,
     this.padding,
     this.onSelectionChanged,
     this.onAction,
@@ -19,7 +18,6 @@ class CategorySelectableListView extends StatefulWidget {
     this.scrollOffset = 300,
   });
 
-  final Map<String, Object> itemSource;
   final EdgeInsets? padding;
   final double? alignment;
   final Axis? scrollDirection;
@@ -31,13 +29,6 @@ class CategorySelectableListView extends StatefulWidget {
   State<CategorySelectableListView> createState() => CategorySelectableListViewState();
 }
 
-class _Item {
-  final bool isKey;
-  final String item;
-
-  _Item({required this.isKey, required this.item});
-}
-
 class CategorySelectableListViewState extends State<CategorySelectableListView> {
   late final ScrollController _controller;
   late List<GlobalKey> _itemKeys;
@@ -45,7 +36,7 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
   int _selectedIndex = 0;
   Axis _scrollDirection = Axis.horizontal;
 
-  final _flattened = <_Item>[];
+  List<Item> _items = [];
 
   int _itemCount = 0;
   int get itemCount => _itemCount;
@@ -58,48 +49,16 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
     
     _controller = ScrollController();
 
-    debugPrint('bt_selectable list : get state start');
-    _isEnabled = Provider.of<BtModel>(context, listen: false).isEnabled;
-    debugPrint('bt_selectable list : get state end');
-    // debugPrint('### bt enable: $_isEnabled');
-
     if(widget.scrollDirection != null) {
       _scrollDirection = widget.scrollDirection!;
     }
 
-    widget.itemSource.forEach((key, list) {
-      // debugPrint('#### ${key} :');
-      _flattened.add(_Item(isKey: true, item: key));
-      if(list is List) {
-        for(var item in list) {
-          // debugPrint('######## ${item} ???');
-          _flattened.add(_Item(isKey: false, item: item));
-        }
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _isEnabled = Provider.of<BtModel>(context, listen: false).isEnabled;
+      });
     });
-
-    // debugPrint("#### itemcount: ${_flattened.length}");
-    _itemCount = _flattened.length;
-
-
-    _itemKeys = List.generate(
-      _flattened.length,
-      (index) => GlobalKey(),
-    );
-
-    debugPrint('bt_selectable list init done');
   }
-
-  // @override
-  // void didUpdateWidget(covariant CategorySelectableListView oldWidget) {
-  //   // super.didUpdateWidget(oldWidget);
-  //   // if (oldWidget.itemCount != itemCount) {
-  //   //   _itemKeys = List.generate(
-  //   //     _flattened.length,
-  //   //     (index) => GlobalKey(),
-  //   //   );
-  //   // }
-  // }
 
   @override
   void dispose() {
@@ -117,8 +76,6 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
   }
 
   Future<int> _scrollToSelected(int duration, int fallbackSelection) async {
-    debugPrint('_scrollToSelected, $_selectedIndex');
-
     if (_itemKeys[_selectedIndex].currentContext != null) {
       int current = _selectedIndex;
       final RenderBox box = _itemKeys[_selectedIndex].currentContext!.findRenderObject() as RenderBox;
@@ -141,12 +98,12 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
   }
 
   void onAction(int index) {
-    debugPrint('onAction item index=$index');
     if(index == 1) {
       setState(() {
         _isEnabled = !_isEnabled;  
       });
     }
+
     widget.onAction?.call(index);
   }
 
@@ -155,7 +112,7 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
       throw RangeError('Index out of range: $index');
     }
 
-    if(_flattened[index] != null && _flattened[index].isKey) {
+    if(_items[index] != null && _items[index].isKey) {
       index++; 
     }
     final int previousIndex = _selectedIndex;
@@ -164,15 +121,14 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
   }
 
   Future<int> next({bool fast = false}) async {
-    debugPrint('### selectable listview next :next=$_selectedIndex, widget.itemCount - 1=${itemCount - 1}');
-    int end = _flattened.length - 1;
-    if (_flattened[end] != null && _flattened[end].isKey) {
+    int end = _items.length - 1;
+    if (_items[end] != null && _items[end].isKey) {
       end--;
     }
     if (_selectedIndex < end) {
       int previousIndex = _selectedIndex;
       _selectedIndex++;
-      if(_flattened[_selectedIndex].isKey) {
+      if(_items[_selectedIndex].isKey) {
         previousIndex = _selectedIndex;
         _selectedIndex++;
       }
@@ -185,13 +141,13 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
 
   Future<int> previous({bool fast = false}) async {
     int start = 0;
-    if (_flattened[start] != null && _flattened[start].isKey) {
+    if (_items[start] != null && _items[start].isKey) {
       start++;
     }
     if (_selectedIndex > start) {
       int previousIndex = _selectedIndex;
       _selectedIndex--;
-      if(_flattened[_selectedIndex].isKey) {
+      if(_items[_selectedIndex].isKey) {
         previousIndex = _selectedIndex;
         _selectedIndex--;
       }
@@ -204,7 +160,20 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('bt_selectable list build');
+    debugPrint('bt_selectable_listview build');
+
+    _items = Provider.of<BtModel>(context).data;
+    
+    _itemCount = _items.length;
+
+    _itemKeys = List.generate(
+      _items.length,
+      (index) => GlobalKey(),
+    );
+
+    debugPrint('bt_selectable_listview build : _itemCount=$_itemCount');
+
+
     return ScrollConfiguration(
       behavior: ScrollBehavior().copyWith(
         scrollbars: false,
@@ -220,16 +189,16 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
         controller: _controller,
         itemCount: itemCount,
         itemBuilder: (context, index) {
-          final item = _flattened[index];
+          final item = _items[index];
           if (item.isKey) {
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 30),
               child: Text(
                 key : _itemKeys[index],
-                item.item,
+                (item.item as String),
                 style: TextStyle(
                   fontSize: 10,
-                  color:Color.fromARGB(117, 151, 154, 160),
+                  color: Color.fromARGB(117, 151, 154, 160),
                 )
               ),
             );
@@ -247,7 +216,7 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
                   Focus.of(context).requestFocus();
                 },
                 child: DeviceListMenuItem(
-                  name: _flattened[index].item,
+                  name: _items[index].item as String ?? '',
                   isON: _isEnabled,
                   isFocused: Focus.of(context).hasFocus && index == selectedIndex,
                   onStateChanged: (state) {
@@ -278,7 +247,7 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
                   Focus.of(context).requestFocus();
                 },
                 child: DeviceListItem(
-                  item: _flattened[index].item,
+                  item: _items[index].item as BtDevice,
                   iconData: Icons.bluetooth,  // isPaired ? Icons.bluetooth_connected : Icons.bluetooth
                   isFocused: Focus.of(context).hasFocus && index == selectedIndex
                   )
@@ -308,7 +277,6 @@ class DeviceListMenuItem extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    debugPrint('build menu item: isON=$isON');
     return SizedBox(
       height: itemHeight,
       child: Container(
@@ -360,7 +328,7 @@ class DeviceListMenuItem extends StatelessWidget {
 class DeviceListItem extends StatelessWidget{
   const DeviceListItem({super.key, required this.item, this.iconData, required this.isFocused});
 
-  final String item;
+  final BtDevice item;
   final IconData? iconData;
   final bool isFocused;
 
@@ -403,7 +371,7 @@ class DeviceListItem extends StatelessWidget{
                 spacing: 3,
                 children: [
                   Text(
-                    item,
+                    item.remoteName,
                     style: TextStyle(
                       fontSize: titleFontSize,
                       color:
@@ -413,7 +381,7 @@ class DeviceListItem extends StatelessWidget{
                     ),
                   ),
                   Text(
-                    '0:0:0:0',
+                    item.isConnected ? 'Connected' : (item.isBonded ? 'Paired' : (item.remoteAddress)) ,
                     style: TextStyle(
                       fontSize: subtitleFontSize,
                       color:Color(0xFF979AA0),

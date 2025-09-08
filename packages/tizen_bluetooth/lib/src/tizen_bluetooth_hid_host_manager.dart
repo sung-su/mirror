@@ -38,7 +38,7 @@ class TizenBluetoothHidHostManager {
     if (initialized) return;
 
     _btHidHostConnectionStateChangedCallback = callback;
-    methodChannel.invokeMethod<String>('init_bt_hid_host_initialize');
+    await methodChannel.invokeMethod<String>('bt_hid_host_initialize');
 
     _hidHostConnectionStateChangedSubscription =
         hidHostConnectionStateChangedStream.listen((ConnectionInfo info) {

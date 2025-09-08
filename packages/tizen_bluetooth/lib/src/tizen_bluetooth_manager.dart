@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:ffi';
 
 import 'package:flutter/foundation.dart';
@@ -37,6 +38,8 @@ class TizenBluetoothManager {
 
     methodChannel.invokeMethod<String>('bt_initialize');
     initialized = true;
+    debugPrint('btInitialize end: $initialized');
+    Timeline.finishSync();
   }
 
   static void btDeinitialize() {
@@ -47,9 +50,12 @@ class TizenBluetoothManager {
   }
 
   static void btAdapterEnable() {
+    debugPrint('btAdapterEnable: $initialized');
     if (!initialized) return;
 
+    Timeline.startSync('btAdapterEnable');
     int ret = tizen.bt_adapter_enable();
+    Timeline.finishSync();
     if (ret != 0) {
       throw Exception(
         'Failed to enable Bluetooth adapter. Error code: ${tizen.get_error_message(ret).toDartString()}',
@@ -60,7 +66,9 @@ class TizenBluetoothManager {
   static void btAdapterDisable() {
     if (!initialized) return;
 
+    Timeline.startSync('btAdapterDisable');
     int ret = tizen.bt_adapter_disable();
+    Timeline.finishSync();
     if (ret != 0) {
       throw Exception(
         'Failed to disable Bluetooth adapter. Error code: ${tizen.get_error_message(ret).toDartString()}',
@@ -109,10 +117,10 @@ class TizenBluetoothManager {
       EventChannel('tizen/bluetooth/device_discovery_state_changed');
 
   static late StreamSubscription<DeviceDiscoveryInfo>?
-  _deviceDiscoveryStateChangedSubscription;
+  _deviceDiscoveryStateChangedSubscription = null;
 
   static late BtAdapterDeviceDiscoveryStateChangedCallback?
-  _btAdapterDeviceDiscoveryStateChangedCallback;
+  _btAdapterDeviceDiscoveryStateChangedCallback = null;
 
   static Stream<DeviceDiscoveryInfo> get deviceDiscoveryStateChangedStream =>
       _deviceDiscoveryStateChangedEventChannel.receiveBroadcastStream().map(
@@ -134,7 +142,9 @@ class TizenBluetoothManager {
 
   static void btAdapterUnsetDeviceDiscoveryStateChangedCallback() {
     if (!initialized) return;
+    Timeline.startSync('btAdapterUnsetDeviceDiscoveryStateChangedCallback');
     int ret = tizen.bt_adapter_unset_device_discovery_state_changed_cb();
+    Timeline.finishSync();
     if (ret != 0) {
       throw Exception(
         'Failed to bt_adapter_unset_device_discovery_state_changed_cb. Error code: ${tizen.get_error_message(ret).toDartString()}',
@@ -170,8 +180,9 @@ class TizenBluetoothManager {
             }
           }
         });
-
+    Timeline.startSync('btAdapterStartDeviceDiscovery');
     int ret = tizen.bt_adapter_start_device_discovery();
+    Timeline.finishSync();
     if (ret != 0) {
       throw Exception(
         'Failed to bt_adapter_start_device_discovery. Error code: ${tizen.get_error_message(ret).toDartString()}',
@@ -187,7 +198,9 @@ class TizenBluetoothManager {
       return;
     }
 
+    Timeline.startSync('btAdapterStopDeviceDiscovery');
     int ret = tizen.bt_adapter_stop_device_discovery();
+    Timeline.finishSync();
     if (ret != 0) {
       throw Exception(
         'Failed to bt_adapter_stop_device_discovery. Error code: ${tizen.get_error_message(ret).toDartString()}',
@@ -221,6 +234,7 @@ class TizenBluetoothManager {
   ) {
     if (!initialized) return;
 
+    
     final callbackId = _btAdapterSetStateChangedCallbackIdCounter++;
     _btAdapterSetStateChangedCallbackCallbacks[callbackId] = callback;
 
@@ -231,10 +245,12 @@ class TizenBluetoothManager {
           userObject: callbackId,
           blocking: false,
         );
+    Timeline.startSync('btAdapterSetStateChangedCallback');
     int ret = tizen.bt_adapter_set_state_changed_cb(
       stateChangedCallback.interopCallback,
       stateChangedCallback.interopUserData,
     );
+    Timeline.finishSync();
 
     if (ret != 0) {
       _btAdapterSetStateChangedCallbackCallbacks.remove(callbackId);
@@ -246,7 +262,9 @@ class TizenBluetoothManager {
 
   static void btAdapterUnsetStateChangedCallback() {
     if (!initialized) return;
+    Timeline.startSync('btAdapterUnSetStateChangedCallback');
     int ret = tizen.bt_adapter_unset_state_changed_cb();
+    Timeline.finishSync();
     if (ret != 0) {
       throw Exception(
         'Failed to bt_adapter_unset_state_changed_cb. Error code: ${tizen.get_error_message(ret).toDartString()}',

@@ -1,7 +1,7 @@
 import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:ffi/ffi.dart';
-import 'package:tizen_interop/6.0/tizen.dart';
+import 'package:tizen_interop/9.0/tizen.dart';
 
 void appInfoCallback(Pointer<Void> appInfoHandlePtr, Pointer<Void> userData) {
   final appInfo = appInfoHandlePtr.cast<app_info_s>();
