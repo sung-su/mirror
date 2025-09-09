@@ -159,6 +159,7 @@ class BtModel extends ChangeNotifier {
     debugPrint('_onBtAdapterStateChanged: resut=$result, stat=$state');
     if(state == 1) {
       _isEnabled = true;
+      notifyListeners();
       _updateConnectedDevices();
       _startDiscovery();
     } else {
@@ -166,6 +167,7 @@ class BtModel extends ChangeNotifier {
       _foundDevices.clear();
       _flattenData();
       _isEnabled = false;
+      notifyListeners();
     }
     _isBusy = false;
     notifyListeners();
@@ -220,6 +222,15 @@ class BtModel extends ChangeNotifier {
     _flattenData();
   }
 
+  Future<void> toggle() async {
+    if(_isEnabled) {
+      disable();
+    }
+    else {
+      enable();
+    }
+  }
+
   Future<void> enable() async {
     debugPrint('bt disable: _isInitialized=${_isInitialized}, _isEnabled=$_isEnabled, _isBusy=$_isBusy');
     // if(_isBusy){
@@ -241,6 +252,7 @@ class BtModel extends ChangeNotifier {
       debugPrint('already done? state=$state');
       if (state == 1) {
         _isEnabled = true;
+        notifyListeners();
         _updateConnectedDevices();
         _startDiscovery();
       }
