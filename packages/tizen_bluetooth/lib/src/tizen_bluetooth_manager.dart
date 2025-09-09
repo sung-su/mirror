@@ -32,19 +32,31 @@ class TizenBluetoothManager {
 
   static final methodChannel = const MethodChannel('tizen/bluetooth');
 
-  static void btInitialize() {
-    methodChannel.invokeMethod<String>('bt_initialize');
+  static int btInitialize() {
+    int ret = tizen.bt_initialize();
+    if (ret != 0) {
+      debugPrint(
+        'Failed to enable Bluetooth adapter. Error code: ${tizen.get_error_message(ret).toDartString()}',
+      );
+    }
+    return ret;
   }
 
-  static void btDeinitialize() {
-    methodChannel.invokeMethod<String>('bt_deinitialize');
+  static int btDeinitialize() {
+    int ret = tizen.bt_deinitialize();
+    if (ret != 0) {
+      debugPrint(
+        'Failed to enable Bluetooth adapter. Error code: ${tizen.get_error_message(ret).toDartString()}',
+      );
+    }
+    return ret;
   }
 
   static int btAdapterEnable() {
     int ret = tizen.bt_adapter_enable();
     if (ret != 0) {
       debugPrint(
-        'Failed to enable Bluetooth adapter. Error code: ${tizen.get_error_message(ret).toDartString()}',
+        'Failed to enable Bluetooth adapter. Error code: $ret, ${tizen.get_error_message(ret).toDartString()}',
       );
     }
     return ret;

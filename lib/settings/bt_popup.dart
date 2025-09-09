@@ -4,13 +4,12 @@ import 'package:tizen_fs/models/bt_model.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
 class BtConnectingPopup extends StatefulWidget {
-  const BtConnectingPopup({ super.key, required this.device, this.onUnpair, this.onConnect, this.onDisConnect, this.onCancel});
+  const BtConnectingPopup({ super.key, required this.device, this.onUnpair, this.onConnect, this.onDisConnect});
 
   final BtDevice device;
   final VoidCallback? onUnpair;
   final VoidCallback? onConnect;
   final VoidCallback? onDisConnect;
-  final VoidCallback? onCancel;
 
   @override
   State<BtConnectingPopup> createState() => _BtConnectingPopupState();
@@ -42,8 +41,7 @@ class _BtConnectingPopupState extends State<BtConnectingPopup> {
           widget.device.isConnected ? widget.onDisConnect?.call() : widget.onConnect?.call();
         }
         else {
-          widget.onCancel?.call();
-          // Navigator.of(context).pop();
+          Navigator.of(context).pop();
         }
         return KeyEventResult.handled;
       }

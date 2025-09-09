@@ -44,16 +44,7 @@ class BluetoothPageState extends State<BluetoothPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    debugPrint('didChangeDependencies : ${widget.isEnabled}');
-    if(widget.isEnabled) {
-      //setcallback
-    }
-    else {
-      // unsetcallback
-    }
   }
-
 
   @override
   void initFocus() {
@@ -63,7 +54,7 @@ class BluetoothPageState extends State<BluetoothPage> {
   @override
   void didUpdateWidget(BluetoothPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    debugPrint('didUpdateWidget: isEnabled: =${widget.isEnabled}');
+
     if (widget.isEnabled) {
       initFocus();
     }
@@ -142,7 +133,6 @@ class BluetoothPageState extends State<BluetoothPage> {
   }
 
   void _showFullScreenPopup (BuildContext context, int index) {
-
     final btDevice = Provider.of<BtModel>(context, listen: false).getDevice(index);
     if(btDevice != null) {
       showGeneralDialog(
@@ -154,39 +144,19 @@ class BluetoothPageState extends State<BluetoothPage> {
           return BtConnectingPopup(
             device: btDevice,
             onUnpair: () async {
-              debugPrint('unpair');
-              final result = await getIt<BtModel>().Unpair(btDevice);
+              await getIt<BtModel>().unpair(btDevice);
               Navigator.of(context).pop();
-              debugPrint('device unpaired, index');
-              final index = getIt<BtModel>().getDevcieIndex(btDevice);
-              WidgetsBinding.instance.addPostFrameCallback((_){
-                _listKey.currentState?.forceScrollTo(index);
-              });
+              scrollToItem(btDevice);
             },
             onConnect: () async {
-              debugPrint('connect');
-              final result = await getIt<BtModel>().connect(btDevice);
+              await getIt<BtModel>().connect(btDevice);
               Navigator.of(context).pop();
-              debugPrint('device connected');
-              final index = getIt<BtModel>().getDevcieIndex(btDevice);
-              WidgetsBinding.instance.addPostFrameCallback((_){
-                _listKey.currentState?.forceScrollTo(index);
-              });
+              scrollToItem(btDevice);
             },
             onDisConnect: () async{
-              debugPrint('disconnect');
-              final result = await getIt<BtModel>().disconnect(btDevice);
+              await getIt<BtModel>().disconnect(btDevice);
               Navigator.of(context).pop();
-              debugPrint('device disconnected');
-              final index = getIt<BtModel>().getDevcieIndex(btDevice);
-              WidgetsBinding.instance.addPostFrameCallback((_){
-                _listKey.currentState?.forceScrollTo(index);
-              });
-            },
-            onCancel: () async {
-              Navigator.of(context).pop();
-              // debugPrint('######## cancel!! _listKey.currentState=${_listKey.currentState == null}');
-              // _listKey.currentState?.forceScrollTo(0);
+              scrollToItem(btDevice);
             },
           );
         },
@@ -198,6 +168,13 @@ class BluetoothPageState extends State<BluetoothPage> {
         },
       );
     }
+  }
+
+  void scrollToItem(BtDevice devcie) {
+    final index = getIt<BtModel>().getDevcieIndex(devcie);
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _listKey.currentState?.forceScrollTo(index);
+    });
   }
 
 }

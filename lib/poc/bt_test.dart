@@ -34,18 +34,18 @@ class _BtTestPageState extends State<BtTestPage> {
             },
             child: Text('init')
           ),
-          ElevatedButton(
-            onPressed: () {
-              _model.setCallback();
-            },
-            child: Text('setcallback')
-          ),
-          ElevatedButton(
-            onPressed: () {
-              _model.unsetCallback();
-            },
-            child: Text('unsetCallback')
-          ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     _model.setCallback();
+          //   },
+          //   child: Text('setcallback')
+          // ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     _model.unsetCallback();
+          //   },
+          //   child: Text('unsetCallback')
+          // ),
           ElevatedButton(
             onPressed: () {
               try {
