@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -61,7 +60,6 @@ class BluetoothPageState extends State<BluetoothPage> {
   Widget build(BuildContext context) {
     double titleHeight = 100;
     double titleFontSize = 35;
-    final _btEnabled = Provider.of<BtModel>(context, listen: false).isEnabled;
 
     return Column(
       spacing: 10,
@@ -104,14 +102,11 @@ class BluetoothPageState extends State<BluetoothPage> {
                   key: _listKey,
                   onAction: (index) {
                     if (index == 1) {
-                      _enableBt(!_btEnabled);
+                      Provider.of<BtModel>(context, listen: false).toggle();
                     }
                     else {
                       _showFullScreenPopup(context, index);
                     }
-                  },
-                  onSelectionChanged: (selected) {
-                    //TODO
                   },
                 ),
               ),
@@ -119,14 +114,6 @@ class BluetoothPageState extends State<BluetoothPage> {
           ),
       ],
     );
-  }
-
-  void _enableBt(bool value) {
-    if (value) {
-      Provider.of<BtModel>(context, listen: false).enable();
-    } else {
-      Provider.of<BtModel>(context, listen: false).disable();
-    } 
   }
 
   void _showFullScreenPopup (BuildContext context, int index) {

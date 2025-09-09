@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:tizen_fs/models/bt_model.dart';
 import 'package:tizen_fs/widgets/bt_selectable_listview.dart';
 import 'package:tizen_fs/widgets/bt_focus_selectable.dart';
 
 class BtDeviceListView extends StatefulWidget{
-  const BtDeviceListView({super.key, this.onSelectionChanged, this.onAction});
+  const BtDeviceListView({super.key, this.onAction});
 
-  final Function(int)? onSelectionChanged;
   final Function(int)? onAction;
 
   @override
@@ -69,14 +66,10 @@ class BtDeviceListViewState extends State<BtDeviceListView> with BtFocusSelectab
       child: CategorySelectableListView(
         scrollOffset: 260,
         key: listKey,
-        //between item and item
         padding: const EdgeInsets.symmetric(vertical: 10),
         alignment: 0.5,
         scrollDirection: Axis.vertical,
         onAction: widget.onAction,
-        onSelectionChanged: (selected) {
-          _selected = selected;
-        },
       ),
     );
   }

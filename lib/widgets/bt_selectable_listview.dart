@@ -9,7 +9,6 @@ class CategorySelectableListView extends StatefulWidget {
   const CategorySelectableListView({
     super.key,
     this.padding,
-    this.onSelectionChanged,
     this.onAction,
     this.alignment,
     this.scrollDirection,
@@ -19,7 +18,6 @@ class CategorySelectableListView extends StatefulWidget {
   final EdgeInsets? padding;
   final double? alignment;
   final Axis? scrollDirection;
-  final Function(int)? onSelectionChanged;
   final Function(int)? onAction;
   final double scrollOffset;
 
@@ -83,7 +81,6 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
 
       setState(() {});
       final double offset = widget.scrollOffset;
-      widget.onSelectionChanged?.call(_selectedIndex);
       await _controller.animateTo(
         position.dy + _controller.offset - offset,
         duration: $style.times.med,
@@ -282,6 +279,7 @@ class _DeviceListMenuItemState extends State<DeviceListMenuItem> {
   @override
   Widget build(BuildContext context) {
     final isOperationRunning = context.watch<BtModel>().isBusy;
+    final isEnabled = context.watch<BtModel>().isEnabled;
 
     return SizedBox(
       height: itemHeight,
@@ -300,14 +298,32 @@ class _DeviceListMenuItemState extends State<DeviceListMenuItem> {
             mainAxisAlignment: MainAxisAlignment.start,
             spacing: 15,//innerPadding * 0.75, // between icon-text spacing
             children: [
-              Text(
-                widget.name,
-                style: TextStyle(
-                  fontSize: titleFontSize,
-                  color:
-                      widget.isFocused
-                          ? Theme.of(context).colorScheme.onTertiary
-                          : Theme.of(context).colorScheme.tertiary,
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.name,
+                      style: TextStyle(
+                        fontSize: titleFontSize,
+                        color:
+                            widget.isFocused
+                                ? Theme.of(context).colorScheme.onTertiary
+                                : Theme.of(context).colorScheme.tertiary,
+                      ),
+                    ),
+                    Text(
+                      isEnabled ? 'On' : 'Off',
+                      style: TextStyle(
+                        fontSize: subtitleFontSize,
+                        color:
+                            widget.isFocused
+                                ? Theme.of(context).colorScheme.onTertiary.withAlphaF(0.8)
+                                : Theme.of(context).colorScheme.tertiary.withAlphaF(0.7),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Spacer(),
