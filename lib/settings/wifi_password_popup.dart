@@ -69,8 +69,7 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
           Navigator.of(context).pop();
         }
         return KeyEventResult.handled;
-      } else if (event.logicalKey == LogicalKeyboardKey.escape) {
-        Navigator.of(context).pop();
+      } else if (event.physicalKey == PhysicalKeyboardKey.escape) {
         return KeyEventResult.handled;
       }
     }
@@ -148,18 +147,18 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
                           style: TextStyle(fontSize: 30, color: Colors.white),
                         ),
                       ),
-                      Container(
-                        child: Text(
-                          'WPA', //TODO: how to know
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                      ),
-                      Container(
-                        child: Text(
-                          '${widget.ap.frequency} Hz',
-                          style: TextStyle(fontSize: 15, color: Colors.white70),
-                        ),
-                      ),
+                      // Container(
+                      //   child: Text(
+                      //     'WPA',
+                      //     style: TextStyle(fontSize: 18, color: Colors.white),
+                      //   ),
+                      // ),
+                      // Container(
+                      //   child: Text(
+                      //     '${widget.ap.frequency} Hz',
+                      //     style: TextStyle(fontSize: 15, color: Colors.white70),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
