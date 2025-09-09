@@ -18,6 +18,19 @@ class DeviceInfoPage extends StatefulWidget {
 }
 
 class DeviceInfoPageState extends State<DeviceInfoPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        Provider.of<DeviceInfoProvider>(
+          context,
+          listen: false,
+        ).loadDeviceInfo();
+      }
+    });
+  }
+
   Widget createKeyValue(String key, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,9 +45,10 @@ class DeviceInfoPageState extends State<DeviceInfoPage> {
   Widget build(BuildContext context) {
     return Consumer<DeviceInfoProvider>(
       builder: (context, deviceInfoProvider, child) {
-        final padding = widget.isEnabled
-            ? EdgeInsets.fromLTRB(120, 60, 0, 0)
-            : EdgeInsets.fromLTRB(80, 60, 0, 0);
+        final padding =
+            widget.isEnabled
+                ? EdgeInsets.fromLTRB(120, 60, 0, 0)
+                : EdgeInsets.fromLTRB(80, 60, 0, 0);
 
         if (deviceInfoProvider.isLoading) {
           return Padding(
@@ -63,8 +77,10 @@ class DeviceInfoPageState extends State<DeviceInfoPage> {
               children: [
                 Text("Device info", style: TextStyle(fontSize: 35)),
                 SizedBox(height: 5),
-                Text("Error loading device information.",
-                    style: TextStyle(color: Colors.red)),
+                Text(
+                  "Error loading device information.",
+                  style: TextStyle(color: Colors.red),
+                ),
                 Text(deviceInfoProvider.error.toString()),
               ],
             ),
@@ -91,7 +107,9 @@ class DeviceInfoPageState extends State<DeviceInfoPage> {
                 createKeyValue("CPU", info?.platformProcessor ?? "Unknown"),
                 createKeyValue(
                   "RAM",
-                  ram > 0 ? (ram / (1024 * 1024)).toStringAsFixed(1) + 'GB' : 'Unknown',
+                  ram > 0
+                      ? (ram / (1024 * 1024)).toStringAsFixed(1) + 'GB'
+                      : 'Unknown',
                 ),
                 createKeyValue(
                   "Resolution",
