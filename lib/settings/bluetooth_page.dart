@@ -28,9 +28,6 @@ class BluetoothPage extends StatefulWidget {
 class BluetoothPageState extends State<BluetoothPage> {
   GlobalKey<BtDeviceListViewState> _listKey = GlobalKey<BtDeviceListViewState>();
 
-  bool _btEnabled = false;
-  bool _isCallbackSet = false;
-
   @override
   void initState() {
     super.initState();
@@ -64,6 +61,7 @@ class BluetoothPageState extends State<BluetoothPage> {
   Widget build(BuildContext context) {
     double titleHeight = 100;
     double titleFontSize = 35;
+    final _btEnabled = Provider.of<BtModel>(context, listen: false).isEnabled;
 
     return Column(
       spacing: 10,
@@ -106,8 +104,7 @@ class BluetoothPageState extends State<BluetoothPage> {
                   key: _listKey,
                   onAction: (index) {
                     if (index == 1) {
-                      _btEnabled = !_btEnabled;
-                      _enableBt(_btEnabled);
+                      _enableBt(!_btEnabled);
                     }
                     else {
                       _showFullScreenPopup(context, index);

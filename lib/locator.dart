@@ -5,9 +5,13 @@ import 'package:tizen_fs/models/bt_model.dart';
 final getIt = GetIt.instance;
 
 void setupAppModel() {
-  getIt.registerLazySingleton<AppDataModel>(() => AppDataModel());
+  if (!getIt.isRegistered<BtModel>()) {
+    getIt.registerLazySingleton<AppDataModel>(() => AppDataModel());
+  }
 }
 
 void setupBtModel() {
-  getIt.registerLazySingleton<BtModel>(() => BtModel.init());
+  if (!getIt.isRegistered<BtModel>()) {
+    getIt.registerLazySingleton<BtModel>(() => BtModel.init());
+  }
 }
