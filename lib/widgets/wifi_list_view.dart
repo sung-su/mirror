@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:tizen_fs/models/page_node.dart';
 import 'package:tizen_fs/providers/wifi_provider.dart';
 import 'package:tizen_fs/settings/wifi_password_popup.dart';
 import 'package:tizen_fs/styles/app_style.dart';
@@ -11,12 +10,10 @@ import 'package:tizen_fs/widgets/selectable_listview.dart';
 class WifiListView extends StatefulWidget {
   const WifiListView({
     super.key,
-    required this.node,
     required this.isEnabled,
     this.onSelectionChanged,
   });
 
-  final PageNode node;
   final bool isEnabled;
   final Function(int)? onSelectionChanged;
 
@@ -59,11 +56,9 @@ class WifiListViewState extends State<WifiListView>
           ap: ap,
           onConnect: (password) async {
             await wifiProvider.connectToAp(ap.essid, password: password);
-            wifiProvider.scanAndRefresh();
           },
           onDisconnect: () async {
-            await wifiProvider.disconnectFromCurrentAp();
-            wifiProvider.scanAndRefresh();
+            await wifiProvider.disconnectAp(ap);
           },
         );
       },
@@ -106,6 +101,8 @@ class WifiListViewState extends State<WifiListView>
     return Consumer<WifiProvider>(
       builder: (context, wifiProvider, child) {
         if (wifiProvider.isActivated &&
+            !wifiProvider.isActivating &&
+            !wifiProvider.isDeactivating &&
             !wifiProvider.isScanning &&
             wifiProvider.apList.isEmpty) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -132,7 +129,6 @@ class WifiListViewState extends State<WifiListView>
             scrollDirection: Axis.vertical,
             onSelectionChanged: (selected) {
               _selected = selected;
-              widget.onSelectionChanged?.call(selected);
             },
             itemBuilder: (context, index, selectedIndex, key) {
               return AnimatedScale(
@@ -158,7 +154,6 @@ class WifiListViewState extends State<WifiListView>
                             wifiProvider: wifiProvider,
                           )
                           : WifiApItem(
-                            // node: widget.node.children[index],
                             isFocused:
                                 Focus.of(context).hasFocus &&
                                 index == selectedIndex,
@@ -239,16 +234,16 @@ class WifiSwitchItem extends StatelessWidget {
                                 : Theme.of(context).colorScheme.tertiary,
                       ),
                     ),
-                    Text(
-                      _getWifiStatusText(),
-                      style: TextStyle(
-                        fontSize: subtitleFontSize,
-                        color:
-                            isFocused
-                                ? Theme.of(context).colorScheme.onTertiary.withOpacity(0.8)
-                                : Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
-                      ),
-                    ),
+                    // Text(
+                    //   _getWifiStatusText(),
+                    //   style: TextStyle(
+                    //     fontSize: subtitleFontSize,
+                    //     color:
+                    //         isFocused
+                    //             ? Theme.of(context).colorScheme.onTertiary.withOpacity(0.8)
+                    //             : Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -268,8 +263,7 @@ class WifiSwitchItem extends StatelessWidget {
                         await wifiProvider.wifiOff();
                       }
                     },
-                    activeColor: Color(0xF04285F4),
-                    inactiveThumbColor: Color(0xF0AEB2B9),
+                    activeColor: Colors.blue,
                   ),
                 ),
               ),
@@ -372,18 +366,30 @@ class WifiApItem extends StatelessWidget {
                 ),
               ),
               if (isConnectedToThisAp)
-                Icon(
-                  Icons.check,
-                  size: iconSize,
-                  color: isFocused ? Color(0xF04285F4) : Color(0xF0AEB2B9),
+                Padding(
+                  padding:
+                      isEnabled
+                          ? const EdgeInsets.only(right: 0)
+                          : const EdgeInsets.only(right: 120),
+                  child: Icon(
+                    Icons.check,
+                    size: iconSize,
+                    color: isFocused ? Color(0xF04285F4) : Color(0xF0AEB2B9),
+                  ),
                 )
               else if (wifiProvider.isConnecting)
-                SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Color(0xF04285F4),
+                Padding(
+                  padding:
+                      isEnabled
+                          ? const EdgeInsets.only(right: 0)
+                          : const EdgeInsets.only(right: 120),
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Color(0xF04285F4),
+                    ),
                   ),
                 ),
             ],

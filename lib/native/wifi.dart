@@ -14,7 +14,7 @@ class WifiManager {
   bool get initialized => _initialized;
 
   static List<WifiAP> _apList = [];
-  static List<WifiAP> get apList => _apList;
+  List<WifiAP> get apList => _apList;
 
   static Function(int result)? onActivated;
   static Function(int result)? onDeactivated;
@@ -22,8 +22,16 @@ class WifiManager {
   static Function(int result)? onConnected;
   static Function(int result)? onDisconnected;
 
+  late final activatedCallack;
+  late final deactivatedCallack;
+  late final scanFinishedCallback;
+  late final foreachFoundApCallback;
+  late final connectedCallback;
+  late final disconnectedCallback;
+
   WifiManager() {
-    initializeWifi();
+    _initialized = initializeWifi();
+    registerCallbacks();
   }
 
   @override
@@ -31,20 +39,61 @@ class WifiManager {
     if (_initialized) {
       tz.tizen.wifi_manager_deinitialize(wifiManagerHandle.value);
       calloc.free(wifiManagerHandle);
+      callbacks.unregister(activatedCallack);
+      callbacks.unregister(deactivatedCallack);
+      callbacks.unregister(scanFinishedCallback);
+      callbacks.unregister(foreachFoundApCallback);
+      callbacks.unregister(connectedCallback);
+      callbacks.unregister(disconnectedCallback);
     }
   }
 
-  void initializeWifi() {
+  bool initializeWifi() {
     if (_initialized) {
       print("@ Wi-Fi Native Initialized Already");
-      return;
+      return _initialized;
     }
 
     wifiManagerHandle = calloc<tz.wifi_manager_h>();
     final ret = tz.tizen.wifi_manager_initialize(wifiManagerHandle);
-    if (ret == 0)
-      _initialized = true;
-    print("@ Wi-Fi Native Initialized");
+    print("@ Wi-Fi Native Initialized [${ret == 0}]");
+    return ret == 0;
+  }
+
+  void registerCallbacks() {
+    activatedCallack = callbacks.register<Void Function(Int32, Pointer<Void>)>(
+      'wifi_manager_activated_cb',
+      Pointer.fromFunction(_activatedCallback),
+    );
+
+    deactivatedCallack = callbacks
+        .register<Void Function(Int32, Pointer<Void>)>(
+          'wifi_manager_deactivated_cb',
+          Pointer.fromFunction(_deactivatedCallback),
+        );
+
+    scanFinishedCallback = callbacks
+        .register<Void Function(Int32, Pointer<Void>)>(
+          'wifi_manager_scan_finished_cb',
+          Pointer.fromFunction(_scanFinishedCallback),
+        );
+
+    foreachFoundApCallback = callbacks
+        .register<Bool Function(Pointer<Void>, Pointer<Void>)>(
+          'wifi_manager_found_ap_cb',
+          Pointer.fromFunction(_foreachFoundApCallback, false),
+        );
+
+    connectedCallback = callbacks.register<Void Function(Int32, Pointer<Void>)>(
+      'wifi_manager_connected_cb',
+      Pointer.fromFunction(_connectedCallback),
+    );
+
+    disconnectedCallback = callbacks
+        .register<Void Function(Int32, Pointer<Void>)>(
+          'wifi_manager_disconnected_cb',
+          Pointer.fromFunction(_disconnectedCallback),
+        );
   }
 
   bool isActivated() {
@@ -55,8 +104,8 @@ class WifiManager {
     );
 
     var result = false;
-    if (ret == 0 && activated.value == true) {
-      result = true;
+    if (ret == 0) {
+      result = activated.value;
     }
     print("@ Wi-Fi Native isActivated=[${result}]");
     calloc.free(activated);
@@ -69,17 +118,13 @@ class WifiManager {
   }
 
   Future<void> activate() async {
-    final callback = callbacks.register<Void Function(Int32, Pointer<Void>)>(
-      'wifi_manager_activated_cb',
-      Pointer.fromFunction(_activatedCallback),
-    );
-    print("@ Wi-Fi Native Activate Call");
-    final ret = await tz.tizen.wifi_manager_activate(
+    print("@ Wi-Fi Native activate Call");
+    var ret = await tz.tizen.wifi_manager_activate(
       wifiManagerHandle.value,
-      callback.interopCallback,
-      callback.interopUserData,
+      activatedCallack.interopCallback,
+      activatedCallack.interopUserData,
     );
-    print("@ Wi-Fi Native Activate Called");
+    print("@ Wi-Fi Native activate Called [${ret}]");
   }
 
   static void _deactivatedCallback(int result, Pointer<Void> user_data) {
@@ -88,17 +133,13 @@ class WifiManager {
   }
 
   Future<void> deactivate() async {
-    final callback = callbacks.register<Void Function(Int32, Pointer<Void>)>(
-      'wifi_manager_deactivated_cb',
-      Pointer.fromFunction(_deactivatedCallback),
-    );
     print("@ Wi-Fi Native Deactivate Call");
     final ret = await tz.tizen.wifi_manager_deactivate(
       wifiManagerHandle.value,
-      callback.interopCallback,
-      callback.interopUserData,
+      deactivatedCallack.interopCallback,
+      deactivatedCallack.interopUserData,
     );
-    print("@ Wi-Fi Native Deactivate Called");
+    print("@ Wi-Fi Native Deactivate Called [${ret}]");
   }
 
   static void _scanFinishedCallback(int error_code, Pointer<Void> user_data) {
@@ -107,28 +148,32 @@ class WifiManager {
   }
 
   void scan() {
-    final callback = callbacks.register<Void Function(Int32, Pointer<Void>)>(
-      'wifi_manager_scan_finished_cb',
-      Pointer.fromFunction(_scanFinishedCallback),
-    );
     print("@ Wi-Fi Native Scan Call");
     final ret = tz.tizen.wifi_manager_scan(
       wifiManagerHandle.value,
-      callback.interopCallback,
-      callback.interopUserData,
+      scanFinishedCallback.interopCallback,
+      scanFinishedCallback.interopUserData,
     );
-    print("@ Wi-Fi Native Scan Called");
+    print("@ Wi-Fi Native Scan Called [${ret}]");
   }
 
-  static String findIdByHandle(Pointer<Void> handle) {
+  String findIdByHandle(Pointer<Void> apHandle) {
     Pointer<Pointer<Char>> essid = calloc<Pointer<Char>>();
-    var ret = tz.tizen.wifi_manager_ap_get_essid(handle, essid);
+    var ret = tz.tizen.wifi_manager_ap_get_essid(apHandle, essid);
     String id = "";
     if (ret == 0) {
       id = essid.value.toDartString();
     }
     calloc.free(essid);
     return id;
+  }
+
+  int _findStateByHandle(Pointer<Void> apHandle) {
+    Pointer<Int32> state = calloc<Int32>();
+    var ret = tz.tizen.wifi_manager_ap_get_connection_state(apHandle, state);
+    ret = state.value;
+    calloc.free(state);
+    return ret;
   }
 
   static bool _foreachFoundApCallback(
@@ -168,32 +213,32 @@ class WifiManager {
     return true;
   }
 
-  static void updateApList() {
-    _apList.clear();
+  void updateApList() {
+    if (!isActivated()) {
+      print("@ Wi-Fi Native UpdateAPList Skipped - WiFi not activated");
+      return;
+    }
 
-    final callback = callbacks
-        .register<Bool Function(Pointer<Void>, Pointer<Void>)>(
-          'wifi_manager_found_ap_cb',
-          Pointer.fromFunction(_foreachFoundApCallback, false),
-        );
+    _apList.clear();
 
     print("@ Wi-Fi Native UpdateAPList Call");
     final ret = tz.tizen.wifi_manager_foreach_found_ap(
       wifiManagerHandle.value,
-      callback.interopCallback,
-      callback.interopUserData,
+      foreachFoundApCallback.interopCallback,
+      foreachFoundApCallback.interopUserData,
     );
-    print("@ Wi-Fi Native Update APList Called");
+    print("@ Wi-Fi Native Update APList Called, Found [${_apList.length}] APs");
   }
 
-  Pointer<Void> getConnectedAp() {
+  Pointer<Void> getConnectedApHandle() {
     final ap = calloc<tz.wifi_manager_ap_h>();
     final ret = tz.tizen.wifi_manager_get_connected_ap(
       wifiManagerHandle.value,
       ap,
     );
     var result = ap?.value ?? nullptr;
-    print("@ Wi-Fi Native Current Connected AP=[${result}]");
+    calloc.free(ap);
+    print("@ Wi-Fi Native Current Connected AP=[${result}] [${ret}]");
     return result;
   }
 
@@ -205,30 +250,22 @@ class WifiManager {
     );
     bool result = false;
     if (ret == 0 && isRequired.value == true) result = true;
-    print("@ Wi-Fi Native PassphraseRequired=[${result}]");
+    print("@ Wi-Fi Native PassphraseRequired=[${result}] [${ret}]");
     calloc.free(isRequired);
     return result;
   }
 
   bool setPassphrase(Pointer<Void> ap, String passphrase) {
     var password = passphrase.toNativeChar();
-    final ret = tz.tizen.wifi_manager_ap_set_passphrase(
-      ap,
-      password,
-    );
+    final ret = tz.tizen.wifi_manager_ap_set_passphrase(ap, password);
     bool result = false;
     if (ret == 0) result = true;
-    print("@ Wi-Fi Native SetPassphrase=[${result}]");
+    print("@ Wi-Fi Native SetPassphrase=[${result}] [${ret}]");
     calloc.free(password);
     return result;
   }
 
-  static void _connectedCallback(int error_code, Pointer<Void> user_data) {
-    print("@ Wi-Fi Native ConnectedCallback=[${error_code}]");
-    onConnected?.call(error_code);
-  }
-
-  Pointer<Void> _findHandleByName(String name) {
+  Pointer<Void> findHandleByName(String name) {
     Pointer<Void> handle = nullptr;
     for (var ap in apList) {
       if (ap.essid == name) {
@@ -240,29 +277,54 @@ class WifiManager {
     return handle;
   }
 
-  Future<void> connect(String apName, String passwd) async {
-    final callback = callbacks.register<Void Function(Int32, Pointer<Void>)>(
-      'wifi_manager_connected_cb',
-      Pointer.fromFunction(_connectedCallback),
-    );
-    var apHandle = _findHandleByName(apName);
+  Future<bool> tryConnect(String apName, String passwd) async {
+    var apHandle = findHandleByName(apName);
     if (apHandle == nullptr) {
-      return;
+      return false; //cannot found apName
+    }
+
+    var currentApHandle = getConnectedApHandle();
+    if (currentApHandle != nullptr) {
+      if (apHandle == currentApHandle) {
+        return false; //already connected
+      } else {
+        await disconnect(currentApHandle);
+      }
     }
 
     if (passphraseRequired(apHandle)) {
       if (!setPassphrase(apHandle, passwd)) {
-        return;
+        return false; //cannot match password
       }
     }
+
+    await connect(apHandle);
+    return true;
+  }
+
+  static void _connectedCallback(int error_code, Pointer<Void> user_data) {
+    print("@ Wi-Fi Native ConnectedCallback=[${error_code}]");
+    onConnected?.call(error_code);
+  }
+
+  Future<void> connect(Pointer<Void> apHandle) async {
     print("@ Wi-Fi Native Connect call");
     final ret = await tz.tizen.wifi_manager_connect(
       wifiManagerHandle.value,
       apHandle,
-      callback.interopCallback,
-      callback.interopUserData,
+      connectedCallback.interopCallback,
+      connectedCallback.interopUserData,
     );
-    print("@ Wi-Fi Native Connect called");
+    print("@ Wi-Fi Native Connect called [${ret}]");
+  }
+
+  bool tryDisconnect() {
+    final apHandle = getConnectedApHandle();
+    if (apHandle == nullptr) {
+      return false;
+    }
+    disconnect(apHandle);
+    return true;
   }
 
   static void _disconnectedCallback(int error_code, Pointer<Void> user_data) {
@@ -270,20 +332,14 @@ class WifiManager {
     onDisconnected?.call(error_code);
   }
 
-  Future<void> disconnect() async {
-    final apHandle = getConnectedAp();
-    final callback = callbacks.register<Void Function(Int32, Pointer<Void>)>(
-      'wifi_manager_disconnected_cb',
-      Pointer.fromFunction(_disconnectedCallback),
-    );
-
+  Future<void> disconnect(Pointer<Void> apHandle) async {
     print("@ Wi-Fi Native Disconnect call");
     final ret = await tz.tizen.wifi_manager_disconnect(
       wifiManagerHandle.value,
       apHandle,
-      callback.interopCallback,
-      callback.interopUserData,
+      disconnectedCallback.interopCallback,
+      disconnectedCallback.interopUserData,
     );
-    print("@ Wi-Fi Native Disconnect called");
+    print("@ Wi-Fi Native Disconnect called [${ret}]");
   }
 }

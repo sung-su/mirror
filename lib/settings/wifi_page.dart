@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/page_node.dart';
+import 'package:tizen_fs/providers/wifi_provider.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/wifi_list_view.dart';
 
@@ -42,6 +44,8 @@ class WifiPageState extends State<WifiPage> {
     super.didUpdateWidget(oldWidget);
     if (widget.isEnabled) {
       initFocus();
+      final wifiProvider = Provider.of<WifiProvider>(context, listen: false);
+      wifiProvider.scanAndRefresh();
     }
   }
 
@@ -83,7 +87,6 @@ class WifiPageState extends State<WifiPage> {
                       : const EdgeInsets.symmetric(horizontal: 40),
               child: WifiListView(
                 key: _listKey,
-                node: widget.node!,
                 isEnabled: widget.isEnabled,
                 onSelectionChanged: (selected) {
                   print("@ selected[${selected}]");
