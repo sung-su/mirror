@@ -1,9 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/locator.dart';
 import 'package:tizen_fs/models/app_data_model.dart';
 import 'package:tizen_fs/providers/wifi_provider.dart';
+import 'package:tizen_fs/providers/device_info_provider.dart';
 import 'package:tizen_fs/models/bt_model.dart';
 import 'package:tizen_fs/router.dart';
 import 'package:tizen_fs/styles/app_style.dart';
@@ -16,16 +16,17 @@ void main() {
   print(tizen.get_error_message(0).toDartString());
 
   runApp(
-    MultiProvider (
+    MultiProvider(
       providers: [
         ChangeNotifierProvider<AppDataModel>(
           create: (context) => getIt<AppDataModel>(),
         ),
-        ChangeNotifierProvider<BtModel>(
-          create: (context) => getIt<BtModel>(),
-        ),
+        ChangeNotifierProvider<BtModel>(create: (context) => getIt<BtModel>()),
         ChangeNotifierProvider<WifiProvider>(
           create: (context) => WifiProvider(),
+        ),
+        ChangeNotifierProvider<DeviceInfoProvider>(
+          create: (context) => DeviceInfoProvider(),
         ),
       ],
       child: const App(),

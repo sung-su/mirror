@@ -38,7 +38,6 @@ class DeviceInfoProvider with ChangeNotifier {
       _ram = await compute(_fetchNativeSystemInfo, null);
       final plugin = DeviceInfoPluginTizen();
       _tizenDeviceInfo = await plugin.tizenInfo;
-
     } catch (e) {
       _error = e;
       _tizenDeviceInfo = null;
