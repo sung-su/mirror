@@ -234,26 +234,25 @@ class WifiSwitchItem extends StatelessWidget {
                                 : Theme.of(context).colorScheme.tertiary,
                       ),
                     ),
-                    // Text(
-                    //   _getWifiStatusText(),
-                    //   style: TextStyle(
-                    //     fontSize: subtitleFontSize,
-                    //     color:
-                    //         isFocused
-                    //             ? Theme.of(context).colorScheme.onTertiary.withOpacity(0.8)
-                    //             : Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
-                    //   ),
-                    // ),
+                    Text(
+                      _getWifiStatusText(),
+                      style: TextStyle(
+                        fontSize: subtitleFontSize,
+                        color:
+                            isFocused
+                                ? Theme.of(context).colorScheme.onTertiary.withOpacity(0.8)
+                                : Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
+                      ),
+                    ),
                   ],
                 ),
               ),
               Theme(
                 data: Theme.of(context).copyWith(useMaterial3: false),
                 child: Padding(
-                  padding:
-                      isEnabled
-                          ? const EdgeInsets.only(right: 0)
-                          : const EdgeInsets.only(right: 120),
+                  padding: isFocused
+                    ? const EdgeInsets.only(right: 15)
+                    : const EdgeInsets.only(right: 0),
                   child: Switch(
                     value: wifiProvider.isActivated,
                     onChanged: (value) async {
@@ -367,23 +366,21 @@ class WifiApItem extends StatelessWidget {
               ),
               if (isConnectedToThisAp)
                 Padding(
-                  padding:
-                      isEnabled
-                          ? const EdgeInsets.only(right: 0)
-                          : const EdgeInsets.only(right: 120),
+                  padding: isFocused
+                    ? const EdgeInsets.only(right: 30)
+                    : const EdgeInsets.only(right: 20),
                   child: Icon(
                     Icons.check,
                     size: iconSize,
                     color: isFocused ? Color(0xF04285F4) : Color(0xF0AEB2B9),
                   ),
                 )
-              else if (wifiProvider.isConnecting)
+              else if (wifiProvider.isConnecting || wifiProvider.isDisconnecting || wifiProvider.isScanning || wifiProvider.isActivating || wifiProvider.isDeactivating)
                 Padding(
-                  padding:
-                      isEnabled
-                          ? const EdgeInsets.only(right: 0)
-                          : const EdgeInsets.only(right: 120),
-                  child: SizedBox(
+                  padding: isFocused
+                    ? const EdgeInsets.only(right: 35)
+                    : const EdgeInsets.only(right: 20),
+                  child: Container (
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(
@@ -391,7 +388,7 @@ class WifiApItem extends StatelessWidget {
                       color: Color(0xF04285F4),
                     ),
                   ),
-                ),
+                )
             ],
           ),
         ),
