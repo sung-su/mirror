@@ -10,7 +10,7 @@ import 'package:tizen_fs/settings/setting_page.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
 class Settings extends StatefulWidget {
-  const Settings({ super.key });
+  const Settings({super.key});
 
   @override
   State<Settings> createState() => SettingsState();
@@ -31,14 +31,17 @@ class SettingsState extends State<Settings> {
     _pageController.animateToPage(
       _current,
       duration: $style.times.med,
-      curve: Curves.easeInOut
+      curve: Curves.easeInOut,
     );
   }
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(viewportFraction: viewportFraction, keepPage: false);
+    _pageController = PageController(
+      viewportFraction: viewportFraction,
+      keepPage: false,
+    );
     _pages = [_pageTree, null];
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -49,7 +52,7 @@ class SettingsState extends State<Settings> {
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
     if (event is KeyDownEvent) {
       if (event.logicalKey == LogicalKeyboardKey.arrowRight ||
-      event.logicalKey == LogicalKeyboardKey.enter) {
+          event.logicalKey == LogicalKeyboardKey.enter) {
         setState(() {
           _current = (_current < _pages.length - 2) ? _current + 1 : _current;
         });
@@ -61,8 +64,7 @@ class SettingsState extends State<Settings> {
         });
         move();
         return KeyEventResult.handled;
-      }
-      else if (event.logicalKey == LogicalKeyboardKey.goBack ||
+      } else if (event.logicalKey == LogicalKeyboardKey.goBack ||
           event.logicalKey == LogicalKeyboardKey.escape ||
           event.physicalKey == PhysicalKeyboardKey.escape) {
         if (_current == 0) Navigator.pop(context);
@@ -76,20 +78,19 @@ class SettingsState extends State<Settings> {
     return KeyEventResult.ignored;
   }
 
-  void _selectTo(int index)
-  {
-    if(index == _pages.length -1 ) return;
+  void _selectTo(int index) {
+    if (index == _pages.length - 1) return;
     setState(() {
       _current = index;
     });
     move();
   }
 
-  void _updatePages(PageNode? node, int selected){
-    if(node == null) return;
+  void _updatePages(PageNode? node, int selected) {
+    if (node == null) return;
 
     final state = _itemKeys[_current + 1]?.currentState;
-    if(state is SettingPageInterface) {
+    if (state is SettingPageInterface) {
       (state as SettingPageInterface)?.hidePage();
     }
 
@@ -99,7 +100,7 @@ class SettingsState extends State<Settings> {
     newItems = [node.children[selected]];
     final List newKeys = List.generate(1, (_) => GlobalKey());
 
-    if(!node.children[selected].isEnd) {
+    if (!node.children[selected].isEnd) {
       newItems.add(null);
       newKeys.add(GlobalKey());
     }
@@ -125,7 +126,7 @@ class SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:Focus(
+      body: Focus(
         focusNode: _focusNode,
         onKeyEvent: _onKeyEvent,
         child: PageView.builder(
@@ -136,9 +137,7 @@ class SettingsState extends State<Settings> {
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             if (_pages[index] == null) {
-              return Container(
-                color: Theme.of(context).colorScheme.onTertiary
-              );
+              return Container(color: Theme.of(context).colorScheme.onTertiary);
             } else {
               return GestureDetector(
                 onTap: () {
@@ -155,8 +154,8 @@ class SettingsState extends State<Settings> {
               );
             }
           },
-        )
-      )
+        ),
+      ),
     );
   }
 }

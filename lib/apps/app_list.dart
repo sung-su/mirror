@@ -9,7 +9,12 @@ import 'package:tizen_fs/widgets/media_card.dart';
 import 'package:tizen_fs/widgets/selectable_gridview.dart';
 
 class AppList extends StatefulWidget {
-  const AppList({super.key, this.onFocusChanged, this.onScrollup ,this.scrollController});
+  const AppList({
+    super.key,
+    this.onFocusChanged,
+    this.onScrollup,
+    this.scrollController,
+  });
 
   final Function(bool)? onFocusChanged;
   final VoidCallback? onScrollup;
@@ -20,10 +25,11 @@ class AppList extends StatefulWidget {
 }
 
 class AppListState extends State<AppList> {
-  final GlobalKey<SelectableGridViewState> _gridKey = GlobalKey<SelectableGridViewState>();
+  final GlobalKey<SelectableGridViewState> _gridKey =
+      GlobalKey<SelectableGridViewState>();
 
   final double _itemWidth = 150;
-  final double _itemRatio = 16/9;
+  final double _itemRatio = 16 / 9;
   final double _width = 960;
 
   final double _minimumHeight = 130;
@@ -34,8 +40,11 @@ class AppListState extends State<AppList> {
   bool _isPopupOpened = false;
   int _itemCount = 0;
   double get itemHeight => _itemWidth / _itemRatio + 30;
-  int get columnCount => (_width < 152) ? 1: (_width - 116) ~/ 162;
-  int get rowCount => (_itemCount % columnCount) > 0 ? (_itemCount ~/ columnCount) + 1 : _itemCount ~/ columnCount;
+  int get columnCount => (_width < 152) ? 1 : (_width - 116) ~/ 162;
+  int get rowCount =>
+      (_itemCount % columnCount) > 0
+          ? (_itemCount ~/ columnCount) + 1
+          : _itemCount ~/ columnCount;
 
   double _scrollOffset = 0;
 
@@ -57,7 +66,10 @@ class AppListState extends State<AppList> {
 
     _itemCount = apps.length;
     double height = (itemHeight + 30) * rowCount;
-    height = height < MediaQuery.of(context).size.height ? MediaQuery.of(context).size.height : height;
+    height =
+        height < MediaQuery.of(context).size.height
+            ? MediaQuery.of(context).size.height
+            : height;
 
     return SizedBox(
       height: _isOpen ? height : _minimumHeight,
@@ -73,30 +85,25 @@ class AppListState extends State<AppList> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (_isOpen)
-                  Container(
-                    height: 40, 
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 10, 0 ,0),
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: Container(
-                          child: GestureDetector(
-                            onTap: widget.onScrollup,
-                            child: Icon(
-                              Icons.keyboard_arrow_up,
-                              size: 30,
+                    Container(
+                      height: 40,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Container(
+                            child: GestureDetector(
+                              onTap: widget.onScrollup,
+                              child: Icon(Icons.keyboard_arrow_up, size: 30),
                             ),
                           ),
                         ),
                       ),
-                    )
-                  ),
+                    ),
                   Text(
                     'Your Apps',
-                    style: TextStyle(
-                      fontSize: _isOpen ? 30 : 15
-                    ),
-                    ),
+                    style: TextStyle(fontSize: _isOpen ? 30 : 15),
+                  ),
                 ],
               ),
             ),
@@ -106,8 +113,16 @@ class AppListState extends State<AppList> {
             child: SelectableGridView(
               key: _gridKey,
               scrollController: widget.scrollController!,
-              padding: EdgeInsets.symmetric(horizontal: _hPadding, vertical: _isOpen ? _vPadding : _vPadding),
-              itemCount: _isOpen ? apps.length : apps.length < 5 ? apps.length : 5,
+              padding: EdgeInsets.symmetric(
+                horizontal: _hPadding,
+                vertical: _isOpen ? _vPadding : _vPadding,
+              ),
+              itemCount:
+                  _isOpen
+                      ? apps.length
+                      : apps.length < 5
+                      ? apps.length
+                      : 5,
               itemRatio: _itemRatio,
               onFocused: () {
                 setState(() {
@@ -115,9 +130,8 @@ class AppListState extends State<AppList> {
                 });
                 widget.onFocusChanged?.call(true);
               },
-              onUnfocused: (){
-                if(!_isPopupOpened)
-                {
+              onUnfocused: () {
+                if (!_isPopupOpened) {
                   setState(() {
                     _isOpen = false;
                   });
@@ -133,8 +147,8 @@ class AppListState extends State<AppList> {
               itemBuilder: (context, index, selectedIndex, key) {
                 return Center(
                   child: GestureDetector(
-                    onDoubleTap: () => ApplicationManager.launch(apps[index].appId),
-                    onLongPress: () => _showFullScreenPopup(context, apps[index]),
+                    onLongPress:
+                        () => _showFullScreenPopup(context, apps[index]),
                     child: MediaCard(
                       key: key,
                       width: _itemWidth,
@@ -147,6 +161,7 @@ class AppListState extends State<AppList> {
                           _gridKey.currentState?.selectTo(index);
                           _gridKey.currentState?.scrollToSelected(index);
                         });
+                        ApplicationManager.launch(apps[index].appId);
                       },
                     ),
                   ),
@@ -173,7 +188,7 @@ class AppListState extends State<AppList> {
     _gridKey.currentState?.setFocus();
   }
 
-  void _showFullScreenPopup (BuildContext context, AppData app) {
+  void _showFullScreenPopup(BuildContext context, AppData app) {
     _scrollOffset = widget.scrollController?.offset ?? 0;
     setState(() {
       _isPopupOpened = true;
@@ -193,12 +208,9 @@ class AppListState extends State<AppList> {
         );
       },
       transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
+        return FadeTransition(opacity: animation, child: child);
       },
-    ).then((_){
+    ).then((_) {
       setState(() {
         _isPopupOpened = false;
       });
