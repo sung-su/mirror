@@ -24,9 +24,10 @@ class MainContent extends StatefulWidget {
 }
 
 class _MainContentState extends State<MainContent> {
-  final ScrollController _scrollController = ScrollController(keepScrollOffset: true);
+  final ScrollController _scrollController = ScrollController(
+    keepScrollOffset: true,
+  );
   final PageController _pageController = PageController(initialPage: 0);
-
 
   final Map<int, Function(ScrollDirection, bool)> _childCallbacks = {};
   bool _userScrolling = false;
@@ -43,9 +44,9 @@ class _MainContentState extends State<MainContent> {
     _pageController.dispose();
     super.dispose();
   }
-    
+
   @override
-   Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         if (notification is UserScrollNotification) {
@@ -54,30 +55,27 @@ class _MainContentState extends State<MainContent> {
             _scrollDirection = notification.direction;
           }
         }
-    
+
         if (notification is ScrollUpdateNotification) {
           if (_userScrolling) {
             _notifyChildren(_scrollDirection, false);
           }
         }
-    
+
         if (notification is ScrollEndNotification) {
           if (_userScrolling) {
             _notifyChildren(_scrollDirection, true);
           }
           _userScrolling = false;
         }
-    
+
         return false;
       },
       child: CustomScrollView(
         scrollBehavior: ScrollBehavior().copyWith(
           scrollbars: false,
           overscroll: false,
-          dragDevices: {
-            PointerDeviceKind.mouse,
-            PointerDeviceKind.touch
-          }
+          dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch},
         ),
         controller: _scrollController,
         primary: false,
@@ -88,9 +86,7 @@ class _MainContentState extends State<MainContent> {
             automaticallyImplyLeading: false,
             toolbarHeight: 80,
             backgroundColor: Colors.transparent,
-            title: MainTopMenu(
-              pageController: _pageController,
-            ),
+            title: MainTopMenu(pageController: _pageController),
           ),
           SliverToBoxAdapter(
             child: MainContentView(
@@ -98,8 +94,8 @@ class _MainContentState extends State<MainContent> {
               scrollController: _scrollController,
               register: registerChild,
               unregister: unregisterChild,
-            )
-          )
+            ),
+          ),
         ],
       ),
     );
@@ -118,5 +114,4 @@ class _MainContentState extends State<MainContent> {
       callback(direction, scrollEnd);
     }
   }
-
 }

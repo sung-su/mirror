@@ -11,10 +11,7 @@ import 'package:tizen_fs/widgets/top_menu_icon_item.dart';
 import 'package:tizen_fs/profiles/switch_profile_panel.dart';
 
 class MainTopMenu extends StatefulWidget {
-  const MainTopMenu({
-    super.key,
-    required this.pageController,
-  });
+  const MainTopMenu({super.key, required this.pageController});
 
   final PageController pageController;
 
@@ -49,8 +46,7 @@ class _MainTopMenuState extends State<MainTopMenu> {
 
       if (_selected > 0 && _selected < (_itemCount - 2)) {
         _movePage(_selected - 1);
-      }
-      else if (_selected == 0) {
+      } else if (_selected == 0) {
         _showAccountPanel();
       }
     }
@@ -63,7 +59,11 @@ class _MainTopMenuState extends State<MainTopMenu> {
       barrierLabel: "Close",
       barrierColor: Colors.transparent,
       transitionDuration: $style.times.pageTransition,
-      pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
+      pageBuilder: (
+        BuildContext buildContext,
+        Animation animation,
+        Animation secondaryAnimation,
+      ) {
         return NotificationsPanel();
       },
       transitionBuilder: (context, animation, secondaryAnimation, child) {
@@ -72,15 +72,12 @@ class _MainTopMenuState extends State<MainTopMenu> {
             begin: const Offset(0.5, 0),
             end: Offset.zero,
           ).animate(animation),
-          child: FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
+          child: FadeTransition(opacity: animation, child: child),
         );
       },
-    ).then((_){
+    ).then((_) {
       setState(() {
-        _selected = _itemCount-2;
+        _selected = _itemCount - 2;
       });
     });
   }
@@ -92,15 +89,16 @@ class _MainTopMenuState extends State<MainTopMenu> {
       barrierLabel: "Close",
       barrierColor: Colors.transparent,
       transitionDuration: const Duration(milliseconds: 80),
-      pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
-            return AccountPanel();
-          },
-        transitionBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
-        },
+      pageBuilder: (
+        BuildContext buildContext,
+        Animation animation,
+        Animation secondaryAnimation,
+      ) {
+        return AccountPanel();
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
     );
   }
 
@@ -121,22 +119,26 @@ class _MainTopMenuState extends State<MainTopMenu> {
         setSelected((_selected > 0) ? (_selected - 1) : _selected);
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-        final selected = (_selected < _itemCount - 1) ? (_selected + 1) : _selected;
+        final selected =
+            (_selected < _itemCount - 1) ? (_selected + 1) : _selected;
         if (selected == _itemCount - 1) {
           _showNotificationPanel();
-        }
-        else {
+        } else {
           setSelected(selected);
         }
         return KeyEventResult.handled;
-      }
-      else if (event.logicalKey == LogicalKeyboardKey.enter) {
+      } else if (event.logicalKey == LogicalKeyboardKey.enter) {
         if (_selected == 0) {
           AppRouter.router.push(ScreenPaths.poc);
         }
-        if(_selected == 3) {
+        if (_selected == 3) {
           AppRouter.router.push(ScreenPaths.settings);
         }
+        return KeyEventResult.handled;
+      } else if (event.logicalKey == LogicalKeyboardKey.goBack ||
+          event.logicalKey == LogicalKeyboardKey.escape ||
+          event.physicalKey == PhysicalKeyboardKey.escape) {
+        AppRouter.router.push(ScreenPaths.main);
         return KeyEventResult.handled;
       }
     }
@@ -149,78 +151,79 @@ class _MainTopMenuState extends State<MainTopMenu> {
       autofocus: true,
       onFocusChange: _onFocusChanged,
       onKeyEvent: _onKeyEvent,
-      child: Builder(builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(43, 20, 48, 0),
-          child: Row(
-            children: [
-              TopMenuAvatarItem(
-                imageUrl: null,
-                text: pages[0],
-                isSelected: 0 == _selected,
-                onPressed: () {
-                  Focus.of(context).requestFocus();
-                  setSelected(0);
-                },
-              ),
-              SizedBox(
-                width: 15,
-              ),
-              TopMenuButtonItem(
-                text: pages[1],
-                isSelected: 1 == _selected,
-                isFocused: Focus.of(context).hasFocus,
-                onPressed: () {
-                  Focus.of(context).requestFocus();
-                  setSelected(1);
-                }
-              ),
-              TopMenuButtonItem(
-                text: pages[2],
-                isSelected: 2 == _selected,
-                isFocused: Focus.of(context).hasFocus,
-                onPressed: () {
-                  Focus.of(context).requestFocus();
-                  setSelected(2);
-                }
-              ),
-              const Spacer(),
-              Row(
-                spacing: 10,
-                children: [
-                  TopMenuIconItem(
-                    icon: Icons.settings_outlined,
-                    isSelected: 3 == _selected,
-                    hasFocus: Focus.of(context).hasFocus,
-                    onPressed: () {
-                      Focus.of(context).requestFocus();
-                      setSelected(3);
-                      AppRouter.router.push(ScreenPaths.settings);
-                    }
-                  ),
-                  TopMenuIconItem(
-                    icon: Icons.notifications_none_outlined,
-                    isSelected: 4 == _selected,
-                    hasFocus: Focus.of(context).hasFocus,
-                    onPressed: () {
-                      Focus.of(context).requestFocus();
-                      setSelected(4);
-                      _showNotificationPanel();
-                    }
-                  ),
-                  Text(
-                    'TizenOS',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600
+      child: Builder(
+        builder: (context) {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(43, 20, 48, 0),
+            child: Row(
+              children: [
+                TopMenuAvatarItem(
+                  imageUrl: null,
+                  text: pages[0],
+                  isSelected: 0 == _selected,
+                  onPressed: () {
+                    Focus.of(context).requestFocus();
+                    setSelected(0);
+                  },
+                ),
+                SizedBox(width: 15),
+                TopMenuButtonItem(
+                  text: pages[1],
+                  isSelected: 1 == _selected,
+                  isFocused: Focus.of(context).hasFocus,
+                  onPressed: () {
+                    Focus.of(context).requestFocus();
+                    setSelected(1);
+                  },
+                ),
+                TopMenuButtonItem(
+                  text: pages[2],
+                  isSelected: 2 == _selected,
+                  isFocused: Focus.of(context).hasFocus,
+                  onPressed: () {
+                    Focus.of(context).requestFocus();
+                    setSelected(2);
+                  },
+                ),
+                const Spacer(),
+                Row(
+                  spacing: 10,
+                  children: [
+                    TopMenuIconItem(
+                      icon: Icons.settings_outlined,
+                      isSelected: 3 == _selected,
+                      hasFocus: Focus.of(context).hasFocus,
+                      onPressed: () {
+                        Focus.of(context).requestFocus();
+                        setSelected(3);
+                        AppRouter.router.push(ScreenPaths.settings);
+                      },
                     ),
-                  )
-                ],
-              )
-            ]),
-        );
-      }),
+                    TopMenuIconItem(
+                      icon: Icons.notifications_none_outlined,
+                      isSelected: 4 == _selected,
+                      hasFocus: Focus.of(context).hasFocus,
+                      onPressed: () {
+                        Focus.of(context).requestFocus();
+                        setSelected(4);
+                        _showNotificationPanel();
+                      },
+                    ),
+                    Text(
+                      'TizenOS',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

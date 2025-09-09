@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tizen_fs/router.dart';
 
 class SelectableGridView extends StatefulWidget {
   const SelectableGridView({
@@ -12,12 +13,13 @@ class SelectableGridView extends StatefulWidget {
     this.onFocused,
     this.onUnfocused,
     this.onItemSelected,
-    this.onItemLongPressed
+    this.onItemLongPressed,
   });
 
   final int itemCount;
   final double itemRatio;
-  final Widget Function(BuildContext, int index, int selectedIndex, Key key) itemBuilder;
+  final Widget Function(BuildContext, int index, int selectedIndex, Key key)
+  itemBuilder;
   final EdgeInsets? padding;
   final VoidCallback? onFocused;
   final VoidCallback? onUnfocused;
@@ -41,7 +43,7 @@ class SelectableGridViewState extends State<SelectableGridView> {
   int _lastSelected = 0;
 
   double _width = 960;
-  int get columnCount => (_width < 152) ? 1: (_width - 116) ~/ 162;
+  int get columnCount => (_width < 152) ? 1 : (_width - 116) ~/ 162;
 
   @override
   void initState() {
@@ -64,7 +66,7 @@ class SelectableGridViewState extends State<SelectableGridView> {
   void setFocus() {
     if (!_focusNode.hasFocus) {
       _focusNode.requestFocus();
-      setState(() { });
+      setState(() {});
     }
   }
 
@@ -72,8 +74,7 @@ class SelectableGridViewState extends State<SelectableGridView> {
     if (index >= 0 && index < widget.itemCount) {
       int current = await scrollToSelected(index);
       setState(() {
-        if (_selectedIndex != current)
-          _selectedIndex = current;  
+        if (_selectedIndex != current) _selectedIndex = current;
       });
     }
   }
@@ -91,80 +92,77 @@ class SelectableGridViewState extends State<SelectableGridView> {
       );
 
       return index;
-    }
-    else {
+    } else {
       return _selectedIndex;
     }
   }
 
   KeyEventResult _handleKey(FocusNode node, KeyEvent event) {
-    if(event is KeyDownEvent || event is KeyRepeatEvent) {
+    if (event is KeyDownEvent || event is KeyRepeatEvent) {
       int col = _selectedIndex % columnCount;
 
       if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
         if (_selectedIndex - columnCount >= 0) {
           selectTo(_selectedIndex - columnCount);
           return KeyEventResult.handled;
-        }
-        else {
+        } else {
           return KeyEventResult.ignored;
         }
-      }
-      else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
         if (_selectedIndex + columnCount < widget.itemCount) {
           selectTo(_selectedIndex + columnCount);
           return KeyEventResult.handled;
-        } 
-      }
-      else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+        }
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
         if (col < columnCount - 1 && _selectedIndex + 1 < widget.itemCount) {
           selectTo(_selectedIndex + 1);
         }
         return KeyEventResult.handled;
-      }
-      else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
         if (col > 0) {
           selectTo(_selectedIndex - 1);
         }
         return KeyEventResult.handled;
-      }
-      else if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.select) {
+      } else if (event.logicalKey == LogicalKeyboardKey.enter ||
+          event.logicalKey == LogicalKeyboardKey.select) {
         _pressedAt = DateTime.now();
         return KeyEventResult.handled;
+      } else if (event.logicalKey == LogicalKeyboardKey.goBack ||
+          event.logicalKey == LogicalKeyboardKey.escape ||
+          event.physicalKey == PhysicalKeyboardKey.escape) {
+        AppRouter.router.push(ScreenPaths.main);
+        return KeyEventResult.handled;
       }
-    }
-    else if (event is KeyUpEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.select) {
-        if (_pressedAt == null)
-          return KeyEventResult.handled;
-          
+    } else if (event is KeyUpEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.enter ||
+          event.logicalKey == LogicalKeyboardKey.select) {
+        if (_pressedAt == null) return KeyEventResult.handled;
+
         final duration = DateTime.now().difference(_pressedAt!);
-        if (duration >= longPressThreshold) { //longpress
+        if (duration >= longPressThreshold) {
+          //longpress
           widget.onItemLongPressed?.call(_selectedIndex);
-        }
-        else {
+        } else {
           widget.onItemSelected?.call(_selectedIndex);
         }
         _pressedAt = null;
         return KeyEventResult.handled;
       }
-
     }
     return KeyEventResult.ignored;
   }
 
   void _onFocusChanged(bool hasFocus) {
-    if(hasFocus) {
-      if(_lastSelected != -1) {
-        setState(() {  
+    if (hasFocus) {
+      if (_lastSelected != -1) {
+        setState(() {
           _selectedIndex = _lastSelected;
         });
       }
       widget.onFocused?.call();
-    } 
-    else {
+    } else {
       _lastSelected = _selectedIndex;
-      setState(() {  
+      setState(() {
         _selectedIndex = -1;
       });
       widget.onUnfocused?.call();
