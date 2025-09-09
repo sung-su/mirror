@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:tizen_fs/models/bt_model.dart';
 import 'package:tizen_fs/styles/app_style.dart';
-import 'package:tizen_fs/widgets/setting_list_view.dart';
 
 class BtConnectingPopup extends StatefulWidget {
-  const BtConnectingPopup({ super.key, required this.device, this.onUnpair, this.onConnect, this.onDisConnect });
+  const BtConnectingPopup({ super.key, required this.device, this.onUnpair, this.onConnect, this.onDisConnect});
 
   final BtDevice device;
   final VoidCallback? onUnpair;

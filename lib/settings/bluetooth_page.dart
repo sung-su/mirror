@@ -5,11 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:tizen_fs/locator.dart';
 import 'package:tizen_fs/models/bt_model.dart';
 import 'package:tizen_fs/models/page_node.dart';
-import 'package:tizen_fs/profiles/profile_popup.dart';
 import 'package:tizen_fs/settings/bt_popup.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/bt_list_view.dart';
-import 'package:tizen_interop/9.0/tizen.dart';
 
 class BluetoothPage extends StatefulWidget {
   const BluetoothPage({
@@ -30,9 +28,6 @@ class BluetoothPage extends StatefulWidget {
 class BluetoothPageState extends State<BluetoothPage> {
   GlobalKey<BtDeviceListViewState> _listKey = GlobalKey<BtDeviceListViewState>();
 
-  bool _btEnabled = false;
-  bool _isCallbackSet = false;
-
   @override
   void initState() {
     super.initState();
@@ -46,16 +41,7 @@ class BluetoothPageState extends State<BluetoothPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    debugPrint('didChangeDependencies : ${widget.isEnabled}');
-    if(widget.isEnabled) {
-      //setcallback
-    }
-    else {
-      // unsetcallback
-    }
   }
-
 
   @override
   void initFocus() {
@@ -65,7 +51,7 @@ class BluetoothPageState extends State<BluetoothPage> {
   @override
   void didUpdateWidget(BluetoothPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    debugPrint('didUpdateWidget: isEnabled: =${widget.isEnabled}');
+
     if (widget.isEnabled) {
       initFocus();
     }
@@ -75,6 +61,7 @@ class BluetoothPageState extends State<BluetoothPage> {
   Widget build(BuildContext context) {
     double titleHeight = 100;
     double titleFontSize = 35;
+    final _btEnabled = Provider.of<BtModel>(context, listen: false).isEnabled;
 
     return Column(
       spacing: 10,
@@ -117,8 +104,7 @@ class BluetoothPageState extends State<BluetoothPage> {
                   key: _listKey,
                   onAction: (index) {
                     if (index == 1) {
-                      _btEnabled = !_btEnabled;
-                      _enableBt(_btEnabled);
+                      _enableBt(!_btEnabled);
                     }
                     else {
                       _showFullScreenPopup(context, index);
@@ -144,7 +130,6 @@ class BluetoothPageState extends State<BluetoothPage> {
   }
 
   void _showFullScreenPopup (BuildContext context, int index) {
-
     final btDevice = Provider.of<BtModel>(context, listen: false).getDevice(index);
     if(btDevice != null) {
       showGeneralDialog(
@@ -156,26 +141,19 @@ class BluetoothPageState extends State<BluetoothPage> {
           return BtConnectingPopup(
             device: btDevice,
             onUnpair: () async {
-              debugPrint('unpair');
-              final result = await getIt<BtModel>().Unpair(btDevice);
-              debugPrint('device unpaired');
+              await getIt<BtModel>().unpair(btDevice);
               Navigator.of(context).pop();
-              _listKey.currentState?.selectTo(1);
+              scrollToItem(btDevice);
             },
             onConnect: () async {
-              debugPrint('connect');
-              // Provider.of<BtModel>(context, listen: false).connect(btDevice);
-              final result = await getIt<BtModel>().connect(btDevice);
-              debugPrint('device connected');
+              await getIt<BtModel>().connect(btDevice);
               Navigator.of(context).pop();
-              _listKey.currentState?.selectTo(1);
+              scrollToItem(btDevice);
             },
             onDisConnect: () async{
-              debugPrint('disconnect');
-              final result = await getIt<BtModel>().disconnect(btDevice);
-              debugPrint('device disconnect');
+              await getIt<BtModel>().disconnect(btDevice);
               Navigator.of(context).pop();
-              _listKey.currentState?.selectTo(1);
+              scrollToItem(btDevice);
             },
           );
         },
@@ -187,6 +165,13 @@ class BluetoothPageState extends State<BluetoothPage> {
         },
       );
     }
+  }
+
+  void scrollToItem(BtDevice devcie) {
+    final index = getIt<BtModel>().getDevcieIndex(devcie);
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _listKey.currentState?.forceScrollTo(index);
+    });
   }
 
 }

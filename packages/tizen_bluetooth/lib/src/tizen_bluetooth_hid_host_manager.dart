@@ -11,7 +11,6 @@ typedef BtHidHostConnectionStateChangedCallback =
     void Function(int, bool, String);
 
 class TizenBluetoothHidHostManager {
-  static bool initialized = false;
 
   static final methodChannel = const MethodChannel('tizen/bluetooth_hid_host');
 
@@ -35,8 +34,6 @@ class TizenBluetoothHidHostManager {
       );
 
   static void btInitialize(BtHidHostConnectionStateChangedCallback callback) {
-    if (initialized) return;
-
     _btHidHostConnectionStateChangedCallback = callback;
     methodChannel.invokeMethod<String>('init_bt_hid_host_initialize');
 
@@ -53,48 +50,43 @@ class TizenBluetoothHidHostManager {
             );
           }
         });
-
-    initialized = true;
   }
 
-  static void btDeinitialize() {
-    if (!initialized) return;
+  static int btDeinitialize() {
     int ret = tizen.bt_hid_host_deinitialize();
     if (ret != 0) {
-      throw Exception(
+      debugPrint(
         'Failed to bt_hid_host_deinitialize. Error code: ${tizen.get_error_message(ret).toDartString()}',
       );
+      return ret;
     }
 
     _hidHostConnectionStateChangedSubscription?.cancel();
     _hidHostConnectionStateChangedSubscription = null;
     _btHidHostConnectionStateChangedCallback = null;
 
-    initialized = false;
+    return ret;
   }
 
-  static void btConnect(String remoteAddress) {
-    if (!initialized) return;
-
+  static int btConnect(String remoteAddress) {
     final int ret = using((Arena arena) {
       final int connectResult = tizen.bt_hid_host_connect(
         remoteAddress.toNativeChar(allocator: arena),
       );
       if (connectResult != 0) {
-        throw Exception(
+        debugPrint(
           'Failed to bt_hid_host_connect. Error code: ${tizen.get_error_message(connectResult).toDartString()}',
         );
       }
       return connectResult;
     });
     if (ret != 0) {
-      throw Exception('Failed to btConnect.');
+      debugPrint('Failed to btConnect.');
     }
+    return ret;
   }
 
-  static void btDisconnect(String remoteAddress) {
-    if (!initialized) return;
-
+  static int btDisconnect(String remoteAddress) {
     final int ret = using((Arena arena) {
       final int ret = tizen.bt_hid_host_disconnect(
         remoteAddress.toNativeChar(allocator: arena),
@@ -106,5 +98,6 @@ class TizenBluetoothHidHostManager {
         'Failed to bt_hid_host_connect. Error code: ${tizen.get_error_message(ret).toDartString()}',
       );
     }
+    return ret;
   }
 }

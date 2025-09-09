@@ -9,7 +9,7 @@ class BtTestPage extends StatefulWidget {
 
 class _BtTestPageState extends State<BtTestPage> {
 
-  BtModel _model = BtModel.fromMock();
+  BtModel _model = BtModel.init();
 
   @override
   Widget build(BuildContext context) {
@@ -34,18 +34,18 @@ class _BtTestPageState extends State<BtTestPage> {
             },
             child: Text('init')
           ),
-          ElevatedButton(
-            onPressed: () {
-              _model.setCallback();
-            },
-            child: Text('setcallback')
-          ),
-          ElevatedButton(
-            onPressed: () {
-              _model.unsetCallback();
-            },
-            child: Text('unsetCallback')
-          ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     _model.setCallback();
+          //   },
+          //   child: Text('setcallback')
+          // ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     _model.unsetCallback();
+          //   },
+          //   child: Text('unsetCallback')
+          // ),
           ElevatedButton(
             onPressed: () {
               try {

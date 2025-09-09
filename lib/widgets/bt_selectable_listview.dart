@@ -74,6 +74,7 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
   }
 
   Future<int> _scrollToSelected(int duration, int fallbackSelection) async {
+    debugPrint('_scrollToSelected, fallbackSelection=$fallbackSelection, _itemKeys[_selectedIndex].currentContext==null?${_itemKeys[_selectedIndex].currentContext == null}');
     if (_itemKeys[_selectedIndex].currentContext != null) {
       int current = _selectedIndex;
       final RenderBox box = _itemKeys[_selectedIndex].currentContext!.findRenderObject() as RenderBox;
@@ -97,12 +98,24 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
 
   void onAction(int index) {
     if(index == 1) {
-      setState(() {
-        _isEnabled = !_isEnabled;  
-      });
+      final isBusy = Provider.of<BtModel>(context, listen: false).isBusy;
+      debugPrint('onAction : isBusy=$isBusy, _isEnabled=$_isEnabled');
+      if(!isBusy) {
+        setState(() {
+          _isEnabled = !_isEnabled;
+        });
+      }
     }
 
     widget.onAction?.call(index);
+  }
+
+  void forceScrollTo(int index) {
+    _controller.jumpTo((index - 3) * 65);
+    WidgetsBinding.instance.addPostFrameCallback((_) async
+    {
+      await selectTo(index);
+    });
   }
 
   Future<int> selectTo(int index) {
@@ -158,8 +171,6 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('bt_selectable_listview build');
-
     _items = Provider.of<BtModel>(context).data;
     
     _itemCount = _items.length;
@@ -168,9 +179,6 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
       _items.length,
       (index) => GlobalKey(),
     );
-
-    debugPrint('bt_selectable_listview build : _itemCount=$_itemCount');
-
 
     return ScrollConfiguration(
       behavior: ScrollBehavior().copyWith(
@@ -218,14 +226,8 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
                   isON: _isEnabled,
                   isFocused: Focus.of(context).hasFocus && index == selectedIndex,
                   onStateChanged: (state) {
-                    // debugPrint('#### onStateChanged=$state, bt call');
                     if(_isEnabled != state) {
                       onAction(index);
-                      
-                      // setState(() {
-                      //   _isEnabled = state;
-                      // });
-                      // widget.onAction?.call(index);
                     }
                   },
                 )
@@ -258,7 +260,7 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
   }
 }
 
-class DeviceListMenuItem extends StatelessWidget {
+class DeviceListMenuItem extends StatefulWidget {
   const DeviceListMenuItem({super.key, this.name = '', required this.isON, required this.isFocused, this.onStateChanged});
 
   final String name;
@@ -266,22 +268,28 @@ class DeviceListMenuItem extends StatelessWidget {
   final bool isFocused;
   final void Function(bool)? onStateChanged;
 
+  @override
+  State<DeviceListMenuItem> createState() => _DeviceListMenuItemState();
+}
 
+class _DeviceListMenuItemState extends State<DeviceListMenuItem> {
   final double titleFontSize = 15;
   final double subtitleFontSize = 11;
   final double innerPadding = 20;
   final double itemHeight = 65;
   final double iconSize = 25;
-  
+
   @override
   Widget build(BuildContext context) {
+    final isOperationRunning = context.watch<BtModel>().isBusy;
+
     return SizedBox(
       height: itemHeight,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color:
-              isFocused
+              widget.isFocused
                   ? Theme.of(context).colorScheme.tertiary
                   : Colors.transparent,
         ),
@@ -293,11 +301,11 @@ class DeviceListMenuItem extends StatelessWidget {
             spacing: 15,//innerPadding * 0.75, // between icon-text spacing
             children: [
               Text(
-                name,
+                widget.name,
                 style: TextStyle(
                   fontSize: titleFontSize,
                   color:
-                      isFocused
+                      widget.isFocused
                           ? Theme.of(context).colorScheme.onTertiary
                           : Theme.of(context).colorScheme.tertiary,
                 ),
@@ -307,12 +315,25 @@ class DeviceListMenuItem extends StatelessWidget {
                 data: Theme.of(
                   context,
                 ).copyWith(useMaterial3: false),
-                child: Switch(
-                  value: isON,
-                  activeColor: Colors.blue,
-                  onChanged: (value) {
-                    onStateChanged?.call(value);
-                  }
+                child: Stack(
+                  children: [
+                    if(isOperationRunning)
+                    SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: CircularProgressIndicator(
+                        color: Colors.blue.withAlphaF(0.5),
+                      )
+                    ),
+                    if(!isOperationRunning)
+                    Switch(
+                      value: widget.isON,
+                      activeColor: Colors.blue,
+                      onChanged: (value) {
+                        widget.onStateChanged?.call(value);
+                      }
+                    ),
+                  ]
                 )
               ),
             ],
