@@ -2,7 +2,7 @@
 
 <manifest package="org.tizen.tizen-fs" version="1.0.0" api-version="9.0" xmlns="http://tizen.org/ns/packages">
     <profile name="common"/>
-    <ui-application appid="org.tizen.tizen-fs" exec="runner" type="cpp" multiple="false" nodisplay="false" taskmanage="true" hw-acceleration="on">
+    <ui-application appid="org.tizen.tizen-fs" exec="Runner.dll" type="dotnet" multiple="false" nodisplay="false" taskmanage="true">
         <label>tizen_fs</label>
         <icon>ic_launcher.png</icon>
         <metadata key="http://tizen.org/metadata/prefer_dotnet_aot" value="true"/>
