@@ -43,15 +43,33 @@ class WifiProvider with ChangeNotifier {
   WifiAP? _connectedAp = null;
   WifiAP? get connectedAp => _connectedAp;
 
+  bool? _lastConnectionResult;
+  bool? get lastConnectionResult => _lastConnectionResult;
+
+  bool? _lastDisconnectionResult;
+  bool? get lastDisconnectionResult => _lastDisconnectionResult;
+
   WifiProvider() {
     _wifiManager = WifiManager();
     _setupCallbacks();
   }
 
+  void _allConditionReset() {
+    _connectedAp = null;
+    _isActivating = false;
+    _isConnecting = false;
+    _isDisconnecting = false;
+    _isDeactivating = false;
+    _isScanning = false;
+    _lastConnectionResult = null;
+    _lastDisconnectionResult = null;
+  }
+
   void _setupCallbacks() {
     WifiManager.onActivated = (int result) async {
       print("@ onActivated[${result}]");
-      _isActivating = false;
+      _allConditionReset();
+
       notifyListeners();
       if (result == 0) {
         print("@ onActivated success");
@@ -79,9 +97,10 @@ class WifiProvider with ChangeNotifier {
 
     WifiManager.onConnected = (int result) {
       _isConnecting = false;
-      print("onConnected[${result}]");
+      _lastConnectionResult = (result == 0 || result == -30277629);
+      print("onConnected[${result}] result=[${_lastConnectionResult}]");
       notifyListeners();
-      if (result == 0 || result == -30277629) {
+      if (_lastConnectionResult == true) {
         print("onConnected success");
         _updateApListAndCurrentAp();
       }
@@ -89,9 +108,10 @@ class WifiProvider with ChangeNotifier {
 
     WifiManager.onDisconnected = (int result) {
       _isDisconnecting = false;
-      print("onDisconnected[${result}]");
+      _lastDisconnectionResult = (result == 0);
+      print("onDisconnected[${result}] result=[${_lastDisconnectionResult}]");
       notifyListeners();
-      if (result == 0) {
+      if (_lastDisconnectionResult == true) {
         print("onDisconnected success");
         _connectedAp = null;
         _updateApListAndCurrentAp();
@@ -325,6 +345,8 @@ class WifiProvider with ChangeNotifier {
   Future<void> disconnectAp(WifiAP ap) async {
     if (ap == null) {
       print("disconnectAp param ap null");
+      _lastDisconnectionResult = false;
+      notifyListeners();
       return;
     }
     if (_isDisconnecting) {
@@ -332,7 +354,10 @@ class WifiProvider with ChangeNotifier {
       return;
     }
     if (_connectedAp?.essid != ap.essid) {
-      print("disconnectAp essid not same");
+      print("disconnectAp essid not same - already disconnected or different AP");
+      _lastDisconnectionResult = true;
+      _lastConnectionResult = false;
+      notifyListeners();
       return; // this ap is not connected now
     }
 
@@ -345,6 +370,7 @@ class WifiProvider with ChangeNotifier {
     } catch (e) {
       print("disconnectAp err");
       _isDisconnecting = false;
+      _lastDisconnectionResult = false;
       notifyListeners();
     }
   }

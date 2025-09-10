@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:tizen_fs/providers/wifi_provider.dart';
+import 'package:tizen_fs/settings/wifi_result_popup.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 
 class WifiPasswordPopup extends StatefulWidget {
@@ -60,7 +62,6 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
         });
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.enter) {
-        print("_onKeyEvent enter[${_selected}]");
         if (_selected == 1) {
           _handleConnect();
         } else if (_selected == 2) {
@@ -68,8 +69,6 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
         } else if (_selected == 3) {
           Navigator.of(context).pop();
         }
-        return KeyEventResult.handled;
-      } else if (event.physicalKey == PhysicalKeyboardKey.escape) {
         return KeyEventResult.handled;
       }
     }
@@ -97,13 +96,66 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
   void _handleConnect() {
     print("_handleConnect");
     widget.onConnect(_passwordController.text);
-    Navigator.of(context).pop();
+    _waitForConnectionResultAndShowPopup('connect');
   }
 
   void _handleDisconnect() {
     print("_handleDisconnect");
     widget.onDisconnect();
+    _waitForConnectionResultAndShowPopup('disconnect');
+  }
+
+  void _waitForConnectionResultAndShowPopup(String resultType) {
+    print("_waitForConnectionResultAndShowPopup[${resultType}]");
+    final wifiProvider = Provider.of<WifiProvider>(context, listen: false);
+    void listener() {
+      bool? result;
+      if (resultType == 'connect') {
+        result = wifiProvider.lastConnectionResult;
+      } else {
+        result = wifiProvider.lastDisconnectionResult;
+      }
+      if (result != null) {
+        wifiProvider.removeListener(listener);
+        _showResultPopup(resultType, result);
+      }
+    }
+    wifiProvider.addListener(listener);
+    Future.delayed(Duration(seconds: 5), () {
+      //need to case disconnected+connect
+      wifiProvider.removeListener(listener);
+      if (resultType == 'connect' && wifiProvider.lastConnectionResult == null) {
+        _showResultPopup(resultType, false);
+      } else if (resultType == 'disconnect' && wifiProvider.lastDisconnectionResult == null) {
+        _showResultPopup(resultType, false);
+      }
+    });
+  }
+
+  void _showResultPopup(String resultType, bool success) {
+    print("_showResultPopup[${resultType}] success=[${success}]");
     Navigator.of(context).pop();
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierLabel: "Close",
+      barrierColor: Colors.transparent,
+      transitionDuration: $style.times.pageTransition,
+      pageBuilder: (
+        BuildContext buildContext,
+        Animation animation,
+        Animation secondaryAnimation,
+      ) {
+        return WifiResultPopup(
+          ap: widget.ap,
+          resultType: resultType,
+          success: success,
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+    );
   }
 
   void _select(int index) {
@@ -118,124 +170,102 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
       body: Focus(
         autofocus: true,
         onKeyEvent: _onKeyEvent,
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: $style.gradients.generateLinearGradient(
-              Colors.black,
-              Colors.blue.shade900,
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(80, 80, 0, 0),
+              child: Container(
+                width: 500,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 20,
+                  children: [
+                    Container(
+                      child: Text(
+                        'Wi-Fi',
+                        style: TextStyle(fontSize: 15, color: Colors.white70),
+                      ),
+                    ),
+                    Container(
+                      child: Text(
+                        '${widget.ap.essid}',
+                        style: TextStyle(fontSize: 30, color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(80, 80, 0, 0),
-                child: Container(
-                  width: 500,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 20,
-                    children: [
-                      Container(
-                        child: Text(
-                          'Wi-Fi',
-                          style: TextStyle(fontSize: 15, color: Colors.white70),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 120, 100, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  spacing: 20,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color:
+                            _selected == 0
+                                ? Colors.white.withOpacity(0.2)
+                                : Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color:
+                              _selected == 0
+                                  ? Color(0xF04285F4)
+                                  : Colors.transparent,
+                          width: 2,
                         ),
                       ),
-                      Container(
-                        child: Text(
-                          '${widget.ap.essid}',
-                          style: TextStyle(fontSize: 30, color: Colors.white),
+                      child: TextField(
+                        controller: _passwordController,
+                        focusNode: _passwordFocusNode,
+                        obscureText: true,
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 12,
+                          ),
+                          hintText: 'Password',
+                          hintStyle: TextStyle(color: Colors.white54),
                         ),
                       ),
-                      // Container(
-                      //   child: Text(
-                      //     'WPA',
-                      //     style: TextStyle(fontSize: 18, color: Colors.white),
-                      //   ),
-                      // ),
-                      // Container(
-                      //   child: Text(
-                      //     '${widget.ap.frequency} Hz',
-                      //     style: TextStyle(fontSize: 15, color: Colors.white70),
-                      //   ),
-                      // ),
-                    ],
-                  ),
+                    ),
+                    PopupButton(
+                      focusNode: _connectFocusNode,
+                      text: 'Connect',
+                      isSelected: _selected == 1,
+                      onPressed: () {
+                        _select(1);
+                        _handleConnect();
+                      },
+                    ),
+                    PopupButton(
+                      focusNode: _disconnectFocusNode,
+                      text: 'Disconnect',
+                      isSelected: _selected == 2,
+                      onPressed: () {
+                        _select(2);
+                        _handleDisconnect();
+                      },
+                    ),
+                    PopupButton(
+                      focusNode: _cancelFocusNode,
+                      text: 'Cancel',
+                      isSelected: _selected == 3,
+                      onPressed: () {
+                        _select(3);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
                 ),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 120, 100, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    spacing: 20,
-                    children: [
-                      //password, can not re-open ime
-                      Container(
-                        decoration: BoxDecoration(
-                          color: _selected == 0
-                              ? Colors.white.withOpacity(0.2)
-                              : Colors.white.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: _selected == 0
-                                ? Color(0xF04285F4)
-                                : Colors.transparent,
-                            width: 2,
-                          ),
-                        ),
-                        child: TextField(
-                          controller: _passwordController,
-                          focusNode: _passwordFocusNode,
-                          obscureText: true,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                          ),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 15,
-                              vertical: 12,
-                            ),
-                            hintText: 'Password',
-                            hintStyle: TextStyle(color: Colors.white54),
-                          ),
-                        ),
-                      ),
-                      PopupButton(
-                        focusNode: _connectFocusNode,
-                        text: 'Connect',
-                        isSelected: _selected == 1,
-                        onPressed: () {
-                          _select(1);
-                          _handleConnect();
-                        },
-                      ),
-                      PopupButton(
-                        focusNode: _disconnectFocusNode,
-                        text: 'Disconnect',
-                        isSelected: _selected == 2,
-                        onPressed: () {
-                          _select(2);
-                          _handleConnect();
-                        },
-                      ),
-                      PopupButton(
-                        focusNode: _cancelFocusNode,
-                        text: 'Cancel',
-                        isSelected: _selected == 3,
-                        onPressed: () {
-                          _select(3);
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -281,7 +311,10 @@ class PopupButton extends StatelessWidget {
                         : Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30,
+                  vertical: 5,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   spacing: 15,
