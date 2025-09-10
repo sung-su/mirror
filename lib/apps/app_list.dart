@@ -29,7 +29,7 @@ class AppListState extends State<AppList> {
       GlobalKey<SelectableGridViewState>();
 
   final double _itemWidth = 150;
-  final double _itemRatio = 16 / 9;
+  final double _itemRatio = 16 / 11;
   final double _width = 960;
 
   final double _minimumHeight = 130;
@@ -153,6 +153,7 @@ class AppListState extends State<AppList> {
                       key: key,
                       width: _itemWidth,
                       imageUrl: '',
+                      title: apps[index].name,
                       content: AppTile(app: apps[index]),
                       isSelected: index == selectedIndex,
                       onRequestSelect: () {
