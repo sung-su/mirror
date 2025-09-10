@@ -246,6 +246,7 @@ class CategorySelectableListViewState
                   // listKey.currentState?.selectTo(index);
                   selectTo(index);
                   Focus.of(context).requestFocus();
+                  onAction(index);
                 },
                 child: DeviceListItem(
                   item: _items[index].item as BtDevice,
