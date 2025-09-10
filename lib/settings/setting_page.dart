@@ -9,19 +9,22 @@ class SettingPage extends StatefulWidget {
     super.key,
     required this.node,
     required this.isEnabled,
-    required this.onSelectionChanged,
+    required this.onItemFocused,
+    required this.onItemSelected,
   });
 
   final PageNode? node;
   final bool isEnabled;
-  final Function(int)? onSelectionChanged;
+  final Function(int)? onItemFocused;
+  final Function(int)? onItemSelected;
 
   @override
   State<SettingPage> createState() => SettingPageState();
 }
 
 class SettingPageState extends State<SettingPage>
-  with AutomaticKeepAliveClientMixin implements SettingPageInterface{
+    with AutomaticKeepAliveClientMixin
+    implements SettingPageInterface {
   GlobalKey<SettingListViewState> _listKey = GlobalKey<SettingListViewState>();
 
   double _opacity = 0;
@@ -81,8 +84,8 @@ class SettingPageState extends State<SettingPage>
         widget.node!,
         widget.isEnabled,
         (selected) {
-          widget.onSelectionChanged?.call(selected);
-        }
+          widget.onItemFocused?.call(selected);
+        },
       );
 
       return Container(
@@ -128,7 +131,10 @@ class SettingPageState extends State<SettingPage>
           children: [
             //title
             SizedBox(
-              height: neededHeight + 50 < titleHeight ? titleHeight : titleHeight + neededHeight,
+              height:
+                  neededHeight + 50 < titleHeight
+                      ? titleHeight
+                      : titleHeight + neededHeight,
               width: 400,
               child: AnimatedPadding(
                 duration: $style.times.med,
@@ -154,16 +160,22 @@ class SettingPageState extends State<SettingPage>
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: AnimatedPadding(
-                  duration: $style.times.med,
+                    duration: $style.times.med,
                     padding: // item left/right padding
                         widget.isEnabled
-                            ? const EdgeInsets.symmetric(horizontal: 80, vertical: 10)
+                            ? const EdgeInsets.symmetric(
+                              horizontal: 80,
+                              vertical: 10,
+                            )
                             : const EdgeInsets.symmetric(horizontal: 40),
                     child: SettingListView(
                       key: _listKey,
                       node: widget.node!,
-                      onSelectionChanged: (selected) {
-                        widget.onSelectionChanged?.call(selected);
+                      onItemFocused: (focused) {
+                        widget.onItemFocused?.call(focused);
+                      },
+                      onItemSelected: (selected) {
+                        widget.onItemSelected?.call(selected);
                       },
                     ),
                   ),

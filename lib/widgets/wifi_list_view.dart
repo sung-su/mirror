@@ -127,7 +127,7 @@ class WifiListViewState extends State<WifiListView>
             alignment: 0.5,
             itemCount: itemCount,
             scrollDirection: Axis.vertical,
-            onSelectionChanged: (selected) {
+            onItemFocused: (selected) {
               _selected = selected;
             },
             itemBuilder: (context, index, selectedIndex, key) {

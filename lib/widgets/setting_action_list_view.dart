@@ -74,7 +74,7 @@ class SettingActionListViewState extends State<SettingActionListView>
         alignment: 0.5,
         itemCount: widget.node.children.length,
         scrollDirection: Axis.vertical,
-        onSelectionChanged: (selected) {
+        onItemFocused: (selected) {
           _selected = selected;
           widget.onSelectionChanged?.call(selected);
         },

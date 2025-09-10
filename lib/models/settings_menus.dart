@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/page_node.dart';
 import 'package:tizen_fs/settings/bluetooth_page.dart';
@@ -17,10 +16,10 @@ class SettingPages {
 
   PageNode getRoot() => _root;
   PageNode _buildPageTree() {
-    PageNode settings = PageNode (
+    PageNode settings = PageNode(
       id: 'settings',
       title: 'Settings',
-      children: []
+      children: [],
     );
 
     settings.children.add(
@@ -38,21 +37,20 @@ class SettingPages {
                 id: 'profile_tizen_active',
                 title: 'Active',
                 isEnd: true,
-                builder: (context, node, isEnabled, onItemSelected) => ProfileActivePage(node: node, isEnabled: isEnabled),
+                builder:
+                    (context, node, isEnabled, onItemSelected) =>
+                        ProfileActivePage(node: node, isEnabled: isEnabled),
               ),
               PageNode(
                 id: 'profile_tizen_remove',
                 title: 'Remove',
                 isEnd: true,
               ),
-            ]
+            ],
           ),
-          PageNode(
-            id: 'profile_add',
-            title: 'Add a profile',
-          ),
+          PageNode(id: 'profile_add', title: 'Add a profile'),
         ],
-      )
+      ),
     );
 
     settings.children.add(
@@ -60,12 +58,19 @@ class SettingPages {
         id: 'about_device',
         icon: Icons.info_outline,
         title: 'About Device',
-        builder: (context, node, isEnabled, onItemSelected) => AboutDevicePage(node: node, isEnabled: isEnabled, onSelectionChanged: onItemSelected),
+        builder:
+            (context, node, isEnabled, onItemSelected) => AboutDevicePage(
+              node: node,
+              isEnabled: isEnabled,
+              onSelectionChanged: onItemSelected,
+            ),
         children: [
           PageNode(
             id: 'about_device_device_info',
             title: 'Device info',
-            builder: (context, node, isEnabled, onItemSelected) => DeviceInfoPage(node: node, isEnabled: isEnabled),
+            builder:
+                (context, node, isEnabled, onItemSelected) =>
+                    DeviceInfoPage(node: node, isEnabled: isEnabled),
           ),
           PageNode(
             id: 'about_device_opensource_license',
@@ -80,15 +85,16 @@ class SettingPages {
               PageNode(
                 id: 'about_device_certificates_AAA',
                 title: 'AAA certificates',
-                builder: (context, node, isEnabled, onItemSelected) => EndPage(),
-
+                builder:
+                    (context, node, isEnabled, onItemSelected) => EndPage(),
               ),
               PageNode(
                 id: 'about_device_certificates_ANF',
                 title: 'ANF certificates',
-                builder: (context, node, isEnabled, onItemSelected) => EndPage(),
+                builder:
+                    (context, node, isEnabled, onItemSelected) => EndPage(),
               ),
-            ]
+            ],
           ),
         ],
       ),
@@ -99,7 +105,16 @@ class SettingPages {
         id: 'wifi',
         icon: Icons.wifi_outlined,
         title: 'Wi-Fi',
-        builder: (context, node, isEnabled, onItemSelected) => WifiPage(node: node, isEnabled: isEnabled, onSelectionChanged: onItemSelected,),
+        builder:
+            (context, node, isEnabled, onItemSelected) => WifiPage(
+              node: node,
+              isEnabled: isEnabled,
+              onSelectionChanged: onItemSelected,
+            ),
+        children: [
+          // to make empty area for custom page
+          PageNode(id: 'wi_fi_empty', title: 'wifi ', isEnd: true),
+        ],
       ),
     );
 
@@ -108,40 +123,30 @@ class SettingPages {
         id: 'bluetooth',
         icon: Icons.bluetooth_outlined,
         title: 'Bluetooth',
-        builder: (context, node, isEnabled, onItemSelected) => BluetoothPage(node: node, isEnabled: isEnabled, onSelectionChanged: onItemSelected),
+        builder:
+            (context, node, isEnabled, onItemSelected) => BluetoothPage(
+              node: node,
+              isEnabled: isEnabled,
+              onSelectionChanged: onItemSelected,
+            ),
         // isEnd: true,
         children: [
-          PageNode(
-            id: 'bluetooth_menu1',
-            title: 'Bluetooth 1 ',
-            isEnd: true,
-            // builder: (context, node, isEnabled, onItemSelected) => BluetoothActivePage(node: node, isEnabled: isEnabled),
-          ),
+          // to make empty area for custom page
+          PageNode(id: 'bt_empty', title: 'Bluetooth 1 ', isEnd: true),
         ],
       ),
     );
 
-    settings.children.add(     PageNode(
+    settings.children.add(
+      PageNode(
         id: 'display',
         icon: Icons.light_mode_outlined,
         title: 'Display',
         children: [
-          PageNode(
-            id: 'display_brigetness',
-            title: 'Brightness',
-          ),
-          PageNode(
-            id: 'display_font_size',
-            title: 'Font size',
-          ),
-          PageNode(
-            id: 'display_font_type',
-            title: 'Font type',
-          ),
-          PageNode(
-            id: 'display_screen_timeout',
-            title: 'Screen timeout',
-          ),
+          PageNode(id: 'display_brigetness', title: 'Brightness'),
+          PageNode(id: 'display_font_size', title: 'Font size'),
+          PageNode(id: 'display_font_type', title: 'Font type'),
+          PageNode(id: 'display_screen_timeout', title: 'Screen timeout'),
         ],
       ),
     );
@@ -152,26 +157,11 @@ class SettingPages {
         icon: Icons.today_outlined,
         title: 'Date & Time',
         children: [
-          PageNode(
-            id: 'date_time_auto_update',
-            title: 'Auto update',
-          ),
-          PageNode(
-            id: 'date_time_set_date',
-            title: 'Set date',
-          ),
-          PageNode(
-            id: 'date_time_set_time',
-            title: 'Set time',
-          ),
-          PageNode(
-            id: 'date_time_time_zone',
-            title: 'Time zone',
-          ),
-          PageNode(
-            id: 'date_time_24_hour_clock',
-            title: '24 hour clock',
-          ),
+          PageNode(id: 'date_time_auto_update', title: 'Auto update'),
+          PageNode(id: 'date_time_set_date', title: 'Set date'),
+          PageNode(id: 'date_time_set_time', title: 'Set time'),
+          PageNode(id: 'date_time_time_zone', title: 'Time zone'),
+          PageNode(id: 'date_time_24_hour_clock', title: '24 hour clock'),
         ],
       ),
     );
@@ -182,22 +172,10 @@ class SettingPages {
         icon: Icons.language_outlined,
         title: 'Language & Input',
         children: [
-          PageNode(
-            id: 'language_input_display_language',
-            title: 'Language',
-          ),
-          PageNode(
-            id: 'language_input_keyboard',
-            title: 'Keyboard',
-          ),
-          PageNode(
-            id: 'language_input_autofill_service',
-            title: 'Autofill',
-          ),
-          PageNode(
-            id: 'language_input_voice_control',
-            title: 'Voice control',
-          ),
+          PageNode(id: 'language_input_display_language', title: 'Language'),
+          PageNode(id: 'language_input_keyboard', title: 'Keyboard'),
+          PageNode(id: 'language_input_autofill_service', title: 'Autofill'),
+          PageNode(id: 'language_input_voice_control', title: 'Voice control'),
           // PageNode(
           //   id: 'language_input_tts',
           //   title: 'TTS (TBD)',
@@ -234,18 +212,9 @@ class SettingPages {
         icon: Icons.archive_outlined,
         title: 'Storage',
         children: [
-          PageNode(
-            id: 'storage_internal',
-            title: 'Internal',
-          ),
-          PageNode(
-            id: 'storage_external',
-            title: 'External',
-          ),
-          PageNode(
-            id: 'storage_default_settings',
-            title: 'Default settings',
-          ),
+          PageNode(id: 'storage_internal', title: 'Internal'),
+          PageNode(id: 'storage_external', title: 'External'),
+          PageNode(id: 'storage_default_settings', title: 'Default settings'),
         ],
       ),
     );

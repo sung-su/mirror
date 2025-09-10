@@ -147,8 +147,14 @@ class SettingsState extends State<Settings> {
                   key: _itemKeys[index],
                   node: _pages[index]!,
                   isEnabled: index <= _current,
-                  onSelectionChanged: (selected) {
+                  onItemFocused: (focused) {
+                    _updatePages(_pages[index], focused);
+                  },
+                  onItemSelected: (selected) {
                     _updatePages(_pages[index], selected);
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _selectTo(index + 1);
+                    });
                   },
                 ),
               );

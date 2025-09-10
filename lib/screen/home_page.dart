@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage> {
             await widget.scrollController.animateTo(
               360,
               duration: $style.times.med,
-              curve: Curves.easeOutSine,
+              curve: Curves.easeOutCubic,
             );
             _isScrolling = false;
             _footerKey.currentState?.hide();
@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
             await widget.scrollController.animateTo(
               0,
               duration: $style.times.med,
-              curve: Curves.easeOutSine,
+              curve: Curves.easeOutCubic,
             );
             _isScrolling = false;
             _footerKey.currentState?.show();
@@ -109,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                   await widget.scrollController.animateTo(
                     0,
                     duration: $style.times.med,
-                    curve: Curves.easeOutSine,
+                    curve: Curves.easeOutCubic,
                   );
                   _isScrolling = false;
                   _footerKey.currentState?.show();
