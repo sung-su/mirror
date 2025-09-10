@@ -5,18 +5,24 @@ import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/focus_selectable.dart';
 import 'package:tizen_fs/widgets/selectable_listview.dart';
 
-class SettingListView extends StatefulWidget{
-  const SettingListView({super.key, required this.node, this.onSelectionChanged});
+class SettingListView extends StatefulWidget {
+  const SettingListView({
+    super.key,
+    required this.node,
+    this.onItemFocused,
+    this.onItemSelected,
+  });
 
   final PageNode node;
-  final Function(int)? onSelectionChanged;
+  final Function(int)? onItemFocused;
+  final Function(int)? onItemSelected;
 
   @override
   State<SettingListView> createState() => SettingListViewState();
 }
 
-class SettingListViewState extends State<SettingListView> with FocusSelectable<SettingListView> {
-
+class SettingListViewState extends State<SettingListView>
+    with FocusSelectable<SettingListView> {
   int _selected = 0;
 
   @protected
@@ -55,32 +61,37 @@ class SettingListViewState extends State<SettingListView> with FocusSelectable<S
         alignment: 0.5,
         itemCount: widget.node.children.length,
         scrollDirection: Axis.vertical,
-        onSelectionChanged: (selected){
-          widget.onSelectionChanged?.call(selected);
+        onItemFocused: (focused) {
+          widget.onItemFocused?.call(focused);
+        },
+        onItemSelected: (selected) {
+          widget.onItemSelected?.call(selected);
         },
         itemBuilder: (context, index, selectedIndex, key) {
           return AnimatedScale(
             key: key,
-            scale: Focus.of(context).hasFocus && index == selectedIndex ? 1.0 : .9,
+            scale:
+                Focus.of(context).hasFocus && index == selectedIndex ? 1.0 : .9,
             duration: $style.times.med,
             curve: Curves.easeInOut,
             child: GestureDetector(
               onTap: () {
-                listKey.currentState?.selectTo(index);
-                Focus.of(context).requestFocus();
+                widget.onItemSelected?.call(index);
+                listKey.currentState?.selectedIndex = index;
               },
               child: ItemView(
                 node: widget.node.children[index],
-                isFocused: Focus.of(context).hasFocus && index == selectedIndex
-                )
+                isFocused: Focus.of(context).hasFocus && index == selectedIndex,
+              ),
             ),
           );
-        }),
+        },
+      ),
     );
   }
 }
 
-class ItemView extends StatelessWidget{
+class ItemView extends StatelessWidget {
   const ItemView({super.key, required this.node, required this.isFocused});
 
   final PageNode node;
@@ -95,7 +106,7 @@ class ItemView extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: node.description == null ? itemHeight : 82,//itemHeight * 1.25,
+      height: node.description == null ? itemHeight : 82, //itemHeight * 1.25,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -109,25 +120,24 @@ class ItemView extends StatelessWidget{
               EdgeInsets.symmetric(horizontal: innerPadding),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            spacing: 15,//innerPadding * 0.75, // between icon-text spacing
+            spacing: 15, //innerPadding * 0.75, // between icon-text spacing
             children: [
               if (node.icon != null)
                 Container(
-                  width: 43,//iconSize * 1.75,
-                  height: 43,//iconSize * 1.75,
+                  width: 43, //iconSize * 1.75,
+                  height: 43, //iconSize * 1.75,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isFocused
-                        ? Color(0xF04285F4).withAlphaF(0.2)
-                        : Color(0xF0263041),
+                    color:
+                        isFocused
+                            ? Color(0xF04285F4).withAlphaF(0.2)
+                            : Color(0xF0263041),
                   ),
                   child: Icon(
-                      node.icon,
-                      size: iconSize,
-                      color: isFocused
-                          ? Color(0xF04285F4)
-                          : Color(0xF0AEB2B9),
-                    ),
+                    node.icon,
+                    size: iconSize,
+                    color: isFocused ? Color(0xF04285F4) : Color(0xF0AEB2B9),
+                  ),
                 ),
               // item text
               Column(
@@ -145,16 +155,16 @@ class ItemView extends StatelessWidget{
                     ),
                   ),
                   if (node.description != null)
-                  Padding(
-                    padding: EdgeInsets.only(left: 10),
-                    child: Text(
-                      node.description!,
-                      style: TextStyle(
-                        fontSize: subtitleFontSize,
-                        color:Color(0xFF979AA0),
+                    Padding(
+                      padding: EdgeInsets.only(left: 10),
+                      child: Text(
+                        node.description!,
+                        style: TextStyle(
+                          fontSize: subtitleFontSize,
+                          color: Color(0xFF979AA0),
+                        ),
                       ),
                     ),
-                  )
                 ],
               ),
             ],

@@ -88,10 +88,6 @@ class WifiPageState extends State<WifiPage> {
               child: WifiListView(
                 key: _listKey,
                 isEnabled: widget.isEnabled,
-                onSelectionChanged: (selected) {
-                  print("@ selected[${selected}]");
-                  widget.onSelectionChanged?.call(selected);
-                },
               ),
             ),
           ),

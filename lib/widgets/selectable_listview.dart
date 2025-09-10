@@ -9,18 +9,21 @@ class SelectableListView extends StatefulWidget {
     required this.itemCount,
     required this.itemBuilder,
     this.padding,
-    this.onSelectionChanged,
+    this.onItemFocused,
+    this.onItemSelected,
     this.alignment,
     this.scrollDirection,
     this.scrollOffset = 300,
   });
 
   final int itemCount;
-  final Widget Function(BuildContext, int index, int selectedIndex, Key key) itemBuilder;
+  final Widget Function(BuildContext, int index, int selectedIndex, Key key)
+  itemBuilder;
   final EdgeInsets? padding;
   final double? alignment;
   final Axis? scrollDirection;
-  final Function(int)? onSelectionChanged;
+  final Function(int)? onItemFocused;
+  final Function(int)? onItemSelected;
   final double scrollOffset;
 
   @override
@@ -37,27 +40,21 @@ class SelectableListViewState extends State<SelectableListView> {
   @override
   void initState() {
     super.initState();
-    
+
     _controller = ScrollController();
 
-    if(widget.scrollDirection != null) {
+    if (widget.scrollDirection != null) {
       _scrollDirection = widget.scrollDirection!;
     }
 
-    _itemKeys = List.generate(
-      widget.itemCount,
-      (index) => GlobalKey(),
-    );
+    _itemKeys = List.generate(widget.itemCount, (index) => GlobalKey());
   }
 
   @override
   void didUpdateWidget(covariant SelectableListView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.itemCount != widget.itemCount) {
-      _itemKeys = List.generate(
-        widget.itemCount,
-        (index) => GlobalKey(),
-      );
+      _itemKeys = List.generate(widget.itemCount, (index) => GlobalKey());
     }
   }
 
@@ -81,13 +78,17 @@ class SelectableListViewState extends State<SelectableListView> {
   Future<int> _scrollToSelected(int duration, int fallbackSelection) async {
     if (_itemKeys[_selectedIndex].currentContext != null) {
       int current = _selectedIndex;
-      final RenderBox box = _itemKeys[_selectedIndex].currentContext!.findRenderObject() as RenderBox;
+      final RenderBox box =
+          _itemKeys[_selectedIndex].currentContext!.findRenderObject()
+              as RenderBox;
       final Offset position = box.localToGlobal(Offset.zero);
-      if(position.dy.isNaN) return _selectedIndex;
+      if (position.dy.isNaN) return _selectedIndex;
 
       setState(() {});
       final double offset = widget.scrollOffset;
-      widget.onSelectionChanged?.call(_selectedIndex);
+
+      widget.onItemFocused?.call(_selectedIndex);
+
       await _controller.animateTo(
         position.dy + _controller.offset - offset,
         duration: $style.times.med,
@@ -135,10 +136,7 @@ class SelectableListViewState extends State<SelectableListView> {
       behavior: ScrollBehavior().copyWith(
         scrollbars: false,
         overscroll: false,
-        dragDevices: {
-          PointerDeviceKind.mouse,
-          PointerDeviceKind.touch
-        }
+        dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch},
       ),
       child: ListView.builder(
         padding: widget.padding,

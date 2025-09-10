@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/locator.dart';
@@ -25,7 +24,8 @@ class BluetoothPage extends StatefulWidget {
 }
 
 class BluetoothPageState extends State<BluetoothPage> {
-  GlobalKey<BtDeviceListViewState> _listKey = GlobalKey<BtDeviceListViewState>();
+  GlobalKey<BtDeviceListViewState> _listKey =
+      GlobalKey<BtDeviceListViewState>();
 
   @override
   void initState() {
@@ -93,18 +93,20 @@ class BluetoothPageState extends State<BluetoothPage> {
             child: Align(
               alignment: Alignment.topLeft,
               child: AnimatedPadding(
-              duration: $style.times.med,
+                duration: $style.times.med,
                 padding: // item left/right padding
                     widget.isEnabled
-                        ? const EdgeInsets.symmetric(horizontal: 80, vertical: 10)
+                        ? const EdgeInsets.symmetric(
+                          horizontal: 80,
+                          vertical: 10,
+                        )
                         : const EdgeInsets.symmetric(horizontal: 40),
                 child: BtDeviceListView(
                   key: _listKey,
                   onAction: (index) {
                     if (index == 1) {
                       Provider.of<BtModel>(context, listen: false).toggle();
-                    }
-                    else {
+                    } else {
                       _showFullScreenPopup(context, index);
                     }
                   },
@@ -116,9 +118,12 @@ class BluetoothPageState extends State<BluetoothPage> {
     );
   }
 
-  void _showFullScreenPopup (BuildContext context, int index) {
-    final btDevice = Provider.of<BtModel>(context, listen: false).getDevice(index);
-    if(btDevice != null) {
+  void _showFullScreenPopup(BuildContext context, int index) {
+    final btDevice = Provider.of<BtModel>(
+      context,
+      listen: false,
+    ).getDevice(index);
+    if (btDevice != null) {
       showGeneralDialog(
         context: context,
         barrierDismissible: true,
@@ -137,7 +142,7 @@ class BluetoothPageState extends State<BluetoothPage> {
               Navigator.of(context).pop();
               scrollToItem(btDevice);
             },
-            onDisConnect: () async{
+            onDisConnect: () async {
               await getIt<BtModel>().disconnect(btDevice);
               Navigator.of(context).pop();
               scrollToItem(btDevice);
@@ -145,10 +150,7 @@ class BluetoothPageState extends State<BluetoothPage> {
           );
         },
         transitionBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
+          return FadeTransition(opacity: animation, child: child);
         },
       );
     }
@@ -156,9 +158,8 @@ class BluetoothPageState extends State<BluetoothPage> {
 
   void scrollToItem(BtDevice devcie) {
     final index = getIt<BtModel>().getDevcieIndex(devcie);
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _listKey.currentState?.forceScrollTo(index);
     });
   }
-
 }

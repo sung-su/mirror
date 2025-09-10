@@ -22,10 +22,12 @@ class CategorySelectableListView extends StatefulWidget {
   final double scrollOffset;
 
   @override
-  State<CategorySelectableListView> createState() => CategorySelectableListViewState();
+  State<CategorySelectableListView> createState() =>
+      CategorySelectableListViewState();
 }
 
-class CategorySelectableListViewState extends State<CategorySelectableListView> {
+class CategorySelectableListViewState
+    extends State<CategorySelectableListView> {
   late final ScrollController _controller;
   late List<GlobalKey> _itemKeys;
 
@@ -42,10 +44,10 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
   @override
   void initState() {
     super.initState();
-    
+
     _controller = ScrollController();
 
-    if(widget.scrollDirection != null) {
+    if (widget.scrollDirection != null) {
       _scrollDirection = widget.scrollDirection!;
     }
 
@@ -72,12 +74,16 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
   }
 
   Future<int> _scrollToSelected(int duration, int fallbackSelection) async {
-    debugPrint('_scrollToSelected, fallbackSelection=$fallbackSelection, _itemKeys[_selectedIndex].currentContext==null?${_itemKeys[_selectedIndex].currentContext == null}');
+    debugPrint(
+      '_scrollToSelected, fallbackSelection=$fallbackSelection, _itemKeys[_selectedIndex].currentContext==null?${_itemKeys[_selectedIndex].currentContext == null}',
+    );
     if (_itemKeys[_selectedIndex].currentContext != null) {
       int current = _selectedIndex;
-      final RenderBox box = _itemKeys[_selectedIndex].currentContext!.findRenderObject() as RenderBox;
+      final RenderBox box =
+          _itemKeys[_selectedIndex].currentContext!.findRenderObject()
+              as RenderBox;
       final Offset position = box.localToGlobal(Offset.zero);
-      if(position.dy.isNaN) return _selectedIndex;
+      if (position.dy.isNaN) return _selectedIndex;
 
       setState(() {});
       final double offset = widget.scrollOffset;
@@ -94,10 +100,10 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
   }
 
   void onAction(int index) {
-    if(index == 1) {
+    if (index == 1) {
       final isBusy = Provider.of<BtModel>(context, listen: false).isBusy;
       debugPrint('onAction : isBusy=$isBusy, _isEnabled=$_isEnabled');
-      if(!isBusy) {
+      if (!isBusy) {
         setState(() {
           _isEnabled = !_isEnabled;
         });
@@ -109,8 +115,7 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
 
   void forceScrollTo(int index) {
     _controller.jumpTo((index - 3) * 65);
-    WidgetsBinding.instance.addPostFrameCallback((_) async
-    {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       await selectTo(index);
     });
   }
@@ -120,8 +125,8 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
       throw RangeError('Index out of range: $index');
     }
 
-    if(_items[index] != null && _items[index].isKey) {
-      index++; 
+    if (_items[index] != null && _items[index].isKey) {
+      index++;
     }
     final int previousIndex = _selectedIndex;
     _selectedIndex = index;
@@ -136,11 +141,11 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
     if (_selectedIndex < end) {
       int previousIndex = _selectedIndex;
       _selectedIndex++;
-      if(_items[_selectedIndex].isKey) {
+      if (_items[_selectedIndex].isKey) {
         previousIndex = _selectedIndex;
         _selectedIndex++;
       }
-        
+
       return await _scrollToSelected(fast ? 10 : 100, previousIndex);
     } else {
       return _selectedIndex;
@@ -155,11 +160,11 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
     if (_selectedIndex > start) {
       int previousIndex = _selectedIndex;
       _selectedIndex--;
-      if(_items[_selectedIndex].isKey) {
+      if (_items[_selectedIndex].isKey) {
         previousIndex = _selectedIndex;
         _selectedIndex--;
       }
-        
+
       return await _scrollToSelected(fast ? 10 : 100, previousIndex);
     } else {
       return _selectedIndex;
@@ -169,22 +174,16 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
   @override
   Widget build(BuildContext context) {
     _items = Provider.of<BtModel>(context).data;
-    
+
     _itemCount = _items.length;
 
-    _itemKeys = List.generate(
-      _items.length,
-      (index) => GlobalKey(),
-    );
+    _itemKeys = List.generate(_items.length, (index) => GlobalKey());
 
     return ScrollConfiguration(
       behavior: ScrollBehavior().copyWith(
         scrollbars: false,
         overscroll: false,
-        dragDevices: {
-          PointerDeviceKind.mouse,
-          PointerDeviceKind.touch
-        }
+        dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch},
       ),
       child: ListView.builder(
         padding: widget.padding,
@@ -197,19 +196,21 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 30),
               child: Text(
-                key : _itemKeys[index],
+                key: _itemKeys[index],
                 (item.item as String),
                 style: TextStyle(
                   fontSize: 10,
                   color: Color.fromARGB(117, 151, 154, 160),
-                )
+                ),
               ),
             );
-          }
-          else if (index == 1 ) {
+          } else if (index == 1) {
             return AnimatedScale(
-              key : _itemKeys[index],
-              scale: Focus.of(context).hasFocus && index == selectedIndex ? 1.0 : .9,
+              key: _itemKeys[index],
+              scale:
+                  Focus.of(context).hasFocus && index == selectedIndex
+                      ? 1.0
+                      : .9,
               duration: $style.times.med,
               curve: Curves.easeInOut,
               child: GestureDetector(
@@ -221,20 +222,23 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
                 child: DeviceListMenuItem(
                   name: _items[index].item as String ?? '',
                   isON: _isEnabled,
-                  isFocused: Focus.of(context).hasFocus && index == selectedIndex,
+                  isFocused:
+                      Focus.of(context).hasFocus && index == selectedIndex,
                   onStateChanged: (state) {
-                    if(_isEnabled != state) {
+                    if (_isEnabled != state) {
                       onAction(index);
                     }
                   },
-                )
+                ),
               ),
             );
-          }
-          else {
+          } else {
             return AnimatedScale(
-              key : _itemKeys[index],
-              scale: Focus.of(context).hasFocus && index == selectedIndex ? 1.0 : .9,
+              key: _itemKeys[index],
+              scale:
+                  Focus.of(context).hasFocus && index == selectedIndex
+                      ? 1.0
+                      : .9,
               duration: $style.times.med,
               curve: Curves.easeInOut,
               child: GestureDetector(
@@ -245,20 +249,29 @@ class CategorySelectableListViewState extends State<CategorySelectableListView> 
                 },
                 child: DeviceListItem(
                   item: _items[index].item as BtDevice,
-                  iconData: Icons.bluetooth,  // isPaired ? Icons.bluetooth_connected : Icons.bluetooth
-                  isFocused: Focus.of(context).hasFocus && index == selectedIndex
-                  )
+                  iconData:
+                      Icons
+                          .bluetooth, // isPaired ? Icons.bluetooth_connected : Icons.bluetooth
+                  isFocused:
+                      Focus.of(context).hasFocus && index == selectedIndex,
+                ),
               ),
             );
           }
-        }
+        },
       ),
     );
   }
 }
 
 class DeviceListMenuItem extends StatefulWidget {
-  const DeviceListMenuItem({super.key, this.name = '', required this.isON, required this.isFocused, this.onStateChanged});
+  const DeviceListMenuItem({
+    super.key,
+    this.name = '',
+    required this.isON,
+    required this.isFocused,
+    this.onStateChanged,
+  });
 
   final String name;
   final bool isON;
@@ -296,7 +309,7 @@ class _DeviceListMenuItemState extends State<DeviceListMenuItem> {
               EdgeInsets.symmetric(horizontal: innerPadding),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            spacing: 15,//innerPadding * 0.75, // between icon-text spacing
+            spacing: 15, //innerPadding * 0.75, // between icon-text spacing
             children: [
               Expanded(
                 child: Column(
@@ -319,8 +332,12 @@ class _DeviceListMenuItemState extends State<DeviceListMenuItem> {
                         fontSize: subtitleFontSize,
                         color:
                             widget.isFocused
-                                ? Theme.of(context).colorScheme.onTertiary.withAlphaF(0.8)
-                                : Theme.of(context).colorScheme.tertiary.withAlphaF(0.7),
+                                ? Theme.of(
+                                  context,
+                                ).colorScheme.onTertiary.withAlphaF(0.8)
+                                : Theme.of(
+                                  context,
+                                ).colorScheme.tertiary.withAlphaF(0.7),
                       ),
                     ),
                   ],
@@ -328,29 +345,27 @@ class _DeviceListMenuItemState extends State<DeviceListMenuItem> {
               ),
               Spacer(),
               Theme(
-                data: Theme.of(
-                  context,
-                ).copyWith(useMaterial3: false),
+                data: Theme.of(context).copyWith(useMaterial3: false),
                 child: Stack(
                   children: [
-                    if(isOperationRunning)
-                    SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: CircularProgressIndicator(
-                        color: Colors.blue.withAlphaF(0.5),
-                      )
-                    ),
-                    if(!isOperationRunning)
-                    Switch(
-                      value: widget.isON,
-                      activeColor: Colors.blue,
-                      onChanged: (value) {
-                        widget.onStateChanged?.call(value);
-                      }
-                    ),
-                  ]
-                )
+                    if (isOperationRunning)
+                      SizedBox(
+                        width: 30,
+                        height: 30,
+                        child: CircularProgressIndicator(
+                          color: Colors.blue.withAlphaF(0.5),
+                        ),
+                      ),
+                    if (!isOperationRunning)
+                      Switch(
+                        value: widget.isON,
+                        activeColor: Colors.blue,
+                        onChanged: (value) {
+                          widget.onStateChanged?.call(value);
+                        },
+                      ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -360,8 +375,13 @@ class _DeviceListMenuItemState extends State<DeviceListMenuItem> {
   }
 }
 
-class DeviceListItem extends StatelessWidget{
-  const DeviceListItem({super.key, required this.item, this.iconData, required this.isFocused});
+class DeviceListItem extends StatelessWidget {
+  const DeviceListItem({
+    super.key,
+    required this.item,
+    this.iconData,
+    required this.isFocused,
+  });
 
   final BtDevice item;
   final IconData? iconData;
@@ -390,14 +410,12 @@ class DeviceListItem extends StatelessWidget{
               EdgeInsets.symmetric(horizontal: innerPadding),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            spacing: 15,//innerPadding * 0.75, // between icon-text spacing
+            spacing: 15, //innerPadding * 0.75, // between icon-text spacing
             children: [
               Icon(
                 iconData,
                 size: iconSize,
-                color: isFocused
-                    ? Color(0xF04285F4)
-                    : Color(0xF0AEB2B9),
+                color: isFocused ? Color(0xF04285F4) : Color(0xF0AEB2B9),
               ),
               // item text
               Column(
@@ -416,12 +434,14 @@ class DeviceListItem extends StatelessWidget{
                     ),
                   ),
                   Text(
-                    item.isConnected ? 'Connected' : (item.isBonded ? 'Paired' : (item.remoteAddress)) ,
+                    item.isConnected
+                        ? 'Connected'
+                        : (item.isBonded ? 'Paired' : (item.remoteAddress)),
                     style: TextStyle(
                       fontSize: subtitleFontSize,
-                      color:Color(0xFF979AA0),
+                      color: Color(0xFF979AA0),
                     ),
-                  )
+                  ),
                 ],
               ),
             ],
