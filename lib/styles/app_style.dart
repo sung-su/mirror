@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 AppStyle get $style => AppStyle.instance;
@@ -16,20 +15,19 @@ class AppStyle {
 }
 
 class LinearGradientColors {
-
   final Map<int, List<Color>> _colorMap = {
-    0 : [Color(0xFF235dcc), Color(0xFF22c6b3)],
-    1 : [Color(0xFFdb567c), Color(0xFF8355db)],
-    2 : [Color(0xFF64b8e8), Color(0xFF636be8)],
-    3 : [Color(0xFFdea23b), Color(0xFFde413f)],
-    4 : [Color(0xFF29d256), Color(0xFFdea23b)],
+    0: [Color(0xFF235dcc), Color(0xFF22c6b3)],
+    1: [Color(0xFFdb567c), Color(0xFF8355db)],
+    2: [Color(0xFF64b8e8), Color(0xFF636be8)],
+    3: [Color(0xFFdea23b), Color(0xFFde413f)],
+    4: [Color(0xFF29d256), Color(0xFFdea23b)],
   };
 
   LinearGradient getGradient(int num) {
     return LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: _colorMap[num]!
+      colors: _colorMap[num]!,
     );
   }
 
@@ -49,24 +47,10 @@ class LinearGradientColors {
         end.withAlphaF(0.5),
         end.withAlphaF(0.6),
       ],
-      stops: [
-        0.0,
-        0.05,
-        0.1,
-        0.15,
-        0.2,
-        0.5,
-        0.7,
-        0.8,
-        0.9,
-        1.0
-      ]
+      stops: [0.0, 0.05, 0.1, 0.15, 0.2, 0.5, 0.7, 0.8, 0.9, 1.0],
     );
   }
-
 }
-
-
 
 class AppColors {
   final Color primary = Color(0xFF1A1C1E);
@@ -96,21 +80,26 @@ class AppColors {
 
   final Color border = Color(0xFF8E9099);
 
-
   // colors from https://samsungtizenos.com/about/brand-guide/
   final Color sblue = const Color(0xFF0F42CF);
   final Color tblue = const Color(0xFF00c9ff);
+  final Color rblue = const Color(0xFF002366);
+
+  final Color dotnetApp = const Color(0xFF008AEE);
+  final Color cApp = const Color(0xFF0F42CF);
+  final Color defaulApp = const Color(0xFF00c9ff);
 
   ThemeData toLightThemeData() {
     var colorScheme = ColorScheme.fromSeed(
       seedColor: sblue,
       primary: sblue,
       secondary: tblue,
-      brightness: Brightness.light
+      brightness: Brightness.light,
     );
-    
+
     var t = ThemeData.from(
-      colorScheme: colorScheme, useMaterial3: true
+      colorScheme: colorScheme,
+      useMaterial3: true,
     ).copyWith(
       textSelectionTheme: TextSelectionThemeData(cursorColor: sblue),
       highlightColor: sblue,
@@ -126,7 +115,7 @@ class AppColors {
       brightness: Brightness.dark,
       dynamicSchemeVariant: DynamicSchemeVariant.monochrome,
     );
-    
+
     var t = ThemeData.from(
       colorScheme: colorScheme,
       useMaterial3: true,
@@ -170,7 +159,7 @@ class AppColors {
   //       onErrorContainer: onErrorContainer,
   //       outline: border,
   //   );
-    
+
   //   var t = ThemeData.from(textTheme: txtTheme, colorScheme: colorScheme, useMaterial3: true).copyWith(
   //     textSelectionTheme: TextSelectionThemeData(cursorColor: primary),
   //     highlightColor: primary,

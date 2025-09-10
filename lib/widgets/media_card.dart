@@ -4,304 +4,312 @@ import 'package:flutter/material.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-enum MediaCardRatio {
-  wide,
-  square,
-  poster,
-}
+enum MediaCardRatio { wide, square, poster }
 
 class MediaCard extends StatelessWidget {
-  const MediaCard(
-      {super.key,
-      this.width = 196,
-      required this.imageUrl,
-      this.imageWidth,
-      this.title,
-      this.subtitle,
-      this.description,
-      this.isSelected = false,
-      this.duration,
-      this.ratio = MediaCardRatio.wide,
-      this.shadowColor,
-      this.content,
-      this.onRequestSelect,
-      this.onPressed})
-      : height = width *
-            (ratio == MediaCardRatio.wide
-                ? 9 / 16
-                : ratio == MediaCardRatio.square
-                    ? 1
-                    : 3 / 2);
+  const MediaCard({
+    super.key,
+    this.width = 196,
+    required this.imageUrl,
+    this.imageWidth,
+    this.title,
+    this.subtitle,
+    this.description,
+    this.isSelected = false,
+    this.duration,
+    this.ratio = MediaCardRatio.wide,
+    this.shadowColor,
+    this.content,
+    this.onRequestSelect,
+    this.onPressed,
+  }) : height =
+           width *
+           (ratio == MediaCardRatio.wide
+               ? 9 / 16
+               : ratio == MediaCardRatio.square
+               ? 1
+               : 3 / 2);
 
-  const MediaCard.oneCard(
-      {Key? key,
-      required String imageUrl,
-      int? imageWidth,
-      String? title,
-      String? subtitle,
-      String? description,
-      String? duration,
-      bool isSelected = false,
-      MediaCardRatio ratio = MediaCardRatio.wide,
-      Widget? content,
-      Color? shadowColor,
-      void Function()? onRequestSelect,
-      void Function()? onPressed})
-      : this(
-            key: key,
-            width: 844,
-            imageUrl: imageUrl,
-            imageWidth: imageWidth,
-            title: title,
-            subtitle: subtitle,
-            description: description,
-            duration: duration,
-            isSelected: isSelected,
-            ratio: ratio,
-            content: content,
-            onRequestSelect: onRequestSelect,
-            onPressed: onPressed,
-            shadowColor: shadowColor);
+  const MediaCard.oneCard({
+    Key? key,
+    required String imageUrl,
+    int? imageWidth,
+    String? title,
+    String? subtitle,
+    String? description,
+    String? duration,
+    bool isSelected = false,
+    MediaCardRatio ratio = MediaCardRatio.wide,
+    Widget? content,
+    Color? shadowColor,
+    void Function()? onRequestSelect,
+    void Function()? onPressed,
+  }) : this(
+         key: key,
+         width: 844,
+         imageUrl: imageUrl,
+         imageWidth: imageWidth,
+         title: title,
+         subtitle: subtitle,
+         description: description,
+         duration: duration,
+         isSelected: isSelected,
+         ratio: ratio,
+         content: content,
+         onRequestSelect: onRequestSelect,
+         onPressed: onPressed,
+         shadowColor: shadowColor,
+       );
 
-  const MediaCard.twoCard(
-      {Key? key,
-      required String imageUrl,
-      int? imageWidth,
-      String? title,
-      String? subtitle,
-      String? description,
-      String? duration,
-      bool isSelected = false,
-      MediaCardRatio ratio = MediaCardRatio.wide,
-      Widget? content,
-      Color? shadowColor,
-      void Function()? onRequestSelect,
-      void Function()? onPressed})
-      : this(
-            key: key,
-            width: 416,
-            imageUrl: imageUrl,
-            imageWidth: imageWidth,
-            title: title,
-            subtitle: subtitle,
-            description: description,
-            duration: duration,
-            isSelected: isSelected,
-            ratio: ratio,
-            content: content,
-            onRequestSelect: onRequestSelect,
-            onPressed: onPressed,
-            shadowColor: shadowColor);
+  const MediaCard.twoCard({
+    Key? key,
+    required String imageUrl,
+    int? imageWidth,
+    String? title,
+    String? subtitle,
+    String? description,
+    String? duration,
+    bool isSelected = false,
+    MediaCardRatio ratio = MediaCardRatio.wide,
+    Widget? content,
+    Color? shadowColor,
+    void Function()? onRequestSelect,
+    void Function()? onPressed,
+  }) : this(
+         key: key,
+         width: 416,
+         imageUrl: imageUrl,
+         imageWidth: imageWidth,
+         title: title,
+         subtitle: subtitle,
+         description: description,
+         duration: duration,
+         isSelected: isSelected,
+         ratio: ratio,
+         content: content,
+         onRequestSelect: onRequestSelect,
+         onPressed: onPressed,
+         shadowColor: shadowColor,
+       );
 
-  const MediaCard.threeCard(
-      {Key? key,
-      required String imageUrl,
-      int? imageWidth,
-      String? title,
-      String? subtitle,
-      String? description,
-      String? duration,
-      bool isSelected = false,
-      MediaCardRatio ratio = MediaCardRatio.wide,
-      Widget? content,
-      Color? shadowColor,
-      void Function()? onRequestSelect,
-      void Function()? onPressed})
-      : this(
-            key: key,
-            width: 268,
-            imageUrl: imageUrl,
-            imageWidth: imageWidth,
-            title: title,
-            subtitle: subtitle,
-            description: description,
-            duration: duration,
-            isSelected: isSelected,
-            ratio: ratio,
-            content: content,
-            onRequestSelect: onRequestSelect,
-            onPressed: onPressed,
-            shadowColor: shadowColor);
+  const MediaCard.threeCard({
+    Key? key,
+    required String imageUrl,
+    int? imageWidth,
+    String? title,
+    String? subtitle,
+    String? description,
+    String? duration,
+    bool isSelected = false,
+    MediaCardRatio ratio = MediaCardRatio.wide,
+    Widget? content,
+    Color? shadowColor,
+    void Function()? onRequestSelect,
+    void Function()? onPressed,
+  }) : this(
+         key: key,
+         width: 268,
+         imageUrl: imageUrl,
+         imageWidth: imageWidth,
+         title: title,
+         subtitle: subtitle,
+         description: description,
+         duration: duration,
+         isSelected: isSelected,
+         ratio: ratio,
+         content: content,
+         onRequestSelect: onRequestSelect,
+         onPressed: onPressed,
+         shadowColor: shadowColor,
+       );
 
-  const MediaCard.fourCard(
-      {Key? key,
-      required String imageUrl,
-      int? imageWidth,
-      String? title,
-      String? subtitle,
-      String? description,
-      String? duration,
-      bool isSelected = false,
-      MediaCardRatio ratio = MediaCardRatio.wide,
-      Widget? content,
-      Color? shadowColor,
-      void Function()? onRequestSelect,
-      void Function()? onPressed})
-      : this(
-            key: key,
-            width: 196,
-            imageUrl: imageUrl,
-            imageWidth: imageWidth,
-            title: title,
-            subtitle: subtitle,
-            description: description,
-            duration: duration,
-            isSelected: isSelected,
-            ratio: ratio,
-            content: content,
-            onRequestSelect: onRequestSelect,
-            onPressed: onPressed,
-            shadowColor: shadowColor);
+  const MediaCard.fourCard({
+    Key? key,
+    required String imageUrl,
+    int? imageWidth,
+    String? title,
+    String? subtitle,
+    String? description,
+    String? duration,
+    bool isSelected = false,
+    MediaCardRatio ratio = MediaCardRatio.wide,
+    Widget? content,
+    Color? shadowColor,
+    void Function()? onRequestSelect,
+    void Function()? onPressed,
+  }) : this(
+         key: key,
+         width: 196,
+         imageUrl: imageUrl,
+         imageWidth: imageWidth,
+         title: title,
+         subtitle: subtitle,
+         description: description,
+         duration: duration,
+         isSelected: isSelected,
+         ratio: ratio,
+         content: content,
+         onRequestSelect: onRequestSelect,
+         onPressed: onPressed,
+         shadowColor: shadowColor,
+       );
 
-  const MediaCard.fiveCard(
-      {Key? key,
-      required String imageUrl,
-      int? imageWidth,
-      String? title,
-      String? subtitle,
-      String? description,
-      String? duration,
-      bool isSelected = false,
-      MediaCardRatio ratio = MediaCardRatio.wide,
-      Widget? content,
-      Color? shadowColor,
-      void Function()? onRequestSelect,
-      void Function()? onPressed})
-      : this(
-            key: key,
-            width: 152,
-            imageUrl: imageUrl,
-            imageWidth: imageWidth,
-            title: title,
-            subtitle: subtitle,
-            description: description,
-            duration: duration,
-            isSelected: isSelected,
-            ratio: ratio,
-            content: content,
-            onRequestSelect: onRequestSelect,
-            onPressed: onPressed,
-            shadowColor: shadowColor);
+  const MediaCard.fiveCard({
+    Key? key,
+    required String imageUrl,
+    int? imageWidth,
+    String? title,
+    String? subtitle,
+    String? description,
+    String? duration,
+    bool isSelected = false,
+    MediaCardRatio ratio = MediaCardRatio.wide,
+    Widget? content,
+    Color? shadowColor,
+    void Function()? onRequestSelect,
+    void Function()? onPressed,
+  }) : this(
+         key: key,
+         width: 152,
+         imageUrl: imageUrl,
+         imageWidth: imageWidth,
+         title: title,
+         subtitle: subtitle,
+         description: description,
+         duration: duration,
+         isSelected: isSelected,
+         ratio: ratio,
+         content: content,
+         onRequestSelect: onRequestSelect,
+         onPressed: onPressed,
+         shadowColor: shadowColor,
+       );
 
-  const MediaCard.sixCard(
-      {Key? key,
-      required String imageUrl,
-      int? imageWidth,
-      String? title,
-      String? subtitle,
-      String? description,
-      String? duration,
-      bool isSelected = false,
-      MediaCardRatio ratio = MediaCardRatio.wide,
-      Widget? content,
-      Color? shadowColor,
-      void Function()? onRequestSelect,
-      void Function()? onPressed})
-      : this(
-            key: key,
-            width: 124,
-            imageUrl: imageUrl,
-            imageWidth: imageWidth,
-            title: title,
-            subtitle: subtitle,
-            description: description,
-            duration: duration,
-            isSelected: isSelected,
-            ratio: ratio,
-            content: content,
-            onRequestSelect: onRequestSelect,
-            onPressed: onPressed,
-            shadowColor: shadowColor);
+  const MediaCard.sixCard({
+    Key? key,
+    required String imageUrl,
+    int? imageWidth,
+    String? title,
+    String? subtitle,
+    String? description,
+    String? duration,
+    bool isSelected = false,
+    MediaCardRatio ratio = MediaCardRatio.wide,
+    Widget? content,
+    Color? shadowColor,
+    void Function()? onRequestSelect,
+    void Function()? onPressed,
+  }) : this(
+         key: key,
+         width: 124,
+         imageUrl: imageUrl,
+         imageWidth: imageWidth,
+         title: title,
+         subtitle: subtitle,
+         description: description,
+         duration: duration,
+         isSelected: isSelected,
+         ratio: ratio,
+         content: content,
+         onRequestSelect: onRequestSelect,
+         onPressed: onPressed,
+         shadowColor: shadowColor,
+       );
 
-  const MediaCard.nineCard(
-      {Key? key,
-      required String imageUrl,
-      int? imageWidth,
-      String? title,
-      String? subtitle,
-      String? description,
-      String? duration,
-      bool isSelected = false,
-      MediaCardRatio ratio = MediaCardRatio.wide,
-      Widget? content,
-      Color? shadowColor,
-      void Function()? onRequestSelect,
-      void Function()? onPressed})
-      : this(
-            key: key,
-            width: 80,
-            imageUrl: imageUrl,
-            imageWidth: imageWidth,
-            title: title,
-            subtitle: subtitle,
-            description: description,
-            duration: duration,
-            isSelected: isSelected,
-            ratio: ratio,
-            content: content,
-            onRequestSelect: onRequestSelect,
-            onPressed: onPressed,
-            shadowColor: shadowColor);
+  const MediaCard.nineCard({
+    Key? key,
+    required String imageUrl,
+    int? imageWidth,
+    String? title,
+    String? subtitle,
+    String? description,
+    String? duration,
+    bool isSelected = false,
+    MediaCardRatio ratio = MediaCardRatio.wide,
+    Widget? content,
+    Color? shadowColor,
+    void Function()? onRequestSelect,
+    void Function()? onPressed,
+  }) : this(
+         key: key,
+         width: 80,
+         imageUrl: imageUrl,
+         imageWidth: imageWidth,
+         title: title,
+         subtitle: subtitle,
+         description: description,
+         duration: duration,
+         isSelected: isSelected,
+         ratio: ratio,
+         content: content,
+         onRequestSelect: onRequestSelect,
+         onPressed: onPressed,
+         shadowColor: shadowColor,
+       );
 
-  const MediaCard.circle(
-      {Key? key,
-      required String imageUrl,
-      int? imageWidth,
-      String? title,
-      String? subtitle,
-      String? description,
-      String? duration,
-      bool isSelected = false,
-      Widget? content,
-      Color? shadowColor,
-      void Function()? onRequestSelect,
-      void Function()? onPressed})
-      : this(
-            key: key,
-            width: 80,
-            imageUrl: imageUrl,
-            imageWidth: imageWidth,
-            title: title,
-            subtitle: subtitle,
-            description: description,
-            duration: duration,
-            isSelected: isSelected,
-            ratio: MediaCardRatio.square,
-            content: content,
-            onRequestSelect: onRequestSelect,
-            onPressed: onPressed,
-            shadowColor: shadowColor);
+  const MediaCard.circle({
+    Key? key,
+    required String imageUrl,
+    int? imageWidth,
+    String? title,
+    String? subtitle,
+    String? description,
+    String? duration,
+    bool isSelected = false,
+    Widget? content,
+    Color? shadowColor,
+    void Function()? onRequestSelect,
+    void Function()? onPressed,
+  }) : this(
+         key: key,
+         width: 80,
+         imageUrl: imageUrl,
+         imageWidth: imageWidth,
+         title: title,
+         subtitle: subtitle,
+         description: description,
+         duration: duration,
+         isSelected: isSelected,
+         ratio: MediaCardRatio.square,
+         content: content,
+         onRequestSelect: onRequestSelect,
+         onPressed: onPressed,
+         shadowColor: shadowColor,
+       );
 
-  const MediaCard.circleLarge(
-      {Key? key,
-      required String imageUrl,
-      int? imageWidth,
-      String? title,
-      String? subtitle,
-      String? description,
-      String? duration,
-      bool isSelected = false,
-      Widget? content,
-      Color? shadowColor,
-      void Function()? onRequestSelect,
-      void Function()? onPressed})
-      : this(
-            key: key,
-            width: 124,
-            imageUrl: imageUrl,
-            imageWidth: imageWidth,
-            title: title,
-            subtitle: subtitle,
-            description: description,
-            duration: duration,
-            isSelected: isSelected,
-            ratio: MediaCardRatio.square,
-            content: content,
-            onRequestSelect: onRequestSelect,
-            onPressed: onPressed,
-            shadowColor: shadowColor);
+  const MediaCard.circleLarge({
+    Key? key,
+    required String imageUrl,
+    int? imageWidth,
+    String? title,
+    String? subtitle,
+    String? description,
+    String? duration,
+    bool isSelected = false,
+    Widget? content,
+    Color? shadowColor,
+    void Function()? onRequestSelect,
+    void Function()? onPressed,
+  }) : this(
+         key: key,
+         width: 124,
+         imageUrl: imageUrl,
+         imageWidth: imageWidth,
+         title: title,
+         subtitle: subtitle,
+         description: description,
+         duration: duration,
+         isSelected: isSelected,
+         ratio: MediaCardRatio.square,
+         content: content,
+         onRequestSelect: onRequestSelect,
+         onPressed: onPressed,
+         shadowColor: shadowColor,
+       );
 
   static const int animationDuration = 100;
+  static const double _fontSize = 8;
+
   final double width;
   final double height;
   final String imageUrl;
@@ -326,69 +334,93 @@ class MediaCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AnimatedScale(
-              scale: isSelected ? 1.1 : 1,
-              duration: Duration(milliseconds: animationDuration),
-              child: Stack(children: [
-                _buildBorder(ratio == MediaCardRatio.square
-                    ? ClipOval(child: _buildTileContent())
-                    : ClipRRect(
+            scale: isSelected ? 1.1 : 1,
+            duration: Duration(milliseconds: animationDuration),
+            child: Stack(
+              children: [
+                _buildBorder(
+                  ratio == MediaCardRatio.square
+                      ? ClipOval(child: _buildTileContent())
+                      : ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: _buildTileContent(),
-                      )),
+                      ),
+                ),
                 if (duration != null)
                   Positioned(
-                      bottom: 8,
-                      right: 8,
-                      child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3),
-                            color: Colors.black.withAlphaF(0.8),
-                          ),
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                          child: Text(duration!,
-                              style: TextStyle(
-                                  fontSize: 9, fontWeight: FontWeight.bold)))),
-              ])),
+                    bottom: 8,
+                    right: 8,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(3),
+                        color: Colors.black.withAlphaF(0.8),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                      child: Text(
+                        duration!,
+                        style: TextStyle(
+                          fontSize: _fontSize,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
           if (title != null || subtitle != null || description != null)
             SizedBox(height: 4),
           if (title != null)
             SizedBox(
-                width: width,
-                child: Text(title!,
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: isSelected
-                            ? Colors.white.withAlphaF(0.8)
-                            : $style.colors.onPrimary.withAlphaF(0.8)),
-                    maxLines: 1,
-                    textAlign: ratio == MediaCardRatio.square
-                        ? TextAlign.center
-                        : TextAlign.justify,
-                    overflow: TextOverflow.ellipsis)),
+              width: width,
+              child: Text(
+                title!,
+                style: TextStyle(
+                  fontSize: _fontSize,
+                  color:
+                      isSelected
+                          ? Colors.white.withAlphaF(0.8)
+                          : Colors.transparent,
+                ),
+                maxLines: 1,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           if (subtitle != null)
             SizedBox(
-                width: width,
-                child: Text(subtitle!,
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: $style.colors.onPrimary
-                            .withAlphaF(0.7 * (isSelected ? 1 : 0.9))),
-                    maxLines: 1,
-                    textAlign: ratio == MediaCardRatio.square
+              width: width,
+              child: Text(
+                subtitle!,
+                style: TextStyle(
+                  fontSize: _fontSize,
+                  color: $style.colors.onPrimary.withAlphaF(
+                    0.7 * (isSelected ? 1 : 0.9),
+                  ),
+                ),
+                maxLines: 1,
+                textAlign:
+                    ratio == MediaCardRatio.square
                         ? TextAlign.center
                         : TextAlign.justify,
-                    overflow: TextOverflow.ellipsis)),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           if (description != null)
             SizedBox(
-                width: width,
-                child: Text(description!,
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: $style.colors.onPrimary
-                            .withAlphaF(0.7 * (isSelected ? 1 : 0.9))),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis)),
+              width: width,
+              child: Text(
+                description!,
+                style: TextStyle(
+                  fontSize: _fontSize,
+                  color: $style.colors.onPrimary.withAlphaF(
+                    0.7 * (isSelected ? 1 : 0.9),
+                  ),
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
         ],
       ),
     );
@@ -397,19 +429,23 @@ class MediaCard extends StatelessWidget {
   Widget _buildBorder(Widget content) {
     return isSelected
         ? BlinkBorder(
-            width: width,
-            height: height.roundToDouble(),
-            ratio: ratio,
-            shadowColor: shadowColor ?? Colors.white,
-            child: content)
+          width: width,
+          height: height.roundToDouble(),
+          ratio: ratio,
+          shadowColor: shadowColor ?? Colors.white,
+          child: content,
+        )
         : SizedBox(
-            width: width, height: height.roundToDouble(), child: content);
+          width: width,
+          height: height.roundToDouble(),
+          child: content,
+        );
   }
 
   Widget _buildTileContent() {
     var cacheWidth = (width * 2).round();
 
-    if(imageWidth != null) {
+    if (imageWidth != null) {
       cacheWidth = (cacheWidth > imageWidth!) ? imageWidth! : cacheWidth;
     }
 
@@ -426,31 +462,29 @@ class MediaCard extends StatelessWidget {
       return Image.file(
         File(imageUrl),
         cacheWidth: cacheWidth,
-        errorBuilder: (context, error, stackTrace) =>
-            const Icon(Icons.broken_image),
+        errorBuilder:
+            (context, error, stackTrace) => const Icon(Icons.broken_image),
         fit: BoxFit.cover,
       );
     } else if (imageUrl.startsWith('assets')) {
-      return Image.asset(
-        imageUrl,
-        cacheWidth: cacheWidth,
-        fit: BoxFit.cover,
-      );
+      return Image.asset(imageUrl, cacheWidth: cacheWidth, fit: BoxFit.cover);
     } else {
       return const Center(
-          child: Icon(Icons.image_not_supported, color: Colors.grey));
+        child: Icon(Icons.image_not_supported, color: Colors.grey),
+      );
     }
   }
 }
 
 class BlinkBorder extends StatefulWidget {
-  const BlinkBorder(
-      {super.key,
-      required this.child,
-      required this.width,
-      required this.height,
-      required this.ratio,
-      required this.shadowColor});
+  const BlinkBorder({
+    super.key,
+    required this.child,
+    required this.width,
+    required this.height,
+    required this.ratio,
+    required this.shadowColor,
+  });
 
   final double width;
   final double height;
@@ -477,11 +511,11 @@ class _BlinkBorderState extends State<BlinkBorder>
       vsync: this,
     );
 
-    animation = Tween<double>(begin: 0.7, end: 0)
-        .animate(CurvedAnimation(parent: controller, curve: Curves.linear))
-      ..addListener(() {
-        setState(() {});
-      });
+    animation = Tween<double>(begin: 0.7, end: 0).animate(
+      CurvedAnimation(parent: controller, curve: Curves.linear),
+    )..addListener(() {
+      setState(() {});
+    });
 
     Future.delayed(Duration(milliseconds: 500)).whenComplete(() {
       if (!_disposed) {
@@ -500,26 +534,32 @@ class _BlinkBorderState extends State<BlinkBorder>
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: widget.width,
-        height: widget.height,
-        decoration: BoxDecoration(
-            border: Border.all(
-                color: Colors.white.withAlphaF(animation.value), width: 2),
-            borderRadius: widget.ratio != MediaCardRatio.square
+      width: widget.width,
+      height: widget.height,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.white.withAlphaF(animation.value),
+          width: 2,
+        ),
+        borderRadius:
+            widget.ratio != MediaCardRatio.square
                 ? BorderRadius.circular(10)
                 : null,
-            shape: widget.ratio == MediaCardRatio.square
+        shape:
+            widget.ratio == MediaCardRatio.square
                 ? BoxShape.circle
                 : BoxShape.rectangle,
-            boxShadow: [
-              BoxShadow(
-                color: widget.shadowColor.withAlphaF(0.7),
-                spreadRadius: 1,
-                blurRadius: 15,
-                blurStyle: BlurStyle.normal,
-                offset: Offset(0, 0),
-              )
-            ]),
-        child: widget.child);
+        boxShadow: [
+          BoxShadow(
+            color: widget.shadowColor.withAlphaF(0.7),
+            spreadRadius: 1,
+            blurRadius: 15,
+            blurStyle: BlurStyle.normal,
+            offset: Offset(0, 0),
+          ),
+        ],
+      ),
+      child: widget.child,
+    );
   }
 }

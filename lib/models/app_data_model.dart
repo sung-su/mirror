@@ -1,11 +1,9 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:tizen_app_manager/app_manager.dart';
 import 'package:tizen_fs/native/app_manager.dart';
 import 'package:tizen_fs/models/app_data.dart';
 
 class AppDataModel extends ChangeNotifier {
-
   List<AppData> appInfos = [];
   bool _isLoading = false;
   int _selectedIndex = 0;
@@ -17,7 +15,7 @@ class AppDataModel extends ChangeNotifier {
   }
 
   void initialize() async {
-    if(_initialized) return;
+    if (_initialized) return;
 
     await loadInstalledApps();
 
@@ -28,9 +26,9 @@ class AppDataModel extends ChangeNotifier {
     _isLoading = true;
 
     await _loadApps();
-    
+
     _isLoading = false;
-    
+
     notifyListeners();
   }
 
@@ -71,14 +69,17 @@ class AppDataModel extends ChangeNotifier {
 
     final apps = await AppManager.getInstalledApps();
     for (AppInfo app in apps) {
-      if(!app.isNoDisplay) {
-        appInfos.add(AppData(
-          appId: app.appId,
-          name: app.label,
-          packageName: app.packageId,
-          icon: app.iconPath ?? '',
-          resourcePath: app.sharedResourcePath,
-       ));
+      if (!app.isNoDisplay) {
+        appInfos.add(
+          AppData(
+            appId: app.appId,
+            name: app.label,
+            packageName: app.packageId,
+            icon: app.iconPath ?? 'assets/images/default_icon.png',
+            resourcePath: app.sharedResourcePath,
+            appType: app.appType,
+          ),
+        );
       }
     }
   }
