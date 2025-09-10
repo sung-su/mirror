@@ -32,9 +32,6 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _passwordFocusNode.requestFocus();
-    });
   }
 
   @override
@@ -62,7 +59,9 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
         });
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.enter) {
-        if (_selected == 1) {
+        if (_selected == 0) {
+          _passwordFocusNode.requestFocus();
+        } else if (_selected == 1) {
           _handleConnect();
         } else if (_selected == 2) {
           _handleDisconnect();
