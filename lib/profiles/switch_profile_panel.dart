@@ -24,23 +24,26 @@ class _AccountPanelState extends State<AccountPanel> {
         child: FocusScope(
           autofocus: true,
           onKeyEvent: (node, event) {
-            if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.arrowRight) {
+            if (event is KeyDownEvent &&
+                event.logicalKey == LogicalKeyboardKey.arrowRight) {
               Navigator.of(context).pop();
               return KeyEventResult.handled;
             } else if (event is KeyDownEvent &&
                 event.logicalKey == LogicalKeyboardKey.enter) {
               AppRouter.router.push(ScreenPaths.profile);
               return KeyEventResult.ignored;
-            } else if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.arrowDown) {
-              if(_iconSelected) {
+            } else if (event is KeyDownEvent &&
+                event.logicalKey == LogicalKeyboardKey.arrowDown) {
+              if (_iconSelected) {
                 setState(() {
                   _iconSelected = false;
                   _buttonSelected = true;
                 });
               }
               return KeyEventResult.handled;
-            } else if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.arrowUp) {
-              if(_buttonSelected) {
+            } else if (event is KeyDownEvent &&
+                event.logicalKey == LogicalKeyboardKey.arrowUp) {
+              if (_buttonSelected) {
                 setState(() {
                   _iconSelected = true;
                   _buttonSelected = false;
@@ -63,38 +66,36 @@ class _AccountPanelState extends State<AccountPanel> {
                       imageUrl: null,
                       text: 'T',
                       isSelected: _iconSelected,
-                      onPressed: () { AppRouter.router.push(ScreenPaths.poc); },
+                      // onPressed: () {
+                      //   AppRouter.router.push(ScreenPaths.poc);
+                      // },
                     ),
-                    SizedBox(
-                      height: 15,
-                    ),
+                    SizedBox(height: 15),
                     Text('Tizen', style: TextStyle(fontSize: 15)),
-                    SizedBox(
-                      height: 10,
-                    )
+                    SizedBox(height: 10),
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(52, 0, 0, 0),
-                child: TextButton (
-                  onPressed: () { AppRouter.router.push(ScreenPaths.profile); },
-                  style: TextButton.styleFrom(
-                    backgroundColor: _buttonSelected ? Colors.white : Colors.transparent,
-                    foregroundColor: _buttonSelected ? Colors.black : Colors.white,
-                    animationDuration: const Duration(milliseconds: 100),
-                  ),
-                  child: const Text(
-                    'Switch profiles',
-                    style: TextStyle(
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              )
-            ]
-          )
-        )
+              // Padding(
+              //   padding: const EdgeInsets.fromLTRB(52, 0, 0, 0),
+              //   child: TextButton (
+              //     onPressed: () { AppRouter.router.push(ScreenPaths.profile); },
+              //     style: TextButton.styleFrom(
+              //       backgroundColor: _buttonSelected ? Colors.white : Colors.transparent,
+              //       foregroundColor: _buttonSelected ? Colors.black : Colors.white,
+              //       animationDuration: const Duration(milliseconds: 100),
+              //     ),
+              //     child: const Text(
+              //       'Switch profiles',
+              //       style: TextStyle(
+              //         fontSize: 12,
+              //       ),
+              //     ),
+              //   ),
+              // )
+            ],
+          ),
+        ),
       ),
     );
   }

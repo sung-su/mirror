@@ -86,7 +86,7 @@ class AppColors {
   final Color rblue = const Color(0xFF002366);
 
   final Color dotnetApp = const Color(0xFF008AEE);
-  final Color cApp = const Color(0xFF0F42CF);
+  final Color cApp = const Color(0xFF3aa1d9);
   final Color defaulApp = const Color(0xFF00c9ff);
 
   ThemeData toLightThemeData() {

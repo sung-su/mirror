@@ -58,7 +58,6 @@ class _HomePageState extends State<HomePage> {
       final threshold = screenHeight / 2;
 
       if (scrollEnd) {
-        debugPrint('scroll end: $direction');
         if (direction == ScrollDirection.reverse) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             _isScrolling = true;
@@ -131,7 +130,7 @@ class _HomePageState extends State<HomePage> {
                     await widget.scrollController.animateTo(
                       // 430,
                       360,
-                      duration: $style.times.fast,
+                      duration: $style.times.med,
                       curve: Curves.easeInOut,
                     );
                     _isScrolling = false;
@@ -150,7 +149,12 @@ class _HomePageState extends State<HomePage> {
                 _carouselKey.currentState?.initFocus();
               },
             ),
-            Footer(key: _footerKey),
+            Footer(
+              key: _footerKey,
+              onTap: () {
+                _applistKey.currentState?.setFocus();
+              },
+            ),
           ],
         ),
       ),
@@ -159,7 +163,9 @@ class _HomePageState extends State<HomePage> {
 }
 
 class Footer extends StatefulWidget {
-  const Footer({super.key});
+  const Footer({super.key, this.onTap});
+
+  final VoidCallback? onTap;
 
   @override
   State<Footer> createState() => FooterState();
@@ -187,7 +193,10 @@ class FooterState extends State<Footer> {
       height: _isVisible ? 500 : 0,
       child: Align(
         alignment: Alignment.topCenter,
-        child: Container(child: Icon(Icons.keyboard_arrow_down, size: 30)),
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: Container(child: Icon(Icons.keyboard_arrow_down, size: 30)),
+        ),
       ),
     );
   }

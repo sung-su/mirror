@@ -83,4 +83,19 @@ class AppDataModel extends ChangeNotifier {
       }
     }
   }
+
+  bool _applaunching = false;
+  bool get isAppLaunching => _applaunching;
+  set isAppLaunching(bool value) {
+    _applaunching = value;
+    notifyListeners();
+  }
+
+  Future<void> launchApp(String appid) async {
+    isAppLaunching = true;
+
+    await ApplicationManager.launch(appid);
+
+    isAppLaunching = false;
+  }
 }

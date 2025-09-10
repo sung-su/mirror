@@ -5,7 +5,11 @@ class ProfileActivePage extends StatelessWidget {
   final PageNode node;
   final bool isEnabled;
 
-  const ProfileActivePage({super.key, required this.node, required this.isEnabled});
+  const ProfileActivePage({
+    super.key,
+    required this.node,
+    required this.isEnabled,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,24 +21,16 @@ class ProfileActivePage extends StatelessWidget {
         spacing: 10,
         children: [
           Spacer(),
-          Text(
-            'ⓘ Profile Active',
-            style: TextStyle(
-              fontSize: 14,
-            ),
-          ),
+          Text('ⓘ Profile Active', style: TextStyle(fontSize: 14)),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20,0,0,0),
+            padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
             child: Text(
-              'Turn on/off the profile',
-              style: TextStyle(
-                fontSize: 10,
-              ),
+              'Tizen profile is activated',
+              style: TextStyle(fontSize: 10),
             ),
           ),
         ],
       ),
     );
   }
-
 }

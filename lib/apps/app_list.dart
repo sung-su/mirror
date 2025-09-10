@@ -139,7 +139,11 @@ class AppListState extends State<AppList> {
                 }
               },
               onItemSelected: (selected) {
-                ApplicationManager.launch(apps[selected].appId);
+                // ApplicationManager.launch(apps[selected].appId);
+                Provider.of<AppDataModel>(
+                  context,
+                  listen: false,
+                ).launchApp(apps[selected].appId);
               },
               onItemLongPressed: (selected) {
                 _showFullScreenPopup(context, apps[selected]);
@@ -157,12 +161,16 @@ class AppListState extends State<AppList> {
                       content: AppTile(app: apps[index]),
                       isSelected: index == selectedIndex,
                       onRequestSelect: () {
-                        _gridKey.currentState?.setFocus();
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          _gridKey.currentState?.selectTo(index);
-                          _gridKey.currentState?.scrollToSelected(index);
-                        });
-                        ApplicationManager.launch(apps[index].appId);
+                        // _gridKey.currentState?.setFocus();
+                        // WidgetsBinding.instance.addPostFrameCallback((_) {
+                        //   _gridKey.currentState?.selectTo(index);
+                        //   _gridKey.currentState?.scrollToSelected(index);
+                        // });
+                        // ApplicationManager.launch(apps[index].appId);
+                        Provider.of<AppDataModel>(
+                          context,
+                          listen: false,
+                        ).launchApp(apps[index].appId);
                       },
                     ),
                   ),
