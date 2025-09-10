@@ -88,16 +88,19 @@ class SettingPageState extends State<SettingPage>
         },
       );
 
-      return Container(
-        color:
-            widget.isEnabled
-                ? Theme.of(context).colorScheme.surface
-                : Theme.of(context).colorScheme.onTertiary,
-        child: AnimatedOpacity(
-          duration: $style.times.fast,
-          opacity: _opacity,
-          curve: Curves.easeInOut,
-          child: page,
+      return AbsorbPointer(
+        absorbing: !widget.isEnabled,
+        child: Container(
+          color:
+              widget.isEnabled
+                  ? Theme.of(context).colorScheme.surface
+                  : Theme.of(context).colorScheme.onTertiary,
+          child: AnimatedOpacity(
+            duration: $style.times.fast,
+            opacity: _opacity,
+            curve: Curves.easeInOut,
+            child: page,
+          ),
         ),
       );
     }
@@ -116,72 +119,75 @@ class SettingPageState extends State<SettingPage>
 
     final neededHeight = textPainter.size.height - 25;
 
-    return Container(
-      color:
-          widget.isEnabled
-              ? Theme.of(context).colorScheme.surface
-              : Theme.of(context).colorScheme.onTertiary,
-      child: AnimatedOpacity(
-        opacity: _opacity,
-        duration: $style.times.med,
-        curve: Curves.easeInOut,
-        child: Column(
-          spacing: 10,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            //title
-            SizedBox(
-              height:
-                  neededHeight + 50 < titleHeight
-                      ? titleHeight
-                      : titleHeight + neededHeight,
-              width: 400,
-              child: AnimatedPadding(
-                duration: $style.times.med,
-                padding: // title up/left padding
-                    widget.isEnabled
-                        ? EdgeInsets.fromLTRB(120, 60, 40, 0)
-                        : EdgeInsets.fromLTRB(80, 60, 80, 0),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    widget.node?.title ?? '',
-                    softWrap: true,
-                    overflow: TextOverflow.visible,
-                    maxLines: 2,
-                    style: TextStyle(fontSize: titleFontSize),
-                  ),
-                ),
-              ),
-            ),
-            //list
-            if (!widget.node!.children.isEmpty)
-              Expanded(
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: AnimatedPadding(
-                    duration: $style.times.med,
-                    padding: // item left/right padding
-                        widget.isEnabled
-                            ? const EdgeInsets.symmetric(
-                              horizontal: 80,
-                              vertical: 10,
-                            )
-                            : const EdgeInsets.symmetric(horizontal: 40),
-                    child: SettingListView(
-                      key: _listKey,
-                      node: widget.node!,
-                      onItemFocused: (focused) {
-                        widget.onItemFocused?.call(focused);
-                      },
-                      onItemSelected: (selected) {
-                        widget.onItemSelected?.call(selected);
-                      },
+    return AbsorbPointer(
+      absorbing: !widget.isEnabled,
+      child: Container(
+        color:
+            widget.isEnabled
+                ? Theme.of(context).colorScheme.surface
+                : Theme.of(context).colorScheme.onTertiary,
+        child: AnimatedOpacity(
+          opacity: _opacity,
+          duration: $style.times.med,
+          curve: Curves.easeInOut,
+          child: Column(
+            spacing: 10,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //title
+              SizedBox(
+                height:
+                    neededHeight + 50 < titleHeight
+                        ? titleHeight
+                        : titleHeight + neededHeight,
+                width: 400,
+                child: AnimatedPadding(
+                  duration: $style.times.med,
+                  padding: // title up/left padding
+                      widget.isEnabled
+                          ? EdgeInsets.fromLTRB(120, 60, 40, 0)
+                          : EdgeInsets.fromLTRB(80, 60, 80, 0),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      widget.node?.title ?? '',
+                      softWrap: true,
+                      overflow: TextOverflow.visible,
+                      maxLines: 2,
+                      style: TextStyle(fontSize: titleFontSize),
                     ),
                   ),
                 ),
               ),
-          ],
+              //list
+              if (!widget.node!.children.isEmpty)
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: AnimatedPadding(
+                      duration: $style.times.med,
+                      padding: // item left/right padding
+                          widget.isEnabled
+                              ? const EdgeInsets.symmetric(
+                                horizontal: 80,
+                                vertical: 10,
+                              )
+                              : const EdgeInsets.symmetric(horizontal: 40),
+                      child: SettingListView(
+                        key: _listKey,
+                        node: widget.node!,
+                        onItemFocused: (focused) {
+                          widget.onItemFocused?.call(focused);
+                        },
+                        onItemSelected: (selected) {
+                          widget.onItemSelected?.call(selected);
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
