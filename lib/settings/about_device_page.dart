@@ -92,11 +92,9 @@ class AboutDevicePageState extends State<AboutDevicePage> {
                   key: _listKey,
                   node: widget.node!,
                   onSelectionChanged: (selected) {
-                    print("@ selected[${selected}]");
                     widget.onSelectionChanged?.call(selected);
                   },
                   onAction: (selected) {
-                    print("@ action[${selected}]");
                     widget.node?.children[selected].id == "about_device_opensource_license"
                         ? _showFullScreenPopup(context, OpenSourceLicensePopup())
                         : null;

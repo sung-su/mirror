@@ -143,6 +143,13 @@ class WifiListViewState extends State<WifiListView>
                   onTap: () {
                     listKey.currentState?.selectTo(index);
                     Focus.of(context).requestFocus();
+                    if (_selected > 0 && wifiProvider.isActivated) {
+                      final apIndex = _selected - 1;
+                      if (apIndex < wifiProvider.apList.length) {
+                        final selectedAp = wifiProvider.apList[apIndex];
+                        _showWifiPasswordPopup(selectedAp);
+                      }
+                    }
                   },
                   child:
                       index == 0

@@ -89,6 +89,7 @@ class SettingActionListViewState extends State<SettingActionListView>
               onTap: () {
                 listKey.currentState?.selectTo(index);
                 Focus.of(context).requestFocus();
+                 widget.onAction?.call(_selected);
               },
               child: ItemView(
                 node: widget.node.children[index],
