@@ -82,24 +82,24 @@ class SettingPages {
             builder: (context, node, isEnabled, onItemSelected) => EndPage(),
             isEnd: true,
           ),
-          PageNode(
-            id: 'about_device_certificates',
-            title: 'Manage certificates',
-            children: [
-              PageNode(
-                id: 'about_device_certificates_AAA',
-                title: 'AAA certificates',
-                builder:
-                    (context, node, isEnabled, onItemSelected) => EndPage(),
-              ),
-              PageNode(
-                id: 'about_device_certificates_ANF',
-                title: 'ANF certificates',
-                builder:
-                    (context, node, isEnabled, onItemSelected) => EndPage(),
-              ),
-            ],
-          ),
+          // PageNode(
+          //   id: 'about_device_certificates',
+          //   title: 'Manage certificates',
+          //   children: [
+          //     PageNode(
+          //       id: 'about_device_certificates_AAA',
+          //       title: 'AAA certificates',
+          //       builder:
+          //           (context, node, isEnabled, onItemSelected) => EndPage(),
+          //     ),
+          //     PageNode(
+          //       id: 'about_device_certificates_ANF',
+          //       title: 'ANF certificates',
+          //       builder:
+          //           (context, node, isEnabled, onItemSelected) => EndPage(),
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );
