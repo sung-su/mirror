@@ -51,11 +51,11 @@ class CategorySelectableListViewState
       _scrollDirection = widget.scrollDirection!;
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _isEnabled = Provider.of<BtModel>(context, listen: false).isEnabled;
-      });
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   setState(() {
+    //     _isEnabled = Provider.of<BtModel>(context, listen: false).isEnabled;
+    //   });
+    // });
   }
 
   @override
@@ -100,15 +100,15 @@ class CategorySelectableListViewState
   }
 
   void onAction(int index) {
-    if (index == 1) {
-      final isBusy = Provider.of<BtModel>(context, listen: false).isBusy;
-      debugPrint('onAction : isBusy=$isBusy, _isEnabled=$_isEnabled');
-      if (!isBusy) {
-        setState(() {
-          _isEnabled = !_isEnabled;
-        });
-      }
-    }
+    // if (index == 1) {
+    //   // final isBusy = Provider.of<BtModel>(context, listen: false).isBusy;
+    //   // debugPrint('onAction : isBusy=$isBusy, _isEnabled=$_isEnabled');
+    //   // if (!isBusy) {
+    //   //   setState(() {
+    //   //     _isEnabled = !_isEnabled;
+    //   //   });
+    //   // }
+    // }
 
     widget.onAction?.call(index);
   }
@@ -178,6 +178,7 @@ class CategorySelectableListViewState
     _itemCount = _items.length;
 
     _itemKeys = List.generate(_items.length, (index) => GlobalKey());
+    _isEnabled = Provider.of<BtModel>(context).isEnabled;
 
     return ScrollConfiguration(
       behavior: ScrollBehavior().copyWith(
