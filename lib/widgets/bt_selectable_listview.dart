@@ -294,6 +294,7 @@ class _DeviceListMenuItemState extends State<DeviceListMenuItem> {
   Widget build(BuildContext context) {
     final isOperationRunning = context.watch<BtModel>().isBusy;
     final isEnabled = context.watch<BtModel>().isEnabled;
+    final isBtSupported = context.watch<BtModel>().isBtSupported;
 
     return SizedBox(
       height: itemHeight,
@@ -328,7 +329,9 @@ class _DeviceListMenuItemState extends State<DeviceListMenuItem> {
                       ),
                     ),
                     Text(
-                      isEnabled ? 'On' : 'Off',
+                      isBtSupported
+                          ? (isEnabled ? 'On' : 'Off')
+                          : 'Not Support',
                       style: TextStyle(
                         fontSize: subtitleFontSize,
                         color:
@@ -357,7 +360,7 @@ class _DeviceListMenuItemState extends State<DeviceListMenuItem> {
                           color: Colors.blue.withAlphaF(0.5),
                         ),
                       ),
-                    if (!isOperationRunning)
+                    if (!isOperationRunning && isBtSupported)
                       Switch(
                         value: widget.isON,
                         activeColor: Colors.blue,
