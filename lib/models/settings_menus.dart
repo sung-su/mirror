@@ -32,23 +32,27 @@ class SettingPages {
             id: 'profile_tizen',
             title: 'Tizen',
             icon: const IconData(0x0054), //unicode T: 0054
-            children: [
-              PageNode(
-                id: 'profile_tizen_active',
-                title: 'Active',
-                isEnd: true,
-                builder:
-                    (context, node, isEnabled, onItemSelected) =>
-                        ProfileActivePage(node: node, isEnabled: isEnabled),
-              ),
-              PageNode(
-                id: 'profile_tizen_remove',
-                title: 'Remove',
-                isEnd: true,
-              ),
-            ],
+            isEnd: true,
+            builder:
+                (context, node, isEnabled, onItemSelected) =>
+                    ProfileActivePage(node: node, isEnabled: isEnabled),
+            // children: [
+            //   // PageNode(
+            //   //   id: 'profile_tizen_active',
+            //   //   title: 'Active',
+            //   //   isEnd: true,
+            //   //   builder:
+            //   //       (context, node, isEnabled, onItemSelected) =>
+            //   //           ProfileActivePage(node: node, isEnabled: isEnabled),
+            //   // ),
+            //   // PageNode(
+            //   //   id: 'profile_tizen_remove',
+            //   //   title: 'Remove',
+            //   //   isEnd: true,
+            //   // ),
+            // ],
           ),
-          PageNode(id: 'profile_add', title: 'Add a profile'),
+          // PageNode(id: 'profile_add', title: 'Add a profile'),
         ],
       ),
     );

@@ -47,6 +47,8 @@ class _MainContentState extends State<MainContent> {
 
   @override
   Widget build(BuildContext context) {
+    final isAppLaunching = context.watch<AppDataModel>().isAppLaunching;
+
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         if (notification is UserScrollNotification) {
@@ -71,31 +73,36 @@ class _MainContentState extends State<MainContent> {
 
         return false;
       },
-      child: CustomScrollView(
-        scrollBehavior: ScrollBehavior().copyWith(
-          scrollbars: false,
-          overscroll: false,
-          dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch},
-        ),
-        controller: _scrollController,
-        primary: false,
-        slivers: [
-          SliverAppBar(
-            pinned: false,
-            floating: false,
-            automaticallyImplyLeading: false,
-            toolbarHeight: 80,
-            backgroundColor: Colors.transparent,
-            title: MainTopMenu(pageController: _pageController),
-          ),
-          SliverToBoxAdapter(
-            child: MainContentView(
-              pageController: _pageController,
-              scrollController: _scrollController,
-              register: registerChild,
-              unregister: unregisterChild,
+      child: Stack(
+        children: [
+          CustomScrollView(
+            scrollBehavior: ScrollBehavior().copyWith(
+              scrollbars: false,
+              overscroll: false,
+              dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch},
             ),
+            controller: _scrollController,
+            primary: false,
+            slivers: [
+              SliverAppBar(
+                pinned: false,
+                floating: false,
+                automaticallyImplyLeading: false,
+                toolbarHeight: 80,
+                backgroundColor: Colors.transparent,
+                title: MainTopMenu(pageController: _pageController),
+              ),
+              SliverToBoxAdapter(
+                child: MainContentView(
+                  pageController: _pageController,
+                  scrollController: _scrollController,
+                  register: registerChild,
+                  unregister: unregisterChild,
+                ),
+              ),
+            ],
           ),
+          if (isAppLaunching) Center(child: CircularProgressIndicator()),
         ],
       ),
     );
