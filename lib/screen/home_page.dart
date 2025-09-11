@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:tizen_fs/models/app_data_model.dart';
 import 'package:tizen_fs/providers/backdrop_provider.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/utils/noscroll_focustraversal_policy.dart';
@@ -57,7 +58,9 @@ class _HomePageState extends State<HomePage> {
       final dy = applistBox.localToGlobal(Offset.zero).dy;
       final threshold = screenHeight / 2;
 
-      if (scrollEnd) {
+      if (scrollEnd &&
+          Provider.of<AppDataModel>(context, listen: false).appInfos.length >
+              0) {
         if (direction == ScrollDirection.reverse) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             _isScrolling = true;
@@ -118,43 +121,53 @@ class _HomePageState extends State<HomePage> {
                 _isAnimating = false;
               },
             ),
-            AppList(
-              key: _applistKey,
-              scrollController: widget.scrollController,
-              onFocusChanged: (hasFocus) async {
-                if (hasFocus) {
-                  _carouselKey.currentState?.stopAutoScroll();
-                  var context = _applistKey.currentContext;
-                  if (context != null) {
-                    _isScrolling = true;
-                    await widget.scrollController.animateTo(
-                      // 430,
-                      360,
-                      duration: $style.times.med,
-                      curve: Curves.easeInOut,
-                    );
-                    _isScrolling = false;
-                    _footerKey.currentState?.hide();
+            if (Provider.of<AppDataModel>(
+                  context,
+                  listen: false,
+                ).appInfos.length >
+                0)
+              AppList(
+                key: _applistKey,
+                scrollController: widget.scrollController,
+                onFocusChanged: (hasFocus) async {
+                  if (hasFocus) {
+                    _carouselKey.currentState?.stopAutoScroll();
+                    var context = _applistKey.currentContext;
+                    if (context != null) {
+                      _isScrolling = true;
+                      await widget.scrollController.animateTo(
+                        // 430,
+                        360,
+                        duration: $style.times.med,
+                        curve: Curves.easeInOut,
+                      );
+                      _isScrolling = false;
+                      _footerKey.currentState?.hide();
+                    }
+                  } else {
+                    _carouselKey.currentState?.restartAutoScroll();
                   }
-                } else {
-                  _carouselKey.currentState?.restartAutoScroll();
-                }
-              },
-              onScrollup: () async {
-                await widget.scrollController.animateTo(
-                  0,
-                  duration: $style.times.med,
-                  curve: Curves.easeInOut,
-                );
-                _carouselKey.currentState?.initFocus();
-              },
-            ),
-            Footer(
-              key: _footerKey,
-              onTap: () {
-                _applistKey.currentState?.setFocus();
-              },
-            ),
+                },
+                onScrollup: () async {
+                  await widget.scrollController.animateTo(
+                    0,
+                    duration: $style.times.med,
+                    curve: Curves.easeInOut,
+                  );
+                  _carouselKey.currentState?.initFocus();
+                },
+              ),
+            if (Provider.of<AppDataModel>(
+                  context,
+                  listen: false,
+                ).appInfos.length >
+                0)
+              Footer(
+                key: _footerKey,
+                onTap: () {
+                  _applistKey.currentState?.setFocus();
+                },
+              ),
           ],
         ),
       ),

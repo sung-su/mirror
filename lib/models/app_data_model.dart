@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:tizen_app_manager/app_manager.dart';
 import 'package:tizen_fs/native/app_manager.dart';
 import 'package:tizen_fs/models/app_data.dart';
+import 'package:tizen_fs/router.dart';
 
 class AppDataModel extends ChangeNotifier {
   List<AppData> appInfos = [];
@@ -30,6 +31,10 @@ class AppDataModel extends ChangeNotifier {
     _isLoading = false;
 
     notifyListeners();
+
+    if (appInfos.length == 0) {
+      AppRouter.router.push(ScreenPaths.main);
+    }
   }
 
   int get selectedIndex => _selectedIndex;
@@ -69,7 +74,7 @@ class AppDataModel extends ChangeNotifier {
 
     final apps = await AppManager.getInstalledApps();
     for (AppInfo app in apps) {
-      if (!app.isNoDisplay) {
+      if (!app.isNoDisplay && app.appId.contains('hello')) {
         appInfos.add(
           AppData(
             appId: app.appId,
