@@ -53,8 +53,10 @@ class AppTile extends StatelessWidget {
   Color getAppColor() {
     if (app.appType.contains('dotnet')) {
       return $style.colors.dotnetApp;
-    } else if (app.appType.contains('cpp')) {
+    } else if (app.appType.contains('capp')) {
       return $style.colors.cApp;
+    } else if (app.appType.contains('webapp')) {
+      return $style.colors.webApp;
     }
     return $style.colors.defaulApp;
   }

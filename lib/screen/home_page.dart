@@ -62,6 +62,7 @@ class _HomePageState extends State<HomePage> {
           Provider.of<AppDataModel>(context, listen: false).appInfos.length >
               0) {
         if (direction == ScrollDirection.reverse) {
+          if (!_footerKey.currentState!.isVisible) return;
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             _isScrolling = true;
             await widget.scrollController.animateTo(
