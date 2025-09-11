@@ -6,7 +6,7 @@ import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/widgets/app_tile.dart';
 
 class AppPopup extends StatefulWidget {
-  const AppPopup({ super.key, required this.app, required this.onRemovePressed});
+  const AppPopup({super.key, required this.app, required this.onRemovePressed});
 
   final AppData app;
   final VoidCallback? onRemovePressed;
@@ -15,24 +15,21 @@ class AppPopup extends StatefulWidget {
 }
 
 class _AppPopupState extends State<AppPopup> {
-
   int _selected = 0;
 
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
     if (event is KeyDownEvent) {
       if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-        setState(() {
-          _selected = (_selected + 1).clamp(0, 1);
-        });
+        // setState(() {
+        //   _selected = (_selected + 1).clamp(0, 1);
+        // });
         return KeyEventResult.handled;
-      } 
-      else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-        setState(() {
-          _selected = (_selected - 1).clamp(0, 1);
-        });
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+        // setState(() {
+        //   _selected = (_selected - 1).clamp(0, 1);
+        // });
         return KeyEventResult.handled;
-      } 
-      else if (event.logicalKey == LogicalKeyboardKey.enter) {
+      } else if (event.logicalKey == LogicalKeyboardKey.enter) {
         _showAppRemovePopup();
         return KeyEventResult.handled;
       }
@@ -47,19 +44,21 @@ class _AppPopupState extends State<AppPopup> {
       barrierLabel: "Close",
       barrierColor: Colors.transparent,
       transitionDuration: $style.times.pageTransition,
-      pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
-        return AppPopupRemove(app: widget.app,
-          onConfirm: (){
+      pageBuilder: (
+        BuildContext buildContext,
+        Animation animation,
+        Animation secondaryAnimation,
+      ) {
+        return AppPopupRemove(
+          app: widget.app,
+          onConfirm: () {
             widget.onRemovePressed?.call();
             Navigator.of(context).pop();
-          }
+          },
         );
       },
       transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-            opacity: animation,
-            child: child,
-        );
+        return FadeTransition(opacity: animation, child: child);
       },
     );
   }
@@ -91,10 +90,10 @@ class _AppPopupState extends State<AppPopup> {
                       SizedBox(
                         width: 152 * 1.3,
                         height: 86 * 1.3,
-                        child: AppTile(app: widget.app)
+                        child: AppTile(app: widget.app),
                       ),
-                      Text(widget.app.name)
-                    ]
+                      Text(widget.app.name),
+                    ],
                   ),
                 ),
               ),
@@ -105,35 +104,42 @@ class _AppPopupState extends State<AppPopup> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     spacing: 20,
                     children: [
-                      PopupButton(
-                        text: 'Move',
-                        isSelected: _selected == 0,
-                        onPressed: (){
-                          _select(0);
-                        }
-                      ),
+                      // PopupButton(
+                      //   text: 'Move',
+                      //   isSelected: _selected == 0,
+                      //   onPressed: (){
+                      //     _select(0);
+                      //   }
+                      // ),
                       PopupButton(
                         text: 'Uninstall',
-                        isSelected: _selected == 1,
+                        isSelected: _selected == 0,
                         onPressed: () {
-                          _select(1);
+                          _select(0);
                           _showAppRemovePopup();
                         },
                       ),
-                    ]
+                    ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
-        )
-      )
+        ),
+      ),
     );
   }
 }
 
-class PopupButton extends StatelessWidget{
-  const PopupButton({super.key, this.isSelected = false, required this.text, required this.onPressed, this.width = 250, this.height= 50});
+class PopupButton extends StatelessWidget {
+  const PopupButton({
+    super.key,
+    this.isSelected = false,
+    required this.text,
+    required this.onPressed,
+    this.width = 250,
+    this.height = 50,
+  });
 
   final bool isSelected;
   final String text;
@@ -154,7 +160,10 @@ class PopupButton extends StatelessWidget{
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
-              color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surfaceContainerHighest,
+              color:
+                  isSelected
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.surfaceContainerHighest,
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
@@ -171,14 +180,17 @@ class PopupButton extends StatelessWidget{
                         text,
                         style: TextStyle(
                           fontSize: 13,
-                          color: isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.primary,
-                        )
+                          color:
+                              isSelected
+                                  ? Theme.of(context).colorScheme.onPrimary
+                                  : Theme.of(context).colorScheme.primary,
+                        ),
                       ),
                     ],
                   ),
                 ],
               ),
-            )
+            ),
           ),
         ),
       ),
