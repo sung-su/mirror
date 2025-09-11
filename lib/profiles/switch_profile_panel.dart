@@ -30,7 +30,7 @@ class _AccountPanelState extends State<AccountPanel> {
               return KeyEventResult.handled;
             } else if (event is KeyDownEvent &&
                 event.logicalKey == LogicalKeyboardKey.enter) {
-              AppRouter.router.push(ScreenPaths.profile);
+              // AppRouter.router.push(ScreenPasths.profile);
               return KeyEventResult.ignored;
             } else if (event is KeyDownEvent &&
                 event.logicalKey == LogicalKeyboardKey.arrowDown) {
