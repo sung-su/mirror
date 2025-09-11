@@ -11,6 +11,8 @@ class WifiManager {
   static final callbacks = TizenInteropCallbacks();
   bool _initialized = false;
   bool get initialized => _initialized;
+  bool _isSupported = true;
+  bool get isSupported => _isSupported;
 
   static List<WifiAP> _apList = [];
   List<WifiAP> get apList => _apList;
@@ -55,7 +57,10 @@ class WifiManager {
 
     wifiManagerHandle = calloc<tz.wifi_manager_h>();
     final ret = tz.tizen.wifi_manager_initialize(wifiManagerHandle);
-    // print("@ Wi-Fi Native Initialized [${ret == 0}]");
+    //  print("@ Wi-Fi Native Initialized [${ret == 0}]");
+    if (ret == tz.wifi_manager_error_e.WIFI_MANAGER_ERROR_NOT_SUPPORTED) {
+      _isSupported = false;
+    }
     return ret == 0;
   }
 

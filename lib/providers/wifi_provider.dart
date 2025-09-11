@@ -108,8 +108,7 @@ class WifiProvider with ChangeNotifier {
     WifiManager.onDisconnected = (int result) {
       _isDisconnecting = false;
       _lastDisconnectionResult = (result == 0);
-      //
-        print("onDisconnected[${result}] result=[${_lastDisconnectionResult}]");
+      //print("onDisconnected[${result}] result=[${_lastDisconnectionResult}]");
       notifyListeners();
       if (_lastDisconnectionResult == true) {
         // print("onDisconnected success");
@@ -129,6 +128,8 @@ class WifiProvider with ChangeNotifier {
     _wifiManager.dispose();
     super.dispose();
   }
+
+  bool get isSupported => _wifiManager.isSupported;
 
   Future<bool> wifiOn() async {
     if (isInitialized == false) {
