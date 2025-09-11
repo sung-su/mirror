@@ -87,7 +87,8 @@ class AppColors {
 
   final Color dotnetApp = const Color(0xFF008AEE);
   final Color cApp = const Color(0xFF3aa1d9);
-  final Color defaulApp = const Color(0xFF00c9ff);
+  final Color webApp = const Color(0xFF3a3a3a);
+  final Color defaulApp = const Color(0xFF3aa1d9);
 
   ThemeData toLightThemeData() {
     var colorScheme = ColorScheme.fromSeed(
