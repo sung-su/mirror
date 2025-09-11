@@ -28,6 +28,7 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
   final FocusNode _disconnectFocusNode = FocusNode();
   final FocusNode _cancelFocusNode = FocusNode();
   int _selected = 0;
+  bool _showProgress = false;
 
   @override
   void initState() {
@@ -75,7 +76,7 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
   }
 
   void _updateFocus() {
-    print("_updateFocus[${_selected}]");
+    // print("_updateFocus[${_selected}]");
     switch (_selected) {
       case 0:
         _passwordFocusNode.requestFocus();
@@ -93,19 +94,26 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
   }
 
   void _handleConnect() {
-    print("_handleConnect");
+    // print("_handleConnect");
+    setState(() {
+      _showProgress = true;
+    });
     widget.onConnect(_passwordController.text);
+
     _waitForConnectionResultAndShowPopup('connect');
   }
 
   void _handleDisconnect() {
-    print("_handleDisconnect");
+    // print("_handleDisconnect");
+    setState(() {
+      _showProgress = true;
+    });
     widget.onDisconnect();
     _waitForConnectionResultAndShowPopup('disconnect');
   }
 
   void _waitForConnectionResultAndShowPopup(String resultType) {
-    print("_waitForConnectionResultAndShowPopup[${resultType}]");
+    // print("_waitForConnectionResultAndShowPopup[${resultType}]");
     final wifiProvider = Provider.of<WifiProvider>(context, listen: false);
     void listener() {
       bool? result;
@@ -121,18 +129,22 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
     }
     wifiProvider.addListener(listener);
     Future.delayed(Duration(seconds: 5), () {
-      //need to case disconnected+connect
+
       wifiProvider.removeListener(listener);
       if (resultType == 'connect' && wifiProvider.lastConnectionResult == null) {
         _showResultPopup(resultType, false);
       } else if (resultType == 'disconnect' && wifiProvider.lastDisconnectionResult == null) {
         _showResultPopup(resultType, false);
       }
+      _showResultPopup(resultType, true);
     });
   }
 
   void _showResultPopup(String resultType, bool success) {
-    print("_showResultPopup[${resultType}] success=[${success}]");
+    // print("_showResultPopup[${resultType}] success=[${success}]");
+    setState(() {
+      _showProgress = false;
+    });
     Navigator.of(context).pop();
     showGeneralDialog(
       context: context,
@@ -166,106 +178,119 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Focus(
-        autofocus: true,
-        onKeyEvent: _onKeyEvent,
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(80, 80, 0, 0),
-              child: Container(
-                width: 500,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 20,
-                  children: [
-                    Container(
-                      child: Text(
-                        'Wi-Fi',
-                        style: TextStyle(fontSize: 15, color: Colors.white70),
-                      ),
-                    ),
-                    Container(
-                      child: Text(
-                        '${widget.ap.essid}',
-                        style: TextStyle(fontSize: 30, color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 120, 100, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  spacing: 20,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color:
-                            _selected == 0
-                                ? Colors.white.withOpacity(0.2)
-                                : Colors.white.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color:
-                              _selected == 0
-                                  ? Color(0xF04285F4)
-                                  : Colors.transparent,
-                          width: 2,
-                        ),
-                      ),
-                      child: TextField(
-                        controller: _passwordController,
-                        focusNode: _passwordFocusNode,
-                        obscureText: true,
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 12,
+      body: Stack(
+        children: [
+          Focus(
+            autofocus: true,
+            onKeyEvent: _onKeyEvent,
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(80, 80, 0, 0),
+                  child: Container(
+                    width: 500,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 20,
+                      children: [
+                        Container(
+                          child: Text(
+                            'Wi-Fi',
+                            style: TextStyle(fontSize: 15, color: Colors.white70),
                           ),
-                          hintText: 'Password',
-                          hintStyle: TextStyle(color: Colors.white54),
                         ),
-                      ),
+                        Container(
+                          child: Text(
+                            '${widget.ap.essid}',
+                            style: TextStyle(fontSize: 30, color: Colors.white),
+                          ),
+                        ),
+                      ],
                     ),
-                    PopupButton(
-                      focusNode: _connectFocusNode,
-                      text: 'Connect',
-                      isSelected: _selected == 1,
-                      onPressed: () {
-                        _select(1);
-                        _handleConnect();
-                      },
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 120, 100, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      spacing: 20,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color:
+                                _selected == 0
+                                    ? Colors.white.withOpacity(0.2)
+                                    : Colors.white.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color:
+                                  _selected == 0
+                                      ? Color(0xF04285F4)
+                                      : Colors.transparent,
+                              width: 2,
+                            ),
+                          ),
+                          child: TextField(
+                            controller: _passwordController,
+                            focusNode: _passwordFocusNode,
+                            obscureText: true,
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 15,
+                                vertical: 12,
+                              ),
+                              hintText: 'Password',
+                              hintStyle: TextStyle(color: Colors.white54),
+                            ),
+                          ),
+                        ),
+                        PopupButton(
+                          focusNode: _connectFocusNode,
+                          text: 'Connect',
+                          isSelected: _selected == 1,
+                          onPressed: () {
+                            _select(1);
+                            _handleConnect();
+                          },
+                        ),
+                        PopupButton(
+                          focusNode: _disconnectFocusNode,
+                          text: 'Disconnect',
+                          isSelected: _selected == 2,
+                          onPressed: () {
+                            _select(2);
+                            _handleDisconnect();
+                          },
+                        ),
+                        PopupButton(
+                          focusNode: _cancelFocusNode,
+                          text: 'Cancel',
+                          isSelected: _selected == 3,
+                          onPressed: () {
+                            _select(3);
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
                     ),
-                    PopupButton(
-                      focusNode: _disconnectFocusNode,
-                      text: 'Disconnect',
-                      isSelected: _selected == 2,
-                      onPressed: () {
-                        _select(2);
-                        _handleDisconnect();
-                      },
-                    ),
-                    PopupButton(
-                      focusNode: _cancelFocusNode,
-                      text: 'Cancel',
-                      isSelected: _selected == 3,
-                      onPressed: () {
-                        _select(3);
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (_showProgress)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }

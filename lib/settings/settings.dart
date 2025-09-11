@@ -5,6 +5,7 @@ import 'package:tizen_fs/locator.dart';
 import 'package:tizen_fs/models/bt_model.dart';
 import 'package:tizen_fs/models/page_node.dart';
 import 'package:tizen_fs/models/settings_menus.dart';
+import 'package:tizen_fs/native/wifi.dart';
 import 'package:tizen_fs/settings/setting_page_interface.dart';
 import 'package:tizen_fs/settings/setting_page.dart';
 import 'package:tizen_fs/styles/app_style.dart';
