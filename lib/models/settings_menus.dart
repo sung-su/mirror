@@ -141,87 +141,87 @@ class SettingPages {
       ),
     );
 
-    settings.children.add(
-      PageNode(
-        id: 'display',
-        icon: Icons.light_mode_outlined,
-        title: 'Display',
-        children: [
-          PageNode(id: 'display_brigetness', title: 'Brightness'),
-          PageNode(id: 'display_font_size', title: 'Font size'),
-          PageNode(id: 'display_font_type', title: 'Font type'),
-          PageNode(id: 'display_screen_timeout', title: 'Screen timeout'),
-        ],
-      ),
-    );
+    // settings.children.add(
+    //   PageNode(
+    //     id: 'display',
+    //     icon: Icons.light_mode_outlined,
+    //     title: 'Display',
+    //     children: [
+    //       PageNode(id: 'display_brigetness', title: 'Brightness'),
+    //       PageNode(id: 'display_font_size', title: 'Font size'),
+    //       PageNode(id: 'display_font_type', title: 'Font type'),
+    //       PageNode(id: 'display_screen_timeout', title: 'Screen timeout'),
+    //     ],
+    //   ),
+    // );
 
-    settings.children.add(
-      PageNode(
-        id: 'date_time',
-        icon: Icons.today_outlined,
-        title: 'Date & Time',
-        children: [
-          PageNode(id: 'date_time_auto_update', title: 'Auto update'),
-          PageNode(id: 'date_time_set_date', title: 'Set date'),
-          PageNode(id: 'date_time_set_time', title: 'Set time'),
-          PageNode(id: 'date_time_time_zone', title: 'Time zone'),
-          PageNode(id: 'date_time_24_hour_clock', title: '24 hour clock'),
-        ],
-      ),
-    );
+    // settings.children.add(
+    //   PageNode(
+    //     id: 'date_time',
+    //     icon: Icons.today_outlined,
+    //     title: 'Date & Time',
+    //     children: [
+    //       PageNode(id: 'date_time_auto_update', title: 'Auto update'),
+    //       PageNode(id: 'date_time_set_date', title: 'Set date'),
+    //       PageNode(id: 'date_time_set_time', title: 'Set time'),
+    //       PageNode(id: 'date_time_time_zone', title: 'Time zone'),
+    //       PageNode(id: 'date_time_24_hour_clock', title: '24 hour clock'),
+    //     ],
+    //   ),
+    // );
 
-    settings.children.add(
-      PageNode(
-        id: 'language_input',
-        icon: Icons.language_outlined,
-        title: 'Language & Input',
-        children: [
-          PageNode(id: 'language_input_display_language', title: 'Language'),
-          PageNode(id: 'language_input_keyboard', title: 'Keyboard'),
-          PageNode(id: 'language_input_autofill_service', title: 'Autofill'),
-          PageNode(id: 'language_input_voice_control', title: 'Voice control'),
-          // PageNode(
-          //   id: 'language_input_tts',
-          //   title: 'TTS (TBD)',
-          // ),
-          // PageNode(
-          //   id: 'language_input_stt',
-          //   title: 'STT (TBD)',
-          // ),
-        ],
-      ),
-    );
+    // settings.children.add(
+    //   PageNode(
+    //     id: 'language_input',
+    //     icon: Icons.language_outlined,
+    //     title: 'Language & Input',
+    //     children: [
+    //       PageNode(id: 'language_input_display_language', title: 'Language'),
+    //       PageNode(id: 'language_input_keyboard', title: 'Keyboard'),
+    //       PageNode(id: 'language_input_autofill_service', title: 'Autofill'),
+    //       PageNode(id: 'language_input_voice_control', title: 'Voice control'),
+    //       // PageNode(
+    //       //   id: 'language_input_tts',
+    //       //   title: 'TTS (TBD)',
+    //       // ),
+    //       // PageNode(
+    //       //   id: 'language_input_stt',
+    //       //   title: 'STT (TBD)',
+    //       // ),
+    //     ],
+    //   ),
+    // );
 
-    settings.children.add(
-      PageNode(
-        id: 'apps',
-        icon: Icons.apps_outlined,
-        title: 'Apps',
-        children: [
-          PageNode(
-            id: 'apps_application_manager',
-            title: 'Application Manager',
-          ),
-          PageNode(
-            id: 'apps_default_application',
-            title: 'Default application',
-          ),
-        ],
-      ),
-    );
+    // settings.children.add(
+    //   PageNode(
+    //     id: 'apps',
+    //     icon: Icons.apps_outlined,
+    //     title: 'Apps',
+    //     children: [
+    //       PageNode(
+    //         id: 'apps_application_manager',
+    //         title: 'Application Manager',
+    //       ),
+    //       PageNode(
+    //         id: 'apps_default_application',
+    //         title: 'Default application',
+    //       ),
+    //     ],
+    //   ),
+    // );
 
-    settings.children.add(
-      PageNode(
-        id: 'Storage',
-        icon: Icons.archive_outlined,
-        title: 'Storage',
-        children: [
-          PageNode(id: 'storage_internal', title: 'Internal'),
-          PageNode(id: 'storage_external', title: 'External'),
-          PageNode(id: 'storage_default_settings', title: 'Default settings'),
-        ],
-      ),
-    );
+    // settings.children.add(
+    //   PageNode(
+    //     id: 'Storage',
+    //     icon: Icons.archive_outlined,
+    //     title: 'Storage',
+    //     children: [
+    //       PageNode(id: 'storage_internal', title: 'Internal'),
+    //       PageNode(id: 'storage_external', title: 'External'),
+    //       PageNode(id: 'storage_default_settings', title: 'Default settings'),
+    //     ],
+    //   ),
+    // );
 
     return settings;
   }
