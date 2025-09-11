@@ -8,7 +8,6 @@ class BtTestPage extends StatefulWidget {
 }
 
 class _BtTestPageState extends State<BtTestPage> {
-
   BtModel _model = BtModel.init();
 
   @override
@@ -27,12 +26,11 @@ class _BtTestPageState extends State<BtTestPage> {
             onPressed: () {
               try {
                 TizenBluetoothManager.btInitialize();
-              }
-              catch(e, stack) {
+              } catch (e, stack) {
                 debugPrint('e=$e, stack=$stack');
               }
             },
-            child: Text('init')
+            child: Text('init'),
           ),
           // ElevatedButton(
           //   onPressed: () {
@@ -46,44 +44,44 @@ class _BtTestPageState extends State<BtTestPage> {
           //   },
           //   child: Text('unsetCallback')
           // ),
-          ElevatedButton(
-            onPressed: () {
-              try {
-                // TizenBluetoothManager.btAdapterEnable();
-                _model.enable();
-              }
-              catch(e, stack) {
-                debugPrint('e=$e, stack=$stack');
-              }
-            },
-            child: Text('enable')
-          ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     try {
+          //       // TizenBluetoothManager.btAdapterEnable();
+          //       _model.enable();
+          //     }
+          //     catch(e, stack) {
+          //       debugPrint('e=$e, stack=$stack');
+          //     }
+          //   },
+          //   child: Text('enable')
+          // ),
           ElevatedButton(
             onPressed: () {
               TizenBluetoothManager.btAdapterStartDeviceDiscovery();
             },
-            child: Text('start scan')
+            child: Text('start scan'),
           ),
           ElevatedButton(
             onPressed: () {
               TizenBluetoothManager.btAdapterStopDeviceDiscovery();
             },
-            child: Text('stop scan')
+            child: Text('stop scan'),
           ),
           ElevatedButton(
             onPressed: () {
               TizenBluetoothManager.btAdapterDisable();
             },
-            child: Text('disable')
+            child: Text('disable'),
           ),
           ElevatedButton(
             onPressed: () {
               TizenBluetoothManager.btDeinitialize();
             },
-            child: Text('deinit')
+            child: Text('deinit'),
           ),
         ],
-      )
+      ),
     );
   }
 }
