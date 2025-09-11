@@ -59,7 +59,6 @@ Stream<String> _xmpChunkStream(
   }
 
   if (inXmp && buf.isNotEmpty) yield buf.toString();
-
 }
 
 class OpenSourceLicensePopup extends StatefulWidget {
@@ -72,7 +71,7 @@ class OpenSourceLicensePopup extends StatefulWidget {
 class _OpenSourceLicensePopupState extends State<OpenSourceLicensePopup> {
   static const _path = '/usr/share/license.html';
   static const _linesPerChunk = 50;
-
+  final FocusNode _focusNode = FocusNode();
   final List<String> _chunks = [];
   bool _loading = true;
   String? _error;
@@ -81,6 +80,9 @@ class _OpenSourceLicensePopupState extends State<OpenSourceLicensePopup> {
   void initState() {
     super.initState();
     _listen();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
   }
 
   void _listen() {
@@ -111,31 +113,34 @@ class _OpenSourceLicensePopupState extends State<OpenSourceLicensePopup> {
               )
               : _loading && _chunks.isEmpty
               ? const Center(child: CircularProgressIndicator())
-              : ListView.builder(
-                padding: const EdgeInsets.all(12),
-                itemCount: _chunks.length + (_loading ? 1 : 0),
-                itemBuilder: (_, i) {
-                  if (_loading && i == _chunks.length) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    padding: const EdgeInsets.all(12),
-                    color: const Color(0xFF101010),
-                    child: SelectableText(
-                      _chunks[i],
-                      style: const TextStyle(
-                        fontFamily: 'monospace',
-                        fontSize: 13,
-                        height: 1.35,
-                        color: Colors.white,
+              : Focus(
+                focusNode: _focusNode,
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(12),
+                  itemCount: _chunks.length + (_loading ? 1 : 0),
+                  itemBuilder: (_, i) {
+                    if (_loading && i == _chunks.length) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.all(12),
+                      color: const Color(0xFF101010),
+                      child: SelectableText(
+                        _chunks[i],
+                        style: const TextStyle(
+                          fontFamily: 'monospace',
+                          fontSize: 13,
+                          height: 1.35,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
     );
   }
