@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:tizen_fs/styles/app_style.dart';
 
 Stream<String> _xmpChunkStream(
   String path, {
@@ -75,6 +77,8 @@ class _OpenSourceLicensePopupState extends State<OpenSourceLicensePopup> {
   final List<String> _chunks = [];
   bool _loading = true;
   String? _error;
+  ScrollController _scrollController = ScrollController();
+  double _offset = 0;
 
   @override
   void initState() {
@@ -103,6 +107,34 @@ class _OpenSourceLicensePopupState extends State<OpenSourceLicensePopup> {
   }
 
   @override
+  KeyEventResult onKeyEvent(FocusNode focusNode, KeyEvent event) {
+    if (event is KeyDownEvent || event is KeyRepeatEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.escape ||
+          event.physicalKey == PhysicalKeyboardKey.escape ) {
+        Navigator.pop(context);
+        return KeyEventResult.handled;
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+        _offset = _offset > 260 ? _offset - 260 : 0;
+        _scrollController.animateTo(
+          _offset,
+          duration: $style.times.fast,
+          curve: Curves.easeInOut,
+        );
+        return KeyEventResult.handled;
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+        _offset += 260;
+        _scrollController.animateTo(
+          _offset,
+          duration: $style.times.fast,
+          curve: Curves.easeInOut,
+        );
+        return KeyEventResult.handled;
+      }
+    }
+    return KeyEventResult.ignored;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Open Source License')),
@@ -115,7 +147,9 @@ class _OpenSourceLicensePopupState extends State<OpenSourceLicensePopup> {
               ? const Center(child: CircularProgressIndicator())
               : Focus(
                 focusNode: _focusNode,
+                onKeyEvent: onKeyEvent,
                 child: ListView.builder(
+                  controller: _scrollController,
                   padding: const EdgeInsets.all(12),
                   itemCount: _chunks.length + (_loading ? 1 : 0),
                   itemBuilder: (_, i) {
@@ -132,7 +166,6 @@ class _OpenSourceLicensePopupState extends State<OpenSourceLicensePopup> {
                       child: SelectableText(
                         _chunks[i],
                         style: const TextStyle(
-                          fontFamily: 'monospace',
                           fontSize: 13,
                           height: 1.35,
                           color: Colors.white,
