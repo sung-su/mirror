@@ -51,7 +51,11 @@ class WifiListViewState extends State<WifiListView>
       barrierLabel: "Close",
       barrierColor: Colors.transparent,
       transitionDuration: $style.times.pageTransition,
-      pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
+      pageBuilder: (
+        BuildContext buildContext,
+        Animation animation,
+        Animation secondaryAnimation,
+      ) {
         return WifiPasswordPopup(
           ap: ap,
           onConnect: (password) async {
@@ -63,10 +67,7 @@ class WifiListViewState extends State<WifiListView>
         );
       },
       transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
+        return FadeTransition(opacity: animation, child: child);
       },
     );
   }
@@ -78,10 +79,12 @@ class WifiListViewState extends State<WifiListView>
           event.logicalKey == LogicalKeyboardKey.select) {
         final wifiProvider = Provider.of<WifiProvider>(context, listen: false);
         if (_selected == 0) {
-          if (wifiProvider.isActivated) {
-            wifiProvider.wifiOff();
-          } else {
-            wifiProvider.wifiOn();
+          if (wifiProvider.isSupported) {
+            if (wifiProvider.isActivated) {
+              wifiProvider.wifiOff();
+            } else {
+              wifiProvider.wifiOn();
+            }
           }
         } else if (_selected > 0 && wifiProvider.isActivated) {
           final apIndex = _selected - 1;
@@ -197,7 +200,9 @@ class WifiSwitchItem extends StatelessWidget {
   final double iconSize = 25;
 
   String _getWifiStatusText() {
-    if (wifiProvider.isActivating) {
+    if (!wifiProvider.isSupported) {
+      return 'Not supported';
+    } else if (wifiProvider.isActivating) {
       return 'Activating...';
     } else if (wifiProvider.isDeactivating) {
       return 'Deactivating...';
@@ -247,32 +252,38 @@ class WifiSwitchItem extends StatelessWidget {
                         fontSize: subtitleFontSize,
                         color:
                             isFocused
-                                ? Theme.of(context).colorScheme.onTertiary.withOpacity(0.8)
-                                : Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
+                                ? Theme.of(
+                                  context,
+                                ).colorScheme.onTertiary.withOpacity(0.8)
+                                : Theme.of(
+                                  context,
+                                ).colorScheme.tertiary.withOpacity(0.7),
                       ),
                     ),
                   ],
                 ),
               ),
-              Theme(
-                data: Theme.of(context).copyWith(useMaterial3: false),
-                child: Padding(
-                  padding: isFocused
-                    ? const EdgeInsets.only(right: 15)
-                    : const EdgeInsets.only(right: 0),
-                  child: Switch(
-                    value: wifiProvider.isActivated,
-                    onChanged: (value) async {
-                      if (value) {
-                        await wifiProvider.wifiOn();
-                      } else {
-                        await wifiProvider.wifiOff();
-                      }
-                    },
-                    activeColor: Colors.blue,
+              if (wifiProvider.isSupported)
+                Theme(
+                  data: Theme.of(context).copyWith(useMaterial3: false),
+                  child: Padding(
+                    padding:
+                        isFocused
+                            ? const EdgeInsets.only(right: 15)
+                            : const EdgeInsets.only(right: 0),
+                    child: Switch(
+                      value: wifiProvider.isActivated,
+                      onChanged: (value) async {
+                        if (value) {
+                          await wifiProvider.wifiOn();
+                        } else {
+                          await wifiProvider.wifiOff();
+                        }
+                      },
+                      activeColor: Colors.blue,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ),
@@ -364,8 +375,12 @@ class WifiApItem extends StatelessWidget {
                         fontSize: subtitleFontSize,
                         color:
                             isFocused
-                                ? Theme.of(context).colorScheme.onTertiary.withOpacity(0.8)
-                                : Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
+                                ? Theme.of(
+                                  context,
+                                ).colorScheme.onTertiary.withOpacity(0.8)
+                                : Theme.of(
+                                  context,
+                                ).colorScheme.tertiary.withOpacity(0.7),
                       ),
                     ),
                   ],
@@ -373,21 +388,27 @@ class WifiApItem extends StatelessWidget {
               ),
               if (isConnectedToThisAp)
                 Padding(
-                  padding: isFocused
-                    ? const EdgeInsets.only(right: 30)
-                    : const EdgeInsets.only(right: 20),
+                  padding:
+                      isFocused
+                          ? const EdgeInsets.only(right: 30)
+                          : const EdgeInsets.only(right: 20),
                   child: Icon(
                     Icons.check,
                     size: iconSize,
                     color: isFocused ? Color(0xF04285F4) : Color(0xF0AEB2B9),
                   ),
                 )
-              else if (wifiProvider.isConnecting || wifiProvider.isDisconnecting || wifiProvider.isScanning || wifiProvider.isActivating || wifiProvider.isDeactivating)
+              else if (wifiProvider.isConnecting ||
+                  wifiProvider.isDisconnecting ||
+                  wifiProvider.isScanning ||
+                  wifiProvider.isActivating ||
+                  wifiProvider.isDeactivating)
                 Padding(
-                  padding: isFocused
-                    ? const EdgeInsets.only(right: 35)
-                    : const EdgeInsets.only(right: 20),
-                  child: Container (
+                  padding:
+                      isFocused
+                          ? const EdgeInsets.only(right: 35)
+                          : const EdgeInsets.only(right: 20),
+                  child: Container(
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(
@@ -395,7 +416,7 @@ class WifiApItem extends StatelessWidget {
                       color: Color(0xF04285F4),
                     ),
                   ),
-                )
+                ),
             ],
           ),
         ),
