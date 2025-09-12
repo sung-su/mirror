@@ -160,6 +160,12 @@ class AppListState extends State<AppList> {
                       title: apps[index].name,
                       content: AppTile(app: apps[index]),
                       isSelected: index == selectedIndex,
+                      onPressed: () {
+                        Provider.of<AppDataModel>(
+                          context,
+                          listen: false,
+                        ).launchApp(apps[index].appId);
+                      },
                       onRequestSelect: () {
                         // _gridKey.currentState?.setFocus();
                         // WidgetsBinding.instance.addPostFrameCallback((_) {
