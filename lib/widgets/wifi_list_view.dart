@@ -205,7 +205,7 @@ class WifiSwitchItem extends StatelessWidget {
 
   String _getWifiStatusText() {
     if (wifiProvider?.isPluginInstalled == false) {
-      return 'Please check your device.';
+      return 'Failed to enable Wi-Fi.';
     } else if (!wifiProvider.isSupported) {
       return 'Not supported';
     } else if (wifiProvider.isActivating) {
