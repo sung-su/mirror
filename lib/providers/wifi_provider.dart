@@ -50,6 +50,9 @@ class WifiProvider with ChangeNotifier {
   bool? _lastDisconnectionResult;
   bool? get lastDisconnectionResult => _lastDisconnectionResult;
 
+  bool? _isPluginInstalled;
+  bool? get isPluginInstalled => _isPluginInstalled;
+
   WifiProvider() {
     _wifiManager = WifiManager();
     _setupCallbacks();
@@ -70,10 +73,16 @@ class WifiProvider with ChangeNotifier {
     WifiManager.onActivated = (int result) async {
       // print("@ onActivated[${result}]");
       _allConditionReset();
-
       notifyListeners();
       if (result == 0) {
+        if (_isPluginInstalled == null) {
+          _isPluginInstalled = true;
+        }
         await scanAndRefresh();
+      } else {
+        if (_isPluginInstalled == null) {
+          _isPluginInstalled = false;
+        }
       }
     };
 
@@ -208,7 +217,7 @@ class WifiProvider with ChangeNotifier {
 
     try {
       _isScanning = true;
-      notifyListeners();
+      // notifyListeners();
 
       _wifiManager.scan();
       // print("scanAndRefresh scan called");

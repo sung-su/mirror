@@ -188,7 +188,6 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(80, 80, 0, 0),
                   child: Container(
-                    width: 500,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 20,
@@ -231,19 +230,23 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
                               width: 2,
                             ),
                           ),
-                          child: TextField(
-                            controller: _passwordController,
-                            focusNode: _passwordFocusNode,
-                            obscureText: true,
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 15,
-                                vertical: 12,
+                          child: Container (
+                            width: 280,
+                            height: 50,
+                            child: TextField(
+                              controller: _passwordController,
+                              focusNode: _passwordFocusNode,
+                              obscureText: true,
+                              style: TextStyle(fontSize: 16, color: Colors.white),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                  vertical: 12,
+                                ),
+                                hintText: 'Password',
+                                hintStyle: TextStyle(color: Colors.white54),
                               ),
-                              hintText: 'Password',
-                              hintStyle: TextStyle(color: Colors.white54),
                             ),
                           ),
                         ),
