@@ -264,6 +264,25 @@ class WifiSwitchItem extends StatelessWidget {
                 ),
               ),
               if (wifiProvider.isSupported)
+                if (wifiProvider.isConnecting ||
+                  wifiProvider.isDisconnecting ||
+                  wifiProvider.isActivating ||
+                  wifiProvider.isDeactivating)
+                Padding(
+                  padding:
+                      isFocused
+                          ? const EdgeInsets.only(right: 35)
+                          : const EdgeInsets.only(right: 20),
+                  child: Container(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Color(0xF04285F4),
+                    ),
+                  ),
+                )
+                else
                 Theme(
                   data: Theme.of(context).copyWith(useMaterial3: false),
                   child: Padding(
