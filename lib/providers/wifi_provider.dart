@@ -208,7 +208,7 @@ class WifiProvider with ChangeNotifier {
 
     try {
       _isScanning = true;
-      notifyListeners();
+      // notifyListeners();
 
       _wifiManager.scan();
       // print("scanAndRefresh scan called");
