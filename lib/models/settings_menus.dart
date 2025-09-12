@@ -72,6 +72,7 @@ class SettingPages {
           PageNode(
             id: 'about_device_device_info',
             title: 'Device info',
+            isEnd: true,
             builder:
                 (context, node, isEnabled, onItemSelected) =>
                     DeviceInfoPage(node: node, isEnabled: isEnabled),
