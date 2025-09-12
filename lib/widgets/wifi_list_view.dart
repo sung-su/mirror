@@ -80,10 +80,14 @@ class WifiListViewState extends State<WifiListView>
         final wifiProvider = Provider.of<WifiProvider>(context, listen: false);
         if (_selected == 0) {
           if (wifiProvider.isSupported) {
-            if (wifiProvider.isActivated) {
+            if (wifiProvider.isConnecting ||
+                wifiProvider.isDisconnecting ||
+                wifiProvider.isActivating ||
+                wifiProvider.isDeactivating) {
+            } else if (wifiProvider.isActivated) {
               wifiProvider.wifiOff();
             } else {
-              wifiProvider.wifiOn();
+                wifiProvider.wifiOn();
             }
           }
         } else if (_selected > 0 && wifiProvider.isActivated) {
@@ -200,7 +204,9 @@ class WifiSwitchItem extends StatelessWidget {
   final double iconSize = 25;
 
   String _getWifiStatusText() {
-    if (!wifiProvider.isSupported) {
+    if (wifiProvider?.isPluginInstalled == false) {
+      return 'Please check your device.';
+    } else if (!wifiProvider.isSupported) {
       return 'Not supported';
     } else if (wifiProvider.isActivating) {
       return 'Activating...';
@@ -265,44 +271,44 @@ class WifiSwitchItem extends StatelessWidget {
               ),
               if (wifiProvider.isSupported)
                 if (wifiProvider.isConnecting ||
-                  wifiProvider.isDisconnecting ||
-                  wifiProvider.isActivating ||
-                  wifiProvider.isDeactivating)
-                Padding(
-                  padding:
-                      isFocused
-                          ? const EdgeInsets.only(right: 35)
-                          : const EdgeInsets.only(right: 20),
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Color(0xF04285F4),
-                    ),
-                  ),
-                )
-                else
-                Theme(
-                  data: Theme.of(context).copyWith(useMaterial3: false),
-                  child: Padding(
+                    wifiProvider.isDisconnecting ||
+                    wifiProvider.isActivating ||
+                    wifiProvider.isDeactivating)
+                  Padding(
                     padding:
                         isFocused
-                            ? const EdgeInsets.only(right: 15)
-                            : const EdgeInsets.only(right: 0),
-                    child: Switch(
-                      value: wifiProvider.isActivated,
-                      onChanged: (value) async {
-                        if (value) {
-                          await wifiProvider.wifiOn();
-                        } else {
-                          await wifiProvider.wifiOff();
-                        }
-                      },
-                      activeColor: Colors.blue,
+                            ? const EdgeInsets.only(right: 35)
+                            : const EdgeInsets.only(right: 20),
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Color(0xF04285F4),
+                      ),
+                    ),
+                  )
+                else
+                  Theme(
+                    data: Theme.of(context).copyWith(useMaterial3: false),
+                    child: Padding(
+                      padding:
+                          isFocused
+                              ? const EdgeInsets.only(right: 15)
+                              : const EdgeInsets.only(right: 0),
+                      child: Switch(
+                        value: wifiProvider.isActivated,
+                        onChanged: (value) async {
+                          if (value) {
+                            await wifiProvider.wifiOn();
+                          } else {
+                            await wifiProvider.wifiOff();
+                          }
+                        },
+                        activeColor: Colors.blue,
+                      ),
                     ),
                   ),
-                ),
             ],
           ),
         ),
