@@ -11,6 +11,8 @@ import 'package:tizen_fs/apps/app_list.dart';
 import 'package:tizen_fs/widgets/immersive_carousel.dart';
 import 'package:tizen_fs/models/immersive_carosel_model.dart';
 
+enum HomePageState { headerFocused, carouselFocused, appListFocused }
+
 class HomePage extends StatefulWidget {
   const HomePage({
     super.key,
@@ -38,10 +40,13 @@ class _HomePageState extends State<HomePage> {
   bool _isAnimating = false;
   bool _isScrolling = false;
 
+  final _pageState = ValueNotifier(HomePageState.headerFocused);
+
   @override
   void initState() {
     super.initState();
-    widget.register(0, _scrollEnd);
+
+    widget.register(0, _onScrolEnd);
   }
 
   @override
@@ -50,43 +55,62 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  void _scrollEnd(ScrollDirection direction, bool scrollEnd) {
-    final context = _applistKey.currentContext;
-    if (context != null) {
-      final screenHeight = MediaQuery.of(context).size.height;
-      final applistBox = context.findRenderObject() as RenderBox;
-      final dy = applistBox.localToGlobal(Offset.zero).dy;
-      final threshold = screenHeight / 2;
+  void _setState(HomePageState state) {
+    if (state == HomePageState.headerFocused) {
+      Future.microtask(() async {
+        await widget.scrollController.animateTo(
+          0,
+          duration: $style.times.med,
+          curve: Curves.easeOutCubic,
+        );
+        _footerKey.currentState?.show();
+        _carouselKey.currentState?.initFocus();
+        _pageState.value = HomePageState.headerFocused;
+      });
+    } else if (state == HomePageState.appListFocused) {
+      Future.microtask(() async {
+        await widget.scrollController.animateTo(
+          360,
+          duration: $style.times.med,
+          curve: Curves.easeOutCubic,
+        );
+        _footerKey.currentState?.hide();
+        _applistKey.currentState?.setFocus();
+        _pageState.value = HomePageState.appListFocused;
+      });
+    }
+  }
 
-      if (scrollEnd &&
-          Provider.of<AppDataModel>(context, listen: false).appInfos.length >
-              0) {
-        if (direction == ScrollDirection.reverse) {
-          if (!_footerKey.currentState!.isVisible) return;
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            _isScrolling = true;
-            await widget.scrollController.animateTo(
-              360,
-              duration: $style.times.med,
-              curve: Curves.easeOutCubic,
-            );
-            _isScrolling = false;
-            _footerKey.currentState?.hide();
-            _applistKey.currentState?.setFocus();
-          });
+  void _onScrolEnd(ScrollDirection direction, bool scrollEnd) {
+    final offset = widget.scrollController.offset;
+
+    if (direction == ScrollDirection.reverse) {
+      if (_pageState.value == HomePageState.headerFocused) {
+        if (offset < 70) {
+          _setState(HomePageState.headerFocused);
         } else {
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            _isScrolling = true;
-            await widget.scrollController.animateTo(
-              0,
-              duration: $style.times.med,
-              curve: Curves.easeOutCubic,
-            );
-            _isScrolling = false;
-            _footerKey.currentState?.show();
-            _carouselKey.currentState?.initFocus();
-          });
+          _setState(HomePageState.appListFocused);
         }
+      }
+      if (_pageState.value == HomePageState.appListFocused) {
+        if (offset < 360) {
+          _setState(HomePageState.appListFocused);
+        } else {
+          //scroll free
+        }
+      }
+    } else if (direction == ScrollDirection.forward) {
+      if (_pageState.value == HomePageState.appListFocused) {
+        if (offset < 300) {
+          _setState(HomePageState.headerFocused);
+        } else if (offset <= 500) {
+          _setState(HomePageState.appListFocused);
+        } else {
+          //scroll free
+        }
+      } else if (_pageState.value == HomePageState.headerFocused) {
+        debugPrint('scroll to 0! _pageState=${_pageState.value}');
+        _setState(HomePageState.headerFocused);
       }
     }
   }
@@ -204,7 +228,7 @@ class FooterState extends State<Footer> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: _isVisible ? 500 : 0,
+      height: _isVisible ? 150 : 0,
       child: Align(
         alignment: Alignment.topCenter,
         child: GestureDetector(
