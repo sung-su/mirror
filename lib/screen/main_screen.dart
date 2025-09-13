@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +31,8 @@ class _MainContentState extends State<MainContent> {
   final PageController _pageController = PageController(initialPage: 0);
 
   final Map<int, Function(ScrollDirection, bool)> _childCallbacks = {};
-  bool _userScrolling = false;
+
+  double _lastPixel = 0;
   ScrollDirection _scrollDirection = ScrollDirection.idle;
 
   @override
@@ -51,26 +53,23 @@ class _MainContentState extends State<MainContent> {
 
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
-        if (notification is UserScrollNotification) {
-          if (notification.direction != ScrollDirection.idle) {
-            _userScrolling = true;
-            _scrollDirection = notification.direction;
-          }
-        }
-
         if (notification is ScrollUpdateNotification) {
-          if (_userScrolling) {
-            _notifyChildren(_scrollDirection, false);
+          final currentPixel = notification.metrics.pixels;
+          if (currentPixel > _lastPixel) {
+            _scrollDirection = ScrollDirection.reverse;
+          } else if (currentPixel < _lastPixel) {
+            _scrollDirection = ScrollDirection.forward;
+          } else {
+            _scrollDirection = ScrollDirection.idle;
           }
+          _lastPixel = currentPixel;
         }
 
         if (notification is ScrollEndNotification) {
-          if (_userScrolling) {
+          if (_scrollDirection != ScrollDirection.idle) {
             _notifyChildren(_scrollDirection, true);
           }
-          _userScrolling = false;
         }
-
         return false;
       },
       child: Stack(
