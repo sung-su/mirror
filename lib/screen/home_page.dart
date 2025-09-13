@@ -109,7 +109,6 @@ class _HomePageState extends State<HomePage> {
           //scroll free
         }
       } else if (_pageState.value == HomePageState.headerFocused) {
-        debugPrint('scroll to 0! _pageState=${_pageState.value}');
         _setState(HomePageState.headerFocused);
       }
     }
