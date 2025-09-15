@@ -83,7 +83,7 @@ class SelectableGridViewState extends State<SelectableGridView> {
     final context = _itemKeys[index].currentContext;
     if (context != null) {
       final row = index ~/ columnCount;
-      final offset = (430 + (120 * row)).toDouble();
+      final offset = (360 + (120 * row)).toDouble();
 
       widget.scrollController.animateTo(
         offset,
@@ -130,7 +130,7 @@ class SelectableGridViewState extends State<SelectableGridView> {
       } else if (event.logicalKey == LogicalKeyboardKey.goBack ||
           event.logicalKey == LogicalKeyboardKey.escape ||
           event.physicalKey == PhysicalKeyboardKey.escape) {
-        AppRouter.router.push(ScreenPaths.main);
+        widget.scrollController.jumpTo(0);
         return KeyEventResult.handled;
       }
     } else if (event is KeyUpEvent) {
