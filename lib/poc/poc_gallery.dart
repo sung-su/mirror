@@ -11,7 +11,6 @@ import 'package:tizen_fs/poc/reoder_grid_test.dart';
 import 'package:tizen_fs/poc/reoder_grid_test2.dart';
 import 'package:tizen_fs/poc/setting_page_test.dart';
 import 'package:tizen_fs/poc/app_list.dart';
-import 'package:tizen_fs/poc/webview.dart';
 import 'package:tizen_fs/settings/settings.dart';
 import 'package:tizen_fs/poc/shimmerloading.dart';
 import 'package:tizen_fs/poc/two_page_navi.dart';
@@ -39,11 +38,11 @@ class PocGalleryPage extends StatelessWidget {
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomeScreenSizeWrapper(BtTestPage()),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomeScreenSizeWrapper(BtTestPage()),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -52,11 +51,11 @@ class PocGalleryPage extends StatelessWidget {
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomeScreenSizeWrapper(AppListPage()),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomeScreenSizeWrapper(AppListPage()),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -65,11 +64,12 @@ class PocGalleryPage extends StatelessWidget {
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomeScreenSizeWrapper(const MainScreen()),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => HomeScreenSizeWrapper(const MainScreen()),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -78,11 +78,13 @@ class PocGalleryPage extends StatelessWidget {
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomeScreenSizeWrapper(const ColorTablePage()),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) =>
+                            HomeScreenSizeWrapper(const ColorTablePage()),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -91,11 +93,11 @@ class PocGalleryPage extends StatelessWidget {
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomeScreenSizeWrapper(GridTestPage()),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomeScreenSizeWrapper(GridTestPage()),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -104,24 +106,27 @@ class PocGalleryPage extends StatelessWidget {
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomeScreenSizeWrapper(GridTestPage2()),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => HomeScreenSizeWrapper(GridTestPage2()),
+                  ),
+                );
               },
             ),
             ListTile(
               title: const Text('H/V List Test'),
-              subtitle: const Text('Simple ListView changed layout for user input'),
+              subtitle: const Text(
+                'Simple ListView changed layout for user input',
+              ),
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomeScreenSizeWrapper(ListPocPage()),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomeScreenSizeWrapper(ListPocPage()),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -130,11 +135,13 @@ class PocGalleryPage extends StatelessWidget {
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomeScreenSizeWrapper(ShimmerLoadingScreen()),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) =>
+                            HomeScreenSizeWrapper(ShimmerLoadingScreen()),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -143,11 +150,12 @@ class PocGalleryPage extends StatelessWidget {
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomeScreenSizeWrapper(InfiniteScollList()),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => HomeScreenSizeWrapper(InfiniteScollList()),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -156,11 +164,12 @@ class PocGalleryPage extends StatelessWidget {
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomeScreenSizeWrapper(AdaptiveGridPage()),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => HomeScreenSizeWrapper(AdaptiveGridPage()),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -169,11 +178,13 @@ class PocGalleryPage extends StatelessWidget {
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomeScreenSizeWrapper(NoAutoScrollFocusView()),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) =>
+                            HomeScreenSizeWrapper(NoAutoScrollFocusView()),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -182,11 +193,12 @@ class PocGalleryPage extends StatelessWidget {
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomeScreenSizeWrapper(TwoPageNavigation()),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => HomeScreenSizeWrapper(TwoPageNavigation()),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -195,11 +207,13 @@ class PocGalleryPage extends StatelessWidget {
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomeScreenSizeWrapper(PageTreeTest(node: rootNode)),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) =>
+                            HomeScreenSizeWrapper(PageTreeTest(node: rootNode)),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -208,24 +222,14 @@ class PocGalleryPage extends StatelessWidget {
               leading: const Icon(Icons.subscriptions),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomeScreenSizeWrapper(SettingPageTest(node: SettingPages().getRoot())),
-                    ));
-              },
-            ),
-            ListTile(
-              title: const Text('Webview test'),
-              subtitle: const Text('Webview test'),
-              leading: const Icon(Icons.subscriptions),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomeScreenSizeWrapper(WebViewExample()),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => HomeScreenSizeWrapper(
+                          SettingPageTest(node: SettingPages().getRoot()),
+                        ),
+                  ),
+                );
               },
             ),
           ],
