@@ -44,8 +44,8 @@ class WifiPageState extends State<WifiPage> {
     super.didUpdateWidget(oldWidget);
     if (widget.isEnabled) {
       initFocus();
-      final wifiProvider = Provider.of<WifiProvider>(context, listen: false);
-      wifiProvider.scanAndRefresh();
+      // final wifiProvider = Provider.of<WifiProvider>(context, listen: false);
+      // wifiProvider.scanAndRefresh();
     }
   }
 

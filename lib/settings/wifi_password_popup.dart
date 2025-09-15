@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,7 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
   final FocusNode _cancelFocusNode = FocusNode();
   int _selected = 0;
   bool _showProgress = false;
+  Timer? _connectionTimer;
 
   @override
   void initState() {
@@ -37,6 +39,7 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
 
   @override
   void dispose() {
+    _connectionTimer?.cancel();
     _passwordController.dispose();
     _passwordFocusNode.dispose();
     _connectFocusNode.dispose();
@@ -95,9 +98,7 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
 
   void _handleConnect() {
     // print("_handleConnect");
-    setState(() {
-      _showProgress = true;
-    });
+    _showProgress = true;
     widget.onConnect(_passwordController.text);
 
     _waitForConnectionResultAndShowPopup('connect');
@@ -124,27 +125,25 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
       }
       if (result != null) {
         wifiProvider.removeListener(listener);
-        _showResultPopup(resultType, result);
+        if (mounted) {
+          _showResultPopup(resultType, result);
+        }
       }
     }
     wifiProvider.addListener(listener);
-    Future.delayed(Duration(seconds: 5), () {
-
+    _connectionTimer = Timer(Duration(seconds: 5), () {
       wifiProvider.removeListener(listener);
-      if (resultType == 'connect' && wifiProvider.lastConnectionResult == null) {
-        _showResultPopup(resultType, false);
-      } else if (resultType == 'disconnect' && wifiProvider.lastDisconnectionResult == null) {
+      if (mounted) {
         _showResultPopup(resultType, false);
       }
-      _showResultPopup(resultType, true);
     });
   }
 
   void _showResultPopup(String resultType, bool success) {
     // print("_showResultPopup[${resultType}] success=[${success}]");
-    setState(() {
-      _showProgress = false;
-    });
+    if (!mounted) return;
+
+    _showProgress = false;
     Navigator.of(context).pop();
     showGeneralDialog(
       context: context,
