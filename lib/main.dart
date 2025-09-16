@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tizen_fs/locator.dart';
@@ -14,6 +16,8 @@ void main() {
   setupAppModel();
   // warm-up for tizen_interop(loading native symbols)
   print(tizen.get_error_message(0).toDartString());
+
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 35 * 1024 * 1024;
 
   runApp(
     MultiProvider(

@@ -7,8 +7,6 @@ import 'package:tizen_fs/poc/color_table.dart';
 import 'package:tizen_fs/poc/list_poc.dart';
 import 'package:tizen_fs/poc/infinite_list.dart';
 import 'package:tizen_fs/poc/page_tree.dart';
-import 'package:tizen_fs/poc/reoder_grid_test.dart';
-import 'package:tizen_fs/poc/reoder_grid_test2.dart';
 import 'package:tizen_fs/poc/setting_page_test.dart';
 import 'package:tizen_fs/poc/app_list.dart';
 import 'package:tizen_fs/settings/settings.dart';
@@ -83,33 +81,6 @@ class PocGalleryPage extends StatelessWidget {
                     builder:
                         (context) =>
                             HomeScreenSizeWrapper(const ColorTablePage()),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Grid Test 1'),
-              subtitle: const Text('Reorderable grid 1'),
-              leading: const Icon(Icons.subscriptions),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomeScreenSizeWrapper(GridTestPage()),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Grid Test 2'),
-              subtitle: const Text('Reorderable grid 2'),
-              leading: const Icon(Icons.subscriptions),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => HomeScreenSizeWrapper(GridTestPage2()),
                   ),
                 );
               },

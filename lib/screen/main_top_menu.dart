@@ -128,9 +128,6 @@ class _MainTopMenuState extends State<MainTopMenu> {
         }
         return KeyEventResult.handled;
       } else if (event.logicalKey == LogicalKeyboardKey.enter) {
-        if (_selected == 0) {
-          AppRouter.router.push(ScreenPaths.poc);
-        }
         if (_selected == 2) {
           AppRouter.router.push(ScreenPaths.settings);
         }
@@ -138,7 +135,7 @@ class _MainTopMenuState extends State<MainTopMenu> {
       } else if (event.logicalKey == LogicalKeyboardKey.goBack ||
           event.logicalKey == LogicalKeyboardKey.escape ||
           event.physicalKey == PhysicalKeyboardKey.escape) {
-        AppRouter.router.push(ScreenPaths.main);
+        setSelected(1);
         return KeyEventResult.handled;
       }
     }

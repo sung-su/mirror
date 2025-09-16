@@ -30,26 +30,16 @@ class ImmersiveCarouselContent {
   }
 
   static Future<List<ImmersiveCarouselContent>> loadFromJson() async {
-    final jsonString =
-        await rootBundle.loadString('assets/mock/mock_carousel_content.json');
+    final jsonString = await rootBundle.loadString(
+      'assets/mock/mock_carousel_content.json',
+    );
     final List<dynamic> jsonList = jsonDecode(jsonString);
     final List<ImmersiveCarouselContent> contents =
-        jsonList.map((json) => ImmersiveCarouselContent.fromJson(json)).toList();
+        jsonList
+            .map((json) => ImmersiveCarouselContent.fromJson(json))
+            .toList();
 
     return contents;
-  }
-
-  static List<ImmersiveCarouselContent> generateMockContent() {
-    return List.generate(
-      5,
-      (index) => ImmersiveCarouselContent(
-        overline: 'Overline $index',
-        title: 'Movie Title $index',
-        description: 'Description of the movie goes here.\n This is a sample description for item $index.',
-        backdrop: 'assets/mock/images/backdrop${(index % 3) + 1}.png',
-        buttonText: 'Watch Now',
-      ),
-    );
   }
 }
 
@@ -76,18 +66,6 @@ class ImmersiveCarouselModel extends ChangeNotifier {
   }
 
   int get itemCount => _isLoading ? 0 : contents.length;
-  ImmersiveCarouselContent getContent(int index) {
-    if (_isLoading) {
-      return ImmersiveCarouselContent(
-        overline: 'Loading...',
-        title: 'Loading...',
-        description: 'Loading...',
-        backdrop: 'Loading...',
-        buttonText: 'Loading...',
-      );
-    }
-    return contents[index];
-  }
 
   ImmersiveCarouselContent getSelectedContent() {
     if (_isLoading) {
@@ -95,7 +73,7 @@ class ImmersiveCarouselModel extends ChangeNotifier {
         overline: 'Loading...',
         title: 'Loading...',
         description: 'Loading...',
-        backdrop: 'gradient-bg-static-alt-a-D0K-Mjox.webp',
+        backdrop: 'gradient-bg-static-alt-a-D0K-Mjox.jpg',
         buttonText: 'Loading...',
       );
     }
