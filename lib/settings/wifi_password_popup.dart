@@ -31,6 +31,8 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
   int _selected = 0;
   bool _showProgress = false;
   Timer? _connectionTimer;
+  WifiProvider? _wifiProvider;
+  VoidCallback? _connectionListener;
 
   @override
   void initState() {
@@ -40,11 +42,20 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
   @override
   void dispose() {
     _connectionTimer?.cancel();
+    _connectionTimer = null;
+
+    if (_wifiProvider != null && _connectionListener != null) {
+      _wifiProvider!.removeListener(_connectionListener!);
+    }
+    _wifiProvider = null;
+    _connectionListener = null;
+
     _passwordController.dispose();
     _passwordFocusNode.dispose();
     _connectFocusNode.dispose();
     _disconnectFocusNode.dispose();
     _cancelFocusNode.dispose();
+
     super.dispose();
   }
 
@@ -115,27 +126,42 @@ class _WifiPasswordPopupState extends State<WifiPasswordPopup> {
 
   void _waitForConnectionResultAndShowPopup(String resultType) {
     // print("_waitForConnectionResultAndShowPopup[${resultType}]");
-    final wifiProvider = Provider.of<WifiProvider>(context, listen: false);
-    void listener() {
+    _wifiProvider = Provider.of<WifiProvider>(context, listen: false);
+
+    if (_connectionListener != null) {
+      _wifiProvider!.removeListener(_connectionListener!);
+    }
+
+    _connectionListener = () {
+      if (!mounted) return;
+
       bool? result;
       if (resultType == 'connect') {
-        result = wifiProvider.lastConnectionResult;
+        result = _wifiProvider!.lastConnectionResult;
       } else {
-        result = wifiProvider.lastDisconnectionResult;
+        result = _wifiProvider!.lastDisconnectionResult;
       }
       if (result != null) {
-        wifiProvider.removeListener(listener);
-        if (mounted) {
-          _showResultPopup(resultType, result);
-        }
+        _wifiProvider!.removeListener(_connectionListener!);
+        _connectionListener = null;
+        _connectionTimer?.cancel();
+        _connectionTimer = null;
+        _showResultPopup(resultType, result);
       }
-    }
-    wifiProvider.addListener(listener);
+    };
+
+    _wifiProvider!.addListener(_connectionListener!);
+
+    _connectionTimer?.cancel();
     _connectionTimer = Timer(Duration(seconds: 5), () {
-      wifiProvider.removeListener(listener);
-      if (mounted) {
-        _showResultPopup(resultType, false);
+      if (!mounted) return;
+
+      if (_connectionListener != null) {
+        _wifiProvider!.removeListener(_connectionListener!);
+        _connectionListener = null;
       }
+      _connectionTimer = null;
+      _showResultPopup(resultType, false);
     });
   }
 
