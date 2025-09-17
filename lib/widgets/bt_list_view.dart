@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:tizen_fs/widgets/bt_selectable_listview.dart';
 import 'package:tizen_fs/widgets/bt_focus_selectable.dart';
 
-class BtDeviceListView extends StatefulWidget{
+class BtDeviceListView extends StatefulWidget {
   const BtDeviceListView({super.key, this.onAction});
 
   final Function(int)? onAction;
@@ -12,8 +12,8 @@ class BtDeviceListView extends StatefulWidget{
   State<BtDeviceListView> createState() => BtDeviceListViewState();
 }
 
-class BtDeviceListViewState extends State<BtDeviceListView> with BtFocusSelectable<BtDeviceListView> {
-
+class BtDeviceListViewState extends State<BtDeviceListView>
+    with BtFocusSelectable<BtDeviceListView> {
   int _selected = 1;
 
   @protected
@@ -38,17 +38,16 @@ class BtDeviceListViewState extends State<BtDeviceListView> with BtFocusSelectab
     listKey.currentState?.forceScrollTo(index);
   }
 
-  void action(int index) {
-    listKey.currentState?.onAction(index);
-  }
-
   @override
   KeyEventResult onKeyEvent(FocusNode focusNode, KeyEvent event) {
     if (event is KeyDownEvent || event is KeyRepeatEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.select) {
-        action(_selected);
+      if (event.logicalKey == LogicalKeyboardKey.enter ||
+          event.logicalKey == LogicalKeyboardKey.select) {
+        if (listKey.currentState != null) {
+          widget.onAction?.call(listKey.currentState!.selectedIndex);
+        }
         return KeyEventResult.handled;
-      } 
+      }
     }
     return KeyEventResult.ignored;
   }
