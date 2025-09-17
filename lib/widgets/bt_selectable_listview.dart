@@ -75,7 +75,7 @@ class CategorySelectableListViewState
 
   Future<int> _scrollToSelected(int duration, int fallbackSelection) async {
     debugPrint(
-      '_scrollToSelected, fallbackSelection=$fallbackSelection, _itemKeys[_selectedIndex].currentContext==null?${_itemKeys[_selectedIndex].currentContext == null}',
+      '_scrollToSelected, fallbackSelection=$fallbackSelection, _selectedIndex=$_selectedIndex, _itemKeys[_selectedIndex].currentContext==null?${_itemKeys[_selectedIndex].currentContext == null}',
     );
     if (_itemKeys[_selectedIndex].currentContext != null) {
       int current = _selectedIndex;
