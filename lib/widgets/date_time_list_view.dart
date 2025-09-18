@@ -8,11 +8,9 @@ import 'package:tizen_fs/widgets/selectable_listview.dart';
 class DateTimeListView extends StatefulWidget {
   const DateTimeListView({
     super.key,
-    required this.isEnabled,
     this.onSelectionChanged,
   });
 
-  final bool isEnabled;
   final Function(int)? onSelectionChanged;
 
   @override
@@ -56,11 +54,6 @@ class DateTimeListViewState extends State<DateTimeListView>
           event.logicalKey == LogicalKeyboardKey.select) {
 
         if (DateTimeUtils.isAutoUpdated && _selected > 0 && _selected != 4) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please turn off auto update'),
-            ),
-          );
           return KeyEventResult.handled;
         }
         _handleMenuItemSelected(_selected);
@@ -77,13 +70,9 @@ class DateTimeListViewState extends State<DateTimeListView>
         setState(() {});
         break;
       case 1:
-        //
-        break;
       case 2:
-        //
-        break;
       case 3:
-        //
+        widget.onSelectionChanged?.call(index);
         break;
       case 4:
         DateTimeUtils.setTimeFormat(!DateTimeUtils.is24HourFormat);
@@ -123,22 +112,17 @@ class DateTimeListViewState extends State<DateTimeListView>
             curve: Curves.easeInOut,
             child: GestureDetector(
               onTap: () {
-                if (DateTimeUtils.isAutoUpdated && index > 0 && index != 4) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Please turn off auto update'),
-                    ),
-                  );
-                  return;
-                }
+              if (DateTimeUtils.isAutoUpdated && index > 0 && index != 4) {
+                return;
+              }
                 listKey.currentState?.selectTo(index);
                 Focus.of(context).requestFocus();
+                _handleMenuItemSelected(index);
               },
               child: DateTimeMenuItem(
                 title: _menuTitles[index],
                 index: index,
                 isFocused: Focus.of(context).hasFocus && index == selectedIndex,
-                isEnabled: widget.isEnabled,
               ),
             ),
           );
@@ -154,13 +138,11 @@ class DateTimeMenuItem extends StatelessWidget {
     required this.title,
     required this.index,
     required this.isFocused,
-    required this.isEnabled,
   });
 
   final String title;
   final int index;
   final bool isFocused;
-  final bool isEnabled;
 
   final double titleFontSize = 15;
   final double subtitleFontSize = 11;
@@ -194,7 +176,7 @@ class DateTimeMenuItem extends StatelessWidget {
     if (DateTimeUtils.isAutoUpdated && index > 0 && index != 4) {
       return false;
     }
-    return isEnabled;
+    return true;
   }
 
   Color _getTextColor(BuildContext context) {

@@ -40,8 +40,6 @@ class DateTimeUtils {
 
   static bool setManualDateTime(DateTime dateTime) {
     try {
-      // This would typically call native code to set system time
-      // For now, we'll just log it
       print("@@ setManualDateTime: ${dateTime.toString()}");
       return true;
     } catch (e) {

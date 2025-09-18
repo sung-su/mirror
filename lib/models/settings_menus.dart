@@ -5,6 +5,9 @@ import 'package:tizen_fs/settings/date_time_page.dart';
 import 'package:tizen_fs/settings/device_info_page.dart';
 import 'package:tizen_fs/settings/end_page.dart';
 import 'package:tizen_fs/settings/profile_active_page.dart';
+import 'package:tizen_fs/settings/set_date_page.dart';
+import 'package:tizen_fs/settings/set_time_page.dart';
+import 'package:tizen_fs/settings/set_timezone_page.dart';
 import 'package:tizen_fs/settings/wifi_page.dart';
 import 'package:tizen_fs/settings/about_device_page.dart';
 
@@ -28,6 +31,7 @@ class SettingPages {
         id: 'date_time',
         icon: Icons.today_outlined,
         title: 'Date & Time',
+        isEnd: false,
         builder:
             (context, node, isEnabled, onItemSelected) => DateTimePage(
               node: node,
@@ -35,11 +39,11 @@ class SettingPages {
               onSelectionChanged: onItemSelected,
             ),
         children: [
-          PageNode(id: 'date_time_auto_update', title: 'Auto update', isEnd: true),
-          PageNode(id: 'date_time_set_date', title: 'Set date', isEnd: true),
-          PageNode(id: 'date_time_set_time', title: 'Set time', isEnd: true),
-          PageNode(id: 'date_time_time_zone', title: 'Time zone', isEnd: true),
-          PageNode(id: 'date_time_24_hour_clock', title: '24 hour clock', isEnd: true),
+          PageNode(id: 'date_time_auto_update', title: 'Auto update', isEnd: true, builder: (context, node, isEnabled, onItemSelected) => EndPage(),),
+          PageNode(id: 'date_time_set_date', title: 'Set date', builder: (context, node, isEnabled, onItemSelected) => SetDatePage(node: node, isEnabled: isEnabled)),
+          PageNode(id: 'date_time_set_time', title: 'Set time', builder: (context, node, isEnabled, onItemSelected) => SetTimePage(node: node, isEnabled: isEnabled)),
+          PageNode(id: 'date_time_time_zone', title: 'Time zone', builder: (context, node, isEnabled, onItemSelected) => SetTimezonePage(node: node, isEnabled: isEnabled)),
+          PageNode(id: 'date_time_24_hour_clock', title: '24 hour clock', isEnd: true, builder: (context, node, isEnabled, onItemSelected) => EndPage(),),
         ],
       ),
     );

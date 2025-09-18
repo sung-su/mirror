@@ -88,7 +88,6 @@ class DateTimePageState extends State<DateTimePage> {
                       : const EdgeInsets.symmetric(horizontal: 40),
               child: DateTimeListView(
                 key: _listKey,
-                isEnabled: widget.isEnabled,
                 onSelectionChanged: _handleSelectionChanged,
               ),
             ),
