@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/page_node.dart';
 import 'package:tizen_fs/settings/bluetooth_page.dart';
+import 'package:tizen_fs/settings/date_time_page.dart';
 import 'package:tizen_fs/settings/device_info_page.dart';
 import 'package:tizen_fs/settings/end_page.dart';
 import 'package:tizen_fs/settings/profile_active_page.dart';
@@ -20,6 +21,27 @@ class SettingPages {
       id: 'settings',
       title: 'Settings',
       children: [],
+    );
+
+    settings.children.add(
+      PageNode(
+        id: 'date_time',
+        icon: Icons.today_outlined,
+        title: 'Date & Time',
+        builder:
+            (context, node, isEnabled, onItemSelected) => DateTimePage(
+              node: node,
+              isEnabled: isEnabled,
+              onSelectionChanged: onItemSelected,
+            ),
+        children: [
+          PageNode(id: 'date_time_auto_update', title: 'Auto update', isEnd: true),
+          PageNode(id: 'date_time_set_date', title: 'Set date', isEnd: true),
+          PageNode(id: 'date_time_set_time', title: 'Set time', isEnd: true),
+          PageNode(id: 'date_time_time_zone', title: 'Time zone', isEnd: true),
+          PageNode(id: 'date_time_24_hour_clock', title: '24 hour clock', isEnd: true),
+        ],
+      ),
     );
 
     settings.children.add(
@@ -152,21 +174,6 @@ class SettingPages {
     //       PageNode(id: 'display_font_size', title: 'Font size'),
     //       PageNode(id: 'display_font_type', title: 'Font type'),
     //       PageNode(id: 'display_screen_timeout', title: 'Screen timeout'),
-    //     ],
-    //   ),
-    // );
-
-    // settings.children.add(
-    //   PageNode(
-    //     id: 'date_time',
-    //     icon: Icons.today_outlined,
-    //     title: 'Date & Time',
-    //     children: [
-    //       PageNode(id: 'date_time_auto_update', title: 'Auto update'),
-    //       PageNode(id: 'date_time_set_date', title: 'Set date'),
-    //       PageNode(id: 'date_time_set_time', title: 'Set time'),
-    //       PageNode(id: 'date_time_time_zone', title: 'Time zone'),
-    //       PageNode(id: 'date_time_24_hour_clock', title: '24 hour clock'),
     //     ],
     //   ),
     // );
