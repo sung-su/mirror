@@ -1,8 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/page_node.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_fs/utils/date_time_utils.dart';
-import 'package:tizen_fs/widgets/spinner_list.dart';
 
 class SetDatePage extends StatefulWidget {
   const SetDatePage({
@@ -19,62 +19,63 @@ class SetDatePage extends StatefulWidget {
 }
 
 class SetDatePageState extends State<SetDatePage> {
-  late int _year;
-  late int _month;
-  late int _day;
-
-  late List<int> _years;
+  late DateTime _selectedDate;
+  late final VoidCallback _dateTimeListener;
 
   @override
   void initState() {
     super.initState();
-    final now = DateTimeUtils.currentDateTime;
-    _year = now.year;
-    _month = now.month;
-    _day = now.day;
-    _years = List<int>.generate(131, (i) => 1970 + i); // 1970..2100
+    _selectedDate = DateTimeUtils.currentDateTime;
+    _dateTimeListener = _handleExternalDateChanged;
+    DateTimeUtils.dateTimeListenable.addListener(_dateTimeListener);
   }
 
-  int _daysInMonth(int year, int month) {
-    if (month == 12) {
-      return DateTime(year + 1, 1, 0).day;
+  void _handleExternalDateChanged() {
+    if (!mounted) return;
+    final dt = DateTimeUtils.currentDateTime;
+    if (_selectedDate.year == dt.year &&
+        _selectedDate.month == dt.month &&
+        _selectedDate.day == dt.day) {
+      return;
     }
-    return DateTime(year, month + 1, 0).day;
+    setState(() {
+      _selectedDate = dt;
+    });
   }
 
-  List<String> _buildYearItems() => _years.map((y) => y.toString()).toList();
-  List<String> _buildMonthItems() =>
-      List<String>.generate(12, (i) => (i + 1).toString().padLeft(2, '0'));
-  List<String> _buildDayItems() {
-    final maxDay = _daysInMonth(_year, _month);
-    return List<String>.generate(maxDay, (i) => (i + 1).toString().padLeft(2, '0'));
+  @override
+  void dispose() {
+    DateTimeUtils.dateTimeListenable.removeListener(_dateTimeListener);
+    super.dispose();
   }
 
-  void _submitDate() {
-    final now = DateTimeUtils.currentDateTime;
-    final newDt = DateTime(_year, _month, _day, now.hour, now.minute);
-    DateTimeUtils.setManualDateTime(newDt);
-    setState(() {});
+  void _onDateChanged(DateTime newDate) {
+    final current = DateTimeUtils.currentDateTime;
+    final updated = DateTime(
+      newDate.year,
+      newDate.month,
+      newDate.day,
+      current.hour,
+      current.minute,
+    );
+    setState(() {
+      _selectedDate = updated;
+    });
+    DateTimeUtils.setManualDateTime(updated);
   }
 
   @override
   Widget build(BuildContext context) {
-    final yearIndex = _years.indexOf(_year).clamp(0, _years.length - 1);
-    final monthIndex = (_month - 1).clamp(0, 11);
-    final maxDay = _daysInMonth(_year, _month);
-    if (_day > maxDay) _day = maxDay;
-    final dayIndex = (_day - 1).clamp(0, maxDay - 1);
-
+    final bool enabled = widget.isEnabled;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 10,
       children: [
-        // title
         SizedBox(
-          width: widget.isEnabled ? 600 : 400,
+          width: enabled ? 600 : 400,
           child: AnimatedPadding(
             duration: $style.times.med,
-            padding: widget.isEnabled
+            padding: enabled
                 ? const EdgeInsets.fromLTRB(120, 60, 40, 0)
                 : const EdgeInsets.fromLTRB(80, 60, 80, 0),
             child: Align(
@@ -94,52 +95,46 @@ class SetDatePageState extends State<SetDatePage> {
             alignment: Alignment.topLeft,
             child: AnimatedPadding(
               duration: $style.times.med,
-              padding: widget.isEnabled
+              padding: enabled
                   ? const EdgeInsets.symmetric(horizontal: 80, vertical: 10)
                   : const EdgeInsets.symmetric(horizontal: 40),
               child: AbsorbPointer(
-                absorbing: !widget.isEnabled,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SpinnerList(
-                      label: 'Year',
-                      items: _buildYearItems(),
-                      initialIndex: yearIndex,
-                      onSubmitted: (index) {
-                        setState(() {
-                          _year = _years[index];
-                        });
-                        _submitDate();
-                      },
+                absorbing: !enabled,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .surfaceVariant
+                        .withOpacity(enabled ? 0.2 : 0.05),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: CupertinoTheme(
+                    data: CupertinoTheme.of(context).copyWith(
+                      textTheme: CupertinoTextThemeData(
+                        dateTimePickerTextStyle: TextStyle(
+                          fontSize: 28,
+                          color: enabled
+                              ? Theme.of(context).colorScheme.onTertiary
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .tertiary
+                                  .withOpacity(0.4),
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: 20),
-                    SpinnerList(
-                      label: 'Month',
-                      items: _buildMonthItems(),
-                      initialIndex: monthIndex,
-                      onSubmitted: (index) {
-                        setState(() {
-                          _month = index + 1;
-                          final max = _daysInMonth(_year, _month);
-                          if (_day > max) _day = max;
-                        });
-                        _submitDate();
-                      },
+                    child: CupertinoDatePicker(
+                      key: ValueKey<String>(
+                        'date-${_selectedDate.year}-${_selectedDate.month}-${_selectedDate.day}',
+                      ),
+                      mode: CupertinoDatePickerMode.date,
+                      initialDateTime: _selectedDate,
+                      minimumYear: 1970,
+                      maximumYear: 2100,
+                      use24hFormat: DateTimeUtils.is24HourFormat,
+                      onDateTimeChanged: _onDateChanged,
                     ),
-                    const SizedBox(width: 20),
-                    SpinnerList(
-                      label: 'Day',
-                      items: _buildDayItems(),
-                      initialIndex: dayIndex,
-                      onSubmitted: (index) {
-                        setState(() {
-                          _day = index + 1;
-                        });
-                        _submitDate();
-                      },
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -149,4 +144,3 @@ class SetDatePageState extends State<SetDatePage> {
     );
   }
 }
-

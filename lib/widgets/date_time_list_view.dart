@@ -20,14 +20,36 @@ class DateTimeListView extends StatefulWidget {
 class DateTimeListViewState extends State<DateTimeListView>
     with FocusSelectable<DateTimeListView> {
   int _selected = 0;
+  late final VoidCallback _dateTimeListener;
+  late final VoidCallback _timezoneListener;
+  late final VoidCallback _timeFormatListener;
 
-  final List<String> _menuTitles = [
+  final List<String> _menuTitles = const [
     'Auto update',
     'Set date',
     'Set time',
     'Timezone',
     '24-hour clock',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _dateTimeListener = () => setState(() {});
+    _timezoneListener = () => setState(() {});
+    _timeFormatListener = () => setState(() {});
+    DateTimeUtils.dateTimeListenable.addListener(_dateTimeListener);
+    DateTimeUtils.timezoneListenable.addListener(_timezoneListener);
+    DateTimeUtils.timeFormatListenable.addListener(_timeFormatListener);
+  }
+
+  @override
+  void dispose() {
+    DateTimeUtils.dateTimeListenable.removeListener(_dateTimeListener);
+    DateTimeUtils.timezoneListenable.removeListener(_timezoneListener);
+    DateTimeUtils.timeFormatListenable.removeListener(_timeFormatListener);
+    super.dispose();
+  }
 
   @override
   LogicalKeyboardKey getNextKey() {
@@ -52,7 +74,6 @@ class DateTimeListViewState extends State<DateTimeListView>
     if (event is KeyDownEvent || event is KeyRepeatEvent) {
       if (event.logicalKey == LogicalKeyboardKey.enter ||
           event.logicalKey == LogicalKeyboardKey.select) {
-
         if (DateTimeUtils.isAutoUpdated && _selected > 0 && _selected != 4) {
           return KeyEventResult.handled;
         }
@@ -112,9 +133,9 @@ class DateTimeListViewState extends State<DateTimeListView>
             curve: Curves.easeInOut,
             child: GestureDetector(
               onTap: () {
-              if (DateTimeUtils.isAutoUpdated && index > 0 && index != 4) {
-                return;
-              }
+                if (DateTimeUtils.isAutoUpdated && index > 0 && index != 4) {
+                  return;
+                }
                 listKey.currentState?.selectTo(index);
                 Focus.of(context).requestFocus();
                 _handleMenuItemSelected(index);

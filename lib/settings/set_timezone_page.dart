@@ -33,10 +33,17 @@ class SetTimezonePageState extends State<SetTimezonePage> {
   }
 
   void _scheduleInitialFocus() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    void attempt() {
       if (!mounted || !widget.isEnabled) return;
-      _listKey.currentState?.initFocus();
-    });
+      final state = _listKey.currentState;
+      if (state == null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => attempt());
+        return;
+      }
+      state.initFocus();
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => attempt());
   }
 
   @override
@@ -44,6 +51,9 @@ class SetTimezonePageState extends State<SetTimezonePage> {
     super.didUpdateWidget(oldWidget);
     if (widget.isEnabled && !oldWidget.isEnabled) {
       _scheduleInitialFocus();
+    }
+    if (!widget.isEnabled && oldWidget.isEnabled) {
+      _listKey.currentState?.releaseFocus();
     }
   }
 
@@ -101,20 +111,21 @@ class _TimezoneListView extends StatefulWidget {
 
 class _TimezoneListViewState extends State<_TimezoneListView>
     with FocusSelectable<_TimezoneListView> {
-  late int _selectedIndex;
-  late int _focusedIndex;
-  late List<String> _timezones;
+  late final List<String> _timezones;
   late final VoidCallback _timezoneListener;
+
+  int _selectedIndex = 0;
+  int _focusedIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _timezones = _buildTimezones();
-    _selectedIndex = _timezones.indexOf(DateTimeUtils.timezone);
-    if (_selectedIndex < 0) _selectedIndex = 0;
+    _selectedIndex = _resolveCurrentTimezone();
     _focusedIndex = _selectedIndex;
     _timezoneListener = _handleTimezoneUpdated;
     DateTimeUtils.timezoneListenable.addListener(_timezoneListener);
+    _ensureSelection(jump: true);
   }
 
   @override
@@ -124,15 +135,39 @@ class _TimezoneListViewState extends State<_TimezoneListView>
   }
 
   void _handleTimezoneUpdated() {
-    final current = DateTimeUtils.timezone;
-    final idx = _timezones.indexOf(current);
-    if (idx >= 0 && idx != _selectedIndex) {
+    final idx = _resolveCurrentTimezone();
+    if (idx != _selectedIndex) {
       setState(() {
         _selectedIndex = idx;
         _focusedIndex = idx;
       });
-      listKey.currentState?.selectTo(_focusedIndex);
+      _ensureSelection(jump: true);
     }
+  }
+
+  int _resolveCurrentTimezone() {
+    final current = DateTimeUtils.timezone;
+    final idx = _timezones.indexOf(current);
+    return idx >= 0 ? idx : 0;
+  }
+
+  void _ensureSelection({bool jump = false}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      final state = listKey.currentState;
+      if (state == null) {
+        _ensureSelection(jump: jump);
+        return;
+      }
+      if (jump) {
+        state.selectedIndex = _focusedIndex;
+      } else {
+        await state.selectTo(_focusedIndex);
+      }
+      if (state.selectedIndex != _focusedIndex) {
+        state.selectedIndex = _focusedIndex;
+      }
+    });
   }
 
   List<String> _buildTimezones() {
@@ -176,14 +211,14 @@ class _TimezoneListViewState extends State<_TimezoneListView>
   }
 
   void initFocus() {
-    final current = DateTimeUtils.timezone;
-    final idx = _timezones.indexOf(current);
-    if (idx >= 0) {
-      _selectedIndex = idx;
-      _focusedIndex = idx;
-    }
+    _selectedIndex = _resolveCurrentTimezone();
+    _focusedIndex = _selectedIndex;
     focusNode.requestFocus();
-    listKey.currentState?.selectTo(_focusedIndex);
+    _ensureSelection(jump: true);
+  }
+
+  void releaseFocus() {
+    _focusedIndex = _selectedIndex;
   }
 
   @override
@@ -192,13 +227,15 @@ class _TimezoneListViewState extends State<_TimezoneListView>
   LogicalKeyboardKey getPrevKey() => LogicalKeyboardKey.arrowUp;
 
   void _apply(int index) {
+    _focusedIndex = index;
+    setState(() {
+      _selectedIndex = index;
+    });
     final tz = _timezones[index];
     if (tz != DateTimeUtils.timezone) {
       DateTimeUtils.setTimezone(tz);
     }
-    setState(() {
-      _selectedIndex = index;
-    });
+    _ensureSelection();
   }
 
   @override
@@ -219,7 +256,7 @@ class _TimezoneListViewState extends State<_TimezoneListView>
       focusNode: focusNode,
       onFocusChange: (hasFocus) {
         if (hasFocus) {
-          listKey.currentState?.selectTo(_focusedIndex);
+          _ensureSelection(jump: true);
         } else {
           _focusedIndex = listKey.currentState?.selectedIndex ?? _focusedIndex;
         }
@@ -238,7 +275,8 @@ class _TimezoneListViewState extends State<_TimezoneListView>
           _focusedIndex = i;
         },
         itemBuilder: (context, index, selectedIndex, key) {
-          final bool focused = Focus.of(context).hasFocus && index == selectedIndex;
+          final bool focused =
+              focusNode.hasFocus && index == selectedIndex;
           final bool checked = index == _selectedIndex;
           return AnimatedScale(
             key: key,
@@ -249,7 +287,6 @@ class _TimezoneListViewState extends State<_TimezoneListView>
               onTap: () {
                 listKey.currentState?.selectTo(index);
                 Focus.of(context).requestFocus();
-                _focusedIndex = index;
                 _apply(index);
               },
               child: SizedBox(

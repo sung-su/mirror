@@ -110,6 +110,35 @@ class SelectableListViewState extends State<SelectableListView> {
     return _scrollToSelected(100, previousIndex);
   }
 
+  Future<void> jumpToIndex(int index, {double? itemExtent}) async {
+    if (!_controller.hasClients || widget.itemCount == 0) return;
+    if (index < 0 || index >= widget.itemCount) return;
+
+    double offset;
+    if (itemExtent != null) {
+      offset = index * itemExtent;
+    } else {
+      final position = _controller.position;
+      final double extent = position.maxScrollExtent - position.minScrollExtent;
+      if (widget.itemCount <= 1 || extent <= 0) {
+        offset = position.minScrollExtent;
+      } else {
+        offset = position.minScrollExtent + extent * (index / (widget.itemCount - 1));
+      }
+    }
+
+    offset = offset.clamp(
+      _controller.position.minScrollExtent,
+      _controller.position.maxScrollExtent,
+    );
+
+    await _controller.animateTo(
+      offset,
+      duration: $style.times.med,
+      curve: Curves.easeInOut,
+    );
+  }
+
   Future<int> next({bool fast = false}) async {
     if (_selectedIndex < widget.itemCount - 1) {
       final int previousIndex = _selectedIndex;

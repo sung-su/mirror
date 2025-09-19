@@ -31,11 +31,16 @@ class SpinnerList extends StatefulWidget {
 class SpinnerListState extends State<SpinnerList>
     with FocusSelectable<SpinnerList> {
   int _selected = 0;
+  int _focused = 0;
 
   @override
   void initState() {
     super.initState();
-    _selected = widget.initialIndex.clamp(0, widget.items.length > 0 ? widget.items.length - 1 : 0);
+    _selected = widget.initialIndex.clamp(
+      0,
+      widget.items.isNotEmpty ? widget.items.length - 1 : 0,
+    );
+    _focused = _selected;
   }
 
   @override
@@ -43,10 +48,14 @@ class SpinnerListState extends State<SpinnerList>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.items.length != widget.items.length ||
         oldWidget.initialIndex != widget.initialIndex) {
-      _selected = widget.initialIndex.clamp(0, widget.items.length > 0 ? widget.items.length - 1 : 0);
+      _selected = widget.initialIndex.clamp(
+        0,
+        widget.items.isNotEmpty ? widget.items.length - 1 : 0,
+      );
+      _focused = _selected;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          listKey.currentState?.selectTo(_selected);
+          listKey.currentState?.selectTo(_focused);
         }
       });
     }
@@ -67,11 +76,19 @@ class SpinnerListState extends State<SpinnerList>
     if (event is KeyDownEvent || event is KeyRepeatEvent) {
       if (event.logicalKey == LogicalKeyboardKey.enter ||
           event.logicalKey == LogicalKeyboardKey.select) {
-        widget.onSubmitted?.call(_selected);
+        _commitSelection(_focused);
         return KeyEventResult.handled;
       }
     }
     return KeyEventResult.ignored;
+  }
+
+  void _commitSelection(int index) {
+    setState(() {
+      _selected = index;
+    });
+    widget.onChanged?.call(index);
+    widget.onSubmitted?.call(index);
   }
 
   @override
@@ -98,10 +115,13 @@ class SpinnerListState extends State<SpinnerList>
             height: widget.height,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color:
-                  hasFocus ? Theme.of(context).colorScheme.tertiary.withOpacity(0.15) : Colors.transparent,
+              color: hasFocus
+                  ? Theme.of(context).colorScheme.tertiary.withOpacity(0.15)
+                  : Colors.transparent,
               border: Border.all(
-                color: hasFocus ? Theme.of(context).colorScheme.tertiary : Colors.transparent,
+                color: hasFocus
+                    ? Theme.of(context).colorScheme.tertiary
+                    : Colors.transparent,
                 width: hasFocus ? 1 : 0,
               ),
             ),
@@ -109,9 +129,9 @@ class SpinnerListState extends State<SpinnerList>
               focusNode: focusNode,
               onFocusChange: (focused) {
                 if (focused) {
-                  listKey.currentState?.selectTo(_selected);
+                  listKey.currentState?.selectTo(_focused);
                 } else {
-                  _selected = listKey.currentState?.selectedIndex ?? _selected;
+                  _focused = listKey.currentState?.selectedIndex ?? _focused;
                 }
               },
               child: SelectableListView(
@@ -122,14 +142,14 @@ class SpinnerListState extends State<SpinnerList>
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 scrollOffset: widget.height / 2,
                 onItemFocused: (index) {
-                  _selected = index;
+                  _focused = index;
                 },
                 onItemSelected: (index) {
-                  _selected = index;
-                  widget.onSubmitted?.call(_selected);
+                  _focused = index;
                 },
                 itemBuilder: (context, index, selectedIndex, key) {
-                  final bool selected = focusNode.hasFocus && index == selectedIndex;
+                  final bool selected =
+                      focusNode.hasFocus && index == selectedIndex;
                   return AnimatedScale(
                     key: key,
                     scale: selected ? 1.0 : 0.92,
@@ -140,7 +160,8 @@ class SpinnerListState extends State<SpinnerList>
                       onTap: () {
                         listKey.currentState?.selectTo(index);
                         Focus.of(context).requestFocus();
-                        widget.onSubmitted?.call(index);
+                        _focused = index;
+                        _commitSelection(index);
                       },
                       child: SizedBox(
                         height: 48,
@@ -167,4 +188,3 @@ class SpinnerListState extends State<SpinnerList>
     );
   }
 }
-
