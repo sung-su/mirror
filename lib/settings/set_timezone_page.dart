@@ -21,13 +21,38 @@ class SetTimezonePage extends StatefulWidget {
 }
 
 class SetTimezonePageState extends State<SetTimezonePage> {
+  final GlobalKey<_TimezoneListViewState> _listKey =
+      GlobalKey<_TimezoneListViewState>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isEnabled) {
+      _scheduleInitialFocus();
+    }
+  }
+
+  void _scheduleInitialFocus() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !widget.isEnabled) return;
+      _listKey.currentState?.initFocus();
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant SetTimezonePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isEnabled && !oldWidget.isEnabled) {
+      _scheduleInitialFocus();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 10,
       children: [
-        // title
         SizedBox(
           width: widget.isEnabled ? 600 : 400,
           child: AnimatedPadding(
@@ -57,7 +82,7 @@ class SetTimezonePageState extends State<SetTimezonePage> {
                   : const EdgeInsets.symmetric(horizontal: 40),
               child: AbsorbPointer(
                 absorbing: !widget.isEnabled,
-                child: const _TimezoneListView(),
+                child: _TimezoneListView(key: _listKey),
               ),
             ),
           ),
@@ -68,7 +93,7 @@ class SetTimezonePageState extends State<SetTimezonePage> {
 }
 
 class _TimezoneListView extends StatefulWidget {
-  const _TimezoneListView();
+  const _TimezoneListView({super.key});
 
   @override
   State<_TimezoneListView> createState() => _TimezoneListViewState();
@@ -77,7 +102,9 @@ class _TimezoneListView extends StatefulWidget {
 class _TimezoneListViewState extends State<_TimezoneListView>
     with FocusSelectable<_TimezoneListView> {
   late int _selectedIndex;
+  late int _focusedIndex;
   late List<String> _timezones;
+  late final VoidCallback _timezoneListener;
 
   @override
   void initState() {
@@ -85,6 +112,27 @@ class _TimezoneListViewState extends State<_TimezoneListView>
     _timezones = _buildTimezones();
     _selectedIndex = _timezones.indexOf(DateTimeUtils.timezone);
     if (_selectedIndex < 0) _selectedIndex = 0;
+    _focusedIndex = _selectedIndex;
+    _timezoneListener = _handleTimezoneUpdated;
+    DateTimeUtils.timezoneListenable.addListener(_timezoneListener);
+  }
+
+  @override
+  void dispose() {
+    DateTimeUtils.timezoneListenable.removeListener(_timezoneListener);
+    super.dispose();
+  }
+
+  void _handleTimezoneUpdated() {
+    final current = DateTimeUtils.timezone;
+    final idx = _timezones.indexOf(current);
+    if (idx >= 0 && idx != _selectedIndex) {
+      setState(() {
+        _selectedIndex = idx;
+        _focusedIndex = idx;
+      });
+      listKey.currentState?.selectTo(_focusedIndex);
+    }
   }
 
   List<String> _buildTimezones() {
@@ -127,6 +175,17 @@ class _TimezoneListViewState extends State<_TimezoneListView>
     ];
   }
 
+  void initFocus() {
+    final current = DateTimeUtils.timezone;
+    final idx = _timezones.indexOf(current);
+    if (idx >= 0) {
+      _selectedIndex = idx;
+      _focusedIndex = idx;
+    }
+    focusNode.requestFocus();
+    listKey.currentState?.selectTo(_focusedIndex);
+  }
+
   @override
   LogicalKeyboardKey getNextKey() => LogicalKeyboardKey.arrowDown;
   @override
@@ -147,7 +206,7 @@ class _TimezoneListViewState extends State<_TimezoneListView>
     if (event is KeyDownEvent || event is KeyRepeatEvent) {
       if (event.logicalKey == LogicalKeyboardKey.enter ||
           event.logicalKey == LogicalKeyboardKey.select) {
-        _apply(selectedIndex);
+        _apply(_focusedIndex);
         return KeyEventResult.handled;
       }
     }
@@ -160,9 +219,9 @@ class _TimezoneListViewState extends State<_TimezoneListView>
       focusNode: focusNode,
       onFocusChange: (hasFocus) {
         if (hasFocus) {
-          listKey.currentState?.selectTo(_selectedIndex);
+          listKey.currentState?.selectTo(_focusedIndex);
         } else {
-          _selectedIndex = listKey.currentState?.selectedIndex ?? _selectedIndex;
+          _focusedIndex = listKey.currentState?.selectedIndex ?? _focusedIndex;
         }
       },
       child: SelectableListView(
@@ -173,11 +232,14 @@ class _TimezoneListViewState extends State<_TimezoneListView>
         padding: const EdgeInsets.symmetric(vertical: 10),
         alignment: 0.5,
         onItemFocused: (i) {
-          _selectedIndex = i;
+          _focusedIndex = i;
+        },
+        onItemSelected: (i) {
+          _focusedIndex = i;
         },
         itemBuilder: (context, index, selectedIndex, key) {
           final bool focused = Focus.of(context).hasFocus && index == selectedIndex;
-          final bool checked = _timezones[index] == DateTimeUtils.timezone;
+          final bool checked = index == _selectedIndex;
           return AnimatedScale(
             key: key,
             scale: focused ? 1.0 : .9,
@@ -187,6 +249,7 @@ class _TimezoneListViewState extends State<_TimezoneListView>
               onTap: () {
                 listKey.currentState?.selectTo(index);
                 Focus.of(context).requestFocus();
+                _focusedIndex = index;
                 _apply(index);
               },
               child: SizedBox(
@@ -233,4 +296,3 @@ class _TimezoneListViewState extends State<_TimezoneListView>
     );
   }
 }
-
