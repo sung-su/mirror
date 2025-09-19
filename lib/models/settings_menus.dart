@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tizen_fs/models/page_node.dart';
-import 'package:tizen_fs/settings/bluetooth_page.dart';
+// import 'package:tizen_fs/settings/bluetooth_page.dart';
 import 'package:tizen_fs/settings/date_time_page.dart';
 import 'package:tizen_fs/settings/device_info_page.dart';
 import 'package:tizen_fs/settings/end_page.dart';
@@ -149,24 +149,24 @@ class SettingPages {
       ),
     );
 
-    settings.children.add(
-      PageNode(
-        id: 'bluetooth',
-        icon: Icons.bluetooth_outlined,
-        title: 'Bluetooth',
-        builder:
-            (context, node, isEnabled, onItemSelected) => BluetoothPage(
-              node: node,
-              isEnabled: isEnabled,
-              onSelectionChanged: onItemSelected,
-            ),
-        // isEnd: true,
-        children: [
-          // to make empty area for custom page
-          PageNode(id: 'bt_empty', title: 'Bluetooth 1 ', isEnd: true),
-        ],
-      ),
-    );
+    // settings.children.add(
+    //   PageNode(
+    //     id: 'bluetooth',
+    //     icon: Icons.bluetooth_outlined,
+    //     title: 'Bluetooth',
+    //     builder:
+    //         (context, node, isEnabled, onItemSelected) => BluetoothPage(
+    //           node: node,
+    //           isEnabled: isEnabled,
+    //           onSelectionChanged: onItemSelected,
+    //         ),
+    //     // isEnd: true,
+    //     children: [
+    //       // to make empty area for custom page
+    //       PageNode(id: 'bt_empty', title: 'Bluetooth 1 ', isEnd: true),
+    //     ],
+    //   ),
+    // );
 
     // settings.children.add(
     //   PageNode(

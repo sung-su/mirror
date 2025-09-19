@@ -2,11 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tizen_fs/locator.dart';
 import 'package:tizen_fs/models/app_data_model.dart';
 import 'package:tizen_fs/providers/wifi_provider.dart';
 import 'package:tizen_fs/providers/device_info_provider.dart';
-import 'package:tizen_fs/models/bt_model.dart';
+import 'package:tizen_fs/locator.dart';
 import 'package:tizen_fs/router.dart';
 import 'package:tizen_fs/styles/app_style.dart';
 import 'package:tizen_interop/9.0/tizen.dart';
@@ -25,7 +24,6 @@ void main() {
         ChangeNotifierProvider<AppDataModel>(
           create: (context) => getIt<AppDataModel>(),
         ),
-        ChangeNotifierProvider<BtModel>(create: (context) => getIt<BtModel>()),
         ChangeNotifierProvider<WifiProvider>(
           create: (context) => WifiProvider(),
         ),
