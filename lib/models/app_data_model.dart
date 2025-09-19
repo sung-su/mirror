@@ -74,7 +74,7 @@ class AppDataModel extends ChangeNotifier {
 
     final apps = await AppManager.getInstalledApps();
     for (AppInfo app in apps) {
-      if (!app.isNoDisplay) {
+      if (!app.isNoDisplay && app.appId.contains('hello')) {
         appInfos.add(
           AppData(
             appId: app.appId,

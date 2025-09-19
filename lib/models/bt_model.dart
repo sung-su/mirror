@@ -100,9 +100,6 @@ class BtModel extends ChangeNotifier {
   bool _isBusy = false;
   bool get isBusy => _isBusy;
 
-  bool _isBtSuppported = true;
-  bool get isBtSupported => _isBtSuppported;
-
   void _flattenData() {
     debugPrint('update _flatten');
 
@@ -157,11 +154,7 @@ class BtModel extends ChangeNotifier {
   Future<void> _initialize() async {
     if (_isInitialized) return;
 
-    final ret = TizenBluetoothManager.btInitialize();
-    if (ret == bt_error_e.BT_ERROR_NOT_SUPPORTED) {
-      _isBtSuppported = false;
-      return;
-    }
+    TizenBluetoothManager.btInitialize();
     _setCallback();
     _isInitialized = true;
   }
@@ -255,16 +248,14 @@ class BtModel extends ChangeNotifier {
   }
 
   Future<void> toggle() async {
-    if (!_isBtSuppported) return;
-
     if (_isEnabled) {
-      _disable();
+      disable();
     } else {
-      _enable();
+      enable();
     }
   }
 
-  Future<void> _enable() async {
+  Future<void> enable() async {
     debugPrint(
       'bt disable: _isInitialized=${_isInitialized}, _isEnabled=$_isEnabled, _isBusy=$_isBusy',
     );
@@ -309,7 +300,7 @@ class BtModel extends ChangeNotifier {
     }
   }
 
-  Future<void> _disable() async {
+  Future<void> disable() async {
     debugPrint(
       'bt disable: _isInitialized=${_isInitialized}, _isEnabled=$_isEnabled, _isBusy=$_isBusy',
     );
@@ -373,8 +364,6 @@ class BtModel extends ChangeNotifier {
   }
 
   Future<bool> connect(BtDevice device) async {
-    if (!_isBtSuppported) return false;
-
     final completer = Completer<bool>();
     debugPrint(' connect to device : ${device.remoteName}');
 
@@ -546,8 +535,6 @@ class BtModel extends ChangeNotifier {
   }
 
   Future<void> disconnect(BtDevice device) async {
-    if (!_isBtSuppported) return;
-
     debugPrint(' disconnect to device : ${device.remoteName}');
 
     if (device.isAudioSupported) {
@@ -561,8 +548,6 @@ class BtModel extends ChangeNotifier {
   }
 
   Future<bool> unpair(BtDevice device) async {
-    if (!_isBtSuppported) return false;
-
     if (!_isEnabled) return false;
 
     if (_isScanning) _stopDiscovery();
